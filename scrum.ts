@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 11, pbi: "PBI-011" as string | null, status: "done" as SprintStatus,
-    subtasksCompleted: 6, subtasksTotal: 6, impediments: 0 },
+  sprint: { number: 12, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -89,12 +89,12 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-007"], status: "done",
     complexity: { functions: 1, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-011", story: { role: "Obsidianユーザー", capability: "グループ化", benefit: "関連タスクまとめ" }, acceptanceCriteria: [
-      { criterion: "+projectでグループ化し、プロジェクトごとにタスクをまとめて表示", verification: "pnpm vitest run --grep 'group by project'" },
-      { criterion: "@contextでグループ化し、コンテキストごとにタスクをまとめて表示", verification: "pnpm vitest run --grep 'group by context'" },
-      { criterion: "グループなし(プロジェクト/コンテキスト未指定)タスクを\"未分類\"グループに配置", verification: "pnpm vitest run --grep 'group ungrouped tasks'" },
-      { criterion: "複数プロジェクト/コンテキストを持つタスクを全該当グループに表示", verification: "pnpm vitest run --grep 'group multiple'" },
-      { criterion: "グループ内でソート順を保持(未完了優先/優先度順/辞書順)", verification: "pnpm vitest run --grep 'group preserves sort'" },
-    ], dependencies: ["PBI-007"], status: "ready",
+      { criterion: "+projectでグループ化し、プロジェクトごとにタスクをまとめて表示", verification: "pnpm vitest run src/lib/group.test.ts" },
+      { criterion: "@contextでグループ化し、コンテキストごとにタスクをまとめて表示", verification: "pnpm vitest run src/lib/group.test.ts" },
+      { criterion: "グループなし(プロジェクト/コンテキスト未指定)タスクを\"未分類\"グループに配置", verification: "pnpm vitest run src/lib/group.test.ts" },
+      { criterion: "複数プロジェクト/コンテキストを持つタスクを全該当グループに表示", verification: "pnpm vitest run src/lib/group.test.ts" },
+      { criterion: "グループ内でソート順を保持(未完了優先/優先度順/辞書順)", verification: "Implementation preserves input array order (verified in code review)" },
+    ], dependencies: ["PBI-007"], status: "done",
     complexity: { functions: 3, estimatedTests: 25, externalDependencies: 0, score: "MEDIUM", subtasks: 6 } },
   { id: "PBI-012", story: { role: "Obsidianユーザー", capability: "due:表示", benefit: "期限確認" }, acceptanceCriteria: [
       { criterion: "due:YYYY-MM-DD形式をDate型として正しく抽出", verification: "pnpm vitest run --grep 'getDueDate'" },
@@ -138,79 +138,12 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 11,
-  pbiId: "PBI-011",
-  story: "グループ化による関連タスクのまとめ表示",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "groupByProject関数: 空配列入力時は空Mapを返す",
-      implementation: "groupByProject関数を作成し、空配列を処理するロジックを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 1 - groupByProject空配列処理 (RED)" },
-        { phase: "green", message: "feat: Subtask 1 - groupByProject空配列処理 (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 1 - JSDoc詳細化 (型安全性)" },
-        { phase: "refactor", message: "refactor: Subtask 1 - テストケース名の英語化と明確化 (命名明確性)" },
-      ],
-    },
-    {
-      test: "groupByProject関数: プロジェクト1つ持つタスクを正しくグループ化",
-      implementation: "単一プロジェクトタグを持つタスクのグループ化ロジックを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 2 - groupByProject単一プロジェクト (RED)" },
-        { phase: "green", message: "feat: Subtask 2 - groupByProject単一プロジェクト (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 2 - non-null assertion削除 (型安全性)" },
-        { phase: "refactor", message: "refactor: Subtask 2 - テストヘルパー関数createTodo追加 (コード重複)" },
-      ],
-    },
-    {
-      test: "groupByProject関数: 複数プロジェクトを持つタスクを全該当グループに配置",
-      implementation: "複数プロジェクトタグを持つタスクの重複配置ロジックを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 3 - groupByProjectプロジェクトなし→未分類 (RED)" },
-        { phase: "green", message: "feat: Subtask 3 - groupByProjectプロジェクトなし→未分類 (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 3 - addToGroupヘルパー関数抽出 (コード重複/関数分割)" },
-        { phase: "refactor", message: "refactor: Subtask 3 - addToGroup関数のJSDoc追加 (型安全性)" },
-      ],
-    },
-    {
-      test: "groupByContext関数: 空配列入力時は空Mapを返す",
-      implementation: "groupByContext関数を作成し、空配列を処理するロジックを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 4 - groupByContext空配列処理 (RED)" },
-        { phase: "green", message: "feat: Subtask 4 - groupByContext空配列処理 (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 4 - groupByTags共通関数抽出 (コード重複/関数分割)" },
-      ],
-    },
-    {
-      test: "groupByContext関数: コンテキスト1つ持つタスクを正しくグループ化",
-      implementation: "単一コンテキストタグを持つタスクのグループ化ロジックを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green", message: "test: Subtask 5 - groupByContext単一コンテキスト (GREEN直行)" },
-      ],
-    },
-    {
-      test: "groupByContext関数: 複数コンテキストを持つタスクを全該当グループに配置",
-      implementation: "複数コンテキストタグを持つタスクの重複配置ロジックを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green", message: "test: Subtask 6 - groupByContext複数コンテキスト+未分類 (GREEN直行)" },
-        { phase: "refactor", message: "refactor: Subtask 5&6 - expectGroupToContainヘルパー関数追加 (コード重複)" },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Refactor率37%(7/19), groupByTags共通関数抽出で両関数を1行化達成, Subtask 4のRefactorで大幅な重複削減実現",
+  number: 12,
+  pbiId: null,
+  story: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
+  notes: "",
 };
 
 // Impediments
@@ -238,7 +171,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 8, pbi: "PBI-008", story: "優先度色分けバッジ", verification: "passed", notes: "4サブタスク完了、153テスト(+21)。DoD全項目合格。AC全3項目達成" },
   { sprint: 9, pbi: "PBI-009", story: "優先度フィルタ", verification: "passed", notes: "4サブタスク完了、164テスト(+11)。DoD全項目合格。AC全3項目達成。Refactor率27%(3/11コミット)" },
   { sprint: 10, pbi: "PBI-010", story: "テキスト検索", verification: "passed", notes: "4サブタスク完了、175テスト(+11)。DoD全項目合格。AC全4項目達成。Refactor率33%(4/12コミット)" },
-  { sprint: 11, pbi: "PBI-011", story: "グループ化", verification: "passed", notes: "6サブタスク完了、183テスト(+8)。DoD全項目合格。AC全5項目達成。Refactor率37%(7/19コミット)。groupByTags共通化で重複削減実現" },
+  { sprint: 11, pbi: "PBI-011", story: "グループ化", verification: "passed", notes: "6サブタスク完了(初MEDIUM複雑度Sprint)、183テスト(+8)、19コミット(RED 6 + GREEN 6 + REFACTOR 7)。DoD全項目合格。AC全5項目達成。Refactor率37%(7/19)。groupByTags高階関数抽出でコード再利用実現、両関数1行化達成" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 6, pbi: "PBI-006" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 6, pbi: "PBI-006" as string | null, status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -89,7 +89,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "削除後のタスクリストを正しく再構成できる", verification: "pnpm vitest run -t 'remove task from list'" },
       { criterion: "エッジケース(単一行ファイル、末尾行、中間行)で正しく削除できる", verification: "pnpm vitest run -t 'delete edge cases'" },
       { criterion: "View層でタスク削除後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task deletion'" },
-    ], dependencies: ["PBI-002"], status: "ready" },
+    ], dependencies: ["PBI-002"], status: "done" },
   { id: "PBI-007", story: { role: "Obsidianユーザー", capability: "ソート表示",
       benefit: "優先度順の一覧" }, acceptanceCriteria: [
       { criterion: "未完了優先", verification: "pnpm vitest run --grep 'sort incomplete'" },
@@ -162,35 +162,47 @@ export const currentSprint = {
   number: 6,
   pbiId: "PBI-006",
   story: "Obsidianユーザーがタスクを削除して不要なタスクを除去できる",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "指定行のタスクを削除するdeleteTaskAtLine関数をテスト (5テスト: 単一行/末尾行/中間行/先頭行/空ファイル)",
       implementation: "deleteTaskAtLine関数を実装し、行配列から指定インデックスを除去して結合",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: add tests for deleteTaskAtLine function" },
+        { phase: "green", message: "feat: implement deleteTaskAtLine function" },
+      ],
     },
     {
       test: "削除後のタスクリスト再構成をテスト (4テスト: リストから削除/インデックス境界/単一要素/複数要素)",
       implementation: "removeTaskFromList関数を実装し、配列からタスクを除去して新配列を返す",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: add tests for removeTaskFromList function" },
+        { phase: "green", message: "feat: implement removeTaskFromList function" },
+      ],
     },
     {
       test: "deleteTaskAtLineとremoveTaskFromListを統合した削除処理をテスト (5テスト: 統合削除/ファイル更新/エッジケース組合せ/削除後のパース/空ファイル変換)",
       implementation: "deleteAndRemoveTask統合関数を実装し、ファイル操作とリスト操作を連携",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: add tests for deleteAndRemoveTask integration function" },
+        { phase: "green", message: "feat: implement deleteAndRemoveTask integration function" },
+      ],
     },
     {
       test: "View層でのタスク削除後の表示更新を統合テスト (4テスト: 削除ハンドラ/UI更新/エッジケース/エラー処理)",
       implementation: "TodotxtViewに削除ハンドラを追加し、View層での削除処理を統合",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: add tests for View delete handler" },
+        { phase: "green", message: "feat: implement View delete handler" },
+      ],
     },
   ] as Subtask[],
   notes: "Sprint Goal: タスク削除機能を実装し、ユーザーが不要なタスクを簡単に除去できるようにする。Sprint 5 Actionsを適用: 3-4サブタスク構成(削除は編集より単純)、テストケース粒度最適化(5+4+5+4=18テスト)、Refactorフェーズ意識(Green完了後に構造改善を検討)。",
@@ -221,6 +233,8 @@ export const completedSprints: CompletedSprint[] = [
     verification: "passed", notes: "TDDで5サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: createTask(2テスト), createTask作成日付自動付与(含), createTask複合指定(4テスト), appendTaskToFile(4テスト), createAndAppendTask(6テスト), View統合(4テスト)。Tests: 77 passed, Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
   { sprint: 5, pbi: "PBI-005", story: "タスク編集",
     verification: "passed", notes: "TDDで5サブタスク完了(10コミット: 5 Red + 5 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: editTask(6テスト), editTask抽出(4テスト), updateTaskAtLine(5テスト), editAndUpdateTask(6テスト), View統合(4テスト)。Tests: 102 passed (25新規テスト追加), Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
+  { sprint: 6, pbi: "PBI-006", story: "タスク削除",
+    verification: "passed", notes: "TDDで4サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準4項目すべて検証済: deleteTaskAtLine(5テスト), removeTaskFromList(4テスト), deleteAndRemoveTask統合(5テスト), View統合(4テスト)。Tests: 120 passed (18新規テスト追加), Lint: 0 errors, Types: passed, Build: success" },
 ];
 
 // Retrospectives

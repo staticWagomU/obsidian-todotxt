@@ -85,9 +85,11 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-002"], status: "done" },
   { id: "PBI-006", story: { role: "Obsidianユーザー", capability: "タスク削除",
       benefit: "不要タスク除去" }, acceptanceCriteria: [
-      { criterion: "削除確認", verification: "pnpm vitest run --grep 'delete'" },
-      { criterion: "ファイル削除", verification: "pnpm vitest run --grep 'remove'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+      { criterion: "指定した行インデックスのタスクをファイルから削除できる", verification: "pnpm vitest run -t 'delete task at line index'" },
+      { criterion: "削除後のタスクリストを正しく再構成できる", verification: "pnpm vitest run -t 'remove task from list'" },
+      { criterion: "エッジケース(単一行ファイル、末尾行、中間行)で正しく削除できる", verification: "pnpm vitest run -t 'delete edge cases'" },
+      { criterion: "View層でタスク削除後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task deletion'" },
+    ], dependencies: ["PBI-002"], status: "ready" },
   { id: "PBI-007", story: { role: "Obsidianユーザー", capability: "ソート表示",
       benefit: "優先度順の一覧" }, acceptanceCriteria: [
       { criterion: "未完了優先", verification: "pnpm vitest run --grep 'sort incomplete'" },

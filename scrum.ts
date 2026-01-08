@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 15, pbi: "PBI-015" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -158,22 +158,31 @@ export const currentSprint = {
       test: "[text](url)形式の基本的なMarkdownリンク検出と複数リンク抽出: extractExternalLinks関数は説明文から[text](url)を抽出し、表示テキストとURLを取得する。1つの説明文に複数の[text](url)が存在する場合、すべてを抽出する",
       implementation: "src/lib/externallink.tsにextractExternalLinks関数を実装。正規表現で[text](url)形式をマッチング、表示テキストとURLを分離、複数リンク対応(matchAll使用)",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: add failing tests for basic external link extraction (Subtask 1 RED)" },
+        { phase: "green", message: "feat: implement extractExternalLinks for basic [text](url) parsing (Subtask 1 GREEN)" },
+      ],
     },
     {
       test: "様々なURLスキーム対応: https://, http://, ftp://, file://, mailto:等の各種プロトコルを検出し、正しく抽出する",
       implementation: "extractExternalLinks関数のURL正規表現パターンを拡張。各種スキーム対応パターン追加、スキーム検証ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: add tests for various URL schemes support (Subtask 2 RED)" },
+        { phase: "green", message: "docs: document URL scheme support in extractExternalLinks (Subtask 2 GREEN)" },
+      ],
     },
     {
       test: "不正な形式の検出除外とエッジケース処理: 閉じ括弧なし、空文字列([]()、[text]()、[](url))、ネスト([[text](url)]、[text]((url)))、スペース含むURL等の不正形式を無視し、空配列を返す",
       implementation: "extractExternalLinks関数に検証ロジック追加。空文字列チェック、括弧バランス検証、スペース検出、不正パターンフィルタリング",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: add edge case tests for invalid format filtering (Subtask 3 RED)" },
+        { phase: "green", message: "docs: explain automatic invalid format filtering (Subtask 3 GREEN)" },
+      ],
     },
   ] as Subtask[],
   notes: "Phase 3 third sprint. Similar pattern to PBI-014 (internal links). LOW complexity, 3 subtasks, 22 estimated tests. Focus: [text](url) markdown link extraction.",

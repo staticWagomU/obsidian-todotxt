@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getPriorityColor } from "./priority";
+import { getPriorityColor, shouldShowPriorityBadge } from "./priority";
 
 describe("getPriorityColor", () => {
   it("優先度Aの場合、赤色の色コードを返すこと", () => {
@@ -22,5 +22,18 @@ describe("getPriorityColor", () => {
 
   it("優先度なし(undefined)の場合、デフォルト色を返すこと", () => {
     expect(getPriorityColor(undefined)).toBe("#cccccc");
+  });
+});
+
+describe("shouldShowPriorityBadge", () => {
+  it("優先度A-Zの場合、trueを返すこと", () => {
+    expect(shouldShowPriorityBadge("A")).toBe(true);
+    expect(shouldShowPriorityBadge("B")).toBe(true);
+    expect(shouldShowPriorityBadge("M")).toBe(true);
+    expect(shouldShowPriorityBadge("Z")).toBe(true);
+  });
+
+  it("優先度なし(undefined)の場合、falseを返すこと", () => {
+    expect(shouldShowPriorityBadge(undefined)).toBe(false);
   });
 });

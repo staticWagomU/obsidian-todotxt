@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 15, pbi: "PBI-015" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 16, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -121,7 +121,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "複数の外部リンク検出: 1つの説明文に複数の[text](url)が存在する場合、すべてを抽出", verification: "pnpm vitest run -t 'extractExternalLinks' src/lib/externallink.test.ts" },
       { criterion: "不正な形式の検出除外: 閉じ括弧なし・空文字列・ネスト・スペース含むURL等不正形式を無視", verification: "pnpm vitest run -t 'extractExternalLinks' src/lib/externallink.test.ts" },
       { criterion: "様々なURLスキーム対応: https://, http://, ftp://等の各種プロトコルを検出", verification: "pnpm vitest run -t 'extractExternalLinks' src/lib/externallink.test.ts" },
-    ], dependencies: ["PBI-002"], status: "ready",
+    ], dependencies: ["PBI-002"], status: "done",
     complexity: { functions: 1, estimatedTests: 22, externalDependencies: 0, score: "LOW", subtasks: 3 } },
   { id: "PBI-016", story: { role: "Obsidianユーザー", capability: "rec:繰り返し", benefit: "定期タスク自動生成" }, acceptanceCriteria: [
       { criterion: "繰り返し生成", verification: "pnpm vitest run --grep 'recurrence'" },
@@ -148,45 +148,7 @@ export const definitionOfReady = {
 };
 
 // Current Sprint
-export const currentSprint = {
-  number: 15,
-  pbiId: "PBI-015",
-  story: "[text](url)形式のMarkdown外部リンクをパース・検出し、表示テキストとURLを抽出する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "[text](url)形式の基本的なMarkdownリンク検出と複数リンク抽出: extractExternalLinks関数は説明文から[text](url)を抽出し、表示テキストとURLを取得する。1つの説明文に複数の[text](url)が存在する場合、すべてを抽出する",
-      implementation: "src/lib/externallink.tsにextractExternalLinks関数を実装。正規表現で[text](url)形式をマッチング、表示テキストとURLを分離、複数リンク対応(matchAll使用)",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: add failing tests for basic external link extraction (Subtask 1 RED)" },
-        { phase: "green", message: "feat: implement extractExternalLinks for basic [text](url) parsing (Subtask 1 GREEN)" },
-      ],
-    },
-    {
-      test: "様々なURLスキーム対応: https://, http://, ftp://, file://, mailto:等の各種プロトコルを検出し、正しく抽出する",
-      implementation: "extractExternalLinks関数のURL正規表現パターンを拡張。各種スキーム対応パターン追加、スキーム検証ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: add tests for various URL schemes support (Subtask 2 RED)" },
-        { phase: "green", message: "docs: document URL scheme support in extractExternalLinks (Subtask 2 GREEN)" },
-      ],
-    },
-    {
-      test: "不正な形式の検出除外とエッジケース処理: 閉じ括弧なし、空文字列([]()、[text]()、[](url))、ネスト([[text](url)]、[text]((url)))、スペース含むURL等の不正形式を無視し、空配列を返す",
-      implementation: "extractExternalLinks関数に検証ロジック追加。空文字列チェック、括弧バランス検証、スペース検出、不正パターンフィルタリング",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: add edge case tests for invalid format filtering (Subtask 3 RED)" },
-        { phase: "green", message: "docs: explain automatic invalid format filtering (Subtask 3 GREEN)" },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Phase 3 third sprint. Similar pattern to PBI-014 (internal links). LOW complexity, 3 subtasks, 22 estimated tests. Focus: [text](url) markdown link extraction.",
-};
+export const currentSprint = null;
 
 // Impediments
 export const impediments = { active: [] as { id: string; description: string; status: string }[], resolved: [] as string[] };
@@ -217,6 +179,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 12, pbi: "PBI-012", story: "due:表示", verification: "passed", notes: "4サブタスク完了(Subtask3&4統合テスト実施)、209テスト(+26: getDueDate 15 + getDueDateStatus 8 + 統合3)、10コミット(RED 3 + GREEN 2 + REFACTOR 5)。DoD全項目合格。AC全3項目達成。Refactor率50%目標達成(5/10)。Phase 2完遂(Sprint 8-12、5 PBI、77テスト追加)" },
   { sprint: 13, pbi: "PBI-013", story: "t:グレーアウト", verification: "passed", notes: "3サブタスク完了(UI統合除外)、237テスト(+28: getThresholdDate 11 + getThresholdDateStatus 10 + 統合7)、10コミット(RED 2 + GREEN 3 + REFACTOR 5)。DoD全項目合格。AC全3項目達成。Refactor率50%維持(5/10)。Phase 3初Sprint、due.tsより厳密な日付検証実現(2026-02-30自動補正検出)" },
   { sprint: 14, pbi: "PBI-014", story: "[[Note]]内部リンク", verification: "passed", notes: "3サブタスク完了、265テスト(+28: extractInternalLinks全28件)、6コミット(RED 3 + GREEN 3 + REFACTOR 0)。DoD全項目合格。AC全4項目達成。Refactor率0%(シンプルな正規表現実装のためリファクタリング不要)" },
+  { sprint: 15, pbi: "PBI-015", story: "[text](url)外部リンク", verification: "passed", notes: "3サブタスク完了、292テスト(+27: extractExternalLinks全27件)、8コミット(RED 3 + GREEN 3 + FIX 1 + CHORE 1)。DoD全項目合格。AC全4項目達成。Refactor率0%(LOW複雑度、シンプルな正規表現実装)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

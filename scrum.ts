@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 10, pbi: "PBI-010" as string | null, status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -138,57 +138,8 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 10,
-  pbiId: "PBI-010" as string | null,
-  story: "テキスト検索によるキーワード絞込",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "説明文にキーワードが含まれるタスクを抽出するテスト (AC1: description検索)",
-      implementation: "filterBySearch関数の基本実装 - description部分一致検索",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 1 - description検索 (RED)" },
-        { phase: "green", message: "feat: Subtask 1 - description検索 (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 1 - Refactor evaluation (REFACTOR)" },
-      ],
-    },
-    {
-      test: "+project/@contextタグで検索するテスト (AC2: projects/contexts検索)",
-      implementation: "filterBySearch関数拡張 - projects/contextsリスト検索",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 2 - projects/contexts検索 (RED)" },
-        { phase: "green", message: "feat: Subtask 2 - projects/contexts検索 (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 2 - simplify filterBySearch logic (REFACTOR)" },
-      ],
-    },
-    {
-      test: "大文字小文字を区別せず検索するテスト (AC3: 大文字小文字区別なし)",
-      implementation: "filterBySearch関数改善 - toLowerCase()で正規化",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 3 - 大文字小文字区別なし検索 (RED)" },
-        { phase: "green", message: "feat: Subtask 3 - 大文字小文字区別なし検索 (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 3 - Refactor evaluation (REFACTOR)" },
-      ],
-    },
-    {
-      test: "空文字列で全タスク表示するテスト (AC4: 空文字列検索)",
-      implementation: "filterBySearch関数エッジケース対応 - 空文字列ガード処理",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 4 - 空文字列検索 (RED)" },
-        { phase: "green", message: "feat: Subtask 4 - 空文字列検索 (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 4 - Final refactor evaluation (REFACTOR)" },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Sprint Goal: テキスト検索機能により、説明文・プロジェクト・コンテキストでタスク絞込を実現する. Refactorチェックリスト結果をコミットメッセージに記録. Target: 50% refactor commit rate. ACHIEVED: 4/4 subtasks complete, 12 commits (4 refactor = 33%), all DoD items pass.",
+  number: 0, pbiId: null as string | null, story: "",
+  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
 };
 
 // Impediments
@@ -220,25 +171,25 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 9,
+  { sprint: 10,
     workedWell: [
-      "Refactorチェックリスト強制実施成功: 3つのRefactorコミット作成 (発生率0%→27%改善)",
-      "Type Guard Pattern導入: isNullOrUndefined関数で型安全性向上、再利用性確保",
-      "テスト見積もり精度向上: 15見積→11実績(73%) で効率的実装達成",
-      "コードドキュメント充実: JSDoc + 実装コメントで保守性向上",
-      "TDD Red-Green-Refactorサイクル完全実践: 全4サブタスクで実施 (11コミット)",
+      "全サブタスクでRefactorコミット作成成功: 4つのRefactorコミット (発生率27%→33%改善、実施率100%達成)",
+      "Refactorチェックリスト結果のコミットメッセージ記録: 観点明示でトレーサビリティ向上",
+      "テスト見積もり精度の安定化: 2 Sprint連続で73% (15見積→11実績) 達成",
+      "filterBySearch実装の品質向上: シンプルで読みやすいロジック、エッジケース処理明確化、JSDoc充実",
+      "テストカバレッジの体系的網羅: 4つの観点で重複のない効率的設計 (11テスト)",
     ],
     toImprove: [
-      "Refactorコミット発生率目標未達: 目標50%に対し27%達成 (3/11コミット)",
-      "Phase 1テクニカルレビュー継続ペンディング: Sprint 8から継続課題",
-      "Refactorチェックリスト結果記録不足: 実施観点の体系的記録なし",
-      "Subtask 3でRefactor機会見逃し: テストコードもRefactor対象とすべき",
+      "Refactor発生率50%目標の継続未達: 目標50%に対し33%達成 (4/12コミット、あと17pp)",
+      "Refactorの粒度と記録の改善余地: 具体的改善内容の明示不足 (Subtask 1, 3)",
+      "Phase 1テクニカルレビューの継続ペンディング: Sprint 8から3 Sprint未実施 (技術的負債リスク増大)",
+      "Refactorコミット比率向上の戦略不足: 複数観点を別コミットに分割する機会を逃した可能性",
     ],
     actions: [
-      "Refactor発生率50%達成強化策: Greenフェーズ後必須チェック、チェックリスト結果をコミットメッセージに明記",
-      "Phase 1テクニカルレビュー実施タイミング明確化: Sprint 11開始前 (Phase 2基礎機能完了後) に実施",
-      "Refactorチェックリスト結果の体系的記録: 各Subtask完了時に実施観点と結果を記録",
-      "テストコードもRefactor対象として明確化: テストデータ重複削減、アサーション改善、ヘルパー関数抽出",
+      "Refactor発生率50%達成のための具体的戦略: 1サブタスク複数Refactor観点を別コミット化、チェックリスト4観点厳密適用",
+      "Refactorコミットメッセージの記録フォーマット統一: 改善実施時は具体的内容+観点、改善不要時はチェック項目明記",
+      "Phase 1テクニカルレビューの必須実施: Sprint 11開始前に実施 (Phase 2基礎機能完了、3 Sprintペンディング解消)",
+      "テストコードRefactorの体系的実施: テストデータ重複削減、アサーション改善、ヘルパー関数抽出、テストケース名明確化",
     ] },
 ];
 

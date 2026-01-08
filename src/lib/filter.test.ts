@@ -149,4 +149,83 @@ describe("filterByPriority", () => {
 			expect(result[0]?.description).toBe("No priority task");
 		});
 	});
+
+	describe("filter immutability", () => {
+		it("should not modify the original array when filtering", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					priority: "A",
+					description: "Priority A task",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "(A) Priority A task",
+				},
+				{
+					completed: false,
+					priority: "B",
+					description: "Priority B task",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "(B) Priority B task",
+				},
+				{
+					completed: false,
+					description: "No priority task",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "No priority task",
+				},
+			];
+
+			const originalLength = todos.length;
+			const originalFirst = todos[0];
+
+			// Filter by priority A
+			const result = filterByPriority(todos, "A");
+
+			// Verify original array is unchanged
+			expect(todos).toHaveLength(originalLength);
+			expect(todos[0]).toBe(originalFirst);
+			expect(todos[1]?.priority).toBe("B");
+			expect(todos[2]?.priority).toBeUndefined();
+
+			// Verify result is a different array
+			expect(result).not.toBe(todos);
+		});
+
+		it("should return a new array instance, not a reference to the original", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					priority: "A",
+					description: "Task 1",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "(A) Task 1",
+				},
+			];
+
+			const result = filterByPriority(todos, "A");
+
+			// Modify the result array
+			result.push({
+				completed: false,
+				priority: "B",
+				description: "Task 2",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "(B) Task 2",
+			});
+
+			// Original array should still have only 1 element
+			expect(todos).toHaveLength(1);
+			expect(result).toHaveLength(2);
+		});
+	});
 });

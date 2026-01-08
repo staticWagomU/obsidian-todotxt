@@ -11,6 +11,13 @@ function isNullOrUndefined(value: unknown): value is null | undefined {
  * Filter todos by priority (immutable)
  * Returns a new array containing only tasks that match the specified priority
  * The original array is not modified
+ *
+ * Edge cases handled:
+ * - Empty array returns empty array
+ * - No matches returns empty array
+ * - Multiple matching tasks preserves original order
+ * - Both completed and incomplete tasks are filtered
+ *
  * @param todos - Array of todos to filter
  * @param priority - Priority value to filter by (A-Z, null, or undefined for no priority)
  * @returns New filtered array of todos matching the priority

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { WorkspaceLeaf } from "obsidian";
 import { TodotxtView } from "./view";
 import { parseTodoTxt } from "./lib/parser";
 
@@ -6,27 +7,27 @@ import { parseTodoTxt } from "./lib/parser";
 vi.mock("obsidian", () => ({
 	TextFileView: class {
 		data = "";
-		leaf: any;
-		file: any = null;
-		
-		constructor(leaf: any) {
+		leaf: unknown;
+		file: unknown = null;
+
+		constructor(leaf: unknown) {
 			this.leaf = leaf;
 		}
-		
-		async onLoadFile(_file: any): Promise<void> {}
-		async onUnloadFile(_file: any): Promise<void> {}
+
+		async onLoadFile(_file: unknown): Promise<void> {}
+		async onUnloadFile(_file: unknown): Promise<void> {}
 	},
 }));
 
 describe("update view after toggle", () => {
 	let view: TodotxtView;
-	let mockLeaf: any;
+	let mockLeaf: { view: null };
 
 	beforeEach(() => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
 	});
 
 	it("トグル操作でView内のデータが更新される", async () => {

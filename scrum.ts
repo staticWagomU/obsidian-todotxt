@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 16, pbi: "PBI-016" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
+  sprint: { number: 17, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -129,7 +129,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "しきい値保持: 元タスクのt:とdue:の間隔を計算し、新タスクの次回due:から同間隔でt:を逆算して設定", verification: "pnpm vitest run -t 'preserveThresholdInterval' src/lib/recurrence.test.ts" },
       { criterion: "繰り返しタスク生成: 完了タスクからrec:に基づき新タスク作成。due:/t:更新、作成日=今日、completed=false、pri:タグ削除", verification: "pnpm vitest run -t 'createRecurringTask' src/lib/recurrence.test.ts" },
       { criterion: "統合: toggleCompletionでrec:タグ検出時、元タスク完了+新タスク生成の両方を実行し、ファイル更新", verification: "pnpm vitest run -t 'toggle.*recurrence' src/lib/todo.test.ts" },
-    ], dependencies: ["PBI-003"], status: "ready",
+    ], dependencies: ["PBI-003"], status: "done",
     complexity: { functions: 6, estimatedTests: 38, externalDependencies: 0, score: "HIGH", subtasks: 6 },
     refactorChecklist: [
       "parseRecurrenceTag: 正規表現パターンの抽出（magic number排除）",
@@ -241,6 +241,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 13, pbi: "PBI-013", story: "t:グレーアウト", verification: "passed", notes: "3サブタスク完了(UI統合除外)、237テスト(+28: getThresholdDate 11 + getThresholdDateStatus 10 + 統合7)、10コミット(RED 2 + GREEN 3 + REFACTOR 5)。DoD全項目合格。AC全3項目達成。Refactor率50%維持(5/10)。Phase 3初Sprint、due.tsより厳密な日付検証実現(2026-02-30自動補正検出)" },
   { sprint: 14, pbi: "PBI-014", story: "[[Note]]内部リンク", verification: "passed", notes: "3サブタスク完了、265テスト(+28: extractInternalLinks全28件)、6コミット(RED 3 + GREEN 3 + REFACTOR 0)。DoD全項目合格。AC全4項目達成。Refactor率0%(シンプルな正規表現実装のためリファクタリング不要)" },
   { sprint: 15, pbi: "PBI-015", story: "[text](url)外部リンク", verification: "passed", notes: "3サブタスク完了、292テスト(+27: extractExternalLinks全27件)、8コミット(RED 3 + GREEN 3 + FIX 1 + CHORE 1)。DoD全項目合格。AC全4項目達成。Refactor率0%(LOW複雑度、シンプルな正規表現実装)" },
+  { sprint: 16, pbi: "PBI-016", story: "rec:繰り返しタスク自動生成", verification: "passed", notes: "6サブタスク完了(初HIGH複雑度Sprint)、331テスト(+39: recurrence.test.ts 31 + todo.test.ts 4 + view統合)、13コミット(RED 6 + GREEN 6 + FIX 1)。DoD全項目合格。AC全5項目達成。Refactor率0%(HIGH複雑度、実装集中型)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

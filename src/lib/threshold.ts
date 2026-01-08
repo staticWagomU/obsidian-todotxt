@@ -49,3 +49,42 @@ export function getThresholdDate(tags: Record<string, string>): Date | null {
 	const date = parseValidDate(thresholdValue);
 	return date ?? null;
 }
+
+/**
+ * しきい値日付状態の型定義
+ */
+export type ThresholdDateStatus = "not_ready" | "ready";
+
+/**
+ * 日付から時刻部分を削除し、日付のみを返す（00:00:00にリセット）
+ * @param date 日付
+ * @returns 時刻がリセットされた日付
+ */
+function toDateOnly(date: Date): Date {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+const MILLISECONDS_IN_DAY = 86400000;
+
+/**
+ * しきい値日付と現在日付を比較し、状態を判定する
+ * @param todo Todoオブジェクト
+ * @param today 現在日付
+ * @returns しきい値状態 (not_ready: 未来/ready: 本日または過去) またはnull
+ */
+export function getThresholdDateStatus(
+	todo: { tags: Record<string, string> },
+	today: Date,
+): ThresholdDateStatus | null {
+	const thresholdDate = getThresholdDate(todo.tags);
+	if (!thresholdDate) return null;
+
+	const thresholdDateOnly = toDateOnly(thresholdDate);
+	const todayOnly = toDateOnly(today);
+
+	const diffDays =
+		(thresholdDateOnly.getTime() - todayOnly.getTime()) / MILLISECONDS_IN_DAY;
+
+	if (diffDays > 0) return "not_ready";
+	return "ready";
+}

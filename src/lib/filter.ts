@@ -40,19 +40,9 @@ export function filterByPriority(todos: Todo[], priority: string | null | undefi
  * @returns New filtered array of todos matching the search keyword
  */
 export function filterBySearch(todos: Todo[], keyword: string): Todo[] {
-	return todos.filter(todo => {
-		// Check description
-		if (todo.description.includes(keyword)) {
-			return true;
-		}
-		// Check projects
-		if (todo.projects.some(project => project.includes(keyword))) {
-			return true;
-		}
-		// Check contexts
-		if (todo.contexts.some(context => context.includes(keyword))) {
-			return true;
-		}
-		return false;
-	});
+	return todos.filter(todo =>
+		todo.description.includes(keyword) ||
+		todo.projects.some(project => project.includes(keyword)) ||
+		todo.contexts.some(context => context.includes(keyword))
+	);
 }

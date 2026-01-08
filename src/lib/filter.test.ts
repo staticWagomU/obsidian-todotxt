@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Todo } from "./todo";
-import { filterByPriority } from "./filter";
+import { filterByPriority, filterBySearch } from "./filter";
 
 describe("filterByPriority", () => {
 	describe("filter by specific priority", () => {
@@ -394,6 +394,97 @@ describe("filterByPriority", () => {
 			expect(result).toHaveLength(2);
 			expect(result[0]?.description).toBe("Third task");
 			expect(result[1]?.description).toBe("First task");
+		});
+	});
+});
+
+describe("filterBySearch", () => {
+	describe("filter by search description", () => {
+		it("should return tasks that contain the search keyword in description", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Buy groceries at the store",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Buy groceries at the store",
+				},
+				{
+					completed: false,
+					description: "Read a book",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Read a book",
+				},
+				{
+					completed: false,
+					description: "Buy new laptop",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Buy new laptop",
+				},
+			];
+
+			const result = filterBySearch(todos, "Buy");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Buy groceries at the store");
+			expect(result[1]?.description).toBe("Buy new laptop");
+		});
+
+		it("should return empty array when no tasks match the search keyword", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Buy groceries",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Buy groceries",
+				},
+				{
+					completed: false,
+					description: "Read a book",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Read a book",
+				},
+			];
+
+			const result = filterBySearch(todos, "laptop");
+
+			expect(result).toEqual([]);
+			expect(result).toHaveLength(0);
+		});
+
+		it("should perform partial match search in description", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Complete the report",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Complete the report",
+				},
+				{
+					completed: false,
+					description: "Report to manager",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Report to manager",
+				},
+			];
+
+			const result = filterBySearch(todos, "repo");
+
+			expect(result).toHaveLength(2);
+			expect(result.every(todo => todo.description.includes("repo"))).toBe(true);
 		});
 	});
 });

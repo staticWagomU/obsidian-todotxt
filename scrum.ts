@@ -247,6 +247,23 @@ export const retrospectives: Retrospective[] = [
     workedWell: ["TDD Red-Green-Refactor", "明確な受け入れ基準", "適切なサブタスク分割", "Obsidianパターン適用"],
     toImprove: ["モック設定の冗長性", "vitest機能活用", "サブタスク粒度基準"],
     actions: ["共通モックヘルパー作成", "vi.mock活用", "1 describe = 1 subtask基準"] },
+  { sprint: 2,
+    workedWell: [
+      "TDD Red-Green-Refactorサイクルの徹底 (12コミット: 6 Red + 6 Green + Refactor)",
+      "1 describe = 1 subtask構造の完璧な適用 (6サブタスク = 6 describe)",
+      "包括的なテストカバレッジ (30テストケースでエッジケース網羅)",
+      "型安全性の向上 (Refactorフェーズで型ガード追加)",
+    ],
+    toImprove: [
+      "describeのネスト構造がない (フラットな構造で大規模時に整理困難)",
+      "テストケース数の偏り (parse completion: 3 vs parse tags: 6)",
+      "統合テストの不足 (個別関数は完璧だがView統合テストなし)",
+    ],
+    actions: [
+      "describe階層化ルール: 複雑な機能は`describe > describe > it`の3層構造を許可",
+      "統合テスト追加: View層でのparser統合テストをサブタスクに含める",
+      "テストケース設計基準: 各describeに最低3ケース、最大7ケース目安",
+    ] },
 ];
 
 // Agents & Events

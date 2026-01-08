@@ -10,9 +10,13 @@ export interface ExternalLink {
  * テキストからMarkdown外部リンク[text](url)を抽出する
  * @param description テキスト文字列
  * @returns 外部リンクの配列
+ * @remarks
+ * 対応URLスキーム: https://, http://, ftp://, file://, mailto: など
+ * [^)]+パターンにより、閉じ括弧以外のすべての文字を許容
  */
 export function extractExternalLinks(description: string): ExternalLink[] {
 	// [text](url)パターンにマッチする正規表現(グローバルマッチ)
+	// URLパターン: [^)]+ は閉じ括弧以外のすべての文字を許容し、各種URLスキームに対応
 	const markdownLinkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
 	const matches = description.matchAll(markdownLinkPattern);
 

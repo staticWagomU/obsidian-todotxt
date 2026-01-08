@@ -20,10 +20,12 @@ export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
 
 	for (const todo of todos) {
 		for (const project of todo.projects) {
-			if (!grouped.has(project)) {
-				grouped.set(project, []);
+			const group = grouped.get(project);
+			if (group === undefined) {
+				grouped.set(project, [todo]);
+			} else {
+				group.push(todo);
 			}
-			grouped.get(project)!.push(todo);
 		}
 	}
 

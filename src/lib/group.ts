@@ -22,6 +22,30 @@ function addToGroup(grouped: Map<string, Todo[]>, key: string, todo: Todo): void
 }
 
 /**
+ * Generic grouping function for todos by tags
+ *
+ * @param todos - Array of todos to group
+ * @param getTagsFromTodo - Function to extract tag array from a todo
+ * @returns Map where keys are tag names and values are arrays of todos containing that tag
+ */
+function groupByTags(todos: Todo[], getTagsFromTodo: (todo: Todo) => string[]): Map<string, Todo[]> {
+	const grouped = new Map<string, Todo[]>();
+
+	for (const todo of todos) {
+		const tags = getTagsFromTodo(todo);
+		if (tags.length === 0) {
+			addToGroup(grouped, "未分類", todo);
+		} else {
+			for (const tag of tags) {
+				addToGroup(grouped, tag, todo);
+			}
+		}
+	}
+
+	return grouped;
+}
+
+/**
  * Group todos by project tags (+project)
  *
  * @param todos - Array of todos to group
@@ -33,20 +57,7 @@ function addToGroup(grouped: Map<string, Todo[]>, key: string, todo: Todo): void
  * - Order within each group is preserved from input array
  */
 export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
-	const grouped = new Map<string, Todo[]>();
-
-	for (const todo of todos) {
-		if (todo.projects.length === 0) {
-			// Todos without projects go to "未分類" group
-			addToGroup(grouped, "未分類", todo);
-		} else {
-			for (const project of todo.projects) {
-				addToGroup(grouped, project, todo);
-			}
-		}
-	}
-
-	return grouped;
+	return groupByTags(todos, (todo) => todo.projects);
 }
 
 /**
@@ -61,18 +72,5 @@ export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
  * - Order within each group is preserved from input array
  */
 export function groupByContext(todos: Todo[]): Map<string, Todo[]> {
-	const grouped = new Map<string, Todo[]>();
-
-	for (const todo of todos) {
-		if (todo.contexts.length === 0) {
-			// Todos without contexts go to "未分類" group
-			addToGroup(grouped, "未分類", todo);
-		} else {
-			for (const context of todo.contexts) {
-				addToGroup(grouped, context, todo);
-			}
-		}
-	}
-
-	return grouped;
+	return groupByTags(todos, (todo) => todo.contexts);
 }

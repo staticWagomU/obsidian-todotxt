@@ -85,8 +85,13 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "検索フィルタ", verification: "pnpm vitest run --grep 'filter by search'" },
     ], dependencies: ["PBI-007"], status: "draft" },
   { id: "PBI-011", story: { role: "Obsidianユーザー", capability: "グループ化", benefit: "関連タスクまとめ" }, acceptanceCriteria: [
-      { criterion: "+project/@contextグループ", verification: "pnpm vitest run --grep 'group by'" },
-    ], dependencies: ["PBI-007"], status: "draft" },
+      { criterion: "+projectでグループ化し、プロジェクトごとにタスクをまとめて表示", verification: "pnpm vitest run --grep 'group by project'" },
+      { criterion: "@contextでグループ化し、コンテキストごとにタスクをまとめて表示", verification: "pnpm vitest run --grep 'group by context'" },
+      { criterion: "グループなし(プロジェクト/コンテキスト未指定)タスクを\"未分類\"グループに配置", verification: "pnpm vitest run --grep 'group ungrouped tasks'" },
+      { criterion: "複数プロジェクト/コンテキストを持つタスクを全該当グループに表示", verification: "pnpm vitest run --grep 'group multiple'" },
+      { criterion: "グループ内でソート順を保持(未完了優先/優先度順/辞書順)", verification: "pnpm vitest run --grep 'group preserves sort'" },
+    ], dependencies: ["PBI-007"], status: "ready",
+    complexity: { functions: 3, estimatedTests: 25, externalDependencies: 0, score: "MEDIUM", subtasks: 6 } },
   { id: "PBI-012", story: { role: "Obsidianユーザー", capability: "due:表示", benefit: "期限確認" }, acceptanceCriteria: [
       { criterion: "期限ハイライト", verification: "pnpm vitest run --grep 'due'" },
     ], dependencies: ["PBI-002"], status: "draft" },

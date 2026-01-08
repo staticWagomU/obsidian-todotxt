@@ -16,5 +16,16 @@ import type { Todo } from "./todo";
  * - Order within each group is preserved from input array
  */
 export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
-	return new Map();
+	const grouped = new Map<string, Todo[]>();
+
+	for (const todo of todos) {
+		for (const project of todo.projects) {
+			if (!grouped.has(project)) {
+				grouped.set(project, []);
+			}
+			grouped.get(project)!.push(todo);
+		}
+	}
+
+	return grouped;
 }

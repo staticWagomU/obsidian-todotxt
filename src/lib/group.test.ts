@@ -20,6 +20,14 @@ function createTodo(description: string, projects: string[] = [], contexts: stri
 	};
 }
 
+/**
+ * Assert that a group exists and contains expected todos
+ */
+function expectGroupToContain(result: Map<string, Todo[]>, groupKey: string, expectedTodos: Todo[]): void {
+	expect(result.has(groupKey)).toBe(true);
+	expect(result.get(groupKey)).toEqual(expectedTodos);
+}
+
 describe("groupByProject", () => {
 	test("should return empty Map when input is empty array", () => {
 		const todos: Todo[] = [];
@@ -33,8 +41,7 @@ describe("groupByProject", () => {
 		const result = groupByProject(todos);
 
 		expect(result.size).toBe(1);
-		expect(result.has("ProjectA")).toBe(true);
-		expect(result.get("ProjectA")).toEqual([todos[0]]);
+		expectGroupToContain(result, "ProjectA", [todos[0]]);
 	});
 
 	test("should group todo with multiple projects to all corresponding groups", () => {
@@ -42,10 +49,8 @@ describe("groupByProject", () => {
 		const result = groupByProject(todos);
 
 		expect(result.size).toBe(2);
-		expect(result.has("ProjectA")).toBe(true);
-		expect(result.has("ProjectB")).toBe(true);
-		expect(result.get("ProjectA")).toEqual([todos[0]]);
-		expect(result.get("ProjectB")).toEqual([todos[0]]);
+		expectGroupToContain(result, "ProjectA", [todos[0]]);
+		expectGroupToContain(result, "ProjectB", [todos[0]]);
 	});
 
 	test("should group todo without project to '未分類' group", () => {
@@ -53,8 +58,7 @@ describe("groupByProject", () => {
 		const result = groupByProject(todos);
 
 		expect(result.size).toBe(1);
-		expect(result.has("未分類")).toBe(true);
-		expect(result.get("未分類")).toEqual([todos[0]]);
+		expectGroupToContain(result, "未分類", [todos[0]]);
 	});
 });
 
@@ -71,8 +75,7 @@ describe("groupByContext", () => {
 		const result = groupByContext(todos);
 
 		expect(result.size).toBe(1);
-		expect(result.has("Home")).toBe(true);
-		expect(result.get("Home")).toEqual([todos[0]]);
+		expectGroupToContain(result, "Home", [todos[0]]);
 	});
 
 	test("should group todo with multiple contexts to all corresponding groups", () => {
@@ -80,10 +83,8 @@ describe("groupByContext", () => {
 		const result = groupByContext(todos);
 
 		expect(result.size).toBe(2);
-		expect(result.has("Home")).toBe(true);
-		expect(result.has("Work")).toBe(true);
-		expect(result.get("Home")).toEqual([todos[0]]);
-		expect(result.get("Work")).toEqual([todos[0]]);
+		expectGroupToContain(result, "Home", [todos[0]]);
+		expectGroupToContain(result, "Work", [todos[0]]);
 	});
 
 	test("should group todo without context to '未分類' group", () => {
@@ -91,7 +92,6 @@ describe("groupByContext", () => {
 		const result = groupByContext(todos);
 
 		expect(result.size).toBe(1);
-		expect(result.has("未分類")).toBe(true);
-		expect(result.get("未分類")).toEqual([todos[0]]);
+		expectGroupToContain(result, "未分類", [todos[0]]);
 	});
 });

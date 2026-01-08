@@ -6,6 +6,20 @@ import { describe, test, expect } from "vitest";
 import { groupByProject } from "./group";
 import type { Todo } from "./todo";
 
+/**
+ * Create minimal Todo for testing
+ */
+function createTodo(description: string, projects: string[] = [], contexts: string[] = []): Todo {
+	return {
+		completed: false,
+		description,
+		projects,
+		contexts,
+		tags: {},
+		raw: description,
+	};
+}
+
 describe("groupByProject", () => {
 	test("should return empty Map when input is empty array", () => {
 		const todos: Todo[] = [];
@@ -15,16 +29,7 @@ describe("groupByProject", () => {
 	});
 
 	test("should group todo with single project", () => {
-		const todos: Todo[] = [
-			{
-				completed: false,
-				description: "Task +ProjectA",
-				projects: ["ProjectA"],
-				contexts: [],
-				tags: {},
-				raw: "Task +ProjectA",
-			},
-		];
+		const todos = [createTodo("Task +ProjectA", ["ProjectA"])];
 		const result = groupByProject(todos);
 
 		expect(result.size).toBe(1);

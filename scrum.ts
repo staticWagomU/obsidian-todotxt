@@ -69,10 +69,12 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-002"], status: "done" },
   { id: "PBI-004", story: { role: "Obsidianユーザー", capability: "新規タスク作成",
       benefit: "簡単に追加" }, acceptanceCriteria: [
-      { criterion: "作成ダイアログ", verification: "pnpm vitest run --grep 'create dialog'" },
-      { criterion: "作成日自動付与", verification: "pnpm vitest run --grep 'create date'" },
-      { criterion: "ファイル追加", verification: "pnpm vitest run --grep 'append'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+      { criterion: "説明文のみで新規タスクを作成できる", verification: "pnpm vitest run -t 'create task with description only'" },
+      { criterion: "作成時に今日の日付(YYYY-MM-DD)を自動付与する", verification: "pnpm vitest run -t 'auto-add creation date'" },
+      { criterion: "優先度・プロジェクト・コンテキストを指定して作成できる", verification: "pnpm vitest run -t 'create task with optional fields'" },
+      { criterion: "作成したタスクをファイル末尾に追加できる", verification: "pnpm vitest run -t 'append task to file'" },
+      { criterion: "View層でタスク追加後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task creation'" },
+    ], dependencies: ["PBI-002"], status: "ready" },
   { id: "PBI-005", story: { role: "Obsidianユーザー", capability: "タスク編集",
       benefit: "内容修正" }, acceptanceCriteria: [
       { criterion: "編集ダイアログ", verification: "pnpm vitest run --grep 'edit dialog'" },

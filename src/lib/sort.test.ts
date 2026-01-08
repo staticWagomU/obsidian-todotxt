@@ -75,8 +75,8 @@ describe("sort incomplete before completed", () => {
 
 		const result = sortTodos(todos);
 
-		expect(result[0].completed).toBe(false);
-		expect(result[1].completed).toBe(true);
+		expect(result[0]!.completed).toBe(false);
+		expect(result[1]!.completed).toBe(true);
 	});
 
 	it("空配列のソートで空配列を返す", () => {
@@ -131,10 +131,10 @@ describe("sort by priority", () => {
 
 		const result = sortTodos(todos);
 
-		expect(result[0].priority).toBe("A");
-		expect(result[1].priority).toBe("B");
-		expect(result[2].priority).toBe("C");
-		expect(result[3].priority).toBe("Z");
+		expect(result[0]!.priority).toBe("A");
+		expect(result[1]!.priority).toBe("B");
+		expect(result[2]!.priority).toBe("C");
+		expect(result[3]!.priority).toBe("Z");
 	});
 
 	it("優先度なしタスクを最後に配置する", () => {
@@ -160,8 +160,8 @@ describe("sort by priority", () => {
 
 		const result = sortTodos(todos);
 
-		expect(result[0].priority).toBe("A");
-		expect(result[1].priority).toBeUndefined();
+		expect(result[0]!.priority).toBe("A");
+		expect(result[1]!.priority).toBeUndefined();
 	});
 
 	it("同優先度内でテキスト辞書順にソートする", () => {
@@ -188,8 +188,8 @@ describe("sort by priority", () => {
 
 		const result = sortTodos(todos);
 
-		expect(result[0].description).toBe("aaa");
-		expect(result[1].description).toBe("bbb");
+		expect(result[0]!.description).toBe("aaa");
+		expect(result[1]!.description).toBe("bbb");
 	});
 
 	it("優先度ありと優先度なしが混在する未完了タスクをソートする", () => {
@@ -232,12 +232,12 @@ describe("sort by priority", () => {
 
 		const result = sortTodos(todos);
 
-		expect(result[0].priority).toBe("A");
-		expect(result[1].priority).toBe("B");
-		expect(result[2].priority).toBeUndefined();
-		expect(result[2].description).toBe("No priority 1");
-		expect(result[3].priority).toBeUndefined();
-		expect(result[3].description).toBe("No priority 2");
+		expect(result[0]!.priority).toBe("A");
+		expect(result[1]!.priority).toBe("B");
+		expect(result[2]!.priority).toBeUndefined();
+		expect(result[2]!.description).toBe("No priority 1");
+		expect(result[3]!.priority).toBeUndefined();
+		expect(result[3]!.description).toBe("No priority 2");
 	});
 
 	it("完了タスクも優先度とテキストでソートする", () => {
@@ -264,8 +264,8 @@ describe("sort by priority", () => {
 
 		const result = sortTodos(todos);
 
-		expect(result[0].priority).toBe("A");
-		expect(result[1].priority).toBe("B");
+		expect(result[0]!.priority).toBe("A");
+		expect(result[1]!.priority).toBe("B");
 	});
 });
 
@@ -296,13 +296,13 @@ describe("immutability and integration", () => {
 		const result = sortTodos(todos);
 
 		// Original array should not be modified
-		expect(todos[0].completed).toBe(true);
-		expect(todos[1].completed).toBe(false);
+		expect(todos[0]!.completed).toBe(true);
+		expect(todos[1]!.completed).toBe(false);
 		expect(todos).toEqual(originalOrder);
 
 		// Result should be sorted
-		expect(result[0].completed).toBe(false);
-		expect(result[1].completed).toBe(true);
+		expect(result[0]!.completed).toBe(false);
+		expect(result[1]!.completed).toBe(true);
 	});
 
 	it("複雑な混在リスト(未完了A/B/なし + 完了A/なし)を正しくソートする", () => {
@@ -355,16 +355,16 @@ describe("immutability and integration", () => {
 		const result = sortTodos(todos);
 
 		// Check order: incomplete with priority, incomplete without priority, completed with priority, completed without priority
-		expect(result[0].completed).toBe(false);
-		expect(result[0].priority).toBe("A");
-		expect(result[1].completed).toBe(false);
-		expect(result[1].priority).toBe("B");
-		expect(result[2].completed).toBe(false);
-		expect(result[2].priority).toBeUndefined();
-		expect(result[3].completed).toBe(true);
-		expect(result[3].priority).toBe("A");
-		expect(result[4].completed).toBe(true);
-		expect(result[4].priority).toBeUndefined();
+		expect(result[0]!.completed).toBe(false);
+		expect(result[0]!.priority).toBe("A");
+		expect(result[1]!.completed).toBe(false);
+		expect(result[1]!.priority).toBe("B");
+		expect(result[2]!.completed).toBe(false);
+		expect(result[2]!.priority).toBeUndefined();
+		expect(result[3]!.completed).toBe(true);
+		expect(result[3]!.priority).toBe("A");
+		expect(result[4]!.completed).toBe(true);
+		expect(result[4]!.priority).toBeUndefined();
 	});
 
 	it("View層でソート関数を呼び出して表示を更新できる", () => {
@@ -392,7 +392,7 @@ describe("immutability and integration", () => {
 		const result = sortTodos(todos);
 
 		// Verify that sortTodos can be called and returns correct order
-		expect(result[0].completed).toBe(false);
-		expect(result[1].completed).toBe(true);
+		expect(result[0]!.completed).toBe(false);
+		expect(result[1]!.completed).toBe(true);
 	});
 });

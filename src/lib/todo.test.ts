@@ -665,3 +665,93 @@ describe("delete and remove task integration", () => {
 		expect(result).toBe("");
 	});
 });
+
+describe("toggle task completion with recurrence", () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-09"));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it("rec:1d - 完了時に次回タスク生成(non-strict)", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Daily task",
+			projects: [],
+			contexts: [],
+			tags: { rec: "rec:1d" },
+			raw: "2026-01-01 Daily task rec:1d",
+		};
+
+		const result = toggleCompletion(todo);
+
+		// 元タスクは完了
+		expect(result.originalTask.completed).toBe(true);
+		expect(result.originalTask.completionDate).toBe("2026-01-09");
+
+		// 新タスクが生成される
+		expect(result.recurringTask).toBeDefined();
+		expect(result.recurringTask?.completed).toBe(false);
+		expect(result.recurringTask?.creationDate).toBe("2026-01-09");
+		expect(result.recurringTask?.tags.due).toBe("due:2026-01-10");
+		expect(result.recurringTask?.tags.rec).toBe("rec:1d");
+	});
+
+	it("rec:+1w, due:1/5 - 完了時に次回タスク生成(strict)", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Weekly task",
+			projects: [],
+			contexts: [],
+			tags: { rec: "rec:+1w", due: "due:2026-01-05" },
+			raw: "2026-01-01 Weekly task due:2026-01-05 rec:+1w",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.completed).toBe(true);
+		expect(result.recurringTask).toBeDefined();
+		expect(result.recurringTask?.tags.due).toBe("due:2026-01-12"); // 元due: + 1週間
+		expect(result.recurringTask?.tags.rec).toBe("rec:+1w");
+	});
+
+	it("rec:なし - 通常の完了処理(新タスク生成なし)", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Normal task",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "2026-01-01 Normal task",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.completed).toBe(true);
+		expect(result.recurringTask).toBeUndefined();
+	});
+
+	it("完了→未完了への切り替え時は新タスク生成しない", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			creationDate: "2026-01-01",
+			description: "Completed recurring task",
+			projects: [],
+			contexts: [],
+			tags: { rec: "rec:1d" },
+			raw: "x 2026-01-08 2026-01-01 Completed recurring task rec:1d",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.completed).toBe(false);
+		expect(result.recurringTask).toBeUndefined();
+	});
+});

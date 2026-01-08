@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { toggleCompletion, createTask, createAndAppendTask, editTask, editAndUpdateTask, removeTaskFromList } from "./todo";
+import { toggleCompletion, createTask, createAndAppendTask, editTask, editAndUpdateTask, removeTaskFromList, deleteAndRemoveTask } from "./todo";
 import type { Todo } from "./todo";
 
 describe("toggle task completion status", () => {
@@ -619,5 +619,49 @@ describe("remove task from list", () => {
 		expect(resultLast).toHaveLength(2);
 		expect(resultLast[0]?.description).toBe("Task 1");
 		expect(resultLast[1]?.description).toBe("Task 2");
+	});
+});
+
+describe("delete and remove task integration", () => {
+	it("統合削除処理（ファイル内容から指定タスクを削除）", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+
+		const result = deleteAndRemoveTask(content, 1);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(C) 2026-01-03 Write report");
+	});
+
+	it("削除後のファイル更新（パース→削除→シリアライズ）", () => {
+		const content = "x (A) 2026-01-08 2026-01-01 Task 1 +Project @context\n(B) 2026-01-02 Task 2\n(C) 2026-01-03 Task 3";
+
+		const result = deleteAndRemoveTask(content, 0);
+
+		// 完了状態・優先度・日付・プロジェクト・コンテキストを含むタスクを削除できる
+		expect(result).toBe("(B) 2026-01-02 Task 2\n(C) 2026-01-03 Task 3");
+	});
+
+	it("エッジケース組み合わせ（単一行削除で空文字列）", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+
+		const result = deleteAndRemoveTask(content, 0);
+
+		expect(result).toBe("");
+	});
+
+	it("削除後のパース結果確認（タスク数減少）", () => {
+		const content = "(A) Task 1\n(B) Task 2\n(C) Task 3";
+
+		const result = deleteAndRemoveTask(content, 1);
+
+		// 削除後も正しくパースできることを確認
+		expect(result).toBe("(A) Task 1\n(C) Task 3");
+	});
+
+	it("空ファイル変換（最後のタスク削除）", () => {
+		const content = "(A) 2026-01-01 Only task";
+
+		const result = deleteAndRemoveTask(content, 0);
+
+		expect(result).toBe("");
 	});
 });

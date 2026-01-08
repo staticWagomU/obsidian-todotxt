@@ -232,8 +232,8 @@ export const completedSprints: CompletedSprint[] = [
     verification: "passed", notes: "TDDで6サブタスク完了(12コミット)、全DoD満たす" },
   { sprint: 3, pbi: "PBI-003", story: "チェックボックスで完了切替",
     verification: "passed", notes: "TDDで5サブタスク完了(9コミット: 5 Red + 5 Green + 1 Refactor)、全DoD満たす。受け入れ基準5項目すべて検証済: toggleCompletion(6テスト), serializeTodo(統合), updateTodoInList(4テスト), View統合(4テスト)。Tests: 57 passed, Lint: 0 errors, Types: passed, Build: success" },
-  { sprint: 4, pbi: "PBI-004", story: "新規タスク作成機能の実装",
-    verification: "passed", notes: "TDDで4サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: createTask(6テスト), appendTaskToFile(4テスト), createAndAppendTask(6テスト), View統合(4テスト)。Tests: 77 passed, Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
+  { sprint: 4, pbi: "PBI-004", story: "新規タスク作成",
+    verification: "passed", notes: "TDDで5サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: createTask(2テスト), createTask作成日付自動付与(含), createTask複合指定(4テスト), appendTaskToFile(4テスト), createAndAppendTask(6テスト), View統合(4テスト)。Tests: 77 passed, Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
 ];
 
 // Retrospectives

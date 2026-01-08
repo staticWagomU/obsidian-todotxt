@@ -113,4 +113,86 @@ describe("extractExternalLinks", () => {
 			]);
 		});
 	});
+
+	describe("異常系: 不正な形式のリンクを除外", () => {
+		it("開きブラケットのみ[textの場合、空配列を返す", () => {
+			const description = "Incomplete [text without closing";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([]);
+		});
+
+		it("開き括弧なし[text]urlの場合、空配列を返す", () => {
+			const description = "Incomplete [text]url";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([]);
+		});
+
+		it("閉じ括弧なし[text](urlの場合、空配列を返す", () => {
+			const description = "Incomplete [text](url without closing";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([]);
+		});
+
+		it("空のテキスト[](url)の場合、空配列を返す", () => {
+			const description = "Empty text [](https://example.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([]);
+		});
+
+		it("空のURL[text]()の場合、空配列を返す", () => {
+			const description = "Empty URL [text]()";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([]);
+		});
+
+		it("両方空[]()の場合、空配列を返す", () => {
+			const description = "Both empty []()";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([]);
+		});
+	});
+
+	describe("境界値: エッジケース処理", () => {
+		it("テキストにスペースが含まれる[some text](url)を抽出", () => {
+			const description = "Link [some text](https://example.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "some text", url: "https://example.com" }]);
+		});
+
+		it("URLにスペースが含まれる場合も抽出(技術的には許容)", () => {
+			const description = "Link [text](https://example.com/path with space)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "text", url: "https://example.com/path with space" }]);
+		});
+
+		it("連続したリンク[Link1](url1)[Link2](url2)を抽出", () => {
+			const description = "[Link1](https://a.com)[Link2](https://b.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([
+				{ text: "Link1", url: "https://a.com" },
+				{ text: "Link2", url: "https://b.com" },
+			]);
+		});
+
+		it("改行を含むテキスト内の複数リンク", () => {
+			const description = "Line1 [Link1](https://a.com)\nLine2 [Link2](https://b.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([
+				{ text: "Link1", url: "https://a.com" },
+				{ text: "Link2", url: "https://b.com" },
+			]);
+		});
+
+		it("正常なリンク[Link](url)と不正形式[textの混在", () => {
+			const description = "Valid [Link](https://example.com) and invalid [text";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "Link", url: "https://example.com" }]);
+		});
+
+		it("正常なリンク[Link](url)と空リンク[]()の混在", () => {
+			const description = "[Link](https://example.com) and []()";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "Link", url: "https://example.com" }]);
+		});
+	});
 });

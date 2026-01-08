@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 10, pbi: "PBI-010" as string | null, status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -82,11 +82,11 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-007"], status: "done",
     complexity: { functions: 1, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-010", story: { role: "Obsidianユーザー", capability: "テキスト検索", benefit: "キーワード絞込" }, acceptanceCriteria: [
-      { criterion: "description検索: 説明文に検索キーワードが含まれるタスクを抽出", verification: "pnpm vitest run --grep 'filter by search description'" },
-      { criterion: "projects/contexts検索: +project/@contextタグで検索可能", verification: "pnpm vitest run --grep 'filter by search projects contexts'" },
-      { criterion: "大文字小文字区別なし検索: 検索時に大文字小文字を区別しない", verification: "pnpm vitest run --grep 'filter by search case insensitive'" },
-      { criterion: "空文字列検索: 空文字列で全タスク表示(フィルタなし)", verification: "pnpm vitest run --grep 'filter by search empty'" },
-    ], dependencies: ["PBI-007"], status: "ready",
+      { criterion: "description検索: 説明文に検索キーワードが含まれるタスクを抽出", verification: "pnpm vitest run -t 'filter by search description'" },
+      { criterion: "projects/contexts検索: +project/@contextタグで検索可能", verification: "pnpm vitest run -t 'filter by search projects contexts'" },
+      { criterion: "大文字小文字区別なし検索: 検索時に大文字小文字を区別しない", verification: "pnpm vitest run -t 'filter by search case insensitive'" },
+      { criterion: "空文字列検索: 空文字列で全タスク表示(フィルタなし)", verification: "pnpm vitest run -t 'filter by search empty'" },
+    ], dependencies: ["PBI-007"], status: "done",
     complexity: { functions: 1, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-011", story: { role: "Obsidianユーザー", capability: "グループ化", benefit: "関連タスクまとめ" }, acceptanceCriteria: [
       { criterion: "+projectでグループ化し、プロジェクトごとにタスクをまとめて表示", verification: "pnpm vitest run --grep 'group by project'" },
@@ -138,8 +138,57 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 10,
+  pbiId: "PBI-010" as string | null,
+  story: "テキスト検索によるキーワード絞込",
+  status: "done" as SprintStatus,
+  subtasks: [
+    {
+      test: "説明文にキーワードが含まれるタスクを抽出するテスト (AC1: description検索)",
+      implementation: "filterBySearch関数の基本実装 - description部分一致検索",
+      type: "behavioral" as SubtaskType,
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 1 - description検索 (RED)" },
+        { phase: "green", message: "feat: Subtask 1 - description検索 (GREEN)" },
+        { phase: "refactor", message: "refactor: Subtask 1 - Refactor evaluation (REFACTOR)" },
+      ],
+    },
+    {
+      test: "+project/@contextタグで検索するテスト (AC2: projects/contexts検索)",
+      implementation: "filterBySearch関数拡張 - projects/contextsリスト検索",
+      type: "behavioral" as SubtaskType,
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 2 - projects/contexts検索 (RED)" },
+        { phase: "green", message: "feat: Subtask 2 - projects/contexts検索 (GREEN)" },
+        { phase: "refactor", message: "refactor: Subtask 2 - simplify filterBySearch logic (REFACTOR)" },
+      ],
+    },
+    {
+      test: "大文字小文字を区別せず検索するテスト (AC3: 大文字小文字区別なし)",
+      implementation: "filterBySearch関数改善 - toLowerCase()で正規化",
+      type: "behavioral" as SubtaskType,
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 3 - 大文字小文字区別なし検索 (RED)" },
+        { phase: "green", message: "feat: Subtask 3 - 大文字小文字区別なし検索 (GREEN)" },
+        { phase: "refactor", message: "refactor: Subtask 3 - Refactor evaluation (REFACTOR)" },
+      ],
+    },
+    {
+      test: "空文字列で全タスク表示するテスト (AC4: 空文字列検索)",
+      implementation: "filterBySearch関数エッジケース対応 - 空文字列ガード処理",
+      type: "structural" as SubtaskType,
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 4 - 空文字列検索 (RED)" },
+        { phase: "green", message: "feat: Subtask 4 - 空文字列検索 (GREEN)" },
+        { phase: "refactor", message: "refactor: Subtask 4 - Final refactor evaluation (REFACTOR)" },
+      ],
+    },
+  ] as Subtask[],
+  notes: "Sprint Goal: テキスト検索機能により、説明文・プロジェクト・コンテキストでタスク絞込を実現する. Refactorチェックリスト結果をコミットメッセージに記録. Target: 50% refactor commit rate. ACHIEVED: 4/4 subtasks complete, 12 commits (4 refactor = 33%), all DoD items pass.",
 };
 
 // Impediments
@@ -166,6 +215,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 7, pbi: "PBI-007", story: "ソート表示", verification: "passed", notes: "3サブタスク完了、132テスト。Phase 1 MVP完成" },
   { sprint: 8, pbi: "PBI-008", story: "優先度色分けバッジ", verification: "passed", notes: "4サブタスク完了、153テスト(+21)。DoD全項目合格。AC全3項目達成" },
   { sprint: 9, pbi: "PBI-009", story: "優先度フィルタ", verification: "passed", notes: "4サブタスク完了、164テスト(+11)。DoD全項目合格。AC全3項目達成。Refactor率27%(3/11コミット)" },
+  { sprint: 10, pbi: "PBI-010", story: "テキスト検索", verification: "passed", notes: "4サブタスク完了、175テスト(+11)。DoD全項目合格。AC全4項目達成。Refactor率33%(4/12コミット)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

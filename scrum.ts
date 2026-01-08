@@ -138,9 +138,13 @@ export const productBacklog: ProductBacklogItem[] = [
       "月/年の日数計算: Date APIの月末自動補正を利用した堅牢な実装（2月/閏年対応）",
       "期間計算の型安全性: Duration型の導入検討（days/weeks/months/yearsの型区別）",
     ] },
-  { id: "PBI-017", story: { role: "Obsidianユーザー", capability: "pri:タグ保存", benefit: "優先度復元" }, acceptanceCriteria: [
-      { criterion: "pri:変換", verification: "pnpm vitest run --grep 'pri tag'" },
-    ], dependencies: ["PBI-003"], status: "draft" },
+  { id: "PBI-017", story: { role: "Obsidianユーザー", capability: "完了時にpri:タグとして優先度を保存し、未完了時に復元する", benefit: "タスクの完了/未完了トグル時に優先度を失わず、元の優先度を維持できる" }, acceptanceCriteria: [
+      { criterion: "完了時に優先度→pri:タグ変換: (A)のタスクを完了すると、(A)が削除されpri:Aタグが追加される", verification: "pnpm vitest run -t 'toggleCompletion.*priority to pri tag'" },
+      { criterion: "未完了時にpri:タグ→優先度復元: pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される", verification: "pnpm vitest run -t 'toggleCompletion.*pri tag to priority'" },
+      { criterion: "優先度なしタスクはpri:タグ追加しない: 優先度なしタスクを完了してもpri:タグは追加されない", verification: "pnpm vitest run -t 'toggleCompletion.*no priority no pri tag'" },
+      { criterion: "description内のpri:タグ保持: 説明文に含まれるpri:Aなどの文字列を誤検出せず、tagsオブジェクトのpri:のみ処理", verification: "pnpm vitest run -t 'toggleCompletion.*preserve description pri'" },
+    ], dependencies: ["PBI-003"], status: "ready",
+    complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 3 } },
   { id: "PBI-018", story: { role: "Obsidianユーザー", capability: "設定画面", benefit: "カスタマイズ" }, acceptanceCriteria: [
       { criterion: "設定タブ", verification: "pnpm vitest run --grep 'settings'" },
     ], dependencies: [], status: "draft" },

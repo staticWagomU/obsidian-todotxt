@@ -168,7 +168,7 @@ export const currentSprint = {
   subtasks: [
     {
       test: "parseRecurrenceTag: rec:1d, rec:+1w, rec:3m, rec:1y形式をパースし、数値・期間(d/w/m/y)・strict/non-strict(+)を抽出する",
-      implementation: "src/lib/recurrence.ts: parseRecurrenceTag関数を実装。正規表現で(+)?(\d+)([dwmy])をマッチし、{value: number, unit: 'd'|'w'|'m'|'y', strict: boolean}型を返す。不正形式はnullを返す。",
+      implementation: "src/lib/recurrence.ts: parseRecurrenceTag関数を実装。正規表現で(+)?(d+)([dwmy])をマッチし、{value: number, unit: 'd'|'w'|'m'|'y', strict: boolean}型を返す。不正形式はnullを返す。",
       type: "behavioral" as SubtaskType,
       status: "pending" as SubtaskStatus,
       commits: []

@@ -31,7 +31,7 @@ export function parseRecurrenceTag(recTag: string): RecurrencePattern | null {
   const [, strictPrefix, num, unit] = match;
 
   return {
-    value: Number.parseInt(num, 10),
+    value: Number.parseInt(num!, 10),
     unit: unit as 'd' | 'w' | 'm' | 'y',
     strict: strictPrefix === '+',
   };
@@ -84,7 +84,7 @@ export function calculateNextDueDate(
       nextDate = base;
   }
 
-  return nextDate.toISOString().split('T')[0];
+  return nextDate.toISOString().split('T')[0]!;
 }
 
 /**
@@ -107,7 +107,7 @@ export function preserveThresholdInterval(
   // Calculate new threshold
   const newThreshold = new Date(newDue.getTime() - intervalMs);
 
-  return newThreshold.toISOString().split('T')[0];
+  return newThreshold.toISOString().split('T')[0]!;
 }
 
 /**

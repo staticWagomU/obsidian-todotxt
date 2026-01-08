@@ -57,8 +57,15 @@ export class TodotxtView extends TextFileView {
 				return;
 			}
 
-			const toggledTodo = toggleCompletion(todo);
-			const updatedData = updateTodoInList(todos, index, toggledTodo);
+			const result = toggleCompletion(todo);
+			let updatedData = updateTodoInList(todos, index, result.originalTask);
+
+			// If recurring task was created, append it
+			if (result.recurringTask) {
+				const updatedTodos = parseTodoTxt(updatedData);
+				updatedTodos.push(result.recurringTask);
+				updatedData = updatedTodos.map(t => t.raw).join('\n');
+			}
 
 			this.setViewData(updatedData, false);
 		};

@@ -204,12 +204,13 @@ describe('createRecurringTask', () => {
 
     const result = createRecurringTask(completedTodo, '2026-01-09');
 
-    expect(result.completed).toBe(false);
-    expect(result.completionDate).toBeUndefined();
-    expect(result.creationDate).toBe('2026-01-09');
-    expect(result.tags.due).toBe('due:2026-01-10'); // 完了日 + 1日
-    expect(result.description).toBe('Daily task');
-    expect(result.tags.rec).toBe('rec:1d'); // rec:は保持
+    expect(result).not.toBeNull();
+    expect(result!.completed).toBe(false);
+    expect(result!.completionDate).toBeUndefined();
+    expect(result!.creationDate).toBe('2026-01-09');
+    expect(result!.tags.due).toBe('due:2026-01-10'); // 完了日 + 1日
+    expect(result!.description).toBe('Daily task');
+    expect(result!.tags.rec).toBe('rec:1d'); // rec:は保持
   });
 
   it('rec:+1w, due:1/5 → strictモードでdue:1/12、completed=false', () => {
@@ -226,9 +227,10 @@ describe('createRecurringTask', () => {
 
     const result = createRecurringTask(completedTodo, '2026-01-10');
 
-    expect(result.completed).toBe(false);
-    expect(result.tags.due).toBe('due:2026-01-12'); // due: + 1週間
-    expect(result.tags.rec).toBe('rec:+1w');
+    expect(result).not.toBeNull();
+    expect(result!.completed).toBe(false);
+    expect(result!.tags.due).toBe('due:2026-01-12'); // due: + 1週間
+    expect(result!.tags.rec).toBe('rec:+1w');
   });
 
   it('rec:1m, due:1/31, t:1/24 → due:3/5, t:2/26(7日間隔保持) - non-strictは完了日基準', () => {
@@ -245,9 +247,10 @@ describe('createRecurringTask', () => {
 
     const result = createRecurringTask(completedTodo, '2026-02-05');
 
-    expect(result.completed).toBe(false);
-    expect(result.tags.due).toBe('due:2026-03-05'); // 完了日 + 1ヶ月(non-strict)
-    expect(result.tags.t).toBe('t:2026-02-26'); // 7日間隔保持
+    expect(result).not.toBeNull();
+    expect(result!.completed).toBe(false);
+    expect(result!.tags.due).toBe('due:2026-03-05'); // 完了日 + 1ヶ月(non-strict)
+    expect(result!.tags.t).toBe('t:2026-02-26'); // 7日間隔保持
   });
 
   it('pri:タグは削除される(新タスクは優先度なし)', () => {
@@ -265,8 +268,9 @@ describe('createRecurringTask', () => {
 
     const result = createRecurringTask(completedTodo, '2026-01-09');
 
-    expect(result.priority).toBeUndefined();
-    expect(result.tags.pri).toBeUndefined();
+    expect(result).not.toBeNull();
+    expect(result!.priority).toBeUndefined();
+    expect(result!.tags.pri).toBeUndefined();
   });
 
   it('rec:なし → nullを返す', () => {

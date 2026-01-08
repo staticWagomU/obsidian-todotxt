@@ -24,7 +24,7 @@ export interface Todo {
  * If rec: tag exists on completion, creates a recurring task
  */
 export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTask?: Todo } {
-	const today = new Date().toISOString().split("T")[0];
+	const today = new Date().toISOString().split("T")[0]!;
 
 	if (todo.completed) {
 		// 完了→未完了
@@ -48,7 +48,7 @@ export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTas
 
 		return {
 			originalTask: completedTask,
-			recurringTask: recurringTask || undefined,
+			recurringTask: recurringTask ?? undefined,
 		};
 	}
 }

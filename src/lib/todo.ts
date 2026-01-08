@@ -38,3 +38,41 @@ export function toggleCompletion(todo: Todo): Todo {
 		};
 	}
 }
+
+/**
+ * Create a new task with description and optional priority
+ * Automatically sets creationDate to today
+ * Extracts projects and contexts from the description
+ */
+export function createTask(description: string, priority?: string): Todo {
+	const today = new Date().toISOString().split("T")[0];
+
+	// Extract projects (+project)
+	const projects: string[] = [];
+	const projectMatches = description.matchAll(/\+(\S+)/g);
+	for (const match of projectMatches) {
+		if (match[1]) {
+			projects.push(match[1]);
+		}
+	}
+
+	// Extract contexts (@context)
+	const contexts: string[] = [];
+	const contextMatches = description.matchAll(/@(\S+)/g);
+	for (const match of contextMatches) {
+		if (match[1]) {
+			contexts.push(match[1]);
+		}
+	}
+
+	return {
+		completed: false,
+		priority,
+		creationDate: today,
+		description,
+		projects,
+		contexts,
+		tags: {},
+		raw: "",
+	};
+}

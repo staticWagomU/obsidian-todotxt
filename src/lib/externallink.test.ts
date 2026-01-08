@@ -71,4 +71,46 @@ describe("extractExternalLinks", () => {
 			expect(result).toEqual([]);
 		});
 	});
+
+	describe("正常系: 様々なURLスキーム対応", () => {
+		it("http://スキームのURLを検出", () => {
+			const description = "Visit [HTTP Site](http://example.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "HTTP Site", url: "http://example.com" }]);
+		});
+
+		it("https://スキームのURLを検出", () => {
+			const description = "Visit [HTTPS Site](https://example.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "HTTPS Site", url: "https://example.com" }]);
+		});
+
+		it("ftp://スキームのURLを検出", () => {
+			const description = "Download from [FTP](ftp://ftp.example.com/file.txt)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "FTP", url: "ftp://ftp.example.com/file.txt" }]);
+		});
+
+		it("file://スキームのURLを検出", () => {
+			const description = "Open [Local File](file:///Users/name/document.txt)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "Local File", url: "file:///Users/name/document.txt" }]);
+		});
+
+		it("mailto:スキームのURLを検出", () => {
+			const description = "Contact [Email](mailto:test@example.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([{ text: "Email", url: "mailto:test@example.com" }]);
+		});
+
+		it("複数の異なるスキームが混在する場合", () => {
+			const description = "[Web](https://example.com) and [Mail](mailto:test@example.com) and [FTP](ftp://ftp.example.com)";
+			const result = extractExternalLinks(description);
+			expect(result).toEqual([
+				{ text: "Web", url: "https://example.com" },
+				{ text: "Mail", url: "mailto:test@example.com" },
+				{ text: "FTP", url: "ftp://ftp.example.com" },
+			]);
+		});
+	});
 });

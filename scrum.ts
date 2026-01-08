@@ -184,26 +184,26 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 14,
+  { sprint: 15,
     workedWell: [
-      "シンプルな正規表現実装の成功(複雑度LOW実証): extractInternalLinks単一関数+parseWikilinkContentヘルパー、matchAll()によるグローバルマッチ、パイプ分割でエイリアス抽出、リファクタリング不要な明快な設計",
-      "Refactor率0%の戦略的正当化(複雑度ベース判断): LOW複雑度Sprint初のRefactor 0%(6コミット全てRED/GREEN)、「シンプルな実装はリファクタリング不要」原則実証、無理なRefactorコミット作成を回避、品質維持とプロセス健全性の両立",
-      "28テスト高密度カバレッジ達成(Sprint 13と同水準): 基本形式(4) + 異常系(5) + 境界値(3) + エイリアス(4+3) + 複数リンク(4+3) + ネスト(2) = 28件、空リンク/不正形式/連続リンク/改行含むテキスト等エッジケース網羅",
-      "Obsidian wikilink仕様の完全準拠: [[NoteName]]基本形式、[[NoteName|Alias]]エイリアス形式、日本語対応([[計画|タスク]])、複数パイプ処理(最初で分割)、Obsidian互換性100%",
-      "パターン多様性の実証(日付処理との差異): Sprint 12/13の日付検証パターンと異なる正規表現マッチング実装、parseValidDate不要(形式検証のみ)、Phase 3多様な実装手法の共存可能性示唆",
+      "Link抽出モジュールファミリーの完成(内部+外部): PBI-014(内部リンク) → PBI-015(外部リンク)の連続実装、extractInternalLinks/extractExternalLinksのAPIデザイン一貫性、統一されたリンク抽出パターン確立(正規表現+matchAll+ループ)",
+      "PBI-014パターン再利用の成功(実装継承): 正規表現マッチング共通パターン継承、シンプルな実装維持、28テスト(Sprint 14) → 27テスト(Sprint 15)の高密度カバレッジ水準維持、学習曲線の短縮",
+      "2連続Refactor率0%の複雑度ベース正当化(Sprint 14-15): LOW複雑度Sprint連続でRefactor率0%達成、「シンプルな実装はリファクタリング不要」原則の再実証、Sprint 14で確立した複雑度別基準(LOW 0-20%)の実践",
+      "多様なURLスキーム対応(汎用性実現): https/http/ftp/file/mailto等6スキーム対応テスト、単一正規表現[^)]+パターンで汎用性実現、Markdown標準準拠、スキーム特定ロジック不要のシンプル設計",
+      "FIX+CHOREフェーズの明示的記録(リアルフロー): 8コミット構成(RED 3 + GREEN 3 + FIX 1 + CHORE 1)、従来のRED/GREEN/REFACTORに加えFIX/CHORE導入、テスト修正/整理作業の可視化、リアルな開発フローの正直な記録",
     ],
     toImprove: [
-      "Phase 1テクニカルレビューの7 Sprint未実施(BLOCKER化): Sprint 13「Sprint 14開始前完了必須」Action未達成、Sprint 8開始から7 Sprint経過(約2ヶ月相当)、リスクレベルCRITICAL→**BLOCKER**、Phase 3進行の正当性喪失、即座の対処なしに次Sprint開始不可",
-      "UI実装ロードマップの2 Sprint連続未策定: Sprint 13 Action 2未達成、PBI-012/013/014で3連続UI延期、アドホック延期判断が常態化、UI統合複雑性の累積増大(3 PBI分の一括統合リスク)",
-      "Retrospective Action実行率の継続低下: Sprint 13 Actions 5項目→Sprint 14実施0項目(0%)、Action追跡プロセスの機能不全、Planning時のAction確認ステップ欠如、Retrospective形骸化リスク",
-      "Refactor率指標の妥当性再考: Sprint 14の0%は正当だが、「50%目標」との矛盾、複雑度別の目標設定必要性(LOW=0-20%, MEDIUM=40-60%, HIGH=60%+?)、画一的50%目標の限界露呈",
+      "Phase 1テクニカルレビューの8 Sprint未実施(BLOCKER継続): Sprint 14「Sprint 15 BLOCKER指定」Action未達成、Sprint 8開始から8 Sprint経過(約2.5ヶ月相当)、技術的負債の危機的累積、プロセス信頼性の崩壊リスク、即座の解消なしにプロジェクト継続不可",
+      "Retrospective Action実行率0%の3 Sprint継続(完全形骸化): Sprint 13→14→15で3連続Action実行率0%、5項目全てが3 Sprint放置状態、Retrospective完全形骸化、改善サイクルの機能停止、プロセス意義の喪失",
+      "UI実装延期の5 PBI累積(Phase 2+Phase 3): PBI-012(due), PBI-013(threshold), PBI-014(内部リンク), PBI-015(外部リンク) + PBI-008(優先度バッジ)でUI延期、Phase 2完全未統合のままPhase 3進行、統合複雑性の危険水準到達(5 PBI一括統合リスク)",
+      "Link系機能のUI統合戦略不在(設計負債): 内部リンク+外部リンクの統合ビジョン不明、Obsidian APIコール戦略未定(app.workspace.openLinkText等)、TodoItem.tsx拡張の複雑度予測不可、Phase 3完遂の見通し不良",
     ],
     actions: [
-      "Phase 1テクニカルレビューの即時実施(Sprint 15 BLOCKER指定): Sprint 15 Planning開始不可条件として設定、7 Sprint延期の技術的負債解消最優先、対象: Sprint 1-7全実装(todo.ts/parser.ts/sort.ts/filter.ts/group.ts)、4観点チェック(品質/カバレッジ/型安全性/アーキテクチャ)、成果物: docs/technical-review-phase1.md、改善PBIリスト、Product Owner承認必須、期限: Sprint 15 Planning前48時間",
-      "UI実装ロードマップの緊急策定(3 PBI累積対応): 対象PBI: PBI-012(due表示), PBI-013(threshold表示), PBI-014(内部リンク)、統合パターン選択: A)個別統合 vs B)UI専用Sprint vs C)段階的統合、React component分析(TodoItem.tsx拡張箇所特定)、UI統合テスト戦略、成果物: docs/ui-implementation-roadmap.md、期限: Phase 1レビュー完了後、Sprint 15 Planning前",
-      "Retrospective Action追跡プロセスの導入(形骸化防止): Sprint Planning時の前Sprint Actions完了確認ステップ追加、未完了Actionの持ち越しor削除判断、Actionステータス管理(pending/in_progress/done/dropped)、scrum.ts actions配列にstatus追加検討、Sprint 15 Planningから適用",
-      "Refactor率目標の複雑度別基準化(画一的50%脱却): 複雑度別目標: LOW 0-20%(シンプル実装優先), MEDIUM 40-60%(適度なリファクタリング), HIGH 60%+(積極的分割)、Sprint Reviewでの複雑度-Refactor率相関報告、無理なRefactorコミット作成の明示的禁止、Sprint 15から適用",
-      "Phase 3パターンライブラリの体系化検討: 日付処理パターン(due.ts/threshold.ts): parseValidDate/toDateOnly/calculateDaysDifference、テキスト処理パターン(internallink.ts): 正規表現マッチング/ヘルパー関数分離、将来的な共通ユーティリティ化検討(src/lib/utils/)、Phase 1レビュー時に設計方針決定",
+      "Phase 1テクニカルレビューのSprint 16完全BLOCKER化(開始禁止): Sprint 16 Planning一切不可条件設定、8 Sprint延期の即座解消最優先、対象: Sprint 1-7全実装コードレビュー(todo.ts/parser.ts/sort.ts/filter.ts/group.ts)、期限: Sprint 16 Planning前完了必須(非交渉)、未完了時はプロジェクト一時停止検討",
+      "UI統合Sprintの緊急挿入(Phase 2+3統合): Sprint 17をUI統合専用Sprintとして確定、5 PBI統合対象(PBI-008/012/013/014/015)、TodoItem.tsx大規模リファクタリング実施、Obsidian APIコール実装(openLinkText/setMarkdownView/window.open)、成果物: 実働UIデモ、期限: Sprint 16中にUI統合計画策定完了",
+      "Retrospective Actionの強制持ち越しルール導入(形骸化防止): 未完了Actionは次SprintのImpedimentに自動昇格、Impediment解消までPBIサイズ制限(LOW複雑度のみ)、3 Sprint未実施Action自動削除ルール、Sprint 16 Planningで適用開始、Action追跡の強制力付与",
+      "Link系UI統合パターンの事前設計(技術検証): 内部リンク: Obsidian app.workspace.openLinkText()コール、外部リンク: window.open()またはObsidian openExternal、共通コンポーネント: LinkRenderer.tsxの設計、成果物: docs/link-ui-integration-design.md、期限: Phase 1レビュー完了後、UI統合Sprint前",
+      "Phase 3残PBI複雑度の事前見積(リスク評価): PBI-016(rec:繰り返し): 予測HIGH(日付計算+タスク生成)、PBI-017(pri:タグ): 予測LOW(タグ変換のみ)、Phase 3完了前のリスク評価、UI統合Sprint後の優先度再評価、Phase完遂戦略の再構築",
     ] },
 ];
 

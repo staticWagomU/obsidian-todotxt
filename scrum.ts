@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 12, pbi: "PBI-012", status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -138,47 +138,8 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 12,
-  pbiId: "PBI-012",
-  story: "due:タグによる期限日付の抽出・表示機能を実装し、期限切れ・本日期限のビジュアルハイライトを提供する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "due:YYYY-MM-DD形式のタグからDate型を抽出するテスト(正常系・異常系・境界値)",
-      implementation: "tags配列からdue:で始まる項目を検索し、Date型に変換して返す関数getDueDate実装",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: add getDueDate tests for due: tag extraction (RED)" },
-        { phase: "green", message: "feat: implement getDueDate function (GREEN)" },
-        { phase: "refactor", message: "refactor: extract date validation logic into parseValidDate (関数分割)" },
-        { phase: "refactor", message: "refactor: extract magic numbers to constants (命名明確性)" },
-      ],
-    },
-    {
-      test: "期限日付と現在日付を比較し、overdue/today/futureの状態を判定するテスト",
-      implementation: "Date型の期限と現在日付を比較して状態を返す関数getDueDateStatus実装",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: add getDueDateStatus tests for due date comparison (RED)" },
-        { phase: "green", message: "feat: implement getDueDateStatus function (GREEN)" },
-        { phase: "refactor", message: "refactor: extract date reset logic to toDateOnly (コード重複排除 + 関数分割)" },
-        { phase: "refactor", message: "refactor: improve date comparison with semantic variable (命名明確性)" },
-      ],
-    },
-    {
-      test: "期限切れ(overdue)と本日期限(today)の統合テスト",
-      implementation: "タグ抽出から状態判定までのエンドツーエンドフロー検証、UI実装時の基盤完成",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: add integration tests for due date highlighting (RED->GREEN)" },
-        { phase: "refactor", message: "refactor: extract test helper getDueDateStatusFromTags (コード重複排除)" },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Phase 2最終Sprint完遂。Refactor率50%達成(5/10コミット)。全209テスト継続パス、26新規テスト追加。UI未実装だがSubtask3&4を統合テストとして完了、将来実装の基盤完成",
+  number: 0, pbiId: null as string | null, story: "",
+  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
 };
 
 // Impediments
@@ -212,25 +173,24 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 11,
+  { sprint: 12,
     workedWell: [
-      "初のMEDIUM複雑度Sprint完遂: 6サブタスク、19コミット、TDDサイクル維持、DoD全項目合格、AC全5項目達成",
-      "Refactor発生率のさらなる改善: 7つのRefactorコミット作成 (発生率33%→37%改善、過去最多)",
-      "高階関数パターンによるコード再利用実現: groupByTags抽出でgroupByProject/groupByContext両関数を1行化達成",
-      "テストコードRefactorの体系的実施: createTodo, expectGroupToContain ヘルパー関数抽出でテストコード品質向上",
-      "テスト見積もり精度の改善: 見積もり25→実績8 (32%)、高階関数による効率的設計で過剰実装回避",
+      "Refactor発生率50%目標達成(初達成!): 5/10コミット、推移0%→27%→33%→37%→50%。各サブタスク平均1.5 Refactor実践、チェックリスト4観点の独立コミット化徹底",
+      "最多テスト追加数達成: +26テスト(全Sprint中最多)、全209テスト継続パス、日付処理の正常系・異常系・境界値を網羅",
+      "Subtask統合によるエンドツーエンド検証: Subtask3&4統合テスト実施、タグ抽出→状態判定の完全フロー検証、UI未実装でも機能完全性保証",
+      "Phase 2完遂(5 PBI, 5 Sprint連続成功): Sprint 8-12完走、全DoD合格、全AC達成、+77テスト(132→209)",
+      "日付処理の堅牢な実装: parseValidDate/toDateOnly補助関数分離、Magic number回避、セマンティック変数名、境界値・タイムゾーン考慮",
     ],
     toImprove: [
-      "Refactor発生率50%目標の継続未達: 目標50%に対し37%達成 (7/19コミット、あと13pp)",
-      "Phase 1テクニカルレビューの長期ペンディング: Sprint 8から4 Sprint継続ペンディング (技術的負債リスク増大)",
-      "MEDIUM複雑度Sprintでのテスト見積もり精度課題: 見積もり25→実績8 (32%)、MEDIUM初回で経験不足",
-      "Refactorコミットの粒度改善余地: 各サブタスク1 Refactorが基本、複数観点の別コミット化が部分的適用",
+      "Phase 1テクニカルレビューの継続ペンディング(5 Sprint経過): Sprint 8から未実施、技術的負債蓄積リスクHIGH、Phase 3開始前の実施必須",
+      "UI実装の先送りによる検証ギャップ: PBI-012でUI延期、統合テストで代替、実際のUI統合時の未検証リスク懸念",
+      "複数サブタスク統合の判断基準不明確: Subtask3&4統合判断の基準なし、見積もり精度への影響(4→実質3サブタスク)",
     ],
     actions: [
-      "Refactor発生率50%達成のための戦略強化: 各サブタスク平均1.5 Refactor目標、チェックリスト4観点の独立コミット化、テストコードRefactorの別コミット化",
-      "Phase 1テクニカルレビューの確実な実施: Sprint 12開始前 (必須実施)、Phase 2完了後 (PBI-012完了)、Phase 3開始前が最適タイミング",
-      "MEDIUM複雑度Sprint見積もり精度向上: 関数数×8テスト/関数を基準、高階関数パターンで-30%調整、重複可能性で-20%バッファ適用",
-      "Refactorコミット粒度の明確化: 観点別チェックリスト適用、独立性判断による別コミット化、コミットメッセージフォーマット統一",
+      "Phase 1テクニカルレビューの即時実施(最優先): Phase 3開始前(Sprint 13前)、Sprint 1-7全実装対象、コード品質/テストカバレッジ/型安全性/アーキテクチャをチェック、改善PBIリスト作成",
+      "Refactor発生率50%の安定維持: Sprint 13以降も50%以上維持、各サブタスク平均1.5 Refactor継続、Sprint Review時に発生率報告",
+      "UI実装戦略の明確化: React component現状構造把握、UI実装専用Sprint検討、UI統合テスト戦略策定、Sprint 13 Planning時決定",
+      "サブタスク統合判断基準の策定: UI未実装時は統合テスト代替可、関連サブタスク統合可(見積もり調整)、統合時はE2Eテスト必須、DoD/Planning guidelineに文書化",
     ] },
 ];
 

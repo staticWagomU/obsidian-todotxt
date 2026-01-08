@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getDueDate } from "./due";
+import { getDueDate, getDueDateStatus } from "./due";
 
 describe("getDueDate", () => {
 	describe("正常系: due:YYYY-MM-DD形式のタグからDate型を抽出", () => {
@@ -77,6 +77,68 @@ describe("getDueDate", () => {
 			const tags = ["DUE:2026-01-15"];
 			const result = getDueDate(tags);
 			expect(result).toBeUndefined();
+		});
+	});
+});
+
+describe("getDueDateStatus", () => {
+	describe("正常系: 期限日付と現在日付の比較", () => {
+		it("期限が過去の日付の場合、'overdue'を返す", () => {
+			const dueDate = new Date("2026-01-01");
+			const today = new Date("2026-01-10");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("overdue");
+		});
+
+		it("期限が本日の場合、'today'を返す", () => {
+			const dueDate = new Date("2026-01-09");
+			const today = new Date("2026-01-09");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("today");
+		});
+
+		it("期限が未来の日付の場合、'future'を返す", () => {
+			const dueDate = new Date("2026-01-20");
+			const today = new Date("2026-01-10");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("future");
+		});
+
+		it("期限が1日前（昨日）の場合、'overdue'を返す", () => {
+			const dueDate = new Date("2026-01-08");
+			const today = new Date("2026-01-09");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("overdue");
+		});
+
+		it("期限が1日後（明日）の場合、'future'を返す", () => {
+			const dueDate = new Date("2026-01-10");
+			const today = new Date("2026-01-09");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("future");
+		});
+	});
+
+	describe("境界値: 時刻による日付比較の厳密性", () => {
+		it("同日だが時刻が異なる場合も'today'を返す（日付のみで比較）", () => {
+			const dueDate = new Date("2026-01-09T08:00:00");
+			const today = new Date("2026-01-09T18:00:00");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("today");
+		});
+
+		it("年末と年始をまたぐ場合も正しく判定（前年の年末が期限）", () => {
+			const dueDate = new Date("2025-12-31");
+			const today = new Date("2026-01-01");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("overdue");
+		});
+
+		it("年末と年始をまたぐ場合も正しく判定（翌年の年始が期限）", () => {
+			const dueDate = new Date("2026-01-01");
+			const today = new Date("2025-12-31");
+			const result = getDueDateStatus(dueDate, today);
+			expect(result).toBe("future");
 		});
 	});
 });

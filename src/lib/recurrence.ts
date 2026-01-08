@@ -84,3 +84,26 @@ export function calculateNextDueDate(
 
   return nextDate.toISOString().split('T')[0];
 }
+
+/**
+ * Calculate new threshold date preserving the interval between original threshold and due date
+ * Interval = originalDueDate - originalThreshold (in days)
+ * Returns: newDueDate - interval (in YYYY-MM-DD format)
+ */
+export function preserveThresholdInterval(
+  originalThreshold: string,
+  originalDueDate: string,
+  newDueDate: string
+): string {
+  const threshold = new Date(originalThreshold);
+  const due = new Date(originalDueDate);
+  const newDue = new Date(newDueDate);
+
+  // Calculate interval in milliseconds
+  const intervalMs = due.getTime() - threshold.getTime();
+
+  // Calculate new threshold
+  const newThreshold = new Date(newDue.getTime() - intervalMs);
+
+  return newThreshold.toISOString().split('T')[0];
+}

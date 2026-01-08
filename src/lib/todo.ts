@@ -2,7 +2,7 @@
  * Todo.txt data model
  */
 
-import { appendTaskToFile } from "./parser";
+import { appendTaskToFile, parseTodoTxt, updateTaskAtLine } from "./parser";
 
 export interface Todo {
 	completed: boolean;
@@ -127,4 +127,28 @@ export function editTask(todo: Todo, updates: Partial<Pick<Todo, "description" |
 	}
 
 	return result;
+}
+
+/**
+ * Edit and update task at specific line index
+ * Combines editTask and updateTaskAtLine
+ */
+export function editAndUpdateTask(
+	content: string,
+	lineIndex: number,
+	updates: Partial<Pick<Todo, "description" | "priority">>,
+): string {
+	const todos = parseTodoTxt(content);
+
+	if (lineIndex < 0 || lineIndex >= todos.length) {
+		return content;
+	}
+
+	const todo = todos[lineIndex];
+	if (!todo) {
+		return content;
+	}
+
+	const editedTodo = editTask(todo, updates);
+	return updateTaskAtLine(content, lineIndex, editedTodo);
 }

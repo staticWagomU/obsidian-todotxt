@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 17, pbi: "PBI-017", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 18, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -139,10 +139,10 @@ export const productBacklog: ProductBacklogItem[] = [
       "期間計算の型安全性: Duration型の導入検討（days/weeks/months/yearsの型区別）",
     ] },
   { id: "PBI-017", story: { role: "Obsidianユーザー", capability: "完了時にpri:タグとして優先度を保存し、未完了時に復元する", benefit: "タスクの完了/未完了トグル時に優先度を失わず、元の優先度を維持できる" }, acceptanceCriteria: [
-      { criterion: "完了時に優先度→pri:タグ変換: (A)のタスクを完了すると、(A)が削除されpri:Aタグが追加される", verification: "pnpm vitest run -t 'toggleCompletion.*priority to pri tag'" },
-      { criterion: "未完了時にpri:タグ→優先度復元: pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される", verification: "pnpm vitest run -t 'toggleCompletion.*pri tag to priority'" },
-      { criterion: "優先度なしタスクはpri:タグ追加しない: 優先度なしタスクを完了してもpri:タグは追加されない", verification: "pnpm vitest run -t 'toggleCompletion.*no priority no pri tag'" },
-      { criterion: "description内のpri:タグ保持: 説明文に含まれるpri:Aなどの文字列を誤検出せず、tagsオブジェクトのpri:のみ処理", verification: "pnpm vitest run -t 'toggleCompletion.*preserve description pri'" },
+      { criterion: "完了時に優先度→pri:タグ変換: (A)のタスクを完了すると、(A)が削除されpri:Aタグが追加される", verification: "pnpm vitest run -t '(A)のタスクを完了すると、(A)が削除されpri:Aタグが追加される'" },
+      { criterion: "未完了時にpri:タグ→優先度復元: pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される", verification: "pnpm vitest run -t 'pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される'" },
+      { criterion: "優先度なしタスクはpri:タグ追加しない: 優先度なしタスクを完了してもpri:タグは追加されない", verification: "pnpm vitest run -t '優先度なしタスクを完了してもpri:タグは追加されない'" },
+      { criterion: "description内のpri:タグ保持: 説明文に含まれるpri:Aなどの文字列を誤検出せず、tagsオブジェクトのpri:のみ処理", verification: "pnpm vitest run -t '説明文中のpri:文字列を誤検出しない'" },
     ], dependencies: ["PBI-003"], status: "done",
     complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 3 } },
   { id: "PBI-018", story: { role: "Obsidianユーザー", capability: "設定画面", benefit: "カスタマイズ" }, acceptanceCriteria: [
@@ -233,6 +233,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 14, pbi: "PBI-014", story: "[[Note]]内部リンク", verification: "passed", notes: "3サブタスク完了、265テスト(+28: extractInternalLinks全28件)、6コミット(RED 3 + GREEN 3 + REFACTOR 0)。DoD全項目合格。AC全4項目達成。Refactor率0%(シンプルな正規表現実装のためリファクタリング不要)" },
   { sprint: 15, pbi: "PBI-015", story: "[text](url)外部リンク", verification: "passed", notes: "3サブタスク完了、292テスト(+27: extractExternalLinks全27件)、8コミット(RED 3 + GREEN 3 + FIX 1 + CHORE 1)。DoD全項目合格。AC全4項目達成。Refactor率0%(LOW複雑度、シンプルな正規表現実装)" },
   { sprint: 16, pbi: "PBI-016", story: "rec:繰り返しタスク自動生成", verification: "passed", notes: "6サブタスク完了(初HIGH複雑度Sprint)、331テスト(+39: recurrence.test.ts 31 + todo.test.ts 4 + view統合)、13コミット(RED 6 + GREEN 6 + FIX 1)。DoD全項目合格。AC全5項目達成。Refactor率0%(HIGH複雑度、実装集中型)" },
+  { sprint: 17, pbi: "PBI-017", story: "pri:タグ保存 - 優先度復元", verification: "passed", notes: "3サブタスク完了、331テスト(既存テスト更新のみ、新規追加なし)、6コミット(RED 2 + GREEN 2 + TEST 1 + CHORE 1)。DoD全項目合格。AC全4項目達成。Refactor率0%(LOW複雑度、シンプルな実装)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

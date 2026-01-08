@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 6, pbi: "PBI-006" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -159,8 +159,41 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 6,
+  pbiId: "PBI-006",
+  story: "Obsidianユーザーがタスクを削除して不要なタスクを除去できる",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "指定行のタスクを削除するdeleteTaskAtLine関数をテスト (5テスト: 単一行/末尾行/中間行/先頭行/空ファイル)",
+      implementation: "deleteTaskAtLine関数を実装し、行配列から指定インデックスを除去して結合",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "削除後のタスクリスト再構成をテスト (4テスト: リストから削除/インデックス境界/単一要素/複数要素)",
+      implementation: "removeTaskFromList関数を実装し、配列からタスクを除去して新配列を返す",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "deleteTaskAtLineとremoveTaskFromListを統合した削除処理をテスト (5テスト: 統合削除/ファイル更新/エッジケース組合せ/削除後のパース/空ファイル変換)",
+      implementation: "deleteAndRemoveTask統合関数を実装し、ファイル操作とリスト操作を連携",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "View層でのタスク削除後の表示更新を統合テスト (4テスト: 削除ハンドラ/UI更新/エッジケース/エラー処理)",
+      implementation: "TodotxtViewに削除ハンドラを追加し、View層での削除処理を統合",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "Sprint Goal: タスク削除機能を実装し、ユーザーが不要なタスクを簡単に除去できるようにする。Sprint 5 Actionsを適用: 3-4サブタスク構成(削除は編集より単純)、テストケース粒度最適化(5+4+5+4=18テスト)、Refactorフェーズ意識(Green完了後に構造改善を検討)。",
 };
 
 // Impediments

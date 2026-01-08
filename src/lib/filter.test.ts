@@ -684,4 +684,59 @@ describe("filterBySearch", () => {
 			expect(result[0]?.contexts).toContain("Office");
 		});
 	});
+
+	describe("filter by search empty", () => {
+		it("should return all tasks when search keyword is empty string", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Task 1",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Task 1",
+				},
+				{
+					completed: false,
+					description: "Task 2",
+					projects: ["project"],
+					contexts: [],
+					tags: {},
+					raw: "Task 2 +project",
+				},
+				{
+					completed: false,
+					description: "Task 3",
+					projects: [],
+					contexts: ["context"],
+					tags: {},
+					raw: "Task 3 @context",
+				},
+			];
+
+			const result = filterBySearch(todos, "");
+
+			expect(result).toHaveLength(3);
+			expect(result).toEqual(todos);
+		});
+
+		it("should return new array instance even for empty string search", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Task",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Task",
+				},
+			];
+
+			const result = filterBySearch(todos, "");
+
+			// Should be immutable (different array instance)
+			expect(result).not.toBe(todos);
+			expect(result).toEqual(todos);
+		});
+	});
 });

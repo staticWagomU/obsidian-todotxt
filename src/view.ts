@@ -1,6 +1,6 @@
 import { TextFileView, type TFile, type WorkspaceLeaf } from "obsidian";
 import { parseTodoTxt, updateTodoInList } from "./lib/parser";
-import { toggleCompletion } from "./lib/todo";
+import { toggleCompletion, createAndAppendTask } from "./lib/todo";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
@@ -59,6 +59,18 @@ export class TodotxtView extends TextFileView {
 
 			const toggledTodo = toggleCompletion(todo);
 			const updatedData = updateTodoInList(todos, index, toggledTodo);
+
+			this.setViewData(updatedData, false);
+		};
+	}
+
+	/**
+	 * Get add handler for creating new tasks
+	 */
+	getAddHandler(): (description: string, priority?: string) => Promise<void> {
+		return async (description: string, priority?: string) => {
+			const currentData = this.data;
+			const updatedData = createAndAppendTask(currentData, description, priority);
 
 			this.setViewData(updatedData, false);
 		};

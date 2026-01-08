@@ -18,6 +18,26 @@ export function parseTodoTxt(text: string): Todo[] {
 }
 
 /**
+ * Update a specific todo in the list and return the updated text
+ */
+export function updateTodoInList(todos: Todo[], index: number, updatedTodo: Todo): string {
+	if (todos.length === 0) {
+		return "";
+	}
+
+	if (index < 0 || index >= todos.length) {
+		// Return original text if index is out of bounds
+		return todos.map(serializeTodo).join("\n");
+	}
+
+	// Update the todo at the specified index
+	const updatedTodos = [...todos];
+	updatedTodos[index] = updatedTodo;
+
+	return updatedTodos.map(serializeTodo).join("\n");
+}
+
+/**
  * Serialize a Todo object to todo.txt format string
  */
 export function serializeTodo(todo: Todo): string {

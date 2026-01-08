@@ -101,7 +101,7 @@ export const quickStatus = {
     number: 1,
     pbi: "PBI-001" as string | null,
     status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0,
+    subtasksCompleted: 1,
     subtasksTotal: 3,
     impediments: 0,
   },
@@ -638,8 +638,17 @@ export const currentSprint = {
       test: "プラグインがTextFileViewを継承したTodotxtViewクラスを登録することを検証する",
       implementation: "main.tsでTodotxtViewをregisterViewし、view.tsxでTextFileViewを継承したTodotxtViewクラスを実装する",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        {
+          phase: "red" as CommitPhase,
+          message: "test: add failing test for TodotxtView registration",
+        },
+        {
+          phase: "green" as CommitPhase,
+          message: "feat: implement TodotxtView and register it in plugin",
+        },
+      ],
     },
     {
       test: ".txt拡張子のファイルが専用ビューで開かれることを検証する",

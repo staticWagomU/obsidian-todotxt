@@ -13,7 +13,19 @@ function isValidDateFormat(dateStr: string): boolean {
  * 例: 2026-02-30 -> 2026-03-02 のような変換を検出
  */
 function isDateAutoAdjusted(date: Date, dateStr: string): boolean {
-	const [yearInput, monthInput, dayInput] = dateStr.split("-").map(Number);
+	const parts = dateStr.split("-").map(Number);
+	const yearInput = parts[0];
+	const monthInput = parts[1];
+	const dayInput = parts[2];
+
+	if (
+		yearInput === undefined ||
+		monthInput === undefined ||
+		dayInput === undefined
+	) {
+		return true; // 不正な形式は自動補正として扱う
+	}
+
 	return (
 		date.getFullYear() !== yearInput ||
 		date.getMonth() !== monthInput - MONTH_INDEX_OFFSET ||

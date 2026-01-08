@@ -87,3 +87,23 @@ export function createAndAppendTask(content: string, description: string, priori
 	const newTask = createTask(description, priority);
 	return appendTaskToFile(content, newTask);
 }
+
+/**
+ * Edit task properties with partial updates
+ * Preserves metadata (completed, creationDate, completionDate, tags, raw)
+ */
+export function editTask(todo: Todo, updates: Partial<Pick<Todo, "description" | "priority">>): Todo {
+	const result: Todo = { ...todo };
+
+	// Handle description update (including empty string)
+	if ("description" in updates) {
+		result.description = updates.description ?? "";
+	}
+
+	// Handle priority update (including undefined to remove priority)
+	if ("priority" in updates) {
+		result.priority = updates.priority;
+	}
+
+	return result;
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTodoLine, parseTodoTxt, serializeTodo, updateTodoInList, appendTaskToFile, updateTaskAtLine } from "./parser";
+import { parseTodoLine, parseTodoTxt, serializeTodo, updateTodoInList, appendTaskToFile, updateTaskAtLine, deleteTaskAtLine } from "./parser";
 import type { Todo } from "./todo";
 
 describe("parse completion", () => {
@@ -653,5 +653,52 @@ describe("update task at specific line", () => {
 		const result = updateTaskAtLine(content, 0, updatedTodo);
 
 		expect(result).toBe("");
+	});
+});
+
+describe("delete task at line index", () => {
+	it("単一行ファイルのタスクを削除すると空文字列になる", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+
+		const result = deleteTaskAtLine(content, 0);
+
+		expect(result).toBe("");
+	});
+
+	it("末尾行のタスクを削除できる", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+
+		const result = deleteTaskAtLine(content, 2);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk");
+	});
+
+	it("中間行のタスクを削除できる", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+
+		const result = deleteTaskAtLine(content, 1);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(C) 2026-01-03 Write report");
+	});
+
+	it("先頭行のタスクを削除できる", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+
+		const result = deleteTaskAtLine(content, 0);
+
+		expect(result).toBe("(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report");
+	});
+
+	it("空ファイルまたは範囲外インデックスの場合は元のコンテンツを返す", () => {
+		const emptyContent = "";
+		const resultEmpty = deleteTaskAtLine(emptyContent, 0);
+		expect(resultEmpty).toBe("");
+
+		const content = "(A) 2026-01-01 Call Mom";
+		const resultOutOfBounds = deleteTaskAtLine(content, 5);
+		expect(resultOutOfBounds).toBe("(A) 2026-01-01 Call Mom");
+
+		const resultNegative = deleteTaskAtLine(content, -1);
+		expect(resultNegative).toBe("(A) 2026-01-01 Call Mom");
 	});
 });

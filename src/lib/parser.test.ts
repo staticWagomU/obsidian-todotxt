@@ -127,3 +127,41 @@ describe("parse project context", () => {
 		expect(result.contexts).toEqual([]);
 	});
 });
+
+describe("parse tags", () => {
+	it("key:value形式のタグを抽出", () => {
+		const result = parseTodoLine("Buy milk due:2026-01-15");
+		expect(result.tags).toEqual({ due: "2026-01-15" });
+	});
+
+	it("複数のタグを抽出", () => {
+		const result = parseTodoLine(
+			"Task due:2026-01-15 t:2026-01-10 rec:+1w",
+		);
+		expect(result.tags).toEqual({
+			due: "2026-01-15",
+			t: "2026-01-10",
+			rec: "+1w",
+		});
+	});
+
+	it("pri:タグを抽出", () => {
+		const result = parseTodoLine("x Task pri:A");
+		expect(result.tags).toEqual({ pri: "A" });
+	});
+
+	it("タグがない場合は空オブジェクト", () => {
+		const result = parseTodoLine("Buy milk");
+		expect(result.tags).toEqual({});
+	});
+
+	it("コロンの前後にスペースがある場合は無効", () => {
+		const result = parseTodoLine("Task key : value");
+		expect(result.tags).toEqual({});
+	});
+
+	it("値に空白を含むタグは次の空白まで", () => {
+		const result = parseTodoLine("Task note:some value here end");
+		expect(result.tags).toEqual({ note: "some" });
+	});
+});

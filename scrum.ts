@@ -93,8 +93,11 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-007"], status: "ready",
     complexity: { functions: 3, estimatedTests: 25, externalDependencies: 0, score: "MEDIUM", subtasks: 6 } },
   { id: "PBI-012", story: { role: "Obsidianユーザー", capability: "due:表示", benefit: "期限確認" }, acceptanceCriteria: [
-      { criterion: "期限ハイライト", verification: "pnpm vitest run --grep 'due'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+      { criterion: "due:YYYY-MM-DD形式をDate型として正しく抽出", verification: "pnpm vitest run --grep 'getDueDate'" },
+      { criterion: "期限切れタスク（過去日付）を赤色でハイライト表示", verification: "pnpm vitest run --grep 'due.*overdue'" },
+      { criterion: "本日期限タスクをオレンジ色でハイライト表示", verification: "pnpm vitest run --grep 'due.*today'" },
+    ], dependencies: ["PBI-002"], status: "ready",
+    complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   // Phase 3: 拡張機能
   { id: "PBI-013", story: { role: "Obsidianユーザー", capability: "t:グレーアウト", benefit: "未着手タスク区別" }, acceptanceCriteria: [
       { criterion: "しきい値表示", verification: "pnpm vitest run --grep 'threshold'" },

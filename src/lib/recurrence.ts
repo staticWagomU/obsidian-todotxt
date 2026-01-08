@@ -38,7 +38,7 @@ export function parseRecurrenceTag(recTag: string): RecurrencePattern | null {
 /**
  * Calculate next due date based on recurrence pattern
  * Non-strict mode: based on completion date (baseDate)
- * Strict mode: based on current due date (will be implemented in next subtask)
+ * Strict mode: based on current due date (currentDueDate)
  * Returns YYYY-MM-DD format
  */
 export function calculateNextDueDate(
@@ -46,7 +46,9 @@ export function calculateNextDueDate(
   baseDate: string,
   currentDueDate?: string
 ): string {
-  const base = new Date(baseDate);
+  // Determine which date to use as base
+  const referenceDate = pattern.strict && currentDueDate ? currentDueDate : baseDate;
+  const base = new Date(referenceDate);
   const originalDay = base.getDate();
 
   let nextDate: Date;

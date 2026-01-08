@@ -113,3 +113,77 @@ describe("update view after toggle", () => {
 		expect(view.getViewData()).toBe("Task 1");
 	});
 });
+
+describe("update view after task creation", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("新規タスクを追加してViewのデータが更新される", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom";
+		view.setViewData(initialData, false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08"));
+
+		const handleAdd = view.getAddHandler();
+		await handleAdd("Buy milk");
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk");
+
+		vi.useRealTimers();
+	});
+
+	it("空ファイルに新規タスクを追加", async () => {
+		view.setViewData("", false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08"));
+
+		const handleAdd = view.getAddHandler();
+		await handleAdd("First task");
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("2026-01-08 First task");
+
+		vi.useRealTimers();
+	});
+
+	it("優先度付きタスクを追加", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom";
+		view.setViewData(initialData, false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08"));
+
+		const handleAdd = view.getAddHandler();
+		await handleAdd("Buy groceries", "B");
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-08 Buy groceries");
+
+		vi.useRealTimers();
+	});
+
+	it("プロジェクトとコンテキスト付きタスクを追加", async () => {
+		view.setViewData("", false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08"));
+
+		const handleAdd = view.getAddHandler();
+		await handleAdd("Write report +Work @office", "C");
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(C) 2026-01-08 Write report +Work @office");
+
+		vi.useRealTimers();
+	});
+});

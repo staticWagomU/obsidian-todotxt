@@ -5,14 +5,27 @@
 import type { Todo } from "./todo";
 
 /**
+ * Add a todo to a group in the grouped map
+ * Creates new group if it doesn't exist
+ */
+function addToGroup(grouped: Map<string, Todo[]>, key: string, todo: Todo): void {
+	const group = grouped.get(key);
+	if (group === undefined) {
+		grouped.set(key, [todo]);
+	} else {
+		group.push(todo);
+	}
+}
+
+/**
  * Group todos by project tags (+project)
  *
  * @param todos - Array of todos to group
  * @returns Map where keys are project names and values are arrays of todos containing that project
  * @remarks
  * - Empty input returns empty Map
- * - Todos without projects will be included in "未分類" group (to be implemented)
- * - Todos with multiple projects will appear in all corresponding groups (to be implemented)
+ * - Todos without projects will be included in "未分類" group
+ * - Todos with multiple projects will appear in all corresponding groups
  * - Order within each group is preserved from input array
  */
 export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
@@ -21,20 +34,10 @@ export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
 	for (const todo of todos) {
 		if (todo.projects.length === 0) {
 			// Todos without projects go to "未分類" group
-			const group = grouped.get("未分類");
-			if (group === undefined) {
-				grouped.set("未分類", [todo]);
-			} else {
-				group.push(todo);
-			}
+			addToGroup(grouped, "未分類", todo);
 		} else {
 			for (const project of todo.projects) {
-				const group = grouped.get(project);
-				if (group === undefined) {
-					grouped.set(project, [todo]);
-				} else {
-					group.push(todo);
-				}
+				addToGroup(grouped, project, todo);
 			}
 		}
 	}

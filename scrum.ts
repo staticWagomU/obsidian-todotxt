@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 13, pbi: "PBI-013" as string | null, status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 14, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -104,11 +104,11 @@ export const productBacklog: ProductBacklogItem[] = [
     complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   // Phase 3: 拡張機能
   { id: "PBI-013", story: { role: "Obsidianユーザー", capability: "t:YYYY-MM-DD形式のしきい値日付タグ表示", benefit: "着手可能時期を視覚的に区別し、未来のタスクを判別可能にする" }, acceptanceCriteria: [
-      { criterion: "t:YYYY-MM-DD形式をDate型として正しく抽出", verification: "pnpm vitest run --grep 'getThresholdDate'" },
-      { criterion: "しきい値が未来のタスク（未着手期間）を判定", verification: "pnpm vitest run --grep 'threshold.*not.*ready'" },
-      { criterion: "しきい値が本日または過去のタスク（着手可能）を判定", verification: "pnpm vitest run --grep 'threshold.*ready'" },
+      { criterion: "t:YYYY-MM-DD形式をDate型として正しく抽出", verification: "pnpm vitest run -t 'getThresholdDate'" },
+      { criterion: "しきい値が未来のタスク（未着手期間）を判定", verification: "pnpm vitest run -t 'threshold' src/lib/threshold.test.ts" },
+      { criterion: "しきい値が本日または過去のタスク（着手可能）を判定", verification: "pnpm vitest run -t 'threshold' src/lib/threshold.test.ts" },
     ], dependencies: ["PBI-002"], status: "done",
-    complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 4 } },
+    complexity: { functions: 2, estimatedTests: 28, externalDependencies: 0, score: "LOW", subtasks: 3 } },
   { id: "PBI-014", story: { role: "Obsidianユーザー", capability: "[[Note]]リンク", benefit: "ノート遷移" }, acceptanceCriteria: [
       { criterion: "内部リンク", verification: "pnpm vitest run --grep 'internal link'" },
     ], dependencies: ["PBI-002"], status: "draft" },
@@ -141,47 +141,12 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 13,
-  pbiId: "PBI-013" as string | null,
-  story: "t:YYYY-MM-DD形式のしきい値日付タグ表示により、着手可能時期を視覚的に区別し、未来のタスクを判別可能にする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "getThresholdDate: t:YYYY-MM-DD形式を正しくDate型として抽出する(正常系/異常系/境界値)",
-      implementation: "getThresholdDate(tags: Record<string, string>): Date | null - t:タグから日付を抽出、parseValidDate補助関数活用",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: getThresholdDate - t:タグからDate型抽出（正常系/異常系/境界値）" },
-        { phase: "green", message: "feat: getThresholdDate - t:タグからDate型抽出の実装" },
-        { phase: "refactor", message: "refactor: extract constants and semantic variables in parseValidDate" },
-        { phase: "refactor", message: "refactor: extract helper functions for date validation" }
-      ]
-    },
-    {
-      test: "getThresholdDateStatus: しきい値日付の状態判定（not_ready: 未来、ready: 本日または過去）",
-      implementation: "getThresholdDateStatus(todo: Todo): 'not_ready' | 'ready' | null - しきい値日付と現在日付を比較して状態判定",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: getThresholdDateStatus - しきい値日付の状態判定（not_ready/ready）" },
-        { phase: "green", message: "feat: getThresholdDateStatus - しきい値日付の状態判定実装" },
-        { phase: "refactor", message: "refactor: semantic variable names in getThresholdDateStatus" },
-        { phase: "refactor", message: "refactor: extract calculateDaysDifference helper function" },
-        { phase: "refactor", message: "refactor: fix type safety in isDateAutoAdjusted" }
-      ]
-    },
-    {
-      test: "統合テスト: タグ抽出→状態判定の完全フロー検証（getThresholdDate + getThresholdDateStatus）",
-      implementation: "エンドツーエンド統合テストでタグ抽出から状態判定までのフロー検証、UI未実装でも機能完全性保証",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "green", message: "test: threshold integration - タグ抽出→状態判定の完全フロー検証" }
-      ]
-    }
-  ] as Subtask[],
-  notes: "Sprint Goal: t:タグによるしきい値日付機能を実装し、着手可能時期を視覚的に区別する。Sprint 12のdue:表示実装パターンを踏襲（日付抽出→状態判定→統合テスト）。UI統合はSubtask 4から除外（UI実装未完のため）。Phase 3初Sprint、Refactor発生率50%達成(5/10)。",
+  number: 14,
+  pbiId: null as string | null,
+  story: "Sprint not yet planned",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
+  notes: "",
 };
 
 // Impediments

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 14, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 14, pbi: "PBI-014" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -146,11 +146,33 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   number: 14,
-  pbiId: null as string | null,
-  story: "Sprint not yet planned",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
-  notes: "",
+  pbiId: "PBI-014" as string | null,
+  story: "Obsidian内部リンク[[Note]]形式のパース: 基本形式・エイリアス形式・複数リンク・不正形式検出",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "[[NoteName]]形式の基本的なwikilink検出: 説明文から[[NoteName]]を抽出し、リンク先ノート名を取得できる",
+      implementation: "extractInternalLinks関数を実装。正規表現で[[...]]パターンをマッチ、リンク先ノート名を返す。単一リンク対応、エイリアスなし形式のみ",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "[[NoteName|Display Text]]形式のエイリアス付きwikilink検出: エイリアス部分を分離し、リンク先とエイリアス両方を取得できる",
+      implementation: "|区切り文字でリンク先とエイリアスを分離。InternalLinkインターフェースに{link: string, alias?: string}追加。エイリアスありなし両対応",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "複数の内部リンク検出と不正形式の除外: 1つの説明文に複数の[[wikilink]]が存在する場合すべてを抽出し、閉じ括弧なし・空文字列・ネストなど不正形式を無視できる",
+      implementation: "正規表現をグローバルマッチに変更し配列返却。不正形式検証ロジック追加(空文字列チェック、ネスト検出、閉じ括弧検証)。エッジケーステスト網羅",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "Phase 3第2Sprint。AC 4項目をサブタスク3個に集約(基本形式/エイリアス形式/複数+不正)。UI統合は別Sprint予定(Retro Action 2 UI Roadmap待ち)",
 };
 
 // Impediments

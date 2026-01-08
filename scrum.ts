@@ -52,11 +52,13 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: [], status: "done" },
   { id: "PBI-002", story: { role: "Obsidianユーザー", capability: "todo.txtをパースしてタスク一覧表示",
       benefit: "構造化されたリストで確認" }, acceptanceCriteria: [
-      { criterion: "完了マーク(x)パース", verification: "pnpm vitest run --grep 'parse completion'" },
-      { criterion: "優先度(A-Z)パース", verification: "pnpm vitest run --grep 'parse priority'" },
-      { criterion: "日付パース", verification: "pnpm vitest run --grep 'parse date'" },
-      { criterion: "+project/@context/key:valueパース", verification: "pnpm vitest run --grep 'parse'" },
-    ], dependencies: ["PBI-001"], status: "draft" },
+      { criterion: "完了マーク(x)を行頭から正確にパースできる", verification: "pnpm vitest run --grep 'parse completion'" },
+      { criterion: "優先度(A-Z)を行頭または完了マーク後からパースできる", verification: "pnpm vitest run --grep 'parse priority'" },
+      { criterion: "完了日・作成日(YYYY-MM-DD)を正確にパースできる", verification: "pnpm vitest run --grep 'parse dates'" },
+      { criterion: "説明文から+project/@context抽出できる", verification: "pnpm vitest run --grep 'parse project context'" },
+      { criterion: "key:value形式のタグ(due/t/rec/pri)をパースできる", verification: "pnpm vitest run --grep 'parse tags'" },
+      { criterion: "パース結果をTodoオブジェクト配列として構造化できる", verification: "pnpm vitest run --grep 'parse to Todo array'" },
+    ], dependencies: ["PBI-001"], status: "ready" },
   { id: "PBI-003", story: { role: "Obsidianユーザー", capability: "チェックボックスで完了切替",
       benefit: "ワンクリックで状態更新" }, acceptanceCriteria: [
       { criterion: "完了トグル", verification: "pnpm vitest run --grep 'toggle'" },

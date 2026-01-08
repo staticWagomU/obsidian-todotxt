@@ -56,6 +56,16 @@ export function parseTodoLine(line: string): Todo {
 		contexts.push(match[1]);
 	}
 
+	// Parse tags (key:value format)
+	const tags: Record<string, string> = {};
+	const tagMatches = trimmed.matchAll(/(\S+):(\S+)/g);
+	for (const match of tagMatches) {
+		// Skip if it's a project or context (already parsed)
+		if (!match[0].startsWith("+") && !match[0].startsWith("@")) {
+			tags[match[1]] = match[2];
+		}
+	}
+
 	return {
 		completed,
 		priority,
@@ -64,7 +74,7 @@ export function parseTodoLine(line: string): Todo {
 		description: trimmed,
 		projects,
 		contexts,
-		tags: {},
+		tags,
 		raw: line,
 	};
 }

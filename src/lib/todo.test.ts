@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { toggleCompletion, createTask } from "./todo";
+import { toggleCompletion, createTask, createAndAppendTask } from "./todo";
 import type { Todo } from "./todo";
 
 describe("toggle task completion status", () => {
@@ -193,5 +193,58 @@ describe("create task with optional fields", () => {
 		expect(result.projects).toEqual(["GroceryShopping"]);
 		expect(result.contexts).toEqual(["store"]);
 		expect(result.creationDate).toBe("2026-01-08");
+	});
+});
+
+describe("create and append task", () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08"));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it("空ファイルに説明文のみのタスクを追加", () => {
+		const content = "";
+		const result = createAndAppendTask(content, "Buy milk");
+
+		expect(result).toBe("2026-01-08 Buy milk");
+	});
+
+	it("既存ファイルに説明文のみのタスクを追加", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+		const result = createAndAppendTask(content, "Buy milk");
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk");
+	});
+
+	it("優先度付きタスクを追加", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+		const result = createAndAppendTask(content, "Buy groceries", "B");
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-08 Buy groceries");
+	});
+
+	it("プロジェクト付きタスクを追加", () => {
+		const content = "";
+		const result = createAndAppendTask(content, "Buy milk +GroceryShopping");
+
+		expect(result).toBe("2026-01-08 Buy milk +GroceryShopping");
+	});
+
+	it("コンテキスト付きタスクを追加", () => {
+		const content = "";
+		const result = createAndAppendTask(content, "Call Mom @phone");
+
+		expect(result).toBe("2026-01-08 Call Mom @phone");
+	});
+
+	it("優先度・プロジェクト・コンテキストをすべて含むタスクを追加", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+		const result = createAndAppendTask(content, "Write report +Work @office", "C");
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(C) 2026-01-08 Write report +Work @office");
 	});
 });

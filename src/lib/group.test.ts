@@ -74,4 +74,24 @@ describe("groupByContext", () => {
 		expect(result.has("Home")).toBe(true);
 		expect(result.get("Home")).toEqual([todos[0]]);
 	});
+
+	test("should group todo with multiple contexts to all corresponding groups", () => {
+		const todos = [createTodo("Task @Home @Work", [], ["Home", "Work"])];
+		const result = groupByContext(todos);
+
+		expect(result.size).toBe(2);
+		expect(result.has("Home")).toBe(true);
+		expect(result.has("Work")).toBe(true);
+		expect(result.get("Home")).toEqual([todos[0]]);
+		expect(result.get("Work")).toEqual([todos[0]]);
+	});
+
+	test("should group todo without context to '未分類' group", () => {
+		const todos = [createTodo("Task without context", [], [])];
+		const result = groupByContext(todos);
+
+		expect(result.size).toBe(1);
+		expect(result.has("未分類")).toBe(true);
+		expect(result.get("未分類")).toEqual([todos[0]]);
+	});
 });

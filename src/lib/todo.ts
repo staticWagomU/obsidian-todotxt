@@ -37,7 +37,8 @@ export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTas
 		// pri:タグ → priority復元
 		if (todo.tags.pri) {
 			incompletedTask.priority = todo.tags.pri;
-			const { pri, ...restTags } = incompletedTask.tags;
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { pri: _pri, ...restTags } = incompletedTask.tags;
 			incompletedTask.tags = restTags;
 		}
 

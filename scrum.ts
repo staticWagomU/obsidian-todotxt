@@ -18,11 +18,11 @@ interface ProductBacklogItem {
   dependencies: string[]; status: PBIStatus;
   complexity?: Complexity; refactorChecklist?: string[];
 }
-interface Commit { phase: CommitPhase; message: string; }
-interface Subtask {
-  test: string; implementation: string; type: SubtaskType;
-  status: SubtaskStatus; commits: Commit[];
-}
+// interface Commit { phase: CommitPhase; message: string; }
+// interface Subtask {
+//   test: string; implementation: string; type: SubtaskType;
+//   status: SubtaskStatus; commits: Commit[];
+// }
 interface CompletedSprint {
   sprint: number; pbi: string; story: string;
   verification: "passed" | "failed"; notes: string;

@@ -258,6 +258,23 @@ export const retrospectives: Retrospective[] = [
       "統合テスト追加: View層でのparser統合テストをサブタスクに含める",
       "テストケース設計基準: 各describeに最低3ケース、最大7ケース目安",
     ] },
+  { sprint: 3,
+    workedWell: [
+      "Sprint 2アクションの完全適用: describe階層化(toggleCompletionは2層、serializeTodoは3層)、統合テスト専用サブタスク、テストケース基準遵守",
+      "高いテストカバレッジ: 24新規テスト追加で総計57テスト、serializeTodoで11ケースの包括的検証",
+      "View統合テストの実装: parser連携を4テストケースで検証、実際の動作を確認",
+      "エッジケース発見と修正: 実装中にdescription重複、完了タスク日付パース問題を発見・修正",
+    ],
+    toImprove: [
+      "実装中のバグ修正: parserバグをGreenフェーズで修正、理想的にはRefactorフェーズで対応すべき",
+      "サブタスク粒度の不均衡: serializeTodo(11テスト) vs updateTodoInList(4テスト)の差が大きい",
+      "テスト構造の一貫性: toggleCompletionは2層、serializeTodoは3層と統一されていない",
+    ],
+    actions: [
+      "バグ修正フェーズ明確化: 既存コードのバグはGreenフェーズで対応可、Refactorは構造改善に集中",
+      "サブタスク分割基準見直し: 複雑度に応じて5-10テスト目安で分割、大きすぎる場合は複数サブタスクに",
+      "describe階層ガイドライン: 関連テストが3個以下ならフラット、4個以上なら2層、10個以上なら3層",
+    ] },
 ];
 
 // Agents & Events

@@ -2,7 +2,7 @@
  * Todo.txt data model
  */
 
-import { appendTaskToFile, parseTodoTxt, updateTaskAtLine } from "./parser";
+import { appendTaskToFile, parseTodoTxt, updateTaskAtLine, deleteTaskAtLine } from "./parser";
 
 export interface Todo {
 	completed: boolean;
@@ -163,4 +163,12 @@ export function removeTaskFromList(todos: Todo[], index: number): Todo[] {
 	}
 
 	return todos.filter((_todo, i) => i !== index);
+}
+
+/**
+ * Delete and remove task at specific line index
+ * Combines deleteTaskAtLine (parser) for integrated deletion
+ */
+export function deleteAndRemoveTask(content: string, lineIndex: number): string {
+	return deleteTaskAtLine(content, lineIndex);
 }

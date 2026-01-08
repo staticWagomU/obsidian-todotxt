@@ -98,11 +98,11 @@ interface DoDCheck {
 
 export const quickStatus = {
   sprint: {
-    number: 0,
-    pbi: null as string | null,
-    status: "not_started" as SprintStatus,
+    number: 1,
+    pbi: "PBI-001" as string | null,
+    status: "in_progress" as SprintStatus,
     subtasksCompleted: 0,
-    subtasksTotal: 0,
+    subtasksTotal: 3,
     impediments: 0,
   },
 };
@@ -629,12 +629,34 @@ export const definitionOfReady = {
 // =============================================================================
 
 export const currentSprint = {
-  number: 0,
-  pbiId: null as string | null,
-  story: null as string | null,
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
-  notes: "No sprint started yet. Run Sprint Planning to begin.",
+  number: 1,
+  pbiId: "PBI-001",
+  story: ".txt/.todotxtファイルを専用ビューで開けるようにし、Obsidianプラグインの基盤を確立する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "プラグインがTextFileViewを継承したTodotxtViewクラスを登録することを検証する",
+      implementation: "main.tsでTodotxtViewをregisterViewし、view.tsxでTextFileViewを継承したTodotxtViewクラスを実装する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: ".txt拡張子のファイルが専用ビューで開かれることを検証する",
+      implementation: "main.tsのregisterExtensionsで'txt'拡張子を登録する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: ".todotxt拡張子のファイルが専用ビューで開かれることを検証する",
+      implementation: "main.tsのregisterExtensionsで'todotxt'拡張子を登録する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "Sprint 1 started. Focus: PBI-001 - Register custom view for todo.txt files.",
 };
 
 // =============================================================================

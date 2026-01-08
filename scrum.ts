@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 17, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 17, pbi: "PBI-017", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -165,71 +165,31 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 16,
-  pbiId: "PBI-016",
-  story: "rec:タグによる繰り返しタスク自動生成で、完了時に次回タスクを自動作成する",
-  status: "done" as SprintStatus,
+  number: 17,
+  pbiId: "PBI-017",
+  story: "完了時にpri:タグとして優先度を保存し、未完了時に復元することで、優先度を失わずトグル可能にする",
+  status: "in_progress" as SprintStatus,
   subtasks: [
     {
-      test: "parseRecurrenceTag: rec:1d, rec:+1w, rec:3m, rec:1y形式をパースし、数値・期間(d/w/m/y)・strict/non-strict(+)を抽出する",
-      implementation: "src/lib/recurrence.ts: parseRecurrenceTag関数を実装。正規表現で(+)?(d+)([dwmy])をマッチし、{value: number, unit: 'd'|'w'|'m'|'y', strict: boolean}型を返す。不正形式はnullを返す。",
+      test: "toggleCompletion - 完了時変換: (A)のタスクを完了すると、(A)が削除されpri:Aタグが追加される (AC1)",
+      implementation: "src/lib/todo.ts: toggleCompletion関数内に優先度→pri:タグ変換ロジック追加。未完了→完了時、priorityがnull以外なら tags配列にpri:${priority}追加 → priority=nullに設定 → 再シリアライズ。",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add parseRecurrenceTag RED phase" },
-        { phase: "green" as CommitPhase, message: "feat: implement parseRecurrenceTag for basic recurrence pattern" }
-      ]
+      status: "pending" as SubtaskStatus,
+      commits: []
     },
     {
-      test: "calculateNextDueDate (non-strict): 完了日(今日)を基準に日/週/月/年を加算し、次回due:日付を計算する",
-      implementation: "src/lib/recurrence.ts: calculateNextDueDate関数にnon-strictモード実装。baseDate + (value * unit)の日付計算。月/年は月末自動補正利用(Date API)。",
+      test: "toggleCompletion - 未完了時復元: pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される (AC2)",
+      implementation: "src/lib/todo.ts: toggleCompletion関数内にpri:タグ→優先度復元ロジック追加。完了→未完了時、tags配列からpri:パターン検出 → priority設定 → tags配列からpri:削除 → 再シリアライズ。",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add calculateNextDueDate non-strict RED phase" },
-        { phase: "green" as CommitPhase, message: "feat: implement calculateNextDueDate non-strict mode" }
-      ]
+      status: "pending" as SubtaskStatus,
+      commits: []
     },
     {
-      test: "calculateNextDueDate (strict): 現在のdue:を基準に日/週/月/年を加算し、次回due:日付を計算する(+モード)",
-      implementation: "src/lib/recurrence.ts: calculateNextDueDate関数にstrictモード実装。strict=trueの場合、currentDueDate基準で計算。非strict時はcompletionDate基準。",
+      test: "toggleCompletion - 統合テスト: 優先度なしタスクはpri:タグ追加せず、説明文のpri:文字列を誤検出しない (AC3-4)",
+      implementation: "src/lib/todo.test.ts: 統合テスト追加。優先度なしタスク完了時pri:タグ不在確認、説明文\"priority: high\"等pri:誤検出しないことをアサート。tagsオブジェクトのpri:のみ処理確認。",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add calculateNextDueDate strict mode RED phase" },
-        { phase: "green" as CommitPhase, message: "feat: implement calculateNextDueDate strict mode" }
-      ]
-    },
-    {
-      test: "preserveThresholdInterval: 元タスクのt:とdue:の間隔(日数)を計算し、新タスクの次回due:から同間隔でt:を逆算設定する",
-      implementation: "src/lib/recurrence.ts: preserveThresholdInterval関数を実装。originalThreshold/originalDueから間隔計算(due - threshold)。newDue - intervalでnewThresholdを算出。",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add preserveThresholdInterval RED phase" },
-        { phase: "green" as CommitPhase, message: "feat: implement preserveThresholdInterval" }
-      ]
-    },
-    {
-      test: "createRecurringTask: 完了タスクからrec:に基づき新タスク作成。due:/t:更新、作成日=今日、completed=false、pri:タグ削除を実施",
-      implementation: "src/lib/recurrence.ts: createRecurringTask関数を実装。元タスククローン → due:/t:更新(calculateNextDueDate/preserveThresholdInterval使用) → createdDate=今日 → completed=false → tags配列からpri:削除 → 新Todoオブジェクト返却。",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add createRecurringTask RED phase" },
-        { phase: "green" as CommitPhase, message: "feat: implement createRecurringTask" }
-      ]
-    },
-    {
-      test: "toggleCompletion統合: toggleCompletionでrec:タグ検出時、元タスク完了+新タスク生成の両方を実行し、ファイル更新する",
-      implementation: "src/lib/todo.ts: toggleCompletion関数内にrec:検出ロジック追加。rec:存在時、createRecurringTask呼出 → 新タスクを配列末尾追加 → ファイル更新。統合テスト実施。",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add toggleCompletion recurrence integration RED phase" },
-        { phase: "green" as CommitPhase, message: "feat: integrate recurrence into toggleCompletion" },
-        { phase: "green" as CommitPhase, message: "fix: preserve threshold tag in createRecurringTask" }
-      ]
+      status: "pending" as SubtaskStatus,
+      commits: []
     }
   ]
 };

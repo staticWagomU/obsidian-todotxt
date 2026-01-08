@@ -164,49 +164,68 @@ export const currentSprint = {
   number: 16,
   pbiId: "PBI-016",
   story: "rec:タグによる繰り返しタスク自動生成で、完了時に次回タスクを自動作成する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "parseRecurrenceTag: rec:1d, rec:+1w, rec:3m, rec:1y形式をパースし、数値・期間(d/w/m/y)・strict/non-strict(+)を抽出する",
       implementation: "src/lib/recurrence.ts: parseRecurrenceTag関数を実装。正規表現で(+)?(d+)([dwmy])をマッチし、{value: number, unit: 'd'|'w'|'m'|'y', strict: boolean}型を返す。不正形式はnullを返す。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add parseRecurrenceTag RED phase" },
+        { phase: "green" as CommitPhase, message: "feat: implement parseRecurrenceTag for basic recurrence pattern" }
+      ]
     },
     {
       test: "calculateNextDueDate (non-strict): 完了日(今日)を基準に日/週/月/年を加算し、次回due:日付を計算する",
       implementation: "src/lib/recurrence.ts: calculateNextDueDate関数にnon-strictモード実装。baseDate + (value * unit)の日付計算。月/年は月末自動補正利用(Date API)。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add calculateNextDueDate non-strict RED phase" },
+        { phase: "green" as CommitPhase, message: "feat: implement calculateNextDueDate non-strict mode" }
+      ]
     },
     {
       test: "calculateNextDueDate (strict): 現在のdue:を基準に日/週/月/年を加算し、次回due:日付を計算する(+モード)",
       implementation: "src/lib/recurrence.ts: calculateNextDueDate関数にstrictモード実装。strict=trueの場合、currentDueDate基準で計算。非strict時はcompletionDate基準。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add calculateNextDueDate strict mode RED phase" },
+        { phase: "green" as CommitPhase, message: "feat: implement calculateNextDueDate strict mode" }
+      ]
     },
     {
       test: "preserveThresholdInterval: 元タスクのt:とdue:の間隔(日数)を計算し、新タスクの次回due:から同間隔でt:を逆算設定する",
       implementation: "src/lib/recurrence.ts: preserveThresholdInterval関数を実装。originalThreshold/originalDueから間隔計算(due - threshold)。newDue - intervalでnewThresholdを算出。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add preserveThresholdInterval RED phase" },
+        { phase: "green" as CommitPhase, message: "feat: implement preserveThresholdInterval" }
+      ]
     },
     {
       test: "createRecurringTask: 完了タスクからrec:に基づき新タスク作成。due:/t:更新、作成日=今日、completed=false、pri:タグ削除を実施",
       implementation: "src/lib/recurrence.ts: createRecurringTask関数を実装。元タスククローン → due:/t:更新(calculateNextDueDate/preserveThresholdInterval使用) → createdDate=今日 → completed=false → tags配列からpri:削除 → 新Todoオブジェクト返却。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add createRecurringTask RED phase" },
+        { phase: "green" as CommitPhase, message: "feat: implement createRecurringTask" }
+      ]
     },
     {
       test: "toggleCompletion統合: toggleCompletionでrec:タグ検出時、元タスク完了+新タスク生成の両方を実行し、ファイル更新する",
       implementation: "src/lib/todo.ts: toggleCompletion関数内にrec:検出ロジック追加。rec:存在時、createRecurringTask呼出 → 新タスクを配列末尾追加 → ファイル更新。統合テスト実施。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add toggleCompletion recurrence integration RED phase" },
+        { phase: "green" as CommitPhase, message: "feat: integrate recurrence into toggleCompletion" },
+        { phase: "green" as CommitPhase, message: "fix: preserve threshold tag in createRecurringTask" }
+      ]
     }
   ]
 };

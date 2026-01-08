@@ -65,4 +65,13 @@ describe("groupByContext", () => {
 
 		expect(result.size).toBe(0);
 	});
+
+	test("should group todo with single context", () => {
+		const todos = [createTodo("Task @Home", [], ["Home"])];
+		const result = groupByContext(todos);
+
+		expect(result.size).toBe(1);
+		expect(result.has("Home")).toBe(true);
+		expect(result.get("Home")).toEqual([todos[0]]);
+	});
 });

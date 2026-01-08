@@ -4,7 +4,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parseRecurrenceTag, calculateNextDueDate, preserveThresholdInterval, type RecurrencePattern } from './recurrence';
+import { parseRecurrenceTag, calculateNextDueDate, preserveThresholdInterval, createRecurringTask, type RecurrencePattern } from './recurrence';
+import type { Todo } from './todo';
 
 describe('parseRecurrenceTag', () => {
   it('rec:1d形式をパース: 1日non-strictモード', () => {
@@ -185,5 +186,103 @@ describe('preserveThresholdInterval', () => {
     const newDueDate = '2026-02-04';
     const result = preserveThresholdInterval(originalThreshold, originalDueDate, newDueDate);
     expect(result).toBe('2026-01-25'); // 10日前
+  });
+});
+
+describe('createRecurringTask', () => {
+  it('rec:1d, due:なし → 完了日+1日のdue:設定、completed=false、creationDate=今日', () => {
+    const completedTodo: Todo = {
+      completed: true,
+      completionDate: '2026-01-09',
+      creationDate: '2026-01-01',
+      description: 'Daily task',
+      projects: [],
+      contexts: [],
+      tags: { rec: 'rec:1d' },
+      raw: 'x 2026-01-09 2026-01-01 Daily task rec:1d'
+    };
+
+    const result = createRecurringTask(completedTodo, '2026-01-09');
+
+    expect(result.completed).toBe(false);
+    expect(result.completionDate).toBeUndefined();
+    expect(result.creationDate).toBe('2026-01-09');
+    expect(result.tags.due).toBe('2026-01-10'); // 完了日 + 1日
+    expect(result.description).toBe('Daily task');
+    expect(result.tags.rec).toBe('rec:1d'); // rec:は保持
+  });
+
+  it('rec:+1w, due:1/5 → strictモードでdue:1/12、completed=false', () => {
+    const completedTodo: Todo = {
+      completed: true,
+      completionDate: '2026-01-10',
+      creationDate: '2026-01-01',
+      description: 'Weekly task',
+      projects: [],
+      contexts: [],
+      tags: { rec: 'rec:+1w', due: 'due:2026-01-05' },
+      raw: 'x 2026-01-10 2026-01-01 Weekly task due:2026-01-05 rec:+1w'
+    };
+
+    const result = createRecurringTask(completedTodo, '2026-01-10');
+
+    expect(result.completed).toBe(false);
+    expect(result.tags.due).toBe('2026-01-12'); // due: + 1週間
+    expect(result.tags.rec).toBe('rec:+1w');
+  });
+
+  it('rec:1m, due:1/31, t:1/24 → due:2/28, t:2/21(7日間隔保持)', () => {
+    const completedTodo: Todo = {
+      completed: true,
+      completionDate: '2026-02-05',
+      creationDate: '2026-01-01',
+      description: 'Monthly task',
+      projects: [],
+      contexts: [],
+      tags: { rec: 'rec:1m', due: 'due:2026-01-31', t: 't:2026-01-24' },
+      raw: 'x 2026-02-05 2026-01-01 Monthly task due:2026-01-31 t:2026-01-24 rec:1m'
+    };
+
+    const result = createRecurringTask(completedTodo, '2026-02-05');
+
+    expect(result.completed).toBe(false);
+    expect(result.tags.due).toBe('2026-02-28'); // 月末補正
+    expect(result.tags.t).toBe('2026-02-21'); // 7日間隔保持
+  });
+
+  it('pri:タグは削除される(新タスクは優先度なし)', () => {
+    const completedTodo: Todo = {
+      completed: true,
+      priority: 'A',
+      completionDate: '2026-01-09',
+      creationDate: '2026-01-01',
+      description: 'Task with priority',
+      projects: [],
+      contexts: [],
+      tags: { rec: 'rec:1d', due: 'due:2026-01-09', pri: 'pri:A' },
+      raw: '(A) x 2026-01-09 2026-01-01 Task with priority due:2026-01-09 rec:1d pri:A'
+    };
+
+    const result = createRecurringTask(completedTodo, '2026-01-09');
+
+    expect(result.priority).toBeUndefined();
+    expect(result.tags.pri).toBeUndefined();
+  });
+
+  it('rec:なし → nullを返す', () => {
+    const completedTodo: Todo = {
+      completed: true,
+      completionDate: '2026-01-09',
+      creationDate: '2026-01-01',
+      description: 'Non-recurring task',
+      projects: [],
+      contexts: [],
+      tags: {},
+      raw: 'x 2026-01-09 2026-01-01 Non-recurring task'
+    };
+
+    const result = createRecurringTask(completedTodo, '2026-01-09');
+
+    expect(result).toBeNull();
   });
 });

@@ -595,4 +595,93 @@ describe("filterBySearch", () => {
 			expect(result[2]?.contexts).toContain("home");
 		});
 	});
+
+	describe("filter by search case insensitive", () => {
+		it("should perform case-insensitive search in description", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Buy groceries",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Buy groceries",
+				},
+				{
+					completed: false,
+					description: "buy laptop",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "buy laptop",
+				},
+				{
+					completed: false,
+					description: "Read book",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Read book",
+				},
+			];
+
+			const result = filterBySearch(todos, "BUY");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Buy groceries");
+			expect(result[1]?.description).toBe("buy laptop");
+		});
+
+		it("should perform case-insensitive search in projects", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Task 1",
+					projects: ["Website"],
+					contexts: [],
+					tags: {},
+					raw: "Task 1 +Website",
+				},
+				{
+					completed: false,
+					description: "Task 2",
+					projects: ["backend"],
+					contexts: [],
+					tags: {},
+					raw: "Task 2 +backend",
+				},
+			];
+
+			const result = filterBySearch(todos, "website");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.projects).toContain("Website");
+		});
+
+		it("should perform case-insensitive search in contexts", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Task A",
+					projects: [],
+					contexts: ["Office"],
+					tags: {},
+					raw: "Task A @Office",
+				},
+				{
+					completed: false,
+					description: "Task B",
+					projects: [],
+					contexts: ["home"],
+					tags: {},
+					raw: "Task B @home",
+				},
+			];
+
+			const result = filterBySearch(todos, "OFFICE");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.contexts).toContain("Office");
+		});
+	});
 });

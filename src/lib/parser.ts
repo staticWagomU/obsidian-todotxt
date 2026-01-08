@@ -98,14 +98,20 @@ export function parseTodoLine(line: string): Todo {
 	if (firstDateMatch) {
 		remaining = remaining.slice(firstDateMatch[0].length);
 
-		// Second date (only for completed tasks)
+		// Second date
 		const secondDateMatch = remaining.match(dateRegex);
 		if (secondDateMatch) {
+			// Two dates: first is completion date (for completed tasks), second is creation date
 			completionDate = firstDateMatch[1];
 			creationDate = secondDateMatch[1];
 			remaining = remaining.slice(secondDateMatch[0].length);
 		} else {
-			creationDate = firstDateMatch[1];
+			// One date: it's completion date if completed, creation date otherwise
+			if (completed) {
+				completionDate = firstDateMatch[1];
+			} else {
+				creationDate = firstDateMatch[1];
+			}
 		}
 	}
 
@@ -144,7 +150,7 @@ export function parseTodoLine(line: string): Todo {
 		priority,
 		completionDate,
 		creationDate,
-		description: trimmed,
+		description: remaining, // Use remaining (parsed description) instead of trimmed
 		projects,
 		contexts,
 		tags,

@@ -97,7 +97,28 @@ export function editTask(todo: Todo, updates: Partial<Pick<Todo, "description" |
 
 	// Handle description update (including empty string)
 	if ("description" in updates) {
-		result.description = updates.description ?? "";
+		const newDescription = updates.description ?? "";
+		result.description = newDescription;
+
+		// Extract projects from new description
+		const projects: string[] = [];
+		const projectMatches = newDescription.matchAll(/\+(\S+)/g);
+		for (const match of projectMatches) {
+			if (match[1]) {
+				projects.push(match[1]);
+			}
+		}
+		result.projects = projects;
+
+		// Extract contexts from new description
+		const contexts: string[] = [];
+		const contextMatches = newDescription.matchAll(/@(\S+)/g);
+		for (const match of contextMatches) {
+			if (match[1]) {
+				contexts.push(match[1]);
+			}
+		}
+		result.contexts = contexts;
 	}
 
 	// Handle priority update (including undefined to remove priority)

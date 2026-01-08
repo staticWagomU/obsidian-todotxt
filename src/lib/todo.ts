@@ -152,3 +152,15 @@ export function editAndUpdateTask(
 	const editedTodo = editTask(todo, updates);
 	return updateTaskAtLine(content, lineIndex, editedTodo);
 }
+
+/**
+ * Remove a task from the list at specified index
+ * Returns a new array without the task
+ */
+export function removeTaskFromList(todos: Todo[], index: number): Todo[] {
+	if (index < 0 || index >= todos.length) {
+		return todos;
+	}
+
+	return todos.filter((_todo, i) => i !== index);
+}

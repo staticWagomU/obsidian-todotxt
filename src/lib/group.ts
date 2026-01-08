@@ -19,12 +19,22 @@ export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
 	const grouped = new Map<string, Todo[]>();
 
 	for (const todo of todos) {
-		for (const project of todo.projects) {
-			const group = grouped.get(project);
+		if (todo.projects.length === 0) {
+			// Todos without projects go to "未分類" group
+			const group = grouped.get("未分類");
 			if (group === undefined) {
-				grouped.set(project, [todo]);
+				grouped.set("未分類", [todo]);
 			} else {
 				group.push(todo);
+			}
+		} else {
+			for (const project of todo.projects) {
+				const group = grouped.get(project);
+				if (group === undefined) {
+					grouped.set(project, [todo]);
+				} else {
+					group.push(todo);
+				}
 			}
 		}
 	}

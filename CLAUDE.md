@@ -16,7 +16,7 @@ This is an Obsidian community plugin that enables managing and displaying todo.t
 - **Build Tool**: esbuild
 - **Package Manager**: pnpm
 - **Test Framework**: Vitest
-- **Linter**: ESLint with eslint-plugin-obsidianmd
+- **Linter**: Oxlint
 - **Type Checker**: TypeScript (tsc)
 
 ## Development Commands

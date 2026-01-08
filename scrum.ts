@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 11, pbi: "PBI-011" as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
 };
 
 // Product Goal
@@ -138,8 +138,55 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 11,
+  pbiId: "PBI-011",
+  story: "グループ化による関連タスクのまとめ表示",
+  status: "not_started" as SprintStatus,
+  subtasks: [
+    {
+      test: "groupByProject関数: 空配列入力時は空Mapを返す",
+      implementation: "groupByProject関数を作成し、空配列を処理するロジックを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "groupByProject関数: プロジェクト1つ持つタスクを正しくグループ化",
+      implementation: "単一プロジェクトタグを持つタスクのグループ化ロジックを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "groupByProject関数: 複数プロジェクトを持つタスクを全該当グループに配置",
+      implementation: "複数プロジェクトタグを持つタスクの重複配置ロジックを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "groupByContext関数: 空配列入力時は空Mapを返す",
+      implementation: "groupByContext関数を作成し、空配列を処理するロジックを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "groupByContext関数: コンテキスト1つ持つタスクを正しくグループ化",
+      implementation: "単一コンテキストタグを持つタスクのグループ化ロジックを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "groupByContext関数: 複数コンテキストを持つタスクを全該当グループに配置",
+      implementation: "複数コンテキストタグを持つタスクの重複配置ロジックを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "注意: Sprint開始前にPhase 1テクニカルレビューを実施すること (Sprint 10 Retrospective Action)",
 };
 
 // Impediments

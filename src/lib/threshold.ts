@@ -67,6 +67,17 @@ function toDateOnly(date: Date): Date {
 const MILLISECONDS_IN_DAY = 86400000;
 
 /**
+ * 2つの日付の差を日数で計算する
+ * @param date1 比較元の日付
+ * @param date2 比較先の日付
+ * @returns 日数の差（date1 - date2）
+ */
+function calculateDaysDifference(date1: Date, date2: Date): number {
+	const diffInMilliseconds = date1.getTime() - date2.getTime();
+	return diffInMilliseconds / MILLISECONDS_IN_DAY;
+}
+
+/**
  * しきい値日付と現在日付を比較し、状態を判定する
  * @param todo Todoオブジェクト
  * @param today 現在日付
@@ -82,9 +93,7 @@ export function getThresholdDateStatus(
 	const thresholdDateOnly = toDateOnly(thresholdDate);
 	const todayOnly = toDateOnly(today);
 
-	const diffInMilliseconds =
-		thresholdDateOnly.getTime() - todayOnly.getTime();
-	const diffInDays = diffInMilliseconds / MILLISECONDS_IN_DAY;
+	const diffInDays = calculateDaysDifference(thresholdDateOnly, todayOnly);
 
 	const isThresholdInFuture = diffInDays > 0;
 	if (isThresholdInFuture) return "not_ready";

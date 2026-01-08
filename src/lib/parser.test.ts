@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTodoLine, parseTodoTxt, serializeTodo, updateTodoInList, appendTaskToFile } from "./parser";
+import { parseTodoLine, parseTodoTxt, serializeTodo, updateTodoInList, appendTaskToFile, updateTaskAtLine } from "./parser";
 import type { Todo } from "./todo";
 
 describe("parse completion", () => {
@@ -563,5 +563,95 @@ describe("append task to file", () => {
 		const result = appendTaskToFile(content, newTask);
 
 		expect(result).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk +GroceryShopping");
+	});
+});
+
+describe("update task at specific line", () => {
+	it("先頭行を更新できる", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+		const updatedTodo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			priority: "A",
+			creationDate: "2026-01-01",
+			description: "Call Mom",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		const result = updateTaskAtLine(content, 0, updatedTodo);
+
+		expect(result).toBe("x (A) 2026-01-08 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report");
+	});
+
+	it("中間行を更新できる", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+		const updatedTodo: Todo = {
+			completed: false,
+			priority: "A",
+			creationDate: "2026-01-02",
+			description: "Buy bread +GroceryShopping",
+			projects: ["GroceryShopping"],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		const result = updateTaskAtLine(content, 1, updatedTodo);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(A) 2026-01-02 Buy bread +GroceryShopping\n(C) 2026-01-03 Write report");
+	});
+
+	it("末尾行を更新できる", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+		const updatedTodo: Todo = {
+			completed: false,
+			priority: "C",
+			creationDate: "2026-01-03",
+			description: "Write report @office",
+			projects: [],
+			contexts: ["office"],
+			tags: {},
+			raw: "",
+		};
+
+		const result = updateTaskAtLine(content, 2, updatedTodo);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report @office");
+	});
+
+	it("範囲外のインデックスでエラーハンドリング", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+		const updatedTodo: Todo = {
+			completed: false,
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		// 範囲外のインデックスの場合は元のコンテンツを返す
+		const result = updateTaskAtLine(content, 5, updatedTodo);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom");
+	});
+
+	it("空コンテンツを処理できる", () => {
+		const content = "";
+		const updatedTodo: Todo = {
+			completed: false,
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		const result = updateTaskAtLine(content, 0, updatedTodo);
+
+		expect(result).toBe("");
 	});
 });

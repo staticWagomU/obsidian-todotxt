@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 3, pbi: "PBI-003" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -152,8 +152,48 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 3,
+  pbiId: "PBI-003" as string | null,
+  story: "チェックボックスクリックでタスクの完了状態をトグルし、完了日の自動管理とファイル保存を実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "toggleCompletion - 未完了→完了トグル時に今日の日付を自動付与",
+      implementation: "src/lib/todo.ts - toggleCompletion関数で完了フラグと完了日を設定",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "toggleCompletion - 完了→未完了トグル時に完了日を削除",
+      implementation: "src/lib/todo.ts - toggleCompletion関数で完了フラグと完了日をクリア",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "serializeTodo - Todoオブジェクトをtodo.txt形式文字列に変換",
+      implementation: "src/lib/parser.ts - serializeTodo関数でTodo→文字列変換 (完了マーク/優先度/日付/説明/タグ)",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "saveTodoToFile - トグル後のタスクをファイルに保存",
+      implementation: "src/lib/parser.ts - saveTodoToFile関数で配列の特定インデックスを更新して保存",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "View統合テスト - トグル操作でView表示とファイルが更新される",
+      implementation: "src/view.tsx - handleToggle関数でtoggleCompletion→serializeTodo→saveTodoToFileを連携",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "Sprint Goal: チェックボックストグルで完了状態管理と永続化を完成させる。Sprint 2振り返りアクション適用: describe階層化(toggleCompletionは3層)、統合テスト追加、各describe 3-7ケース目安。",
 };
 
 // Impediments

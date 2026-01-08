@@ -2,6 +2,8 @@
  * Todo.txt data model
  */
 
+import { appendTaskToFile } from "./parser";
+
 export interface Todo {
 	completed: boolean;
 	priority?: string; // (A)-(Z)
@@ -75,4 +77,13 @@ export function createTask(description: string, priority?: string): Todo {
 		tags: {},
 		raw: "",
 	};
+}
+
+/**
+ * Create a new task and append it to the file content
+ * Combines createTask and appendTaskToFile
+ */
+export function createAndAppendTask(content: string, description: string, priority?: string): string {
+	const newTask = createTask(description, priority);
+	return appendTaskToFile(content, newTask);
 }

@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { getPriorityColor, shouldShowPriorityBadge } from "./priority";
+import {
+  getPriorityColor,
+  shouldShowPriorityBadge,
+  getPriorityBadgeStyle,
+} from "./priority";
 
 describe("getPriorityColor", () => {
   it("優先度Aの場合、赤色の色コードを返すこと", () => {
@@ -35,5 +39,73 @@ describe("shouldShowPriorityBadge", () => {
 
   it("優先度なし(undefined)の場合、falseを返すこと", () => {
     expect(shouldShowPriorityBadge(undefined)).toBe(false);
+  });
+});
+
+describe("Priority Badge Integration", () => {
+  it("優先度Aのタスクの場合、バッジを表示し赤色を適用すること", () => {
+    const priority = "A";
+    const shouldShow = shouldShowPriorityBadge(priority);
+    const color = getPriorityColor(priority);
+
+    expect(shouldShow).toBe(true);
+    expect(color).toBe("#ff4444");
+  });
+
+  it("優先度Bのタスクの場合、バッジを表示しオレンジ色を適用すること", () => {
+    const priority = "B";
+    const shouldShow = shouldShowPriorityBadge(priority);
+    const color = getPriorityColor(priority);
+
+    expect(shouldShow).toBe(true);
+    expect(color).toBe("#ff9944");
+  });
+
+  it("優先度Cのタスクの場合、バッジを表示し黄色を適用すること", () => {
+    const priority = "C";
+    const shouldShow = shouldShowPriorityBadge(priority);
+    const color = getPriorityColor(priority);
+
+    expect(shouldShow).toBe(true);
+    expect(color).toBe("#ffdd44");
+  });
+
+  it("優先度D-Zのタスクの場合、バッジを表示しデフォルト色を適用すること", () => {
+    const priority = "D";
+    const shouldShow = shouldShowPriorityBadge(priority);
+    const color = getPriorityColor(priority);
+
+    expect(shouldShow).toBe(true);
+    expect(color).toBe("#cccccc");
+  });
+
+  it("優先度なしのタスクの場合、バッジを非表示にすること", () => {
+    const priority = undefined;
+    const shouldShow = shouldShowPriorityBadge(priority);
+
+    expect(shouldShow).toBe(false);
+  });
+
+  it("優先度に応じたバッジスタイルオブジェクトを返すこと", () => {
+    // 優先度Aの場合
+    const styleA = getPriorityBadgeStyle("A");
+    expect(styleA).toEqual({
+      display: "inline-block",
+      backgroundColor: "#ff4444",
+      color: "#ffffff",
+      padding: "2px 6px",
+      borderRadius: "3px",
+      fontSize: "0.85em",
+      fontWeight: "bold",
+      marginRight: "4px",
+    });
+
+    // 優先度Bの場合
+    const styleB = getPriorityBadgeStyle("B");
+    expect(styleB.backgroundColor).toBe("#ff9944");
+
+    // 優先度なしの場合
+    const styleNone = getPriorityBadgeStyle(undefined);
+    expect(styleNone).toEqual({ display: "none" });
   });
 });

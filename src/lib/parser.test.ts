@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTodoLine, parseTodoTxt, serializeTodo, updateTodoInList } from "./parser";
+import { parseTodoLine, parseTodoTxt, serializeTodo, updateTodoInList, appendTaskToFile } from "./parser";
 import type { Todo } from "./todo";
 
 describe("parse completion", () => {
@@ -492,5 +492,76 @@ describe("save toggled task to file", () => {
 		const result = updateTodoInList(todos, 1, updatedTodo);
 
 		expect(result).toBe("(A) 2026-01-01 Call Mom +Family @phone\nx 2026-01-08 Buy milk +GroceryShopping");
+	});
+});
+
+describe("append task to file", () => {
+	it("空ファイルにタスクを追加", () => {
+		const content = "";
+		const newTask: Todo = {
+			completed: false,
+			creationDate: "2026-01-08",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		const result = appendTaskToFile(content, newTask);
+
+		expect(result).toBe("2026-01-08 Buy milk");
+	});
+
+	it("1行既存のファイルにタスクを追加", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+		const newTask: Todo = {
+			completed: false,
+			creationDate: "2026-01-08",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		const result = appendTaskToFile(content, newTask);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk");
+	});
+
+	it("複数行既存のファイルにタスクを追加", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy groceries";
+		const newTask: Todo = {
+			completed: false,
+			priority: "C",
+			creationDate: "2026-01-08",
+			description: "Write report +Work @office",
+			projects: ["Work"],
+			contexts: ["office"],
+			tags: {},
+			raw: "",
+		};
+
+		const result = appendTaskToFile(content, newTask);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy groceries\n(C) 2026-01-08 Write report +Work @office");
+	});
+
+	it("末尾改行なしのファイルにタスクを追加", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+		const newTask: Todo = {
+			completed: false,
+			creationDate: "2026-01-08",
+			description: "Buy milk +GroceryShopping",
+			projects: ["GroceryShopping"],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		const result = appendTaskToFile(content, newTask);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk +GroceryShopping");
 	});
 });

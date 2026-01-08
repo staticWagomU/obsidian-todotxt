@@ -32,3 +32,34 @@ export function getDueDate(tags: string[]): Date | undefined {
 
 	return parseValidDate(dateStr);
 }
+
+/**
+ * 期限状態の型定義
+ */
+export type DueDateStatus = "overdue" | "today" | "future";
+
+/**
+ * 期限日付と現在日付を比較し、状態を判定する
+ * @param dueDate 期限日付
+ * @param today 現在日付
+ * @returns 期限状態 (overdue/today/future)
+ */
+export function getDueDateStatus(dueDate: Date, today: Date): DueDateStatus {
+	// 日付部分のみを比較するため、時刻を00:00:00にリセット
+	const dueDateOnly = new Date(
+		dueDate.getFullYear(),
+		dueDate.getMonth(),
+		dueDate.getDate(),
+	);
+	const todayOnly = new Date(
+		today.getFullYear(),
+		today.getMonth(),
+		today.getDate(),
+	);
+
+	const diffMs = dueDateOnly.getTime() - todayOnly.getTime();
+
+	if (diffMs < 0) return "overdue";
+	if (diffMs === 0) return "today";
+	return "future";
+}

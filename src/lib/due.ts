@@ -39,23 +39,23 @@ export function getDueDate(tags: string[]): Date | undefined {
 export type DueDateStatus = "overdue" | "today" | "future";
 
 /**
+ * 日付から時刻部分を削除し、日付のみを返す（00:00:00にリセット）
+ * @param date 日付
+ * @returns 時刻がリセットされた日付
+ */
+function toDateOnly(date: Date): Date {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/**
  * 期限日付と現在日付を比較し、状態を判定する
  * @param dueDate 期限日付
  * @param today 現在日付
  * @returns 期限状態 (overdue/today/future)
  */
 export function getDueDateStatus(dueDate: Date, today: Date): DueDateStatus {
-	// 日付部分のみを比較するため、時刻を00:00:00にリセット
-	const dueDateOnly = new Date(
-		dueDate.getFullYear(),
-		dueDate.getMonth(),
-		dueDate.getDate(),
-	);
-	const todayOnly = new Date(
-		today.getFullYear(),
-		today.getMonth(),
-		today.getDate(),
-	);
+	const dueDateOnly = toDateOnly(dueDate);
+	const todayOnly = toDateOnly(today);
 
 	const diffMs = dueDateOnly.getTime() - todayOnly.getTime();
 

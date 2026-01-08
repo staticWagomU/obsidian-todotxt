@@ -7,6 +7,10 @@ import type { Todo } from "./todo";
 /**
  * Add a todo to a group in the grouped map
  * Creates new group if it doesn't exist
+ *
+ * @param grouped - The map to add the todo to
+ * @param key - The group key (project or context name)
+ * @param todo - The todo to add
  */
 function addToGroup(grouped: Map<string, Todo[]>, key: string, todo: Todo): void {
 	const group = grouped.get(key);

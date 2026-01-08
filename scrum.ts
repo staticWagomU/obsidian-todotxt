@@ -12,9 +12,11 @@ type CommitPhase = "red" | "green" | "refactor";
 
 interface AcceptanceCriterion { criterion: string; verification: string; }
 interface UserStory { role: string; capability: string; benefit: string; }
+interface Complexity { functions: number; estimatedTests: number; externalDependencies: number; score: "LOW" | "MEDIUM" | "HIGH"; subtasks: number; }
 interface ProductBacklogItem {
   id: string; story: UserStory; acceptanceCriteria: AcceptanceCriterion[];
   dependencies: string[]; status: PBIStatus;
+  complexity?: Complexity; refactorChecklist?: string[];
 }
 interface Commit { phase: CommitPhase; message: string; }
 interface Subtask {
@@ -92,9 +94,13 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-002"], status: "done" },
   { id: "PBI-007", story: { role: "Obsidianユーザー", capability: "ソート表示",
       benefit: "優先度順の一覧" }, acceptanceCriteria: [
-      { criterion: "未完了優先", verification: "pnpm vitest run --grep 'sort incomplete'" },
-      { criterion: "優先度順", verification: "pnpm vitest run --grep 'sort by priority'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+      { criterion: "未完了タスクを完了タスクより前に配置する", verification: "pnpm vitest run -t 'sort incomplete before completed'" },
+      { criterion: "優先度順にソート (A>B>C>...>Z>優先度なし) する", verification: "pnpm vitest run -t 'sort by priority'" },
+      { criterion: "同優先度内ではテキスト辞書順にソートする", verification: "pnpm vitest run -t 'sort by text within same priority'" },
+      { criterion: "元の配列を変更せずソート済み配列を返す", verification: "pnpm vitest run -t 'return sorted array without modifying original'" },
+    ], dependencies: ["PBI-002"], status: "ready",
+    complexity: { functions: 1, estimatedTests: 12, externalDependencies: 0, score: "LOW", subtasks: 3 },
+    refactorChecklist: ["コード重複", "型安全性", "関数分割", "命名"] },
   // Phase 2: フィルタリング & UI
   { id: "PBI-008", story: { role: "Obsidianユーザー", capability: "優先度色分けバッジ",
       benefit: "視覚的識別" }, acceptanceCriteria: [

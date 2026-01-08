@@ -81,4 +81,72 @@ describe("filterByPriority", () => {
 			expect(result.every(todo => todo.priority !== "C")).toBe(true);
 		});
 	});
+
+	describe("filter tasks without priority", () => {
+		it("should return only tasks without priority when filtering by null", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					priority: "A",
+					description: "High priority task",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "(A) High priority task",
+				},
+				{
+					completed: false,
+					description: "No priority task 1",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "No priority task 1",
+				},
+				{
+					completed: false,
+					description: "No priority task 2",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "No priority task 2",
+				},
+			];
+
+			const result = filterByPriority(todos, null);
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.priority).toBeUndefined();
+			expect(result[1]?.priority).toBeUndefined();
+			expect(result[0]?.description).toBe("No priority task 1");
+			expect(result[1]?.description).toBe("No priority task 2");
+		});
+
+		it("should return only tasks without priority when filtering by undefined", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					priority: "B",
+					description: "Priority B task",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "(B) Priority B task",
+				},
+				{
+					completed: false,
+					description: "No priority task",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "No priority task",
+				},
+			];
+
+			const result = filterByPriority(todos, undefined);
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.priority).toBeUndefined();
+			expect(result[0]?.description).toBe("No priority task");
+		});
+	});
 });

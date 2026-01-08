@@ -31,14 +31,18 @@ function parseWikilinkContent(linkContent: string): InternalLink {
  * @returns 内部リンクの配列
  */
 export function extractInternalLinks(description: string): InternalLink[] {
-	// [[...]]パターンにマッチする正規表現
-	const wikilinkPattern = /\[\[([^\]]+)\]\]/;
-	const match = wikilinkPattern.exec(description);
+	// [[...]]パターンにマッチする正規表現(グローバルマッチ)
+	const wikilinkPattern = /\[\[([^\]]+)\]\]/g;
+	const matches = description.matchAll(wikilinkPattern);
 
-	if (!match) return [];
+	const links: InternalLink[] = [];
+	for (const match of matches) {
+		const linkContent = match[1];
+		// 空のリンク[[]]は除外
+		if (!linkContent || linkContent.trim().length === 0) continue;
 
-	const linkContent = match[1];
-	if (!linkContent || linkContent.trim().length === 0) return [];
+		links.push(parseWikilinkContent(linkContent));
+	}
 
-	return [parseWikilinkContent(linkContent)];
+	return links;
 }

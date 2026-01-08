@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 5, pbi: "PBI-005" as string | null, status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -157,68 +157,8 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 5,
-  pbiId: "PBI-005" as string | null,
-  story: "As an Obsidian user, I can edit tasks for content modification",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "editTask function modifies todo properties while preserving metadata",
-      implementation: "Implement editTask(todo, updates) in src/lib/todo.ts that accepts partial updates and returns new Todo",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add editTask function tests (6 cases)" },
-        { phase: "green" as CommitPhase, message: "feat: implement editTask function" },
-      ],
-      notes: "Test cases (6): 説明文のみ編集, 優先度のみ編集, プロジェクト/コンテキスト含む説明文編集, 完了状態保持, 作成日保持, 完了日保持. Edge cases: 空文字列, undefined値, 複数プロジェクト/コンテキスト同時編集",
-    },
-    {
-      test: "editTask extracts projects and contexts from updated description",
-      implementation: "Extract projects and contexts from new description in editTask, similar to createTask logic",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add editTask project/context extraction tests (4 cases)" },
-        { phase: "green" as CommitPhase, message: "feat: add project/context extraction to editTask" },
-      ],
-      notes: "Test cases (4): 新規プロジェクト追加, 既存プロジェクト削除, 新規コンテキスト追加, 既存コンテキスト削除. Edge cases: プロジェクト/コンテキストなし→あり, あり→なし",
-    },
-    {
-      test: "updateTaskAtLine replaces todo at specified line in content",
-      implementation: "Implement updateTaskAtLine(content, lineIndex, updatedTodo) in src/lib/parser.ts using existing updateTodoInList pattern",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add updateTaskAtLine tests (5 cases)" },
-        { phase: "green" as CommitPhase, message: "feat: implement updateTaskAtLine function" },
-      ],
-      notes: "Test cases (5): 先頭行更新, 中間行更新, 末尾行更新, 範囲外インデックス(エラーハンドリング), 空コンテンツ. Edge cases: 1行のみのファイル, 末尾改行なし, 改行のみの行が含まれる",
-    },
-    {
-      test: "editAndUpdateTask combines editTask and updateTaskAtLine",
-      implementation: "Implement editAndUpdateTask(content, lineIndex, updates) that combines edit and update operations",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add editAndUpdateTask integration tests (6 cases)" },
-        { phase: "green" as CommitPhase, message: "feat: implement editAndUpdateTask integration" },
-      ],
-      notes: "Test cases (6): 完全な編集フロー(説明+優先度), メタデータ保持確認, serializeTodo統合(形式正確性), 複数タスク中の1タスク編集, 前後のタスク不変性, パース→編集→シリアライズ往復. Edge cases: 空ファイル, 無効なlineIndex",
-    },
-    {
-      test: "View integration for task edit handler and display update",
-      implementation: "Add edit handler to TodotxtView in src/view.tsx, integrate with editAndUpdateTask, verify display updates",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add View edit integration tests (4 cases)" },
-        { phase: "green" as CommitPhase, message: "feat: add getEditHandler to TodotxtView" },
-      ],
-      notes: "Test cases (4): 編集後のView更新(モック), ファイル保存(setViewData), 編集前後のTodo比較, エラーハンドリング(無効な編集). 注: React UIコンポーネント実装はPBI-019で実施、ここではView層のハンドラとモックテストのみ",
-    },
-  ],
-  notes: "Sprint Goal: Obsidianユーザーがタスクの内容(説明文・優先度・プロジェクト・コンテキスト)を編集でき、完了状態や日付などのメタデータを保持したまま、ファイルの正しい位置に保存できる機能を実装する。Sprint 4振り返りアクションを適用: テストケース数を事前見積もり(合計25テスト)、エッジケースを計画時に洗い出し、統合テストスコープを明確化(React UIは別PBI)。既存関数再利用: serializeTodo(Sprint 3), updateTodoInList pattern(Sprint 3), プロジェクト/コンテキスト抽出ロジック(Sprint 4 createTask)。実績: 5サブタスク完了(10コミット: 5 Red + 5 Green)、全DoD満たす。Tests: 102 passed (25新規テスト追加), Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success",
+  number: 0, pbiId: null as string | null, story: "",
+  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
 };
 
 // Impediments

@@ -9,8 +9,19 @@ export function parseTodoLine(line: string): Todo {
 	// Parse completion mark
 	const completed = trimmed.startsWith("x ");
 
+	// Parse priority
+	let priority: string | undefined;
+	let remaining = completed ? trimmed.slice(2).trim() : trimmed;
+
+	const priorityMatch = remaining.match(/^\(([A-Z])\)\s/);
+	if (priorityMatch) {
+		priority = priorityMatch[1];
+		remaining = remaining.slice(priorityMatch[0].length);
+	}
+
 	return {
 		completed,
+		priority,
 		description: trimmed,
 		projects: [],
 		contexts: [],

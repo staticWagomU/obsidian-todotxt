@@ -70,8 +70,11 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-002"], status: "done" },
   // Phase 2: フィルタリング & UI
   { id: "PBI-008", story: { role: "Obsidianユーザー", capability: "優先度色分けバッジ", benefit: "視覚的識別" }, acceptanceCriteria: [
-      { criterion: "A=赤,B=橙,C=黄", verification: "pnpm vitest run --grep 'priority style'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+      { criterion: "優先度A=赤、B=橙、C=黄の色分けバッジ表示", verification: "pnpm vitest run --grep 'priority badge color A B C'" },
+      { criterion: "優先度D-Zはデフォルトスタイル適用", verification: "pnpm vitest run --grep 'priority badge default style'" },
+      { criterion: "優先度なしタスクはバッジ非表示", verification: "pnpm vitest run --grep 'priority badge none'" },
+    ], dependencies: ["PBI-002"], status: "ready",
+    complexity: { functions: 2, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-009", story: { role: "Obsidianユーザー", capability: "優先度フィルタ", benefit: "特定優先度表示" }, acceptanceCriteria: [
       { criterion: "フィルタ適用", verification: "pnpm vitest run --grep 'filter by priority'" },
     ], dependencies: ["PBI-007"], status: "draft" },

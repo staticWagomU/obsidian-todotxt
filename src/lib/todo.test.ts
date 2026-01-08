@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { toggleCompletion, createTask, createAndAppendTask, editTask } from "./todo";
+import { toggleCompletion, createTask, createAndAppendTask, editTask, editAndUpdateTask } from "./todo";
 import type { Todo } from "./todo";
 
 describe("toggle task completion status", () => {
@@ -427,5 +427,74 @@ describe("edit task extracts projects and contexts", () => {
 
 		expect(result.description).toBe("Buy milk");
 		expect(result.contexts).toEqual([]);
+	});
+});
+
+describe("edit and update task integration", () => {
+	it("完全な編集フロー（説明+優先度）", () => {
+		const content = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+
+		const result = editAndUpdateTask(content, 1, {
+			description: "Buy bread +GroceryShopping",
+			priority: "A",
+		});
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(A) 2026-01-02 Buy bread +GroceryShopping\n(C) 2026-01-03 Write report");
+	});
+
+	it("メタデータ保持確認", () => {
+		const content = "x (B) 2026-01-08 2026-01-01 Buy milk";
+
+		const result = editAndUpdateTask(content, 0, {
+			description: "Buy bread",
+		});
+
+		// 完了状態、完了日、作成日、優先度を保持
+		expect(result).toBe("x (B) 2026-01-08 2026-01-01 Buy bread");
+	});
+
+	it("serializeTodo統合（形式正確性）", () => {
+		const content = "(A) 2026-01-01 Call Mom";
+
+		const result = editAndUpdateTask(content, 0, {
+			description: "Call Mom +Family @phone",
+		});
+
+		// todo.txt形式に正しくシリアライズされる
+		expect(result).toBe("(A) 2026-01-01 Call Mom +Family @phone");
+	});
+
+	it("複数タスク中の1タスク編集", () => {
+		const content = "(A) 2026-01-01 Task 1\n(B) 2026-01-02 Task 2\n(C) 2026-01-03 Task 3";
+
+		const result = editAndUpdateTask(content, 1, {
+			description: "Updated Task 2",
+		});
+
+		expect(result).toBe("(A) 2026-01-01 Task 1\n(B) 2026-01-02 Updated Task 2\n(C) 2026-01-03 Task 3");
+	});
+
+	it("前後のタスク不変性", () => {
+		const content = "(A) 2026-01-01 Task 1\n(B) 2026-01-02 Task 2\n(C) 2026-01-03 Task 3";
+
+		const result = editAndUpdateTask(content, 1, {
+			priority: "D",
+		});
+
+		// Task 1とTask 3は変更されない
+		const lines = result.split("\n");
+		expect(lines[0]).toBe("(A) 2026-01-01 Task 1");
+		expect(lines[2]).toBe("(C) 2026-01-03 Task 3");
+	});
+
+	it("パース→編集→シリアライズ往復", () => {
+		const content = "x (A) 2026-01-08 2026-01-01 Buy milk +GroceryShopping @store due:2026-01-10";
+
+		const result = editAndUpdateTask(content, 0, {
+			description: "Buy bread +GroceryShopping @store due:2026-01-10",
+		});
+
+		// 往復後も形式が保持される
+		expect(result).toBe("x (A) 2026-01-08 2026-01-01 Buy bread +GroceryShopping @store due:2026-01-10");
 	});
 });

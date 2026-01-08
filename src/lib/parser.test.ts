@@ -50,3 +50,42 @@ describe("parse priority", () => {
 		expect(result.priority).toBeUndefined();
 	});
 });
+
+describe("parse dates", () => {
+	it("作成日のみの場合", () => {
+		const result = parseTodoLine("2026-01-08 Buy milk");
+		expect(result.creationDate).toBe("2026-01-08");
+		expect(result.completionDate).toBeUndefined();
+	});
+
+	it("完了タスクの完了日と作成日", () => {
+		const result = parseTodoLine("x 2026-01-08 2026-01-01 Buy milk");
+		expect(result.completionDate).toBe("2026-01-08");
+		expect(result.creationDate).toBe("2026-01-01");
+	});
+
+	it("優先度と作成日の組み合わせ", () => {
+		const result = parseTodoLine("(A) 2026-01-08 Call Mom");
+		expect(result.priority).toBe("A");
+		expect(result.creationDate).toBe("2026-01-08");
+	});
+
+	it("完了+優先度+日付の組み合わせ", () => {
+		const result = parseTodoLine("x (B) 2026-01-08 2026-01-01 Task");
+		expect(result.completed).toBe(true);
+		expect(result.priority).toBe("B");
+		expect(result.completionDate).toBe("2026-01-08");
+		expect(result.creationDate).toBe("2026-01-01");
+	});
+
+	it("日付がない場合はundefined", () => {
+		const result = parseTodoLine("Buy milk");
+		expect(result.creationDate).toBeUndefined();
+		expect(result.completionDate).toBeUndefined();
+	});
+
+	it("YYYY-MM-DD形式以外は無効", () => {
+		const result = parseTodoLine("01-08-2026 Invalid date");
+		expect(result.creationDate).toBeUndefined();
+	});
+});

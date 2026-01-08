@@ -34,9 +34,9 @@ export function sortTodos(todos: Todo[]): Todo[] {
 		}
 	};
 
-	// Sort both groups
-	const sortedIncompleteTasks = incompleteTasks.sort(sortByPriorityAndDescription);
-	const sortedCompletedTasks = completedTasks.sort(sortByPriorityAndDescription);
+	// Sort both groups (create copies to ensure immutability)
+	const sortedIncompleteTasks = [...incompleteTasks].sort(sortByPriorityAndDescription);
+	const sortedCompletedTasks = [...completedTasks].sort(sortByPriorityAndDescription);
 
 	// Return incomplete tasks first, then completed tasks
 	return [...sortedIncompleteTasks, ...sortedCompletedTasks];

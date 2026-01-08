@@ -31,14 +31,28 @@ export function filterByPriority(todos: Todo[], priority: string | null | undefi
 }
 
 /**
- * Filter todos by search keyword in description (immutable)
- * Returns a new array containing only tasks whose description contains the search keyword
+ * Filter todos by search keyword in description, projects, or contexts (immutable)
+ * Returns a new array containing only tasks that match the search keyword
  * The original array is not modified
  *
  * @param todos - Array of todos to filter
- * @param keyword - Search keyword to find in description
+ * @param keyword - Search keyword to find in description, projects, or contexts
  * @returns New filtered array of todos matching the search keyword
  */
 export function filterBySearch(todos: Todo[], keyword: string): Todo[] {
-	return todos.filter(todo => todo.description.includes(keyword));
+	return todos.filter(todo => {
+		// Check description
+		if (todo.description.includes(keyword)) {
+			return true;
+		}
+		// Check projects
+		if (todo.projects.some(project => project.includes(keyword))) {
+			return true;
+		}
+		// Check contexts
+		if (todo.contexts.some(context => context.includes(keyword))) {
+			return true;
+		}
+		return false;
+	});
 }

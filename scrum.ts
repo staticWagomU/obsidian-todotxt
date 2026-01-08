@@ -82,8 +82,12 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-007"], status: "ready",
     complexity: { functions: 1, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-010", story: { role: "Obsidianユーザー", capability: "テキスト検索", benefit: "キーワード絞込" }, acceptanceCriteria: [
-      { criterion: "検索フィルタ", verification: "pnpm vitest run --grep 'filter by search'" },
-    ], dependencies: ["PBI-007"], status: "draft" },
+      { criterion: "description検索: 説明文に検索キーワードが含まれるタスクを抽出", verification: "pnpm vitest run --grep 'filter by search description'" },
+      { criterion: "projects/contexts検索: +project/@contextタグで検索可能", verification: "pnpm vitest run --grep 'filter by search projects contexts'" },
+      { criterion: "大文字小文字区別なし検索: 検索時に大文字小文字を区別しない", verification: "pnpm vitest run --grep 'filter by search case insensitive'" },
+      { criterion: "空文字列検索: 空文字列で全タスク表示(フィルタなし)", verification: "pnpm vitest run --grep 'filter by search empty'" },
+    ], dependencies: ["PBI-007"], status: "ready",
+    complexity: { functions: 1, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-011", story: { role: "Obsidianユーザー", capability: "グループ化", benefit: "関連タスクまとめ" }, acceptanceCriteria: [
       { criterion: "+projectでグループ化し、プロジェクトごとにタスクをまとめて表示", verification: "pnpm vitest run --grep 'group by project'" },
       { criterion: "@contextでグループ化し、コンテキストごとにタスクをまとめて表示", verification: "pnpm vitest run --grep 'group by context'" },

@@ -47,6 +47,8 @@ function toDateOnly(date: Date): Date {
 	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+const MILLISECONDS_IN_DAY = 86400000;
+
 /**
  * 期限日付と現在日付を比較し、状態を判定する
  * @param dueDate 期限日付
@@ -57,9 +59,10 @@ export function getDueDateStatus(dueDate: Date, today: Date): DueDateStatus {
 	const dueDateOnly = toDateOnly(dueDate);
 	const todayOnly = toDateOnly(today);
 
-	const diffMs = dueDateOnly.getTime() - todayOnly.getTime();
+	const diffDays =
+		(dueDateOnly.getTime() - todayOnly.getTime()) / MILLISECONDS_IN_DAY;
 
-	if (diffMs < 0) return "overdue";
-	if (diffMs === 0) return "today";
+	if (diffDays < 0) return "overdue";
+	if (diffDays === 0) return "today";
 	return "future";
 }

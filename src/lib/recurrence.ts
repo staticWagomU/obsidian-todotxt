@@ -21,16 +21,64 @@ export function parseRecurrenceTag(recTag: string): RecurrencePattern | null {
 
   const value = recTag.substring(4); // Remove 'rec:' prefix
   const match = value.match(/^(\+?)(\d+)([dwmy])$/);
-  
+
   if (!match) {
     return null;
   }
 
   const [, strictPrefix, num, unit] = match;
-  
+
   return {
     value: Number.parseInt(num, 10),
     unit: unit as 'd' | 'w' | 'm' | 'y',
     strict: strictPrefix === '+',
   };
+}
+
+/**
+ * Calculate next due date based on recurrence pattern
+ * Non-strict mode: based on completion date (baseDate)
+ * Strict mode: based on current due date (will be implemented in next subtask)
+ * Returns YYYY-MM-DD format
+ */
+export function calculateNextDueDate(
+  pattern: RecurrencePattern,
+  baseDate: string,
+  currentDueDate?: string
+): string {
+  const base = new Date(baseDate);
+  const originalDay = base.getDate();
+
+  let nextDate: Date;
+
+  switch (pattern.unit) {
+    case 'd':
+      nextDate = new Date(base);
+      nextDate.setDate(base.getDate() + pattern.value);
+      break;
+    case 'w':
+      nextDate = new Date(base);
+      nextDate.setDate(base.getDate() + pattern.value * 7);
+      break;
+    case 'm':
+      nextDate = new Date(base);
+      nextDate.setMonth(base.getMonth() + pattern.value);
+      // Handle month-end overflow (e.g., Jan 31 + 1 month should be Feb 28, not Mar 3)
+      if (nextDate.getDate() !== originalDay) {
+        nextDate.setDate(0); // Set to last day of previous month
+      }
+      break;
+    case 'y':
+      nextDate = new Date(base);
+      nextDate.setFullYear(base.getFullYear() + pattern.value);
+      // Handle leap year overflow (e.g., Feb 29, 2024 + 1 year should be Feb 28, 2025)
+      if (nextDate.getDate() !== originalDay) {
+        nextDate.setDate(0); // Set to last day of previous month
+      }
+      break;
+    default:
+      nextDate = base;
+  }
+
+  return nextDate.toISOString().split('T')[0];
 }

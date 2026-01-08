@@ -359,3 +359,73 @@ describe("edit task properties", () => {
 		expect(result.description).toBe("");
 	});
 });
+
+describe("edit task extracts projects and contexts", () => {
+	it("新規プロジェクトを追加できる", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { description: "Buy milk +GroceryShopping" });
+
+		expect(result.description).toBe("Buy milk +GroceryShopping");
+		expect(result.projects).toEqual(["GroceryShopping"]);
+	});
+
+	it("既存プロジェクトを削除できる", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Buy milk +GroceryShopping",
+			projects: ["GroceryShopping"],
+			contexts: [],
+			tags: {},
+			raw: "2026-01-01 Buy milk +GroceryShopping",
+		};
+
+		const result = editTask(todo, { description: "Buy milk" });
+
+		expect(result.description).toBe("Buy milk");
+		expect(result.projects).toEqual([]);
+	});
+
+	it("新規コンテキストを追加できる", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { description: "Buy milk @store" });
+
+		expect(result.description).toBe("Buy milk @store");
+		expect(result.contexts).toEqual(["store"]);
+	});
+
+	it("既存コンテキストを削除できる", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Buy milk @store",
+			projects: [],
+			contexts: ["store"],
+			tags: {},
+			raw: "2026-01-01 Buy milk @store",
+		};
+
+		const result = editTask(todo, { description: "Buy milk" });
+
+		expect(result.description).toBe("Buy milk");
+		expect(result.contexts).toEqual([]);
+	});
+});

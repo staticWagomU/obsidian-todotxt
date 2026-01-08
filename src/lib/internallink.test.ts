@@ -125,4 +125,74 @@ describe("extractInternalLinks", () => {
 			expect(result).toEqual([{ link: "Note", alias: "alias1|alias2" }]);
 		});
 	});
+
+	describe("正常系: 複数の内部リンクを抽出", () => {
+		it("2つの内部リンク[[Note1]]と[[Note2]]を抽出", () => {
+			const description = "Check [[Note1]] and [[Note2]]";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([{ link: "Note1" }, { link: "Note2" }]);
+		});
+
+		it("基本形式とエイリアス形式が混在[[Note1]]と[[Note2|alias]]", () => {
+			const description = "See [[ProjectPlan]] and [[TaskList|tasks]]";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([
+				{ link: "ProjectPlan" },
+				{ link: "TaskList", alias: "tasks" },
+			]);
+		});
+
+		it("3つ以上の内部リンクを抽出", () => {
+			const description = "[[A]], [[B|b]], and [[C]]";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([
+				{ link: "A" },
+				{ link: "B", alias: "b" },
+				{ link: "C" },
+			]);
+		});
+
+		it("日本語リンクが複数[[計画]]と[[実行|タスク]]", () => {
+			const description = "[[計画]]を確認して[[実行|タスク]]を進める";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([
+				{ link: "計画" },
+				{ link: "実行", alias: "タスク" },
+			]);
+		});
+	});
+
+	describe("境界値: 複数リンクと不正形式の組み合わせ", () => {
+		it("正常なリンク[[Note1]]と開きブラケットのみ[[の混在", () => {
+			const description = "Check [[Note1]] and [[ incomplete";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([{ link: "Note1" }]);
+		});
+
+		it("正常なリンク[[Note1]]と空リンク[[]]の混在", () => {
+			const description = "[[Note1]] and [[]]";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([{ link: "Note1" }]);
+		});
+
+		it("連続したリンク[[Note1]][[Note2]]を抽出", () => {
+			const description = "[[Note1]][[Note2]]";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([{ link: "Note1" }, { link: "Note2" }]);
+		});
+	});
+
+	describe("境界値: ネストしたブラケットと特殊ケース", () => {
+		it("ブラケットを含むテキスト内の[[Note]]を抽出", () => {
+			const description = "Text [not link] and [[Note]] here";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([{ link: "Note" }]);
+		});
+
+		it("改行を含むテキスト内の複数リンク", () => {
+			const description = "Line1 [[Note1]]\nLine2 [[Note2]]";
+			const result = extractInternalLinks(description);
+			expect(result).toEqual([{ link: "Note1" }, { link: "Note2" }]);
+		});
+	});
 });

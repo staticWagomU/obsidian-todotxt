@@ -77,9 +77,12 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-002"], status: "done" },
   { id: "PBI-005", story: { role: "Obsidianユーザー", capability: "タスク編集",
       benefit: "内容修正" }, acceptanceCriteria: [
-      { criterion: "編集ダイアログ", verification: "pnpm vitest run --grep 'edit dialog'" },
-      { criterion: "保存", verification: "pnpm vitest run --grep 'save edited'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+      { criterion: "既存タスクの説明文・優先度・プロジェクト・コンテキストを編集できる", verification: "pnpm vitest run -t 'edit task properties'" },
+      { criterion: "編集時に完了状態・作成日・完了日を保持する", verification: "pnpm vitest run -t 'preserve task metadata on edit'" },
+      { criterion: "編集したタスクをファイルの正しい行位置に保存できる", verification: "pnpm vitest run -t 'update task at correct line'" },
+      { criterion: "編集後のタスクをtodo.txt形式で正しくシリアライズできる", verification: "pnpm vitest run -t 'serialize edited task'" },
+      { criterion: "View層でタスク編集後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task edit'" },
+    ], dependencies: ["PBI-002"], status: "ready" },
   { id: "PBI-006", story: { role: "Obsidianユーザー", capability: "タスク削除",
       benefit: "不要タスク除去" }, acceptanceCriteria: [
       { criterion: "削除確認", verification: "pnpm vitest run --grep 'delete'" },

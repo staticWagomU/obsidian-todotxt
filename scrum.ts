@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 8, pbi: "PBI-008" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 8, pbi: "PBI-008" as string | null, status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -73,7 +73,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "優先度A=赤、B=橙、C=黄の色分けバッジ表示", verification: "pnpm vitest run --grep 'priority badge color A B C'" },
       { criterion: "優先度D-Zはデフォルトスタイル適用", verification: "pnpm vitest run --grep 'priority badge default style'" },
       { criterion: "優先度なしタスクはバッジ非表示", verification: "pnpm vitest run --grep 'priority badge none'" },
-    ], dependencies: ["PBI-002"], status: "ready",
+    ], dependencies: ["PBI-002"], status: "done",
     complexity: { functions: 2, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-009", story: { role: "Obsidianユーザー", capability: "優先度フィルタ", benefit: "特定優先度表示" }, acceptanceCriteria: [
       { criterion: "優先度A-Z指定でフィルタリング実行", verification: "pnpm vitest run --grep 'filter by specific priority'" },
@@ -141,38 +141,50 @@ export const currentSprint = {
   number: 8,
   pbiId: "PBI-008",
   story: "優先度色分けバッジを表示し、視覚的識別ができる",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "優先度A/B/Cを受け取り、それぞれ赤/橙/黄の色コードを返すこと。優先度D-Zはデフォルト色を返すこと。優先度なし(undefined)の場合もデフォルト色を返すこと",
       implementation: "getPriorityColor(priority?: string): string 関数を実装",
       type: "behavioral",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: add failing tests for getPriorityColor function (RED)" },
+        { phase: "green", message: "feat: implement getPriorityColor function (GREEN)" },
+      ],
     },
     {
       test: "優先度A-Zの場合はtrue、優先度なし(undefined)の場合はfalseを返すこと",
       implementation: "shouldShowPriorityBadge(priority?: string): boolean 関数を実装",
       type: "behavioral",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: add failing tests for shouldShowPriorityBadge function (RED)" },
+        { phase: "green", message: "feat: implement shouldShowPriorityBadge function (GREEN)" },
+      ],
     },
     {
       test: "優先度に応じた色のバッジが表示されること。優先度なしの場合はバッジが非表示になること",
       implementation: "TodoItemコンポーネントにバッジ表示ロジックを統合",
       type: "behavioral",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: add failing test for getPriorityBadgeStyle function (RED)" },
+        { phase: "green", message: "feat: implement getPriorityBadgeStyle function (GREEN)" },
+      ],
     },
     {
       test: "小文字優先度の正規化、色覚異常対応、ARIA属性の追加",
       implementation: "入力値の正規化処理と、アクセシビリティ属性の追加",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: add failing tests for edge cases and accessibility (RED)" },
+        { phase: "green", message: "feat: implement edge cases and accessibility features (GREEN)" },
+      ],
     },
   ] as Subtask[],
-  notes: "Sprint Goal: 優先度の視覚的識別を実現し、ユーザーがタスクの重要度を瞬時に認識できるようにする",
+  notes: "Sprint Goal: 優先度の視覚的識別を実現し、ユーザーがタスクの重要度を瞬時に認識できるようにする。153テスト(+21)、DoD全項目合格",
 };
 
 // Impediments
@@ -188,7 +200,7 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints (Phase 1 MVP完了: Sprint 1-7)
+// Completed Sprints (Phase 1 MVP完了: Sprint 1-7, Phase 2開始: Sprint 8-)
 export const completedSprints: CompletedSprint[] = [
   { sprint: 1, pbi: "PBI-001", story: ".txt/.todotxt専用ビュー", verification: "passed", notes: "3サブタスク完了" },
   { sprint: 2, pbi: "PBI-002", story: "todo.txtパース", verification: "passed", notes: "6サブタスク完了、30テスト" },
@@ -197,6 +209,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 5, pbi: "PBI-005", story: "タスク編集", verification: "passed", notes: "5サブタスク完了、102テスト" },
   { sprint: 6, pbi: "PBI-006", story: "タスク削除", verification: "passed", notes: "4サブタスク完了、120テスト" },
   { sprint: 7, pbi: "PBI-007", story: "ソート表示", verification: "passed", notes: "3サブタスク完了、132テスト。Phase 1 MVP完成" },
+  { sprint: 8, pbi: "PBI-008", story: "優先度色分けバッジ", verification: "passed", notes: "4サブタスク完了、153テスト。Phase 2開始" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

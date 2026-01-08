@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 9, pbi: "PBI-009" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -138,8 +138,41 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 9,
+  pbiId: "PBI-009" as string | null,
+  story: "優先度指定によるタスクフィルタリング機能を提供し、ユーザーが特定優先度のタスクのみを表示できるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "指定優先度(A)のタスクのみ返すテスト、異なる優先度タスクを除外するテスト",
+      implementation: "filterByPriority(todos, priority) 関数の基本実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "優先度なし(null/undefined)タスクのフィルタリングテスト",
+      implementation: "priority=null 時の処理追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "フィルタ実行後も元配列が変更されないことを検証するテスト",
+      implementation: "明示的な配列コピー処理、非破壊的実装の確認",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "空配列処理、該当なし時の空配列返却、複数優先度混在時の正確なフィルタリング",
+      implementation: "エッジケース処理の堅牢化",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "Sprint 8 Retrospective Action適用: Refactorチェックリスト強制実施、Refactorコミット発生率50%目標",
 };
 
 // Impediments

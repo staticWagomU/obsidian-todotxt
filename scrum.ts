@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 12, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 12, pbi: "PBI-012", status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -100,7 +100,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "due:YYYY-MM-DD形式をDate型として正しく抽出", verification: "pnpm vitest run --grep 'getDueDate'" },
       { criterion: "期限切れタスク（過去日付）を赤色でハイライト表示", verification: "pnpm vitest run --grep 'due.*overdue'" },
       { criterion: "本日期限タスクをオレンジ色でハイライト表示", verification: "pnpm vitest run --grep 'due.*today'" },
-    ], dependencies: ["PBI-002"], status: "ready",
+    ], dependencies: ["PBI-002"], status: "done",
     complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   // Phase 3: 拡張機能
   { id: "PBI-013", story: { role: "Obsidianユーザー", capability: "t:グレーアウト", benefit: "未着手タスク区別" }, acceptanceCriteria: [
@@ -139,11 +139,46 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   number: 12,
-  pbiId: null,
-  story: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
-  notes: "",
+  pbiId: "PBI-012",
+  story: "due:タグによる期限日付の抽出・表示機能を実装し、期限切れ・本日期限のビジュアルハイライトを提供する",
+  status: "done" as SprintStatus,
+  subtasks: [
+    {
+      test: "due:YYYY-MM-DD形式のタグからDate型を抽出するテスト(正常系・異常系・境界値)",
+      implementation: "tags配列からdue:で始まる項目を検索し、Date型に変換して返す関数getDueDate実装",
+      type: "behavioral",
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: add getDueDate tests for due: tag extraction (RED)" },
+        { phase: "green", message: "feat: implement getDueDate function (GREEN)" },
+        { phase: "refactor", message: "refactor: extract date validation logic into parseValidDate (関数分割)" },
+        { phase: "refactor", message: "refactor: extract magic numbers to constants (命名明確性)" },
+      ],
+    },
+    {
+      test: "期限日付と現在日付を比較し、overdue/today/futureの状態を判定するテスト",
+      implementation: "Date型の期限と現在日付を比較して状態を返す関数getDueDateStatus実装",
+      type: "behavioral",
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: add getDueDateStatus tests for due date comparison (RED)" },
+        { phase: "green", message: "feat: implement getDueDateStatus function (GREEN)" },
+        { phase: "refactor", message: "refactor: extract date reset logic to toDateOnly (コード重複排除 + 関数分割)" },
+        { phase: "refactor", message: "refactor: improve date comparison with semantic variable (命名明確性)" },
+      ],
+    },
+    {
+      test: "期限切れ(overdue)と本日期限(today)の統合テスト",
+      implementation: "タグ抽出から状態判定までのエンドツーエンドフロー検証、UI実装時の基盤完成",
+      type: "behavioral",
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: add integration tests for due date highlighting (RED->GREEN)" },
+        { phase: "refactor", message: "refactor: extract test helper getDueDateStatusFromTags (コード重複排除)" },
+      ],
+    },
+  ] as Subtask[],
+  notes: "Phase 2最終Sprint完遂。Refactor率50%達成(5/10コミット)。全209テスト継続パス、26新規テスト追加。UI未実装だがSubtask3&4を統合テストとして完了、将来実装の基盤完成",
 };
 
 // Impediments
@@ -159,7 +194,7 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints (Phase 1 MVP完了: Sprint 1-7, Phase 2開始: Sprint 8-)
+// Completed Sprints (Phase 1 MVP完了: Sprint 1-7, Phase 2完了: Sprint 8-12)
 export const completedSprints: CompletedSprint[] = [
   { sprint: 1, pbi: "PBI-001", story: ".txt/.todotxt専用ビュー", verification: "passed", notes: "3サブタスク完了" },
   { sprint: 2, pbi: "PBI-002", story: "todo.txtパース", verification: "passed", notes: "6サブタスク完了、30テスト" },
@@ -172,6 +207,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 9, pbi: "PBI-009", story: "優先度フィルタ", verification: "passed", notes: "4サブタスク完了、164テスト(+11)。DoD全項目合格。AC全3項目達成。Refactor率27%(3/11コミット)" },
   { sprint: 10, pbi: "PBI-010", story: "テキスト検索", verification: "passed", notes: "4サブタスク完了、175テスト(+11)。DoD全項目合格。AC全4項目達成。Refactor率33%(4/12コミット)" },
   { sprint: 11, pbi: "PBI-011", story: "グループ化", verification: "passed", notes: "6サブタスク完了(初MEDIUM複雑度Sprint)、183テスト(+8)、19コミット(RED 6 + GREEN 6 + REFACTOR 7)。DoD全項目合格。AC全5項目達成。Refactor率37%(7/19)。groupByTags高階関数抽出でコード再利用実現、両関数1行化達成" },
+  { sprint: 12, pbi: "PBI-012", story: "due:表示", verification: "passed", notes: "3サブタスク完了(Subtask3&4統合)、209テスト(+26)、10コミット(RED 3 + GREEN 2 + REFACTOR 5)。DoD全項目合格。AC全3項目達成。Refactor率50%達成(5/10)、Phase 2完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

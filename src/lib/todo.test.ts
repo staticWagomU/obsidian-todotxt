@@ -26,7 +26,7 @@ describe("toggle task completion status", () => {
 
 			const result = toggleCompletion(todo);
 
-			expect(result.completed).toBe(true);
+			expect(result.originalTask.completed).toBe(true);
 		});
 
 		it("completionDateに今日の日付が設定される", () => {
@@ -41,7 +41,7 @@ describe("toggle task completion status", () => {
 
 			const result = toggleCompletion(todo);
 
-			expect(result.completionDate).toBe("2026-01-08");
+			expect(result.originalTask.completionDate).toBe("2026-01-08");
 		});
 
 		it("他のプロパティは保持される", () => {
@@ -58,12 +58,12 @@ describe("toggle task completion status", () => {
 
 			const result = toggleCompletion(todo);
 
-			expect(result.priority).toBe("A");
-			expect(result.creationDate).toBe("2026-01-01");
-			expect(result.description).toBe("Buy milk +GroceryShopping @store");
-			expect(result.projects).toEqual(["GroceryShopping"]);
-			expect(result.contexts).toEqual(["store"]);
-			expect(result.tags).toEqual({ due: "2026-01-10" });
+			expect(result.originalTask.priority).toBe("A");
+			expect(result.originalTask.creationDate).toBe("2026-01-01");
+			expect(result.originalTask.description).toBe("Buy milk +GroceryShopping @store");
+			expect(result.originalTask.projects).toEqual(["GroceryShopping"]);
+			expect(result.originalTask.contexts).toEqual(["store"]);
+			expect(result.originalTask.tags).toEqual({ due: "2026-01-10" });
 		});
 	});
 
@@ -81,7 +81,7 @@ describe("toggle task completion status", () => {
 
 			const result = toggleCompletion(todo);
 
-			expect(result.completed).toBe(false);
+			expect(result.originalTask.completed).toBe(false);
 		});
 
 		it("completionDateが削除される", () => {
@@ -97,7 +97,7 @@ describe("toggle task completion status", () => {
 
 			const result = toggleCompletion(todo);
 
-			expect(result.completionDate).toBeUndefined();
+			expect(result.originalTask.completionDate).toBeUndefined();
 		});
 
 		it("他のプロパティは保持される", () => {
@@ -115,11 +115,11 @@ describe("toggle task completion status", () => {
 
 			const result = toggleCompletion(todo);
 
-			expect(result.priority).toBe("B");
-			expect(result.creationDate).toBe("2026-01-01");
-			expect(result.description).toBe("Buy milk +GroceryShopping");
-			expect(result.projects).toEqual(["GroceryShopping"]);
-			expect(result.tags).toEqual({ pri: "A" });
+			expect(result.originalTask.priority).toBe("B");
+			expect(result.originalTask.creationDate).toBe("2026-01-01");
+			expect(result.originalTask.description).toBe("Buy milk +GroceryShopping");
+			expect(result.originalTask.projects).toEqual(["GroceryShopping"]);
+			expect(result.originalTask.tags).toEqual({ pri: "A" });
 		});
 	});
 });
@@ -663,6 +663,96 @@ describe("delete and remove task integration", () => {
 		const result = deleteAndRemoveTask(content, 0);
 
 		expect(result).toBe("");
+	});
+});
+
+describe("toggle task completion with recurrence", () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-09"));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it("rec:1d - 完了時に次回タスク生成(non-strict)", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Daily task",
+			projects: [],
+			contexts: [],
+			tags: { rec: "rec:1d" },
+			raw: "2026-01-01 Daily task rec:1d",
+		};
+
+		const result = toggleCompletion(todo);
+
+		// 元タスクは完了
+		expect(result.originalTask.completed).toBe(true);
+		expect(result.originalTask.completionDate).toBe("2026-01-09");
+
+		// 新タスクが生成される
+		expect(result.recurringTask).toBeDefined();
+		expect(result.recurringTask?.completed).toBe(false);
+		expect(result.recurringTask?.creationDate).toBe("2026-01-09");
+		expect(result.recurringTask?.tags.due).toBe("due:2026-01-10");
+		expect(result.recurringTask?.tags.rec).toBe("rec:1d");
+	});
+
+	it("rec:+1w, due:1/5 - 完了時に次回タスク生成(strict)", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Weekly task",
+			projects: [],
+			contexts: [],
+			tags: { rec: "rec:+1w", due: "due:2026-01-05" },
+			raw: "2026-01-01 Weekly task due:2026-01-05 rec:+1w",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.completed).toBe(true);
+		expect(result.recurringTask).toBeDefined();
+		expect(result.recurringTask?.tags.due).toBe("due:2026-01-12"); // 元due: + 1週間
+		expect(result.recurringTask?.tags.rec).toBe("rec:+1w");
+	});
+
+	it("rec:なし - 通常の完了処理(新タスク生成なし)", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Normal task",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "2026-01-01 Normal task",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.completed).toBe(true);
+		expect(result.recurringTask).toBeUndefined();
+	});
+
+	it("完了→未完了への切り替え時は新タスク生成しない", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			creationDate: "2026-01-01",
+			description: "Completed recurring task",
+			projects: [],
+			contexts: [],
+			tags: { rec: "rec:1d" },
+			raw: "x 2026-01-08 2026-01-01 Completed recurring task rec:1d",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.completed).toBe(false);
+		expect(result.recurringTask).toBeUndefined();
 	});
 });
 

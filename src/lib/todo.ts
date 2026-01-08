@@ -3,6 +3,7 @@
  */
 
 import { appendTaskToFile, parseTodoTxt, updateTaskAtLine, deleteTaskAtLine } from "./parser";
+import { createRecurringTask } from "./recurrence";
 
 export interface Todo {
 	completed: boolean;
@@ -20,23 +21,34 @@ export interface Todo {
  * Toggle completion status of a todo
  * When marking as complete, sets completionDate to today
  * When marking as incomplete, removes completionDate
+ * If rec: tag exists on completion, creates a recurring task
  */
-export function toggleCompletion(todo: Todo): Todo {
+export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTask?: Todo } {
 	const today = new Date().toISOString().split("T")[0];
 
 	if (todo.completed) {
 		// 完了→未完了
 		return {
-			...todo,
-			completed: false,
-			completionDate: undefined,
+			originalTask: {
+				...todo,
+				completed: false,
+				completionDate: undefined,
+			},
 		};
 	} else {
 		// 未完了→完了
-		return {
+		const completedTask: Todo = {
 			...todo,
 			completed: true,
 			completionDate: today,
+		};
+
+		// Check for rec: tag and create recurring task
+		const recurringTask = createRecurringTask(completedTask, today);
+
+		return {
+			originalTask: completedTask,
+			recurringTask: recurringTask || undefined,
 		};
 	}
 }

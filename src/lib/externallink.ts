@@ -16,7 +16,9 @@ export interface ExternalLink {
  */
 export function extractExternalLinks(description: string): ExternalLink[] {
 	// [text](url)パターンにマッチする正規表現(グローバルマッチ)
-	// URLパターン: [^)]+ は閉じ括弧以外のすべての文字を許容し、各種URLスキームに対応
+	// [^\]]+: 閉じブラケット以外の1文字以上を必須とし、空テキスト[]を除外
+	// [^)]+: 閉じ括弧以外の1文字以上を必須とし、空URL()を除外
+	// これにより、各種URLスキームに対応しつつ不正形式を自動的にフィルタ
 	const markdownLinkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
 	const matches = description.matchAll(markdownLinkPattern);
 

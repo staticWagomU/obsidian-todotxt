@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 4, pbi: "PBI-004" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -154,8 +154,48 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 4,
+  pbiId: "PBI-004",
+  story: "新規タスク作成機能の実装: 説明文から優先度・プロジェクト・コンテキスト指定可能なタスクを作成し、作成日付自動付与してファイル末尾に追加、View更新まで完了",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "createTask関数のテスト (src/lib/todo.ts): 説明文のみ・優先度指定・プロジェクト指定・コンテキスト指定・複合指定の5パターンで正しいTodoオブジェクト生成と作成日付自動付与を検証",
+      implementation: "createTask関数を実装: 引数(description, priority?, projects?, contexts?)からTodoオブジェクト生成、creationDateに今日の日付(YYYY-MM-DD)を自動設定",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "appendTaskToFile関数のテスト (src/lib/parser.ts): 空ファイル・1行既存・複数行既存・末尾改行なしの4パターンでserializeTodoを使用してタスクをファイル末尾に追加できることを検証",
+      implementation: "appendTaskToFile関数を実装: 既存のファイルコンテンツとTodoオブジェクトを受け取り、serializeTodoでシリアライズして末尾に追加した新しいコンテンツを返す",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "createAndAppendTask統合関数のテスト (src/lib/todo.ts): createTaskとappendTaskToFileを組み合わせて、タスク作成からファイル追加までの一連の流れを6テストで検証",
+      implementation: "createAndAppendTask統合関数を実装: createTaskとappendTaskToFileを呼び出し、新規タスクの作成とファイルへの追加を一貫して処理",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "View層のhandleAddTask関数のテスト (src/view.tsx): createAndAppendTaskを使用してタスク追加、ファイル保存、パース・表示更新の流れを4テストで検証",
+      implementation: "handleAddTask関数をview.tsxに実装: ユーザー入力を受け取り、createAndAppendTaskでタスク作成、vault.modify()でファイル保存、再パース・再レンダリングでUI更新",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "View統合テスト (src/view.tsx): 追加ボタンクリック→入力→保存の実際の動作を4テストで検証、parseTodos連携とUI更新を確認",
+      implementation: "View層にタスク追加ボタンとダイアログUIを実装、handleAddTaskと統合して実際にユーザーがタスクを追加できる状態を完成",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ],
+  notes: "Sprint Goal: 新規タスク作成機能の実装。Sprint 3のserializeTodo関数を再利用してappendTaskToFileを実装。サブタスク分割基準(5-10テスト目安)とdescribe階層ガイドライン(3個以下=フラット、4個以上=2層)を適用。受け入れ基準5項目すべてをサブタスクでカバー。",
 };
 
 // Impediments

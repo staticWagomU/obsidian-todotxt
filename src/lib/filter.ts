@@ -1,6 +1,13 @@
 import type { Todo } from "./todo";
 
 /**
+ * Check if a value is null or undefined
+ */
+function isNullOrUndefined(value: unknown): value is null | undefined {
+	return value === null || value === undefined;
+}
+
+/**
  * Filter todos by priority
  * Returns only tasks that match the specified priority
  * @param todos - Array of todos to filter
@@ -9,8 +16,8 @@ import type { Todo } from "./todo";
  */
 export function filterByPriority(todos: Todo[], priority: string | null | undefined): Todo[] {
 	// Handle null/undefined priority - treat them as equivalent
-	if (priority === null || priority === undefined) {
-		return todos.filter(todo => todo.priority === null || todo.priority === undefined);
+	if (isNullOrUndefined(priority)) {
+		return todos.filter(todo => isNullOrUndefined(todo.priority));
 	}
 	return todos.filter(todo => todo.priority === priority);
 }

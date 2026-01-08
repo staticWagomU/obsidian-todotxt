@@ -162,3 +162,74 @@ describe("getThresholdDateStatus", () => {
 		});
 	});
 });
+
+describe("threshold: integration - タグ抽出から状態判定まで", () => {
+	const today = new Date("2026-01-10");
+
+	const createTodo = (tags: Record<string, string>): Todo => ({
+		completed: false,
+		description: "Test task",
+		projects: [],
+		contexts: [],
+		tags,
+		raw: "",
+	});
+
+	/**
+	 * Todoからしきい値状態を取得するヘルパー関数
+	 */
+	function getThresholdStatusFromTodo(
+		todo: Todo,
+		currentDate: Date,
+	): "not_ready" | "ready" | null {
+		return getThresholdDateStatus(todo, currentDate);
+	}
+
+	describe("着手不可タスク（not_ready）の判定", () => {
+		it("しきい値が未来のt:タグを持つタスクは'not_ready'状態", () => {
+			const todo = createTodo({ t: "2026-01-20" });
+			const status = getThresholdStatusFromTodo(todo, today);
+			expect(status).toBe("not_ready");
+		});
+
+		it("しきい値が1日後のt:タグを持つタスクは'not_ready'状態", () => {
+			const todo = createTodo({ t: "2026-01-11" });
+			const status = getThresholdStatusFromTodo(todo, today);
+			expect(status).toBe("not_ready");
+		});
+	});
+
+	describe("着手可能タスク（ready）の判定", () => {
+		it("しきい値が本日のt:タグを持つタスクは'ready'状態", () => {
+			const todo = createTodo({ t: "2026-01-10" });
+			const status = getThresholdStatusFromTodo(todo, today);
+			expect(status).toBe("ready");
+		});
+
+		it("しきい値が過去のt:タグを持つタスクは'ready'状態", () => {
+			const todo = createTodo({ t: "2026-01-01" });
+			const status = getThresholdStatusFromTodo(todo, today);
+			expect(status).toBe("ready");
+		});
+
+		it("しきい値が1日前のt:タグを持つタスクは'ready'状態", () => {
+			const todo = createTodo({ t: "2026-01-09" });
+			const status = getThresholdStatusFromTodo(todo, today);
+			expect(status).toBe("ready");
+		});
+	});
+
+	describe("t:タグが存在しない場合", () => {
+		it("t:タグがない場合、状態判定は行われない", () => {
+			const todo = createTodo({ priority: "A", category: "work" });
+			const status = getThresholdStatusFromTodo(todo, today);
+			expect(status).toBeNull();
+		});
+
+		it("t:タグが不正な形式の場合、状態判定は行われない", () => {
+			const todo = createTodo({ t: "invalid-date" });
+			const status = getThresholdStatusFromTodo(todo, today);
+			expect(status).toBeNull();
+		});
+	});
+});

@@ -29,3 +29,16 @@ export function filterByPriority(todos: Todo[], priority: string | null | undefi
 	}
 	return todos.filter(todo => todo.priority === priority);
 }
+
+/**
+ * Filter todos by search keyword in description (immutable)
+ * Returns a new array containing only tasks whose description contains the search keyword
+ * The original array is not modified
+ *
+ * @param todos - Array of todos to filter
+ * @param keyword - Search keyword to find in description
+ * @returns New filtered array of todos matching the search keyword
+ */
+export function filterBySearch(todos: Todo[], keyword: string): Todo[] {
+	return todos.filter(todo => todo.description.includes(keyword));
+}

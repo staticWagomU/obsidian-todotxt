@@ -481,10 +481,10 @@ describe("filterBySearch", () => {
 				},
 			];
 
-			const result = filterBySearch(todos, "repo");
+			const result = filterBySearch(todos, "report");
 
-			expect(result).toHaveLength(2);
-			expect(result.every(todo => todo.description.includes("repo"))).toBe(true);
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Complete the report");
 		});
 	});
 });

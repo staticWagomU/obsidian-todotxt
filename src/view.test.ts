@@ -251,3 +251,68 @@ describe("update view after task edit", () => {
 		expect(view.getViewData()).toBe("(A) 2026-01-01 Call Mom");
 	});
 });
+
+describe("update view after task deletion", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("削除ハンドラを取得して中間タスクを削除できる", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+		view.setViewData(initialData, false);
+
+		const handleDelete = view.getDeleteHandler();
+		expect(handleDelete).toBeDefined();
+
+		await handleDelete(1);
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n(C) 2026-01-03 Write report");
+	});
+
+	it("削除後のUI更新（タスク数減少）", async () => {
+		const initialData = "(A) Task 1\n(B) Task 2\n(C) Task 3";
+		view.setViewData(initialData, false);
+
+		const todosBefore = parseTodoTxt(view.getViewData());
+		expect(todosBefore).toHaveLength(3);
+
+		const handleDelete = view.getDeleteHandler();
+		await handleDelete(0);
+
+		const todosAfter = parseTodoTxt(view.getViewData());
+		expect(todosAfter).toHaveLength(2);
+		expect(todosAfter[0]?.description).toBe("Task 2");
+		expect(todosAfter[1]?.description).toBe("Task 3");
+	});
+
+	it("エッジケース: 単一行ファイルのタスク削除で空になる", async () => {
+		const initialData = "(A) 2026-01-01 Only task";
+		view.setViewData(initialData, false);
+
+		const handleDelete = view.getDeleteHandler();
+		await handleDelete(0);
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("");
+	});
+
+	it("エラー処理: 範囲外インデックスで変更なし", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom";
+		view.setViewData(initialData, false);
+
+		const handleDelete = view.getDeleteHandler();
+
+		// 範囲外のインデックス
+		await handleDelete(99);
+
+		// データは変更されない
+		expect(view.getViewData()).toBe("(A) 2026-01-01 Call Mom");
+	});
+});

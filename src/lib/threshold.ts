@@ -82,9 +82,11 @@ export function getThresholdDateStatus(
 	const thresholdDateOnly = toDateOnly(thresholdDate);
 	const todayOnly = toDateOnly(today);
 
-	const diffDays =
-		(thresholdDateOnly.getTime() - todayOnly.getTime()) / MILLISECONDS_IN_DAY;
+	const diffInMilliseconds =
+		thresholdDateOnly.getTime() - todayOnly.getTime();
+	const diffInDays = diffInMilliseconds / MILLISECONDS_IN_DAY;
 
-	if (diffDays > 0) return "not_ready";
+	const isThresholdInFuture = diffInDays > 0;
+	if (isThresholdInFuture) return "not_ready";
 	return "ready";
 }

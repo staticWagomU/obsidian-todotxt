@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 8, pbi: "PBI-008" as string | null, status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -138,53 +138,8 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 8,
-  pbiId: "PBI-008",
-  story: "優先度色分けバッジを表示し、視覚的識別ができる",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "優先度A/B/Cを受け取り、それぞれ赤/橙/黄の色コードを返すこと。優先度D-Zはデフォルト色を返すこと。優先度なし(undefined)の場合もデフォルト色を返すこと",
-      implementation: "getPriorityColor(priority?: string): string 関数を実装",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: add failing tests for getPriorityColor function (RED)" },
-        { phase: "green", message: "feat: implement getPriorityColor function (GREEN)" },
-      ],
-    },
-    {
-      test: "優先度A-Zの場合はtrue、優先度なし(undefined)の場合はfalseを返すこと",
-      implementation: "shouldShowPriorityBadge(priority?: string): boolean 関数を実装",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: add failing tests for shouldShowPriorityBadge function (RED)" },
-        { phase: "green", message: "feat: implement shouldShowPriorityBadge function (GREEN)" },
-      ],
-    },
-    {
-      test: "優先度に応じた色のバッジが表示されること。優先度なしの場合はバッジが非表示になること",
-      implementation: "TodoItemコンポーネントにバッジ表示ロジックを統合",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: add failing test for getPriorityBadgeStyle function (RED)" },
-        { phase: "green", message: "feat: implement getPriorityBadgeStyle function (GREEN)" },
-      ],
-    },
-    {
-      test: "小文字優先度の正規化、色覚異常対応、ARIA属性の追加",
-      implementation: "入力値の正規化処理と、アクセシビリティ属性の追加",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: add failing tests for edge cases and accessibility (RED)" },
-        { phase: "green", message: "feat: implement edge cases and accessibility features (GREEN)" },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Sprint Goal: 優先度の視覚的識別を実現し、ユーザーがタスクの重要度を瞬時に認識できるようにする。153テスト(+21)、DoD全項目合格",
+  number: 0, pbiId: null as string | null, story: "",
+  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
 };
 
 // Impediments
@@ -214,24 +169,24 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 7,
+  { sprint: 8,
     workedWell: [
-      "Sprint 6アクション完全適用: Refactorチェックリスト4観点実施、複雑度評価精度100%",
-      "Phase 1 MVP完成達成: PBI-001～007全て完了",
-      "Refactorフェーズ復活: Sprint 4以降初のrefactorコミット",
-      "効率的なサブタスク構成: 3サブタスク(4/5/3テスト)で完了",
+      "Backlog Refinement完璧実行: Phase 2最初の5 PBI (PBI-008～012)をready化、複雑度評価基準拡張完了",
+      "TDD Red-Greenサイクル完璧実践: 全4サブタスクでRED→GREEN実施 (8コミット)",
+      "アクセシビリティ自発追加: 正規化処理+ARIA対応で予定外品質向上 (+6テスト)",
+      "見積もり実績分析: 15見積→21実績(140%) はポジティブな品質向上",
     ],
     toImprove: [
-      "Phase 1テクニカルレビュー未実施",
-      "Refactorコミット発生率20%(Sprint 3以降)",
-      "Phase 2 PBIが全てdraftステータス",
-      "MEDIUM/HIGH複雑度PBIの評価基準未検証",
+      "Refactorフェーズ継続不在: Sprint 8でもRefactorコミット0件 (発生率33%)",
+      "Refactorチェックリスト未実施: Sprint 7定着化目標が未達成",
+      "Phase 1テクニカルレビュー未実施: Sprint 7 Action #1が継続課題",
+      "テスト見積もりの甘さ: エッジケース+アクセシビリティ未考慮",
     ],
     actions: [
-      "Phase 1テクニカルレビュー: Sprint 8開始前に全コードレビュー、リファクタリングPBI検討",
-      "Refactorチェックリスト定着化: 4観点チェック必須、結果をNotes記録",
-      "Phase 2 Backlog Refinement: PBI-008～012をready化、複雑度評価追加",
-      "複雑度評価基準拡張: MEDIUM(関数2-3/テスト20-40→5-7サブタスク)、HIGH(関数4+/テスト40+→8-10サブタスク)",
+      "Refactorチェックリスト強制実施: Sprint完了コミット前に必須、結果をNotes記録、改善余地ありなら必須Refactorコミット",
+      "Phase 1テクニカルレビュー: Sprint 9開始前に実施、PBI-001～007全コードレビュー",
+      "テスト見積もり精度向上: 基本70% + エッジ20% + 品質10%の配分で見積もり",
+      "Refactorコミット発生率目標: 次6 Sprint (Sprint 9-14)で50%以上 (現状33%)",
     ] },
 ];
 

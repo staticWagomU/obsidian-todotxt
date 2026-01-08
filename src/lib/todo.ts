@@ -28,12 +28,21 @@ export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTas
 
 	if (todo.completed) {
 		// 完了→未完了
+		const incompletedTask: Todo = {
+			...todo,
+			completed: false,
+			completionDate: undefined,
+		};
+
+		// pri:タグ → priority復元
+		if (todo.tags.pri) {
+			incompletedTask.priority = todo.tags.pri;
+			const { pri, ...restTags } = incompletedTask.tags;
+			incompletedTask.tags = restTags;
+		}
+
 		return {
-			originalTask: {
-				...todo,
-				completed: false,
-				completionDate: undefined,
-			},
+			originalTask: incompletedTask,
 		};
 	} else {
 		// 未完了→完了

@@ -117,11 +117,12 @@ describe("toggle task completion status", () => {
 
 			const result = toggleCompletion(todo);
 
-			expect(result.originalTask.priority).toBe("B");
+			// 未完了時、pri:Aタグが優先度として復元される
+			expect(result.originalTask.priority).toBe("A");
+			expect(result.originalTask.tags.pri).toBeUndefined();
 			expect(result.originalTask.creationDate).toBe("2026-01-01");
 			expect(result.originalTask.description).toBe("Buy milk +GroceryShopping");
 			expect(result.originalTask.projects).toEqual(["GroceryShopping"]);
-			expect(result.originalTask.tags).toEqual({ pri: "A" });
 		});
 	});
 });

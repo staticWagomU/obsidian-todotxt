@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTodoLine } from "./parser";
+import { parseTodoLine, parseTodoTxt } from "./parser";
 
 describe("parse completion", () => {
 	it("行頭にxがある場合、completedがtrueになる", () => {
@@ -163,5 +163,46 @@ describe("parse tags", () => {
 	it("値に空白を含むタグは次の空白まで", () => {
 		const result = parseTodoLine("Task note:some value here end");
 		expect(result.tags).toEqual({ note: "some" });
+	});
+});
+
+describe("parse to Todo array", () => {
+	it("複数行のテキストをTodo配列にパース", () => {
+		const text = `(A) 2026-01-08 Call Mom +Family @phone
+Buy milk +GroceryShopping
+x (B) 2026-01-08 2026-01-01 Task completed due:2026-01-15`;
+
+		const result = parseTodoTxt(text);
+
+		expect(result).toHaveLength(3);
+		expect(result[0].priority).toBe("A");
+		expect(result[0].description).toContain("Call Mom");
+		expect(result[1].completed).toBe(false);
+		expect(result[1].description).toContain("Buy milk");
+		expect(result[2].completed).toBe(true);
+		expect(result[2].tags.due).toBe("2026-01-15");
+	});
+
+	it("空行はスキップ", () => {
+		const text = `Task 1
+
+Task 2`;
+
+		const result = parseTodoTxt(text);
+		expect(result).toHaveLength(2);
+	});
+
+	it("空文字列は空配列を返す", () => {
+		const result = parseTodoTxt("");
+		expect(result).toEqual([]);
+	});
+
+	it("空白のみの行はスキップ", () => {
+		const text = `Task 1
+
+Task 2`;
+
+		const result = parseTodoTxt(text);
+		expect(result).toHaveLength(2);
 	});
 });

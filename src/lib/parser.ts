@@ -18,6 +18,38 @@ export function parseTodoTxt(text: string): Todo[] {
 }
 
 /**
+ * Serialize a Todo object to todo.txt format string
+ */
+export function serializeTodo(todo: Todo): string {
+	let result = "";
+
+	// Completion mark
+	if (todo.completed) {
+		result += "x ";
+	}
+
+	// Priority
+	if (todo.priority) {
+		result += `(${todo.priority}) `;
+	}
+
+	// Completion date (only for completed tasks)
+	if (todo.completed && todo.completionDate) {
+		result += `${todo.completionDate} `;
+	}
+
+	// Creation date
+	if (todo.creationDate) {
+		result += `${todo.creationDate} `;
+	}
+
+	// Description (already contains projects, contexts, and tags)
+	result += todo.description;
+
+	return result;
+}
+
+/**
  * Parse a single line of todo.txt format
  */
 export function parseTodoLine(line: string): Todo {

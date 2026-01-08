@@ -100,6 +100,31 @@ export function updateTaskAtLine(content: string, lineIndex: number, updatedTodo
 }
 
 /**
+ * Delete a task at a specific line index in the content
+ */
+export function deleteTaskAtLine(content: string, lineIndex: number): string {
+	if (content.length === 0) {
+		return "";
+	}
+
+	const todos = parseTodoTxt(content);
+
+	if (lineIndex < 0 || lineIndex >= todos.length) {
+		return content;
+	}
+
+	// Remove the task at the specified index
+	const updatedTodos = todos.filter((_todo, index) => index !== lineIndex);
+
+	// Return empty string if all tasks are deleted
+	if (updatedTodos.length === 0) {
+		return "";
+	}
+
+	return updatedTodos.map(serializeTodo).join("\n");
+}
+
+/**
  * Parse a single line of todo.txt format
  */
 export function parseTodoLine(line: string): Todo {

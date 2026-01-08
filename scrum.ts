@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 9, pbi: "PBI-009" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 9, pbi: "PBI-009" as string | null, status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -141,35 +141,50 @@ export const currentSprint = {
   number: 9,
   pbiId: "PBI-009" as string | null,
   story: "優先度指定によるタスクフィルタリング機能を提供し、ユーザーが特定優先度のタスクのみを表示できるようにする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "指定優先度(A)のタスクのみ返すテスト、異なる優先度タスクを除外するテスト",
       implementation: "filterByPriority(todos, priority) 関数の基本実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 1 - add basic priority filter tests (RED)" },
+        { phase: "green", message: "feat: Subtask 1 - implement basic priority filter (GREEN)" },
+        { phase: "refactor", message: "refactor: Subtask 1 - add JSDoc parameters to filterByPriority" },
+      ],
     },
     {
       test: "優先度なし(null/undefined)タスクのフィルタリングテスト",
       implementation: "priority=null 時の処理追加",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 2 - add tests for no-priority filtering (RED)" },
+        { phase: "green", message: "feat: Subtask 2 - handle null/undefined priority filtering (GREEN)" },
+        { phase: "refactor", message: "refactor: Subtask 2 - extract isNullOrUndefined helper" },
+      ],
     },
     {
       test: "フィルタ実行後も元配列が変更されないことを検証するテスト",
       implementation: "明示的な配列コピー処理、非破壊的実装の確認",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 3 - add immutability verification tests (RED)" },
+        { phase: "green", message: "feat: Subtask 3 - document immutability guarantee (GREEN)" },
+      ],
     },
     {
       test: "空配列処理、該当なし時の空配列返却、複数優先度混在時の正確なフィルタリング",
       implementation: "エッジケース処理の堅牢化",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: Subtask 4 - add edge case tests (RED)" },
+        { phase: "green", message: "feat: Subtask 4 - edge cases confirmed (GREEN)" },
+        { phase: "refactor", message: "refactor: Subtask 4 - document edge case handling" },
+      ],
     },
   ] as Subtask[],
   notes: "Sprint 8 Retrospective Action適用: Refactorチェックリスト強制実施、Refactorコミット発生率50%目標",
@@ -198,6 +213,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 6, pbi: "PBI-006", story: "タスク削除", verification: "passed", notes: "4サブタスク完了、120テスト" },
   { sprint: 7, pbi: "PBI-007", story: "ソート表示", verification: "passed", notes: "3サブタスク完了、132テスト。Phase 1 MVP完成" },
   { sprint: 8, pbi: "PBI-008", story: "優先度色分けバッジ", verification: "passed", notes: "4サブタスク完了、153テスト(+21)。DoD全項目合格。AC全3項目達成" },
+  { sprint: 9, pbi: "PBI-009", story: "優先度フィルタ", verification: "passed", notes: "4サブタスク完了、164テスト(+11)。DoD全項目合格。AC全3項目達成。Refactor率27%(3/11コミット)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

@@ -13,3 +13,28 @@ export interface Todo {
 	tags: Record<string, string>; // key:value (due:, t:, rec:, pri:)
 	raw: string; // 元の行
 }
+
+/**
+ * Toggle completion status of a todo
+ * When marking as complete, sets completionDate to today
+ * When marking as incomplete, removes completionDate
+ */
+export function toggleCompletion(todo: Todo): Todo {
+	const today = new Date().toISOString().split("T")[0];
+
+	if (todo.completed) {
+		// 完了→未完了
+		return {
+			...todo,
+			completed: false,
+			completionDate: undefined,
+		};
+	} else {
+		// 未完了→完了
+		return {
+			...todo,
+			completed: true,
+			completionDate: today,
+		};
+	}
+}

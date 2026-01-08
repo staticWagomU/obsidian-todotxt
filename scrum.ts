@@ -76,8 +76,11 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-002"], status: "ready",
     complexity: { functions: 2, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-009", story: { role: "Obsidianユーザー", capability: "優先度フィルタ", benefit: "特定優先度表示" }, acceptanceCriteria: [
-      { criterion: "フィルタ適用", verification: "pnpm vitest run --grep 'filter by priority'" },
-    ], dependencies: ["PBI-007"], status: "draft" },
+      { criterion: "優先度A-Z指定でフィルタリング実行", verification: "pnpm vitest run --grep 'filter by specific priority'" },
+      { criterion: "優先度なしタスクのフィルタリング", verification: "pnpm vitest run --grep 'filter tasks without priority'" },
+      { criterion: "フィルタ結果が元リストを変更しないイミュータブル実装", verification: "pnpm vitest run --grep 'filter immutability'" },
+    ], dependencies: ["PBI-007"], status: "ready",
+    complexity: { functions: 1, estimatedTests: 15, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-010", story: { role: "Obsidianユーザー", capability: "テキスト検索", benefit: "キーワード絞込" }, acceptanceCriteria: [
       { criterion: "検索フィルタ", verification: "pnpm vitest run --grep 'filter by search'" },
     ], dependencies: ["PBI-007"], status: "draft" },

@@ -1,6 +1,23 @@
 import type { Todo } from "./todo";
 
 /**
+ * Parse multiple lines of todo.txt format into an array of Todo objects
+ */
+export function parseTodoTxt(text: string): Todo[] {
+	const lines = text.split("\n");
+	const todos: Todo[] = [];
+
+	for (const line of lines) {
+		const trimmed = line.trim();
+		if (trimmed.length > 0) {
+			todos.push(parseTodoLine(line));
+		}
+	}
+
+	return todos;
+}
+
+/**
  * Parse a single line of todo.txt format
  */
 export function parseTodoLine(line: string): Todo {

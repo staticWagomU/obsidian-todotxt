@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 2, pbi: "PBI-002" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
 };
 
 // Product Goal
@@ -150,8 +150,55 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 2,
+  pbiId: "PBI-002" as string | null,
+  story: "todo.txt形式の完全なパース機能を実装し、構造化されたTodoオブジェクト配列として表示可能にする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "完了マーク(x)をパース - 行頭のx マークを検出",
+      implementation: "src/lib/parser.ts - parseCompletion関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "優先度(A-Z)をパース - 行頭または完了マーク後の(A)-(Z)を検出",
+      implementation: "src/lib/parser.ts - parsePriority関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "完了日・作成日をパース - YYYY-MM-DD形式の日付を抽出",
+      implementation: "src/lib/parser.ts - parseDates関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "プロジェクト・コンテキストをパース - 説明文から+projectと@contextを抽出",
+      implementation: "src/lib/parser.ts - parseProjectsAndContexts関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "タグ(key:value)をパース - due:, t:, rec:, pri:などのタグを抽出",
+      implementation: "src/lib/parser.ts - parseTags関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "Todoオブジェクト配列に構造化 - パース結果を統合してTodo[]を生成",
+      implementation: "src/lib/parser.ts - parseTodoTxt関数実装 (統合)",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "Sprint 1振り返りアクション適用: 1 describe = 1 subtask, 共通モックヘルパー作成, vi.mock/vi.spyOn活用",
 };
 
 // Impediments

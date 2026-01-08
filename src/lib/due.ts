@@ -1,3 +1,6 @@
+const DUE_TAG_PREFIX = "due:";
+const DUE_TAG_PREFIX_LENGTH = 4;
+
 /**
  * YYYY-MM-DD形式の文字列が有効な日付かを検証する
  * @param dateStr 日付文字列
@@ -21,10 +24,10 @@ function parseValidDate(dateStr: string): Date | undefined {
  * @returns Date型、またはundefined
  */
 export function getDueDate(tags: string[]): Date | undefined {
-	const dueTag = tags.find((tag) => tag.startsWith("due:"));
+	const dueTag = tags.find((tag) => tag.startsWith(DUE_TAG_PREFIX));
 	if (!dueTag) return undefined;
 
-	const dateStr = dueTag.substring(4);
+	const dateStr = dueTag.substring(DUE_TAG_PREFIX_LENGTH);
 	if (!dateStr) return undefined;
 
 	return parseValidDate(dateStr);

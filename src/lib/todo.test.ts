@@ -720,6 +720,47 @@ describe("toggle task completion with priority preservation (pri: tag)", () => {
 		expect(result.originalTask.priority).toBe("A");
 		expect(result.originalTask.completed).toBe(false);
 	});
+
+	it("優先度なしタスクを完了してもpri:タグは追加されない", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Normal task",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "2026-01-01 Normal task",
+		};
+
+		const result = toggleCompletion(todo);
+
+		// 優先度がないため、pri:タグも追加されない
+		expect(result.originalTask.priority).toBeUndefined();
+		expect(result.originalTask.tags.pri).toBeUndefined();
+		expect(result.originalTask.completed).toBe(true);
+	});
+
+	it("説明文中のpri:文字列を誤検出しない", () => {
+		const todo: Todo = {
+			completed: false,
+			priority: "B",
+			creationDate: "2026-01-01",
+			description: "Check pri:vacy settings",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "(B) 2026-01-01 Check pri:vacy settings",
+		};
+
+		const result = toggleCompletion(todo);
+
+		// 完了時、priorityがpri:Bタグに変換される
+		expect(result.originalTask.priority).toBeUndefined();
+		expect(result.originalTask.tags.pri).toBe("B");
+		expect(result.originalTask.completed).toBe(true);
+		// 説明文は変更されない
+		expect(result.originalTask.description).toBe("Check pri:vacy settings");
+	});
 });
 
 describe("toggle task completion with recurrence", () => {

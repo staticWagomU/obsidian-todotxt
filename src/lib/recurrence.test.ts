@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parseRecurrenceTag, calculateNextDueDate, type RecurrencePattern } from './recurrence';
+import { parseRecurrenceTag, calculateNextDueDate, preserveThresholdInterval, type RecurrencePattern } from './recurrence';
 
 describe('parseRecurrenceTag', () => {
   it('rec:1d形式をパース: 1日non-strictモード', () => {
@@ -143,5 +143,47 @@ describe('calculateNextDueDate (strict)', () => {
     const pattern: RecurrencePattern = { value: 1, unit: 'd', strict: false };
     const result = calculateNextDueDate(pattern, baseDate, currentDueDate);
     expect(result).toBe('2026-01-16'); // baseDate + 1日
+  });
+});
+
+describe('preserveThresholdInterval', () => {
+  it('7日間隔(t:1/1, due:1/8): 新due:1/15 → 新t:1/8', () => {
+    const originalThreshold = '2026-01-01';
+    const originalDueDate = '2026-01-08';
+    const newDueDate = '2026-01-15';
+    const result = preserveThresholdInterval(originalThreshold, originalDueDate, newDueDate);
+    expect(result).toBe('2026-01-08'); // 7日前
+  });
+
+  it('3日間隔(t:1/5, due:1/8): 新due:1/15 → 新t:1/12', () => {
+    const originalThreshold = '2026-01-05';
+    const originalDueDate = '2026-01-08';
+    const newDueDate = '2026-01-15';
+    const result = preserveThresholdInterval(originalThreshold, originalDueDate, newDueDate);
+    expect(result).toBe('2026-01-12'); // 3日前
+  });
+
+  it('0日間隔(t:1/10, due:1/10): 新due:1/20 → 新t:1/20', () => {
+    const originalThreshold = '2026-01-10';
+    const originalDueDate = '2026-01-10';
+    const newDueDate = '2026-01-20';
+    const result = preserveThresholdInterval(originalThreshold, originalDueDate, newDueDate);
+    expect(result).toBe('2026-01-20'); // 0日前
+  });
+
+  it('月跨ぎ14日間隔(t:12/25, due:1/8): 新due:2/8 → 新t:1/25', () => {
+    const originalThreshold = '2025-12-25';
+    const originalDueDate = '2026-01-08';
+    const newDueDate = '2026-02-08';
+    const result = preserveThresholdInterval(originalThreshold, originalDueDate, newDueDate);
+    expect(result).toBe('2026-01-25'); // 14日前
+  });
+
+  it('年跨ぎ10日間隔(t:12/25, due:1/4): 新due:2/4 → 新t:1/25', () => {
+    const originalThreshold = '2025-12-25';
+    const originalDueDate = '2026-01-04';
+    const newDueDate = '2026-02-04';
+    const result = preserveThresholdInterval(originalThreshold, originalDueDate, newDueDate);
+    expect(result).toBe('2026-01-25'); // 10日前
   });
 });

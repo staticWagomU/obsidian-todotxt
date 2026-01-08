@@ -107,7 +107,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "t:YYYY-MM-DD形式をDate型として正しく抽出", verification: "pnpm vitest run --grep 'getThresholdDate'" },
       { criterion: "しきい値が未来のタスク（未着手期間）を判定", verification: "pnpm vitest run --grep 'threshold.*not.*ready'" },
       { criterion: "しきい値が本日または過去のタスク（着手可能）を判定", verification: "pnpm vitest run --grep 'threshold.*ready'" },
-    ], dependencies: ["PBI-002"], status: "ready",
+    ], dependencies: ["PBI-002"], status: "done",
     complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-014", story: { role: "Obsidianユーザー", capability: "[[Note]]リンク", benefit: "ノート遷移" }, acceptanceCriteria: [
       { criterion: "内部リンク", verification: "pnpm vitest run --grep 'internal link'" },

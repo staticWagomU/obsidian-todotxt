@@ -11,6 +11,8 @@
 		"lint": "oxlint && eslint .",
 		"lint:oxlint": "oxlint",
 		"lint:eslint": "eslint .",
+		"format": "oxfmt --write src/",
+		"format:check": "oxfmt src/",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
@@ -22,6 +24,7 @@
 		"eslint": "^9.39.2",
 		"eslint-plugin-obsidianmd": "^0.1.9",
 		"jiti": "^2.6.1",
+		"oxfmt": "^0.23.0",
 		"oxlint": "^1.38.0",
 		"tslib": "2.4.0",
 		"typescript": "^5.8.3",

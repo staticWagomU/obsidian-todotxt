@@ -234,7 +234,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 5, pbi: "PBI-005", story: "タスク編集",
     verification: "passed", notes: "TDDで5サブタスク完了(10コミット: 5 Red + 5 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: editTask(6テスト), editTask抽出(4テスト), updateTaskAtLine(5テスト), editAndUpdateTask(6テスト), View統合(4テスト)。Tests: 102 passed (25新規テスト追加), Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
   { sprint: 6, pbi: "PBI-006", story: "タスク削除",
-    verification: "passed", notes: "TDDで4サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準4項目すべて検証済: deleteTaskAtLine(5テスト), removeTaskFromList(4テスト), deleteAndRemoveTask統合(5テスト), View統合(4テスト)。Tests: 120 passed (18新規テスト追加), Lint: 0 errors, Types: passed, Build: success" },
+    verification: "passed", notes: "TDDで4サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準4項目すべて検証済: deleteTaskAtLine(5テスト), removeTaskFromList(4テスト), deleteAndRemoveTask統合(5テスト), View統合(4テスト)。Tests: 120 passed (18新規テスト追加), Lint: 0 errors, Types: passed, Build: success。Sprint 5 Actions適用: サブタスク数柔軟化(4サブタスク)、テストケース粒度最適化(5+4+5+4=18テスト)、Refactorフェーズ意識(今回はGreen完了後に改善余地なし)" },
 ];
 
 // Retrospectives

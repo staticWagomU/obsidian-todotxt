@@ -3,6 +3,8 @@ import {
   getPriorityColor,
   shouldShowPriorityBadge,
   getPriorityBadgeStyle,
+  normalizePriority,
+  getPriorityBadgeAriaLabel,
 } from "./priority";
 
 describe("getPriorityColor", () => {
@@ -107,5 +109,54 @@ describe("Priority Badge Integration", () => {
     // 優先度なしの場合
     const styleNone = getPriorityBadgeStyle(undefined);
     expect(styleNone).toEqual({ display: "none" });
+  });
+});
+
+describe("Edge Cases & Accessibility", () => {
+  describe("normalizePriority", () => {
+    it("小文字の優先度を大文字に正規化すること", () => {
+      expect(normalizePriority("a")).toBe("A");
+      expect(normalizePriority("b")).toBe("B");
+      expect(normalizePriority("z")).toBe("Z");
+    });
+
+    it("大文字の優先度はそのまま返すこと", () => {
+      expect(normalizePriority("A")).toBe("A");
+      expect(normalizePriority("M")).toBe("M");
+    });
+
+    it("undefinedはundefinedを返すこと", () => {
+      expect(normalizePriority(undefined)).toBeUndefined();
+    });
+
+    it("A-Z以外の文字列はundefinedを返すこと", () => {
+      expect(normalizePriority("1")).toBeUndefined();
+      expect(normalizePriority("@")).toBeUndefined();
+      expect(normalizePriority("AA")).toBeUndefined();
+    });
+  });
+
+  describe("getPriorityBadgeAriaLabel", () => {
+    it("優先度に応じた適切なARIAラベルを返すこと", () => {
+      expect(getPriorityBadgeAriaLabel("A")).toBe("Priority A");
+      expect(getPriorityBadgeAriaLabel("B")).toBe("Priority B");
+      expect(getPriorityBadgeAriaLabel("Z")).toBe("Priority Z");
+    });
+
+    it("優先度なしの場合は空文字列を返すこと", () => {
+      expect(getPriorityBadgeAriaLabel(undefined)).toBe("");
+    });
+  });
+
+  describe("Integration with normalization", () => {
+    it("小文字優先度でも正しく色を取得できること", () => {
+      const normalized = normalizePriority("a");
+      expect(getPriorityColor(normalized)).toBe("#ff4444");
+    });
+
+    it("小文字優先度でも正しくバッジ表示判定できること", () => {
+      const normalized = normalizePriority("b");
+      expect(shouldShowPriorityBadge(normalized)).toBe(true);
+    });
   });
 });

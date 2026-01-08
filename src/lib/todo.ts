@@ -43,6 +43,12 @@ export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTas
 			completionDate: today,
 		};
 
+		// priority → pri:タグ保存
+		if (todo.priority) {
+			completedTask.tags = { ...completedTask.tags, pri: todo.priority };
+			completedTask.priority = undefined;
+		}
+
 		// Check for rec: tag and create recurring task
 		const recurringTask = createRecurringTask(completedTask, today);
 

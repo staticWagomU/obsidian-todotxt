@@ -473,11 +473,11 @@ describe("filterBySearch", () => {
 				},
 				{
 					completed: false,
-					description: "Report to manager",
+					description: "Send invoice",
 					projects: [],
 					contexts: [],
 					tags: {},
-					raw: "Report to manager",
+					raw: "Send invoice",
 				},
 			];
 

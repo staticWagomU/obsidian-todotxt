@@ -33,6 +33,7 @@ export function filterByPriority(todos: Todo[], priority: string | null | undefi
 /**
  * Filter todos by search keyword in description, projects, or contexts (immutable)
  * Returns a new array containing only tasks that match the search keyword
+ * The search is case-insensitive
  * The original array is not modified
  *
  * @param todos - Array of todos to filter
@@ -40,9 +41,10 @@ export function filterByPriority(todos: Todo[], priority: string | null | undefi
  * @returns New filtered array of todos matching the search keyword
  */
 export function filterBySearch(todos: Todo[], keyword: string): Todo[] {
+	const lowerKeyword = keyword.toLowerCase();
 	return todos.filter(todo =>
-		todo.description.includes(keyword) ||
-		todo.projects.some(project => project.includes(keyword)) ||
-		todo.contexts.some(context => context.includes(keyword))
+		todo.description.toLowerCase().includes(lowerKeyword) ||
+		todo.projects.some(project => project.toLowerCase().includes(lowerKeyword)) ||
+		todo.contexts.some(context => context.toLowerCase().includes(lowerKeyword))
 	);
 }

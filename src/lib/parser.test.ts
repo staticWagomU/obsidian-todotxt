@@ -175,12 +175,12 @@ x (B) 2026-01-08 2026-01-01 Task completed due:2026-01-15`;
 		const result = parseTodoTxt(text);
 
 		expect(result).toHaveLength(3);
-		expect(result[0].priority).toBe("A");
-		expect(result[0].description).toContain("Call Mom");
-		expect(result[1].completed).toBe(false);
-		expect(result[1].description).toContain("Buy milk");
-		expect(result[2].completed).toBe(true);
-		expect(result[2].tags.due).toBe("2026-01-15");
+		expect(result[0]?.priority).toBe("A");
+		expect(result[0]?.description).toContain("Call Mom");
+		expect(result[1]?.completed).toBe(false);
+		expect(result[1]?.description).toContain("Buy milk");
+		expect(result[2]?.completed).toBe(true);
+		expect(result[2]?.tags.due).toBe("2026-01-15");
 	});
 
 	it("空行はスキップ", () => {

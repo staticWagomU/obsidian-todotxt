@@ -64,13 +64,17 @@ export function parseTodoLine(line: string): Todo {
 	// +project (+ followed by non-whitespace)
 	const projectMatches = trimmed.matchAll(/\+(\S+)/g);
 	for (const match of projectMatches) {
-		projects.push(match[1]);
+		if (match[1]) {
+			projects.push(match[1]);
+		}
 	}
 
 	// @context (@ followed by non-whitespace)
 	const contextMatches = trimmed.matchAll(/@(\S+)/g);
 	for (const match of contextMatches) {
-		contexts.push(match[1]);
+		if (match[1]) {
+			contexts.push(match[1]);
+		}
 	}
 
 	// Parse tags (key:value format)
@@ -78,7 +82,7 @@ export function parseTodoLine(line: string): Todo {
 	const tagMatches = trimmed.matchAll(/(\S+):(\S+)/g);
 	for (const match of tagMatches) {
 		// Skip if it's a project or context (already parsed)
-		if (!match[0].startsWith("+") && !match[0].startsWith("@")) {
+		if (match[1] && match[2] && !match[0].startsWith("+") && !match[0].startsWith("@")) {
 			tags[match[1]] = match[2];
 		}
 	}

@@ -41,7 +41,7 @@ describe("groupByProject", () => {
 		const result = groupByProject(todos);
 
 		expect(result.size).toBe(1);
-		expectGroupToContain(result, "ProjectA", [todos[0]]);
+		expectGroupToContain(result, "ProjectA", todos);
 	});
 
 	test("should group todo with multiple projects to all corresponding groups", () => {
@@ -49,8 +49,8 @@ describe("groupByProject", () => {
 		const result = groupByProject(todos);
 
 		expect(result.size).toBe(2);
-		expectGroupToContain(result, "ProjectA", [todos[0]]);
-		expectGroupToContain(result, "ProjectB", [todos[0]]);
+		expectGroupToContain(result, "ProjectA", todos);
+		expectGroupToContain(result, "ProjectB", todos);
 	});
 
 	test("should group todo without project to '未分類' group", () => {
@@ -58,7 +58,7 @@ describe("groupByProject", () => {
 		const result = groupByProject(todos);
 
 		expect(result.size).toBe(1);
-		expectGroupToContain(result, "未分類", [todos[0]]);
+		expectGroupToContain(result, "未分類", todos);
 	});
 });
 
@@ -75,7 +75,7 @@ describe("groupByContext", () => {
 		const result = groupByContext(todos);
 
 		expect(result.size).toBe(1);
-		expectGroupToContain(result, "Home", [todos[0]]);
+		expectGroupToContain(result, "Home", todos);
 	});
 
 	test("should group todo with multiple contexts to all corresponding groups", () => {
@@ -83,8 +83,8 @@ describe("groupByContext", () => {
 		const result = groupByContext(todos);
 
 		expect(result.size).toBe(2);
-		expectGroupToContain(result, "Home", [todos[0]]);
-		expectGroupToContain(result, "Work", [todos[0]]);
+		expectGroupToContain(result, "Home", todos);
+		expectGroupToContain(result, "Work", todos);
 	});
 
 	test("should group todo without context to '未分類' group", () => {
@@ -92,6 +92,6 @@ describe("groupByContext", () => {
 		const result = groupByContext(todos);
 
 		expect(result.size).toBe(1);
-		expectGroupToContain(result, "未分類", [todos[0]]);
+		expectGroupToContain(result, "未分類", todos);
 	});
 });

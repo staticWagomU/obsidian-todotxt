@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 7, pbi: "PBI-007" as string | null, status: "done" as SprintStatus,
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -165,8 +165,43 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 7,
+  pbiId: "PBI-007",
+  story: "ソート表示",
+  status: "done" as SprintStatus,
+  subtasks: [
+    {
+      test: "完了/未完了による基本ソート (4テスト: 未完了のみ/完了のみ/混在/空配列)",
+      implementation: "sortTodos関数: completedフィールドでタスクを分離",
+      type: "behavioral" as SubtaskType,
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add Subtask 1 - sort incomplete before completed (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: implement Subtask 1 - sort incomplete before completed (GREEN)" },
+      ],
+    },
+    {
+      test: "優先度とテキストによる詳細ソート (5テスト: A→B→C→Z/優先度なし最後/同優先度内辞書順/未完了混在/完了ソート)",
+      implementation: "sortTodos関数: priority比較とdescription辞書順比較を実装",
+      type: "behavioral" as SubtaskType,
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add Subtask 2 - sort by priority (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: implement Subtask 2 - sort by priority (GREEN)" },
+      ],
+    },
+    {
+      test: "イミュータブル性と統合テスト (3テスト: 元配列不変/複雑混在リスト統合/View統合)",
+      implementation: "sortTodos関数: 配列コピーと最終統合テスト",
+      type: "behavioral" as SubtaskType,
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add Subtask 3 - immutability and integration (RED/GREEN)" },
+        { phase: "green" as CommitPhase, message: "feat: improve Subtask 3 - explicit immutability (GREEN)" },
+      ],
+    },
+  ] as Subtask[],
+  notes: "Phase 1 MVP最終PBI完了。Sprint 6 Retrospective Actions完全適用: Refactorチェックリスト4観点実施(改善余地なし)、複雑度評価正確(関数1/テスト12実測=12見積)、TDD Red-Green 6コミット。Phase 1 MVP (PBI-001～007) 完成達成。",
 };
 
 // Impediments
@@ -196,6 +231,8 @@ export const completedSprints: CompletedSprint[] = [
     verification: "passed", notes: "TDDで5サブタスク完了(10コミット: 5 Red + 5 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: editTask(6テスト), editTask抽出(4テスト), updateTaskAtLine(5テスト), editAndUpdateTask(6テスト), View統合(4テスト)。Tests: 102 passed (25新規テスト追加), Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
   { sprint: 6, pbi: "PBI-006", story: "タスク削除",
     verification: "passed", notes: "TDDで4サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準4項目すべて検証済: deleteTaskAtLine(5テスト), removeTaskFromList(4テスト), deleteAndRemoveTask統合(5テスト), View統合(4テスト)。Tests: 120 passed (18新規テスト追加), Lint: 0 errors, Types: passed, Build: success。Sprint 5 Actions適用: サブタスク数柔軟化(4サブタスク)、テストケース粒度最適化(5+4+5+4=18テスト)、Refactorフェーズ意識(今回はGreen完了後に改善余地なし)" },
+  { sprint: 7, pbi: "PBI-007", story: "ソート表示",
+    verification: "passed", notes: "TDDで3サブタスク完了(6コミット: 3 Red + 3 Green)、全DoD満たす。受け入れ基準4項目すべて検証済: 未完了優先(4テスト), 優先度ソート(5テスト), イミュータビリティ(3テスト)。Tests: 132 passed (12新規テスト追加), Lint: 0 errors, Types: passed, Build: success。Sprint 6 Actions完全適用: Refactorチェックリスト4観点実施(改善余地なし判断)、複雑度評価精度100%(12見積=12実測)、サブタスク数最適化(3サブタスク)。Phase 1 MVP (PBI-001～007) 完成達成" },
 ];
 
 // Retrospectives

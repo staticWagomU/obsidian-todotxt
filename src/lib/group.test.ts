@@ -3,7 +3,7 @@
  */
 
 import { describe, test, expect } from "vitest";
-import { groupByProject } from "./group";
+import { groupByProject, groupByContext } from "./group";
 import type { Todo } from "./todo";
 
 /**
@@ -55,5 +55,14 @@ describe("groupByProject", () => {
 		expect(result.size).toBe(1);
 		expect(result.has("未分類")).toBe(true);
 		expect(result.get("未分類")).toEqual([todos[0]]);
+	});
+});
+
+describe("groupByContext", () => {
+	test("should return empty Map when input is empty array", () => {
+		const todos: Todo[] = [];
+		const result = groupByContext(todos);
+
+		expect(result.size).toBe(0);
 	});
 });

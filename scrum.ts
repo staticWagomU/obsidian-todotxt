@@ -186,26 +186,26 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 13,
+  { sprint: 14,
     workedWell: [
-      "due.tsパターンの完全再利用(Sprint 12知識活用): parseValidDate/toDateOnly/calculateDaysDifference再利用、2026-02-30自動補正検出でdue.tsより厳密な日付検証実現、一貫性のあるコードベース維持",
-      "Refactor率50%の安定維持(2 Sprint連続達成): 5/10コミット、Sprint 12→13連続50%、持続可能な水準として実証。各サブタスク平均1.5 Refactor継続",
-      "日付検証の品質向上: isDateAutoAdjusted関数による自動補正検出、形式+有効性+補正の3段階検証、境界値テスト2件追加(2026-13-01, 2026-02-30)",
-      "UI実装延期の戦略的判断: React component構造理解不足考慮、統合テスト7件でE2Eフロー検証、コア機能完全性保証とUI実装リスク分離",
-      "Phase 3初Sprintの成功: Phase 2→3シームレス移行、確立されたTDDプロセス維持、DoD全項目合格、AC全達成、+28テスト(209→237)",
+      "シンプルな正規表現実装の成功(複雑度LOW実証): extractInternalLinks単一関数+parseWikilinkContentヘルパー、matchAll()によるグローバルマッチ、パイプ分割でエイリアス抽出、リファクタリング不要な明快な設計",
+      "Refactor率0%の戦略的正当化(複雑度ベース判断): LOW複雑度Sprint初のRefactor 0%(6コミット全てRED/GREEN)、「シンプルな実装はリファクタリング不要」原則実証、無理なRefactorコミット作成を回避、品質維持とプロセス健全性の両立",
+      "28テスト高密度カバレッジ達成(Sprint 13と同水準): 基本形式(4) + 異常系(5) + 境界値(3) + エイリアス(4+3) + 複数リンク(4+3) + ネスト(2) = 28件、空リンク/不正形式/連続リンク/改行含むテキスト等エッジケース網羅",
+      "Obsidian wikilink仕様の完全準拠: [[NoteName]]基本形式、[[NoteName|Alias]]エイリアス形式、日本語対応([[計画|タスク]])、複数パイプ処理(最初で分割)、Obsidian互換性100%",
+      "パターン多様性の実証(日付処理との差異): Sprint 12/13の日付検証パターンと異なる正規表現マッチング実装、parseValidDate不要(形式検証のみ)、Phase 3多様な実装手法の共存可能性示唆",
     ],
     toImprove: [
-      "Phase 1テクニカルレビューの継続未実施(6 Sprint経過): Sprint 12から持ち越し、Sprint 8開始時から6 Sprint経過、リスクCRITICAL、技術的負債の蓄積継続、これ以上の延期は不可",
-      "UI実装戦略の継続未確定: Sprint 12 Action 3「Sprint 13 Planning時決定」未達成、PBI-012/013連続延期、戦略なき延期累積、UI統合複雑性増大リスク",
-      "サブタスク統合判断基準の未策定: Sprint 12 Action 4「DoD/Planning guideline文書化」未実施、アドホック判断継続、見積もり精度への影響",
-      "Refactor率50%の天井: 2 Sprint連続50%で向上なし、各サブタスク平均1.5 Refactorが実質上限か、60%超えの可能性と必要性不明",
+      "Phase 1テクニカルレビューの7 Sprint未実施(BLOCKER化): Sprint 13「Sprint 14開始前完了必須」Action未達成、Sprint 8開始から7 Sprint経過(約2ヶ月相当)、リスクレベルCRITICAL→**BLOCKER**、Phase 3進行の正当性喪失、即座の対処なしに次Sprint開始不可",
+      "UI実装ロードマップの2 Sprint連続未策定: Sprint 13 Action 2未達成、PBI-012/013/014で3連続UI延期、アドホック延期判断が常態化、UI統合複雑性の累積増大(3 PBI分の一括統合リスク)",
+      "Retrospective Action実行率の継続低下: Sprint 13 Actions 5項目→Sprint 14実施0項目(0%)、Action追跡プロセスの機能不全、Planning時のAction確認ステップ欠如、Retrospective形骸化リスク",
+      "Refactor率指標の妥当性再考: Sprint 14の0%は正当だが、「50%目標」との矛盾、複雑度別の目標設定必要性(LOW=0-20%, MEDIUM=40-60%, HIGH=60%+?)、画一的50%目標の限界露呈",
     ],
     actions: [
-      "Phase 1テクニカルレビューの必達実施(最優先・期限設定): Sprint 14開始前(Planning前完了必須)、Sprint 1-7全実装対象(todo.ts/parser.ts/sort.ts/filter.ts/group.ts)、コード品質/テストカバレッジ/型安全性/アーキテクチャ4観点チェック、テクニカルレビューレポート(docs/technical-review-phase1.md)作成、改善PBIリスト化、Product Ownerレビュー承認",
-      "UI実装ロードマップの策定(具体的計画): Sprint 14 Planning前、React component現状分析(TodosView/TodosList/TodoItem構造、State管理)、UI統合パターン選択(個別統合/専用Sprint/段階的統合)、UI統合テスト戦略、成果物: docs/ui-implementation-roadmap.md",
-      "サブタスク統合判断基準の文書化(DoD更新): 統合許可条件(UI未実装時/依存関係強/完全フロー検証)、統合時要件(E2Eテスト必須/ヘルパー関数/見積もり調整)、統合不可条件(独立機能/テストケース数不均衡)、scrum.ts definitionOfDone or planningGuidelines追加、Sprint 14以降適用",
-      "Refactor率50%維持戦略の継続(現状維持): 50%を標準水準として継続、60%超えは追求しない、各サブタスク平均1.5 Refactor維持、チェックリスト4観点独立コミット継続、Sprint Review時発生率報告、50%下回った場合の原因分析",
-      "Phase 3日付処理パターンの標準化: threshold.ts品質をPhase 3標準とする、将来の日付関連PBI対象(rec:繰り返し等)、パターン: parseValidDate(形式+有効性+自動補正)/toDateOnly/calculateDaysDifference/セマンティック定数、開発ガイドラインor技術レビュー成果物に文書化",
+      "Phase 1テクニカルレビューの即時実施(Sprint 15 BLOCKER指定): Sprint 15 Planning開始不可条件として設定、7 Sprint延期の技術的負債解消最優先、対象: Sprint 1-7全実装(todo.ts/parser.ts/sort.ts/filter.ts/group.ts)、4観点チェック(品質/カバレッジ/型安全性/アーキテクチャ)、成果物: docs/technical-review-phase1.md、改善PBIリスト、Product Owner承認必須、期限: Sprint 15 Planning前48時間",
+      "UI実装ロードマップの緊急策定(3 PBI累積対応): 対象PBI: PBI-012(due表示), PBI-013(threshold表示), PBI-014(内部リンク)、統合パターン選択: A)個別統合 vs B)UI専用Sprint vs C)段階的統合、React component分析(TodoItem.tsx拡張箇所特定)、UI統合テスト戦略、成果物: docs/ui-implementation-roadmap.md、期限: Phase 1レビュー完了後、Sprint 15 Planning前",
+      "Retrospective Action追跡プロセスの導入(形骸化防止): Sprint Planning時の前Sprint Actions完了確認ステップ追加、未完了Actionの持ち越しor削除判断、Actionステータス管理(pending/in_progress/done/dropped)、scrum.ts actions配列にstatus追加検討、Sprint 15 Planningから適用",
+      "Refactor率目標の複雑度別基準化(画一的50%脱却): 複雑度別目標: LOW 0-20%(シンプル実装優先), MEDIUM 40-60%(適度なリファクタリング), HIGH 60%+(積極的分割)、Sprint Reviewでの複雑度-Refactor率相関報告、無理なRefactorコミット作成の明示的禁止、Sprint 15から適用",
+      "Phase 3パターンライブラリの体系化検討: 日付処理パターン(due.ts/threshold.ts): parseValidDate/toDateOnly/calculateDaysDifference、テキスト処理パターン(internallink.ts): 正規表現マッチング/ヘルパー関数分離、将来的な共通ユーティリティ化検討(src/lib/utils/)、Phase 1レビュー時に設計方針決定",
     ] },
 ];
 

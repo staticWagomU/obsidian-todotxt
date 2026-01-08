@@ -14,7 +14,7 @@ export default class MyPlugin extends Plugin {
 		this.registerView(VIEW_TYPE_TODOTXT, (leaf) => new TodotxtView(leaf));
 
 		// Register file extensions
-		this.registerExtensions(["txt"], VIEW_TYPE_TODOTXT);
+		this.registerExtensions(["txt", "todotxt"], VIEW_TYPE_TODOTXT);
 
 		// This creates an icon in the left ribbon.
 		this.addRibbonIcon("dice", "Sample", (_evt: MouseEvent) => {

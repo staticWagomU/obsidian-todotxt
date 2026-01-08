@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { toggleCompletion, createTask, createAndAppendTask, editTask, editAndUpdateTask } from "./todo";
+import { toggleCompletion, createTask, createAndAppendTask, editTask, editAndUpdateTask, removeTaskFromList } from "./todo";
 import type { Todo } from "./todo";
 
 describe("toggle task completion status", () => {
@@ -496,5 +496,128 @@ describe("edit and update task integration", () => {
 
 		// 往復後も形式が保持される
 		expect(result).toBe("x (A) 2026-01-08 2026-01-01 Buy bread +GroceryShopping @store due:2026-01-10");
+	});
+});
+
+describe("remove task from list", () => {
+	it("配列からタスクを除去して新配列を返す", () => {
+		const todos: Todo[] = [
+			{
+				completed: false,
+				description: "Task 1",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 1",
+			},
+			{
+				completed: false,
+				description: "Task 2",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 2",
+			},
+			{
+				completed: false,
+				description: "Task 3",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 3",
+			},
+		];
+
+		const result = removeTaskFromList(todos, 1);
+
+		expect(result).toHaveLength(2);
+		expect(result[0]?.description).toBe("Task 1");
+		expect(result[1]?.description).toBe("Task 3");
+	});
+
+	it("インデックス境界チェック（範囲外の場合は元の配列を返す）", () => {
+		const todos: Todo[] = [
+			{
+				completed: false,
+				description: "Task 1",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 1",
+			},
+		];
+
+		// 範囲外（正）
+		const resultOutOfBounds = removeTaskFromList(todos, 5);
+		expect(resultOutOfBounds).toEqual(todos);
+
+		// 範囲外（負）
+		const resultNegative = removeTaskFromList(todos, -1);
+		expect(resultNegative).toEqual(todos);
+	});
+
+	it("単一要素配列からタスクを削除すると空配列になる", () => {
+		const todos: Todo[] = [
+			{
+				completed: false,
+				description: "Task 1",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 1",
+			},
+		];
+
+		const result = removeTaskFromList(todos, 0);
+
+		expect(result).toHaveLength(0);
+		expect(result).toEqual([]);
+	});
+
+	it("複数要素配列から先頭・中間・末尾を削除できる", () => {
+		const todos: Todo[] = [
+			{
+				completed: false,
+				description: "Task 1",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 1",
+			},
+			{
+				completed: false,
+				description: "Task 2",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 2",
+			},
+			{
+				completed: false,
+				description: "Task 3",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 3",
+			},
+		];
+
+		// 先頭削除
+		const resultFirst = removeTaskFromList(todos, 0);
+		expect(resultFirst).toHaveLength(2);
+		expect(resultFirst[0]?.description).toBe("Task 2");
+		expect(resultFirst[1]?.description).toBe("Task 3");
+
+		// 中間削除
+		const resultMiddle = removeTaskFromList(todos, 1);
+		expect(resultMiddle).toHaveLength(2);
+		expect(resultMiddle[0]?.description).toBe("Task 1");
+		expect(resultMiddle[1]?.description).toBe("Task 3");
+
+		// 末尾削除
+		const resultLast = removeTaskFromList(todos, 2);
+		expect(resultLast).toHaveLength(2);
+		expect(resultLast[0]?.description).toBe("Task 1");
+		expect(resultLast[1]?.description).toBe("Task 2");
 	});
 });

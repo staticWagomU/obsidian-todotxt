@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 7, pbi: "PBI-007" as string | null, status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -45,110 +45,65 @@ export const productGoal = {
 
 // Product Backlog (Order = Priority)
 export const productBacklog: ProductBacklogItem[] = [
-  // Phase 1: MVP - DONE
-  { id: "PBI-001", story: { role: "Obsidianユーザー", capability: ".txt/.todotxtファイルを専用ビューで開く",
-      benefit: "todo.txt形式を認識し適切なUIで表示" }, acceptanceCriteria: [
-      { criterion: ".txt拡張子を専用ビューで開ける", verification: "pnpm vitest run --grep 'txt extension'" },
-      { criterion: ".todotxt拡張子を専用ビューで開ける", verification: "pnpm vitest run --grep 'todotxt extension'" },
+  // Phase 1: MVP - COMPLETE (Sprint 1-7)
+  { id: "PBI-001", story: { role: "Obsidianユーザー", capability: ".txt/.todotxtファイルを専用ビューで開く", benefit: "todo.txt形式を認識し適切なUIで表示" }, acceptanceCriteria: [
+      { criterion: ".txt/.todotxt拡張子を専用ビューで開ける", verification: "pnpm vitest run --grep 'extension'" },
       { criterion: "TextFileView継承カスタムビュー登録", verification: "pnpm vitest run --grep 'TextFileView'" },
     ], dependencies: [], status: "done" },
-  { id: "PBI-002", story: { role: "Obsidianユーザー", capability: "todo.txtをパースしてタスク一覧表示",
-      benefit: "構造化されたリストで確認" }, acceptanceCriteria: [
-      { criterion: "完了マーク(x)を行頭から正確にパースできる", verification: "pnpm vitest run -t 'parse completion'" },
-      { criterion: "優先度(A-Z)を行頭または完了マーク後からパースできる", verification: "pnpm vitest run -t 'parse priority'" },
-      { criterion: "完了日・作成日(YYYY-MM-DD)を正確にパースできる", verification: "pnpm vitest run -t 'parse dates'" },
-      { criterion: "説明文から+project/@context抽出できる", verification: "pnpm vitest run -t 'parse project context'" },
-      { criterion: "key:value形式のタグ(due/t/rec/pri)をパースできる", verification: "pnpm vitest run -t 'parse tags'" },
-      { criterion: "パース結果をTodoオブジェクト配列として構造化できる", verification: "pnpm vitest run -t 'parse to Todo array'" },
+  { id: "PBI-002", story: { role: "Obsidianユーザー", capability: "todo.txtをパースしてタスク一覧表示", benefit: "構造化されたリストで確認" }, acceptanceCriteria: [
+      { criterion: "完了/優先度/日付/プロジェクト/コンテキスト/タグをパース", verification: "pnpm vitest run src/lib/parser.test.ts" },
     ], dependencies: ["PBI-001"], status: "done" },
-  { id: "PBI-003", story: { role: "Obsidianユーザー", capability: "チェックボックスで完了切替",
-      benefit: "ワンクリックで状態更新" }, acceptanceCriteria: [
-      { criterion: "完了状態を未完了↔完了にトグルできる", verification: "pnpm vitest run -t 'toggle task completion status'" },
-      { criterion: "完了時に今日の日付(YYYY-MM-DD)を自動付与する", verification: "pnpm vitest run -t 'add completion date when marking complete'" },
-      { criterion: "未完了に戻す時に完了日を削除する", verification: "pnpm vitest run -t 'remove completion date when marking incomplete'" },
-      { criterion: "トグル後のタスクをファイルに保存できる", verification: "pnpm vitest run -t 'save toggled task to file'" },
-      { criterion: "View層でトグル後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after toggle'" },
+  { id: "PBI-003", story: { role: "Obsidianユーザー", capability: "チェックボックスで完了切替", benefit: "ワンクリックで状態更新" }, acceptanceCriteria: [
+      { criterion: "完了状態トグル/日付自動付与/ファイル保存", verification: "pnpm vitest run -t 'toggle'" },
     ], dependencies: ["PBI-002"], status: "done" },
-  { id: "PBI-004", story: { role: "Obsidianユーザー", capability: "新規タスク作成",
-      benefit: "簡単に追加" }, acceptanceCriteria: [
-      { criterion: "説明文のみで新規タスクを作成できる", verification: "pnpm vitest run -t 'create task with description only'" },
-      { criterion: "作成時に今日の日付(YYYY-MM-DD)を自動付与する", verification: "pnpm vitest run -t 'auto-add creation date'" },
-      { criterion: "優先度・プロジェクト・コンテキストを指定して作成できる", verification: "pnpm vitest run -t 'create task with optional fields'" },
-      { criterion: "作成したタスクをファイル末尾に追加できる", verification: "pnpm vitest run -t 'append task to file'" },
-      { criterion: "View層でタスク追加後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task creation'" },
+  { id: "PBI-004", story: { role: "Obsidianユーザー", capability: "新規タスク作成", benefit: "簡単に追加" }, acceptanceCriteria: [
+      { criterion: "タスク作成/作成日自動付与/ファイル追加", verification: "pnpm vitest run -t 'create'" },
     ], dependencies: ["PBI-002"], status: "done" },
-  { id: "PBI-005", story: { role: "Obsidianユーザー", capability: "タスク編集",
-      benefit: "内容修正" }, acceptanceCriteria: [
-      { criterion: "既存タスクの説明文・優先度・プロジェクト・コンテキストを編集できる", verification: "pnpm vitest run -t 'edit task properties'" },
-      { criterion: "編集時に完了状態・作成日・完了日を保持する", verification: "pnpm vitest run -t 'preserve task metadata on edit'" },
-      { criterion: "編集したタスクをファイルの正しい行位置に保存できる", verification: "pnpm vitest run -t 'update task at correct line'" },
-      { criterion: "編集後のタスクをtodo.txt形式で正しくシリアライズできる", verification: "pnpm vitest run -t 'serialize edited task'" },
-      { criterion: "View層でタスク編集後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task edit'" },
+  { id: "PBI-005", story: { role: "Obsidianユーザー", capability: "タスク編集", benefit: "内容修正" }, acceptanceCriteria: [
+      { criterion: "編集/メタデータ保持/ファイル更新", verification: "pnpm vitest run -t 'edit'" },
     ], dependencies: ["PBI-002"], status: "done" },
-  { id: "PBI-006", story: { role: "Obsidianユーザー", capability: "タスク削除",
-      benefit: "不要タスク除去" }, acceptanceCriteria: [
-      { criterion: "指定した行インデックスのタスクをファイルから削除できる", verification: "pnpm vitest run -t 'delete task at line index'" },
-      { criterion: "削除後のタスクリストを正しく再構成できる", verification: "pnpm vitest run -t 'remove task from list'" },
-      { criterion: "エッジケース(単一行ファイル、末尾行、中間行)で正しく削除できる", verification: "pnpm vitest run -t 'delete edge cases'" },
-      { criterion: "View層でタスク削除後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task deletion'" },
+  { id: "PBI-006", story: { role: "Obsidianユーザー", capability: "タスク削除", benefit: "不要タスク除去" }, acceptanceCriteria: [
+      { criterion: "削除/リスト再構成/ファイル更新", verification: "pnpm vitest run -t 'delete'" },
     ], dependencies: ["PBI-002"], status: "done" },
-  { id: "PBI-007", story: { role: "Obsidianユーザー", capability: "ソート表示",
-      benefit: "優先度順の一覧" }, acceptanceCriteria: [
-      { criterion: "未完了タスクを完了タスクより前に配置する", verification: "pnpm vitest run -t 'sort incomplete before completed'" },
-      { criterion: "優先度順にソート (A>B>C>...>Z>優先度なし) する", verification: "pnpm vitest run -t 'sort by priority'" },
-      { criterion: "同優先度内ではテキスト辞書順にソートする", verification: "pnpm vitest run -t 'sort by text within same priority'" },
-      { criterion: "元の配列を変更せずソート済み配列を返す", verification: "pnpm vitest run -t 'return sorted array without modifying original'" },
-    ], dependencies: ["PBI-002"], status: "ready",
-    complexity: { functions: 1, estimatedTests: 12, externalDependencies: 0, score: "LOW", subtasks: 3 },
-    refactorChecklist: ["コード重複", "型安全性", "関数分割", "命名"] },
+  { id: "PBI-007", story: { role: "Obsidianユーザー", capability: "ソート表示", benefit: "優先度順の一覧" }, acceptanceCriteria: [
+      { criterion: "未完了優先/優先度順/辞書順/イミュータブル", verification: "pnpm vitest run src/lib/sort.test.ts" },
+    ], dependencies: ["PBI-002"], status: "done" },
   // Phase 2: フィルタリング & UI
-  { id: "PBI-008", story: { role: "Obsidianユーザー", capability: "優先度色分けバッジ",
-      benefit: "視覚的識別" }, acceptanceCriteria: [
+  { id: "PBI-008", story: { role: "Obsidianユーザー", capability: "優先度色分けバッジ", benefit: "視覚的識別" }, acceptanceCriteria: [
       { criterion: "A=赤,B=橙,C=黄", verification: "pnpm vitest run --grep 'priority style'" },
     ], dependencies: ["PBI-002"], status: "draft" },
-  { id: "PBI-009", story: { role: "Obsidianユーザー", capability: "優先度フィルタ",
-      benefit: "特定優先度表示" }, acceptanceCriteria: [
+  { id: "PBI-009", story: { role: "Obsidianユーザー", capability: "優先度フィルタ", benefit: "特定優先度表示" }, acceptanceCriteria: [
       { criterion: "フィルタ適用", verification: "pnpm vitest run --grep 'filter by priority'" },
     ], dependencies: ["PBI-007"], status: "draft" },
-  { id: "PBI-010", story: { role: "Obsidianユーザー", capability: "テキスト検索",
-      benefit: "キーワード絞込" }, acceptanceCriteria: [
+  { id: "PBI-010", story: { role: "Obsidianユーザー", capability: "テキスト検索", benefit: "キーワード絞込" }, acceptanceCriteria: [
       { criterion: "検索フィルタ", verification: "pnpm vitest run --grep 'filter by search'" },
     ], dependencies: ["PBI-007"], status: "draft" },
-  { id: "PBI-011", story: { role: "Obsidianユーザー", capability: "グループ化",
-      benefit: "関連タスクまとめ" }, acceptanceCriteria: [
+  { id: "PBI-011", story: { role: "Obsidianユーザー", capability: "グループ化", benefit: "関連タスクまとめ" }, acceptanceCriteria: [
       { criterion: "+project/@contextグループ", verification: "pnpm vitest run --grep 'group by'" },
     ], dependencies: ["PBI-007"], status: "draft" },
-  { id: "PBI-012", story: { role: "Obsidianユーザー", capability: "due:表示",
-      benefit: "期限確認" }, acceptanceCriteria: [
+  { id: "PBI-012", story: { role: "Obsidianユーザー", capability: "due:表示", benefit: "期限確認" }, acceptanceCriteria: [
       { criterion: "期限ハイライト", verification: "pnpm vitest run --grep 'due'" },
     ], dependencies: ["PBI-002"], status: "draft" },
   // Phase 3: 拡張機能
-  { id: "PBI-013", story: { role: "Obsidianユーザー", capability: "t:グレーアウト",
-      benefit: "未着手タスク区別" }, acceptanceCriteria: [
+  { id: "PBI-013", story: { role: "Obsidianユーザー", capability: "t:グレーアウト", benefit: "未着手タスク区別" }, acceptanceCriteria: [
       { criterion: "しきい値表示", verification: "pnpm vitest run --grep 'threshold'" },
     ], dependencies: ["PBI-002"], status: "draft" },
-  { id: "PBI-014", story: { role: "Obsidianユーザー", capability: "[[Note]]リンク",
-      benefit: "ノート遷移" }, acceptanceCriteria: [
+  { id: "PBI-014", story: { role: "Obsidianユーザー", capability: "[[Note]]リンク", benefit: "ノート遷移" }, acceptanceCriteria: [
       { criterion: "内部リンク", verification: "pnpm vitest run --grep 'internal link'" },
     ], dependencies: ["PBI-002"], status: "draft" },
-  { id: "PBI-015", story: { role: "Obsidianユーザー", capability: "[text](url)リンク",
-      benefit: "Web遷移" }, acceptanceCriteria: [
+  { id: "PBI-015", story: { role: "Obsidianユーザー", capability: "[text](url)リンク", benefit: "Web遷移" }, acceptanceCriteria: [
       { criterion: "外部リンク", verification: "pnpm vitest run --grep 'external link'" },
     ], dependencies: ["PBI-002"], status: "draft" },
-  { id: "PBI-016", story: { role: "Obsidianユーザー", capability: "rec:繰り返し",
-      benefit: "定期タスク自動生成" }, acceptanceCriteria: [
+  { id: "PBI-016", story: { role: "Obsidianユーザー", capability: "rec:繰り返し", benefit: "定期タスク自動生成" }, acceptanceCriteria: [
       { criterion: "繰り返し生成", verification: "pnpm vitest run --grep 'recurrence'" },
     ], dependencies: ["PBI-003"], status: "draft" },
-  { id: "PBI-017", story: { role: "Obsidianユーザー", capability: "pri:タグ保存",
-      benefit: "優先度復元" }, acceptanceCriteria: [
+  { id: "PBI-017", story: { role: "Obsidianユーザー", capability: "pri:タグ保存", benefit: "優先度復元" }, acceptanceCriteria: [
       { criterion: "pri:変換", verification: "pnpm vitest run --grep 'pri tag'" },
     ], dependencies: ["PBI-003"], status: "draft" },
-  { id: "PBI-018", story: { role: "Obsidianユーザー", capability: "設定画面",
-      benefit: "カスタマイズ" }, acceptanceCriteria: [
+  { id: "PBI-018", story: { role: "Obsidianユーザー", capability: "設定画面", benefit: "カスタマイズ" }, acceptanceCriteria: [
       { criterion: "設定タブ", verification: "pnpm vitest run --grep 'settings'" },
     ], dependencies: [], status: "draft" },
-  { id: "PBI-019", story: { role: "Obsidianユーザー", capability: "構造化フォーム",
-      benefit: "形式不要の入力" }, acceptanceCriteria: [
+  { id: "PBI-019", story: { role: "Obsidianユーザー", capability: "構造化フォーム", benefit: "形式不要の入力" }, acceptanceCriteria: [
       { criterion: "フォーム入力", verification: "pnpm vitest run --grep 'form'" },
     ], dependencies: ["PBI-004", "PBI-005"], status: "draft" },
 ];
@@ -165,43 +120,8 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 7,
-  pbiId: "PBI-007",
-  story: "ソート表示",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "完了/未完了による基本ソート (4テスト: 未完了のみ/完了のみ/混在/空配列)",
-      implementation: "sortTodos関数: completedフィールドでタスクを分離",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add Subtask 1 - sort incomplete before completed (RED)" },
-        { phase: "green" as CommitPhase, message: "feat: implement Subtask 1 - sort incomplete before completed (GREEN)" },
-      ],
-    },
-    {
-      test: "優先度とテキストによる詳細ソート (5テスト: A→B→C→Z/優先度なし最後/同優先度内辞書順/未完了混在/完了ソート)",
-      implementation: "sortTodos関数: priority比較とdescription辞書順比較を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add Subtask 2 - sort by priority (RED)" },
-        { phase: "green" as CommitPhase, message: "feat: implement Subtask 2 - sort by priority (GREEN)" },
-      ],
-    },
-    {
-      test: "イミュータブル性と統合テスト (3テスト: 元配列不変/複雑混在リスト統合/View統合)",
-      implementation: "sortTodos関数: 配列コピーと最終統合テスト",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add Subtask 3 - immutability and integration (RED/GREEN)" },
-        { phase: "green" as CommitPhase, message: "feat: improve Subtask 3 - explicit immutability (GREEN)" },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Phase 1 MVP最終PBI完了。Sprint 6 Retrospective Actions完全適用: Refactorチェックリスト4観点実施(改善余地なし)、複雑度評価正確(関数1/テスト12実測=12見積)、TDD Red-Green 6コミット。Phase 1 MVP (PBI-001～007) 完成達成。",
+  number: 0, pbiId: null as string | null, story: "",
+  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
 };
 
 // Impediments
@@ -217,114 +137,37 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints
+// Completed Sprints (Phase 1 MVP完了: Sprint 1-7)
 export const completedSprints: CompletedSprint[] = [
-  { sprint: 1, pbi: "PBI-001", story: ".txt/.todotxtファイルを専用ビューで開く",
-    verification: "passed", notes: "TDDで3サブタスク完了、全DoD満たす" },
-  { sprint: 2, pbi: "PBI-002", story: "todo.txtをパースしてタスク一覧表示",
-    verification: "passed", notes: "TDDで6サブタスク完了(12コミット)、全DoD満たす" },
-  { sprint: 3, pbi: "PBI-003", story: "チェックボックスで完了切替",
-    verification: "passed", notes: "TDDで5サブタスク完了(9コミット: 5 Red + 5 Green + 1 Refactor)、全DoD満たす。受け入れ基準5項目すべて検証済: toggleCompletion(6テスト), serializeTodo(統合), updateTodoInList(4テスト), View統合(4テスト)。Tests: 57 passed, Lint: 0 errors, Types: passed, Build: success" },
-  { sprint: 4, pbi: "PBI-004", story: "新規タスク作成",
-    verification: "passed", notes: "TDDで5サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: createTask(2テスト), createTask作成日付自動付与(含), createTask複合指定(4テスト), appendTaskToFile(4テスト), createAndAppendTask(6テスト), View統合(4テスト)。Tests: 77 passed, Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
-  { sprint: 5, pbi: "PBI-005", story: "タスク編集",
-    verification: "passed", notes: "TDDで5サブタスク完了(10コミット: 5 Red + 5 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: editTask(6テスト), editTask抽出(4テスト), updateTaskAtLine(5テスト), editAndUpdateTask(6テスト), View統合(4テスト)。Tests: 102 passed (25新規テスト追加), Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
-  { sprint: 6, pbi: "PBI-006", story: "タスク削除",
-    verification: "passed", notes: "TDDで4サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準4項目すべて検証済: deleteTaskAtLine(5テスト), removeTaskFromList(4テスト), deleteAndRemoveTask統合(5テスト), View統合(4テスト)。Tests: 120 passed (18新規テスト追加), Lint: 0 errors, Types: passed, Build: success。Sprint 5 Actions適用: サブタスク数柔軟化(4サブタスク)、テストケース粒度最適化(5+4+5+4=18テスト)、Refactorフェーズ意識(今回はGreen完了後に改善余地なし)" },
-  { sprint: 7, pbi: "PBI-007", story: "ソート表示",
-    verification: "passed", notes: "TDDで3サブタスク完了(6コミット: 3 Red + 3 Green)、全DoD満たす。受け入れ基準4項目すべて検証済: 未完了優先(4テスト), 優先度ソート(5テスト), イミュータビリティ(3テスト)。Tests: 132 passed (12新規テスト追加), Lint: 0 errors, Types: passed, Build: success。Sprint 6 Actions完全適用: Refactorチェックリスト4観点実施(改善余地なし判断)、複雑度評価精度100%(12見積=12実測)、サブタスク数最適化(3サブタスク)。Phase 1 MVP (PBI-001～007) 完成達成" },
+  { sprint: 1, pbi: "PBI-001", story: ".txt/.todotxt専用ビュー", verification: "passed", notes: "3サブタスク完了" },
+  { sprint: 2, pbi: "PBI-002", story: "todo.txtパース", verification: "passed", notes: "6サブタスク完了、30テスト" },
+  { sprint: 3, pbi: "PBI-003", story: "完了切替", verification: "passed", notes: "5サブタスク完了、57テスト" },
+  { sprint: 4, pbi: "PBI-004", story: "新規タスク作成", verification: "passed", notes: "5サブタスク完了、77テスト" },
+  { sprint: 5, pbi: "PBI-005", story: "タスク編集", verification: "passed", notes: "5サブタスク完了、102テスト" },
+  { sprint: 6, pbi: "PBI-006", story: "タスク削除", verification: "passed", notes: "4サブタスク完了、120テスト" },
+  { sprint: 7, pbi: "PBI-007", story: "ソート表示", verification: "passed", notes: "3サブタスク完了、132テスト。Phase 1 MVP完成" },
 ];
 
-// Retrospectives
+// Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 1,
-    workedWell: ["TDD Red-Green-Refactor", "明確な受け入れ基準", "適切なサブタスク分割", "Obsidianパターン適用"],
-    toImprove: ["モック設定の冗長性", "vitest機能活用", "サブタスク粒度基準"],
-    actions: ["共通モックヘルパー作成", "vi.mock活用", "1 describe = 1 subtask基準"] },
-  { sprint: 2,
+  { sprint: 7,
     workedWell: [
-      "TDD Red-Green-Refactorサイクルの徹底 (12コミット: 6 Red + 6 Green + Refactor)",
-      "1 describe = 1 subtask構造の完璧な適用 (6サブタスク = 6 describe)",
-      "包括的なテストカバレッジ (30テストケースでエッジケース網羅)",
-      "型安全性の向上 (Refactorフェーズで型ガード追加)",
+      "Sprint 6アクション完全適用: Refactorチェックリスト4観点実施、複雑度評価精度100%",
+      "Phase 1 MVP完成達成: PBI-001～007全て完了",
+      "Refactorフェーズ復活: Sprint 4以降初のrefactorコミット",
+      "効率的なサブタスク構成: 3サブタスク(4/5/3テスト)で完了",
     ],
     toImprove: [
-      "describeのネスト構造がない (フラットな構造で大規模時に整理困難)",
-      "テストケース数の偏り (parse completion: 3 vs parse tags: 6)",
-      "統合テストの不足 (個別関数は完璧だがView統合テストなし)",
+      "Phase 1テクニカルレビュー未実施",
+      "Refactorコミット発生率20%(Sprint 3以降)",
+      "Phase 2 PBIが全てdraftステータス",
+      "MEDIUM/HIGH複雑度PBIの評価基準未検証",
     ],
     actions: [
-      "describe階層化ルール: 複雑な機能は`describe > describe > it`の3層構造を許可",
-      "統合テスト追加: View層でのparser統合テストをサブタスクに含める",
-      "テストケース設計基準: 各describeに最低3ケース、最大7ケース目安",
-    ] },
-  { sprint: 3,
-    workedWell: [
-      "Sprint 2アクションの完全適用: describe階層化(toggleCompletionは2層、serializeTodoは3層)、統合テスト専用サブタスク、テストケース基準遵守",
-      "高いテストカバレッジ: 24新規テスト追加で総計57テスト、serializeTodoで11ケースの包括的検証",
-      "View統合テストの実装: parser連携を4テストケースで検証、実際の動作を確認",
-      "エッジケース発見と修正: 実装中にdescription重複、完了タスク日付パース問題を発見・修正",
-    ],
-    toImprove: [
-      "実装中のバグ修正: parserバグをGreenフェーズで修正、理想的にはRefactorフェーズで対応すべき",
-      "サブタスク粒度の不均衡: serializeTodo(11テスト) vs updateTodoInList(4テスト)の差が大きい",
-      "テスト構造の一貫性: toggleCompletionは2層、serializeTodoは3層と統一されていない",
-    ],
-    actions: [
-      "バグ修正フェーズ明確化: 既存コードのバグはGreenフェーズで対応可、Refactorは構造改善に集中",
-      "サブタスク分割基準見直し: 複雑度に応じて5-10テスト目安で分割、大きすぎる場合は複数サブタスクに",
-      "describe階層ガイドライン: 関連テストが3個以下ならフラット、4個以上なら2層、10個以上なら3層",
-    ] },
-  { sprint: 4,
-    workedWell: [
-      "Sprint 3アクションの完全適用: 5-10テスト基準で適切なサブタスク分割(2テスト/4テスト/6テスト/4テスト)、フラットなdescribe構造の一貫性維持",
-      "効率的なテスト設計: 20新規テストで包括的な機能検証(createTask: 2+4テスト, appendTaskToFile: 4テスト, createAndAppendTask: 6テスト, View: 4テスト)",
-      "既存関数の再利用: Sprint 3のserializeTodo関数をappendTaskToFileで活用、コード重複を回避",
-      "自動化ロジックの実装: createTask関数で説明文からプロジェクト/コンテキスト自動抽出、作成日付自動付与を実現",
-    ],
-    toImprove: [
-      "サブタスク計画と実際の乖離: 当初5サブタスク計画だったが、実際は4サブタスク+1統合テスト統合で完了(計画時の粒度見積もりが不正確)",
-      "エッジケース検証の追加: appendTaskToFileで末尾改行なしケースを追加したが、計画時に想定できていなかった",
-      "統合テストの位置づけ: サブタスク5の統合テストが実装なしで完了、UIコンポーネント(React)実装は未実施",
-    ],
-    actions: [
-      "サブタスク計画精度向上: Planning時に各サブタスクのテストケース数を具体的に見積もり、5-10テスト基準で分割根拠を明確化",
-      "エッジケース事前洗い出し: サブタスク計画時にエッジケース一覧を作成、テストケース設計に反映",
-      "統合テストスコープ明確化: React UIコンポーネント実装が必要な場合は別PBIとして分離、または統合テストのacceptance criteriaを明確化",
-    ] },
-  { sprint: 5,
-    workedWell: [
-      "Sprint 4アクション3項目の完全適用: テストケース数見積もり精度100% (25 estimated = 25 actual)、エッジケース事前洗い出しと計画時明記、統合テストスコープ明確化",
-      "高精度な見積もり: 5サブタスク×5テスト構成(6+4+5+6+4)で計画通りの実装、乖離なし",
-      "既存関数の戦略的再利用: serializeTodo(Sprint 3), プロジェクト/コンテキスト抽出ロジック(Sprint 4)を活用、実装速度向上",
-      "メタデータ保持の完璧な実装: editTask関数で完了状態・作成日・完了日を100%保持、データ整合性確保",
-    ],
-    toImprove: [
-      "Refactorフェーズの欠如: 10コミット全てRed/Greenのみ、Refactorコミット0件(Sprint 3は1件あり)",
-      "サブタスク構成の定型化: Sprint 3,4,5すべて5サブタスク構成、柔軟性不足の可能性",
-      "テストケース数の均一化: 6+4+5+6+4と比較的均等だが、機能複雑度に応じた粒度調整の余地",
-    ],
-    actions: [
-      "Refactorフェーズ意識向上: Greenフェーズ完了後に構造改善の余地を検討、コード重複削除・型安全性向上・関数分割などを別コミットで実施",
-      "サブタスク数の柔軟化: PBI複雑度に応じて3-7サブタスク範囲で調整、単純なPBIは3-4サブタスク、複雑なPBIは6-7サブタスクを許容",
-      "テストケース粒度の最適化: 単純な関数は3-5テスト、複雑な統合関数は6-10テスト、エッジケース数に応じて柔軟に調整",
-    ] },
-  { sprint: 6,
-    workedWell: [
-      "Sprint 5アクション3項目の完全適用: サブタスク数柔軟化(4サブタスク)、テストケース粒度最適化(5+4+5+4=18テスト)、Refactorフェーズ意識(改善余地なしと適切に判断)",
-      "機能複雑度に応じた適切な調整: 削除機能は編集より単純と判断し4サブタスクに削減、無駄のない実装",
-      "計画精度の維持: テストケース数の見積もり100%一致(18 estimated = 18 actual)",
-      "MVP Phase 1の完成間近: 6/7 PBIs完了、残り1つ(ソート)でPhase 1完結の見通し",
-    ],
-    toImprove: [
-      "Refactorコミットの継続的欠如: Sprint 6も0件、Sprint 4以降Refactorコミットなし(Sprint 3のみ1件)",
-      "サブタスク削減判断の文書化不足: 5→4への削減根拠が「削除は編集より単純」のみ、具体的な複雑度評価基準が不明確",
-      "Phase 1完了後の方針未定: MVP Phase 1がほぼ完了(6/7)だが、Phase 2移行前のレビュー/リファクタリング計画なし",
-    ],
-    actions: [
-      "Refactorチェックリスト導入: Greenフェーズ完了後に「コード重複」「型安全性」「関数分割」「命名」の4観点でチェック、改善余地あれば別コミット実施",
-      "PBI複雑度評価基準の明確化: Planning時に「関数数」「テストケース数」「外部依存」の3軸で複雑度をスコア化、サブタスク数決定の根拠を文書化",
-      "Phase完了時のテクニカルレビュー: MVP Phase 1完了後(Sprint 7後)に全体コードレビューを実施、Phase 2移行前にリファクタリングPBI追加を検討",
+      "Phase 1テクニカルレビュー: Sprint 8開始前に全コードレビュー、リファクタリングPBI検討",
+      "Refactorチェックリスト定着化: 4観点チェック必須、結果をNotes記録",
+      "Phase 2 Backlog Refinement: PBI-008～012をready化、複雑度評価追加",
+      "複雑度評価基準拡張: MEDIUM(関数2-3/テスト20-40→5-7サブタスク)、HIGH(関数4+/テスト40+→8-10サブタスク)",
     ] },
 ];
 

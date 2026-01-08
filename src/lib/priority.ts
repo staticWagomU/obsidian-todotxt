@@ -18,3 +18,27 @@ export function getPriorityColor(priority?: string): string {
 export function shouldShowPriorityBadge(priority?: string): boolean {
   return priority !== undefined;
 }
+
+/**
+ * 優先度バッジのスタイルオブジェクトを返す
+ * @param priority 優先度 (A-Z または undefined)
+ * @returns CSSスタイルオブジェクト
+ */
+export function getPriorityBadgeStyle(
+  priority?: string,
+): Record<string, string> {
+  if (!shouldShowPriorityBadge(priority)) {
+    return { display: "none" };
+  }
+
+  return {
+    display: "inline-block",
+    backgroundColor: getPriorityColor(priority),
+    color: "#ffffff",
+    padding: "2px 6px",
+    borderRadius: "3px",
+    fontSize: "0.85em",
+    fontWeight: "bold",
+    marginRight: "4px",
+  };
+}

@@ -232,7 +232,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 2, pbi: "PBI-002", story: "todo.txtをパースしてタスク一覧表示",
     verification: "passed", notes: "TDDで6サブタスク完了(12コミット)、全DoD満たす" },
   { sprint: 3, pbi: "PBI-003", story: "チェックボックスで完了切替",
-    verification: "passed", notes: "TDDで5サブタスク完了(9コミット: 5 Red + 5 Green + 1 Refactor)、全DoD満たす。parser修正でdescription重複問題解決" },
+    verification: "passed", notes: "TDDで5サブタスク完了(9コミット: 5 Red + 5 Green + 1 Refactor)、全DoD満たす。受け入れ基準5項目すべて検証済: toggleCompletion(6テスト), serializeTodo(統合), updateTodoInList(4テスト), View統合(4テスト)。Tests: 57 passed, Lint: 0 errors, Types: passed, Build: success" },
 ];
 
 // Retrospectives

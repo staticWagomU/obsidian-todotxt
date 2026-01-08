@@ -2,27 +2,37 @@ const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const MONTH_INDEX_OFFSET = 1;
 
 /**
+ * 日付文字列がYYYY-MM-DD形式かを検証
+ */
+function isValidDateFormat(dateStr: string): boolean {
+	return ISO_DATE_PATTERN.test(dateStr);
+}
+
+/**
+ * 日付が自動補正されていないかをチェック
+ * 例: 2026-02-30 -> 2026-03-02 のような変換を検出
+ */
+function isDateAutoAdjusted(date: Date, dateStr: string): boolean {
+	const [yearInput, monthInput, dayInput] = dateStr.split("-").map(Number);
+	return (
+		date.getFullYear() !== yearInput ||
+		date.getMonth() !== monthInput - MONTH_INDEX_OFFSET ||
+		date.getDate() !== dayInput
+	);
+}
+
+/**
  * YYYY-MM-DD形式の文字列が有効な日付かを検証する
  * @param dateStr 日付文字列
  * @returns 有効な日付の場合Date型、無効な場合undefined
  */
 function parseValidDate(dateStr: string): Date | undefined {
-	// YYYY-MM-DD形式の検証 (正規表現で厳密にチェック)
-	if (!ISO_DATE_PATTERN.test(dateStr)) return undefined;
+	if (!isValidDateFormat(dateStr)) return undefined;
 
 	const date = new Date(dateStr);
-	// 無効な日付チェック (例: 2026-13-01や2026-02-30など)
 	if (Number.isNaN(date.getTime())) return undefined;
 
-	// 日付が自動補正されていないかチェック
-	// 例: 2026-02-30 -> 2026-03-02 のような変換を検出
-	const [yearInput, monthInput, dayInput] = dateStr.split("-").map(Number);
-	const isDateAutoAdjusted =
-		date.getFullYear() !== yearInput ||
-		date.getMonth() !== monthInput - MONTH_INDEX_OFFSET ||
-		date.getDate() !== dayInput;
-
-	if (isDateAutoAdjusted) return undefined;
+	if (isDateAutoAdjusted(date, dateStr)) return undefined;
 
 	return date;
 }

@@ -1,4 +1,4 @@
-import { TextFileView, WorkspaceLeaf } from "obsidian";
+import { TextFileView, type TFile, type WorkspaceLeaf } from "obsidian";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
@@ -15,12 +15,12 @@ export class TodotxtView extends TextFileView {
 		return "Todo.txt";
 	}
 
-	async onLoadFile(file: any): Promise<void> {
+	async onLoadFile(file: TFile): Promise<void> {
 		// To be implemented
 		await super.onLoadFile(file);
 	}
 
-	async onUnloadFile(file: any): Promise<void> {
+	async onUnloadFile(file: TFile): Promise<void> {
 		await super.onUnloadFile(file);
 	}
 

@@ -100,8 +100,8 @@ export const quickStatus = {
   sprint: {
     number: 1,
     pbi: "PBI-001" as string | null,
-    status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2,
+    status: "done" as SprintStatus,
+    subtasksCompleted: 3,
     subtasksTotal: 3,
     impediments: 0,
   },
@@ -632,7 +632,7 @@ export const currentSprint = {
   number: 1,
   pbiId: "PBI-001",
   story: ".txt/.todotxtファイルを専用ビューで開けるようにし、Obsidianプラグインの基盤を確立する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "プラグインがTextFileViewを継承したTodotxtViewクラスを登録することを検証する",
@@ -670,8 +670,17 @@ export const currentSprint = {
       test: ".todotxt拡張子のファイルが専用ビューで開かれることを検証する",
       implementation: "main.tsのregisterExtensionsで'todotxt'拡張子を登録する",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        {
+          phase: "red" as CommitPhase,
+          message: "test: add failing test for .todotxt extension registration",
+        },
+        {
+          phase: "green" as CommitPhase,
+          message: "feat: register .todotxt extension for TodotxtView",
+        },
+      ],
     },
   ] as Subtask[],
   notes: "Sprint 1 started. Focus: PBI-001 - Register custom view for todo.txt files.",

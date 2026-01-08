@@ -1,38 +1,24 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
-import MyPlugin from "./main";
+import { App, PluginSettingTab } from "obsidian";
+import type TodotxtPlugin from "./main";
 
-export interface MyPluginSettings {
-	mySetting: string;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface TodotxtPluginSettings {
+	// Settings will be added in future sprints
 }
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: "default",
-};
+export const DEFAULT_SETTINGS: TodotxtPluginSettings = {};
 
-export class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+export class TodotxtSettingTab extends PluginSettingTab {
+	plugin: TodotxtPlugin;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: TodotxtPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
 
 	display(): void {
 		const { containerEl } = this;
-
 		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName("Settings #1")
-			.setDesc("It's a secret")
-			.addText((text) =>
-				text
-					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.mySetting)
-					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
-						await this.plugin.saveSettings();
-					}),
-			);
+		// Settings UI will be added in future sprints
 	}
 }

@@ -1,20 +1,30 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import MyPlugin from "./main";
-import { App } from "obsidian";
+import TodotxtPlugin from "./main";
+import { App, type PluginManifest } from "obsidian";
 
 describe("TodotxtView registration", () => {
-	let plugin: MyPlugin;
+	let plugin: TodotxtPlugin;
 	let mockApp: App;
+	const mockManifest: PluginManifest = {
+		id: "obsidian-todotxt",
+		name: "Todo.txt Plugin",
+		version: "1.0.0",
+		minAppVersion: "0.15.0",
+		description: "Todo.txt format support for Obsidian",
+		author: "wagomu",
+		authorUrl: "",
+		isDesktopOnly: false,
+	};
 
 	beforeEach(() => {
 		mockApp = {} as App;
-		plugin = new MyPlugin(mockApp, {} as any);
+		plugin = new TodotxtPlugin(mockApp, mockManifest);
 	});
 
 	it("should register TodotxtView when plugin loads", async () => {
 		const registerViewSpy = { called: false, viewType: "" };
 
-		plugin.registerView = (viewType: string, _viewCreator: any) => {
+		plugin.registerView = (viewType: string) => {
 			registerViewSpy.called = true;
 			registerViewSpy.viewType = viewType;
 		};

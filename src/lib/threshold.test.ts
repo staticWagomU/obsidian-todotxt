@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { getThresholdDate } from "./threshold";
+import { getThresholdDate, getThresholdDateStatus } from "./threshold";
+import type { Todo } from "./todo";
 
 describe("getThresholdDate", () => {
 	describe("正常系: t:YYYY-MM-DD形式のタグからDate型を抽出", () => {
@@ -71,6 +72,93 @@ describe("getThresholdDate", () => {
 			const tags = { t: "2026-02-30" };
 			const result = getThresholdDate(tags);
 			expect(result).toBeNull();
+		});
+	});
+});
+
+describe("getThresholdDateStatus", () => {
+	const createTodo = (tags: Record<string, string>): Todo => ({
+		completed: false,
+		description: "Test task",
+		projects: [],
+		contexts: [],
+		tags,
+		raw: "",
+	});
+
+	describe("正常系: しきい値日付と現在日付の比較", () => {
+		it("しきい値が未来の日付の場合、'not_ready'を返す", () => {
+			const todo = createTodo({ t: "2026-01-20" });
+			const today = new Date("2026-01-10");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("not_ready");
+		});
+
+		it("しきい値が本日の場合、'ready'を返す", () => {
+			const todo = createTodo({ t: "2026-01-10" });
+			const today = new Date("2026-01-10");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("ready");
+		});
+
+		it("しきい値が過去の日付の場合、'ready'を返す", () => {
+			const todo = createTodo({ t: "2026-01-01" });
+			const today = new Date("2026-01-10");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("ready");
+		});
+
+		it("しきい値が1日後（明日）の場合、'not_ready'を返す", () => {
+			const todo = createTodo({ t: "2026-01-11" });
+			const today = new Date("2026-01-10");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("not_ready");
+		});
+
+		it("しきい値が1日前（昨日）の場合、'ready'を返す", () => {
+			const todo = createTodo({ t: "2026-01-09" });
+			const today = new Date("2026-01-10");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("ready");
+		});
+	});
+
+	describe("境界値: t:タグが存在しない場合", () => {
+		it("t:タグがない場合、nullを返す", () => {
+			const todo = createTodo({ priority: "A" });
+			const today = new Date("2026-01-10");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBeNull();
+		});
+
+		it("t:タグが不正な形式の場合、nullを返す", () => {
+			const todo = createTodo({ t: "invalid-date" });
+			const today = new Date("2026-01-10");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBeNull();
+		});
+	});
+
+	describe("境界値: 時刻による日付比較の厳密性", () => {
+		it("同日だが時刻が異なる場合も'ready'を返す（日付のみで比較）", () => {
+			const todo = createTodo({ t: "2026-01-10" });
+			const today = new Date("2026-01-10T18:00:00");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("ready");
+		});
+
+		it("年末と年始をまたぐ場合も正しく判定（前年の年末がしきい値）", () => {
+			const todo = createTodo({ t: "2025-12-31" });
+			const today = new Date("2026-01-01");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("ready");
+		});
+
+		it("年末と年始をまたぐ場合も正しく判定（翌年の年始がしきい値）", () => {
+			const todo = createTodo({ t: "2026-01-01" });
+			const today = new Date("2025-12-31");
+			const result = getThresholdDateStatus(todo, today);
+			expect(result).toBe("not_ready");
 		});
 	});
 });

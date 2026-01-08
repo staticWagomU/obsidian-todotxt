@@ -5,6 +5,14 @@ import type { Todo } from "./todo";
  * Incomplete tasks come before completed tasks
  */
 export function sortTodos(todos: Todo[]): Todo[] {
-	// TODO: implement
-	return todos;
+	if (todos.length === 0) {
+		return [];
+	}
+
+	// Separate incomplete and completed tasks
+	const incompleteTasks = todos.filter(todo => !todo.completed);
+	const completedTasks = todos.filter(todo => todo.completed);
+
+	// Return incomplete tasks first, then completed tasks
+	return [...incompleteTasks, ...completedTasks];
 }

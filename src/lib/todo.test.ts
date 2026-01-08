@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { toggleCompletion } from "./todo";
+import { toggleCompletion, createTask } from "./todo";
 import type { Todo } from "./todo";
 
 describe("toggle task completion status", () => {
@@ -121,5 +121,77 @@ describe("toggle task completion status", () => {
 			expect(result.projects).toEqual(["GroceryShopping"]);
 			expect(result.tags).toEqual({ pri: "A" });
 		});
+	});
+});
+
+describe("create task with description only", () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08"));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it("説明文のみで新規タスクを作成できる", () => {
+		const result = createTask("Buy milk");
+
+		expect(result.description).toBe("Buy milk");
+		expect(result.completed).toBe(false);
+		expect(result.projects).toEqual([]);
+		expect(result.contexts).toEqual([]);
+		expect(result.tags).toEqual({});
+	});
+
+	it("作成日付が自動的に今日の日付になる", () => {
+		const result = createTask("Buy milk");
+
+		expect(result.creationDate).toBe("2026-01-08");
+	});
+});
+
+describe("create task with optional fields", () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08"));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it("優先度を指定して作成できる", () => {
+		const result = createTask("Buy milk", "A");
+
+		expect(result.description).toBe("Buy milk");
+		expect(result.priority).toBe("A");
+		expect(result.creationDate).toBe("2026-01-08");
+	});
+
+	it("プロジェクトを指定して作成できる", () => {
+		const result = createTask("Buy milk +GroceryShopping");
+
+		expect(result.description).toBe("Buy milk +GroceryShopping");
+		expect(result.projects).toEqual(["GroceryShopping"]);
+		expect(result.creationDate).toBe("2026-01-08");
+	});
+
+	it("コンテキストを指定して作成できる", () => {
+		const result = createTask("Buy milk @store");
+
+		expect(result.description).toBe("Buy milk @store");
+		expect(result.contexts).toEqual(["store"]);
+		expect(result.creationDate).toBe("2026-01-08");
+	});
+
+	it("優先度・プロジェクト・コンテキストをすべて指定して作成できる", () => {
+		const result = createTask("Buy milk +GroceryShopping @store", "B");
+
+		expect(result.description).toBe("Buy milk +GroceryShopping @store");
+		expect(result.priority).toBe("B");
+		expect(result.projects).toEqual(["GroceryShopping"]);
+		expect(result.contexts).toEqual(["store"]);
+		expect(result.creationDate).toBe("2026-01-08");
 	});
 });

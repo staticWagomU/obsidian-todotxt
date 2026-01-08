@@ -26,6 +26,8 @@ export function extractExternalLinks(description: string): ExternalLink[] {
 	for (const match of matches) {
 		const text = match[1];
 		const url = match[2];
+		// 正規表現パターン[^\]]+と[^)]+により、textとurlは常に存在する
+		if (!text || !url) continue;
 		links.push({ text, url });
 	}
 

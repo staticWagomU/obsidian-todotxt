@@ -40,4 +40,20 @@ describe("TodotxtView registration", () => {
 		expect(txtRegistration).toBeDefined();
 		expect(txtRegistration?.viewType).toBe("todotxt-view");
 	});
+
+	it("should register .todotxt extension", async () => {
+		const extensionsSpy: { extensions: string[]; viewType: string }[] = [];
+
+		plugin.registerExtensions = (extensions: string[], viewType: string) => {
+			extensionsSpy.push({ extensions, viewType });
+		};
+
+		await plugin.onload();
+
+		const todotxtRegistration = extensionsSpy.find(
+			(reg) => reg.extensions.includes("todotxt")
+		);
+		expect(todotxtRegistration).toBeDefined();
+		expect(todotxtRegistration?.viewType).toBe("todotxt-view");
+	});
 });

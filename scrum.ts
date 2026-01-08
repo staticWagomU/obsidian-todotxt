@@ -101,7 +101,7 @@ export const quickStatus = {
     number: 1,
     pbi: "PBI-001" as string | null,
     status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1,
+    subtasksCompleted: 2,
     subtasksTotal: 3,
     impediments: 0,
   },
@@ -654,8 +654,17 @@ export const currentSprint = {
       test: ".txt拡張子のファイルが専用ビューで開かれることを検証する",
       implementation: "main.tsのregisterExtensionsで'txt'拡張子を登録する",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        {
+          phase: "red" as CommitPhase,
+          message: "test: add failing test for .txt extension registration",
+        },
+        {
+          phase: "green" as CommitPhase,
+          message: "feat: register .txt extension for TodotxtView",
+        },
+      ],
     },
     {
       test: ".todotxt拡張子のファイルが専用ビューで開かれることを検証する",

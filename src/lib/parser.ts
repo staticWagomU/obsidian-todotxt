@@ -83,6 +83,23 @@ export function appendTaskToFile(content: string, newTask: Todo): string {
 }
 
 /**
+ * Update a task at a specific line index in the content
+ */
+export function updateTaskAtLine(content: string, lineIndex: number, updatedTodo: Todo): string {
+	if (content.length === 0) {
+		return "";
+	}
+
+	const todos = parseTodoTxt(content);
+
+	if (lineIndex < 0 || lineIndex >= todos.length) {
+		return content;
+	}
+
+	return updateTodoInList(todos, lineIndex, updatedTodo);
+}
+
+/**
  * Parse a single line of todo.txt format
  */
 export function parseTodoLine(line: string): Todo {

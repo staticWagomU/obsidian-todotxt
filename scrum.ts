@@ -181,24 +181,26 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 12,
+  { sprint: 13,
     workedWell: [
-      "Refactor発生率50%目標達成(初達成!): 5/10コミット、推移0%→27%→33%→37%→50%。各サブタスク平均1.5 Refactor実践、チェックリスト4観点の独立コミット化徹底",
-      "最多テスト追加数達成: +26テスト(全Sprint中最多)、全209テスト継続パス、日付処理の正常系・異常系・境界値を網羅",
-      "Subtask統合によるエンドツーエンド検証: Subtask3&4統合テスト実施、タグ抽出→状態判定の完全フロー検証、UI未実装でも機能完全性保証",
-      "Phase 2完遂(5 PBI, 5 Sprint連続成功): Sprint 8-12完走、全DoD合格、全AC達成、+77テスト(132→209)",
-      "日付処理の堅牢な実装: parseValidDate/toDateOnly補助関数分離、Magic number回避、セマンティック変数名、境界値・タイムゾーン考慮",
+      "due.tsパターンの完全再利用(Sprint 12知識活用): parseValidDate/toDateOnly/calculateDaysDifference再利用、2026-02-30自動補正検出でdue.tsより厳密な日付検証実現、一貫性のあるコードベース維持",
+      "Refactor率50%の安定維持(2 Sprint連続達成): 5/10コミット、Sprint 12→13連続50%、持続可能な水準として実証。各サブタスク平均1.5 Refactor継続",
+      "日付検証の品質向上: isDateAutoAdjusted関数による自動補正検出、形式+有効性+補正の3段階検証、境界値テスト2件追加(2026-13-01, 2026-02-30)",
+      "UI実装延期の戦略的判断: React component構造理解不足考慮、統合テスト7件でE2Eフロー検証、コア機能完全性保証とUI実装リスク分離",
+      "Phase 3初Sprintの成功: Phase 2→3シームレス移行、確立されたTDDプロセス維持、DoD全項目合格、AC全達成、+28テスト(209→237)",
     ],
     toImprove: [
-      "Phase 1テクニカルレビューの継続ペンディング(5 Sprint経過): Sprint 8から未実施、技術的負債蓄積リスクHIGH、Phase 3開始前の実施必須",
-      "UI実装の先送りによる検証ギャップ: PBI-012でUI延期、統合テストで代替、実際のUI統合時の未検証リスク懸念",
-      "複数サブタスク統合の判断基準不明確: Subtask3&4統合判断の基準なし、見積もり精度への影響(4→実質3サブタスク)",
+      "Phase 1テクニカルレビューの継続未実施(6 Sprint経過): Sprint 12から持ち越し、Sprint 8開始時から6 Sprint経過、リスクCRITICAL、技術的負債の蓄積継続、これ以上の延期は不可",
+      "UI実装戦略の継続未確定: Sprint 12 Action 3「Sprint 13 Planning時決定」未達成、PBI-012/013連続延期、戦略なき延期累積、UI統合複雑性増大リスク",
+      "サブタスク統合判断基準の未策定: Sprint 12 Action 4「DoD/Planning guideline文書化」未実施、アドホック判断継続、見積もり精度への影響",
+      "Refactor率50%の天井: 2 Sprint連続50%で向上なし、各サブタスク平均1.5 Refactorが実質上限か、60%超えの可能性と必要性不明",
     ],
     actions: [
-      "Phase 1テクニカルレビューの即時実施(最優先): Phase 3開始前(Sprint 13前)、Sprint 1-7全実装対象、コード品質/テストカバレッジ/型安全性/アーキテクチャをチェック、改善PBIリスト作成",
-      "Refactor発生率50%の安定維持: Sprint 13以降も50%以上維持、各サブタスク平均1.5 Refactor継続、Sprint Review時に発生率報告",
-      "UI実装戦略の明確化: React component現状構造把握、UI実装専用Sprint検討、UI統合テスト戦略策定、Sprint 13 Planning時決定",
-      "サブタスク統合判断基準の策定: UI未実装時は統合テスト代替可、関連サブタスク統合可(見積もり調整)、統合時はE2Eテスト必須、DoD/Planning guidelineに文書化",
+      "Phase 1テクニカルレビューの必達実施(最優先・期限設定): Sprint 14開始前(Planning前完了必須)、Sprint 1-7全実装対象(todo.ts/parser.ts/sort.ts/filter.ts/group.ts)、コード品質/テストカバレッジ/型安全性/アーキテクチャ4観点チェック、テクニカルレビューレポート(docs/technical-review-phase1.md)作成、改善PBIリスト化、Product Ownerレビュー承認",
+      "UI実装ロードマップの策定(具体的計画): Sprint 14 Planning前、React component現状分析(TodosView/TodosList/TodoItem構造、State管理)、UI統合パターン選択(個別統合/専用Sprint/段階的統合)、UI統合テスト戦略、成果物: docs/ui-implementation-roadmap.md",
+      "サブタスク統合判断基準の文書化(DoD更新): 統合許可条件(UI未実装時/依存関係強/完全フロー検証)、統合時要件(E2Eテスト必須/ヘルパー関数/見積もり調整)、統合不可条件(独立機能/テストケース数不均衡)、scrum.ts definitionOfDone or planningGuidelines追加、Sprint 14以降適用",
+      "Refactor率50%維持戦略の継続(現状維持): 50%を標準水準として継続、60%超えは追求しない、各サブタスク平均1.5 Refactor維持、チェックリスト4観点独立コミット継続、Sprint Review時発生率報告、50%下回った場合の原因分析",
+      "Phase 3日付処理パターンの標準化: threshold.ts品質をPhase 3標準とする、将来の日付関連PBI対象(rec:繰り返し等)、パターン: parseValidDate(形式+有効性+自動補正)/toDateOnly/calculateDaysDifference/セマンティック定数、開発ガイドラインor技術レビュー成果物に文書化",
     ] },
 ];
 

@@ -48,3 +48,31 @@ export function groupByProject(todos: Todo[]): Map<string, Todo[]> {
 
 	return grouped;
 }
+
+/**
+ * Group todos by context tags (@context)
+ *
+ * @param todos - Array of todos to group
+ * @returns Map where keys are context names and values are arrays of todos containing that context
+ * @remarks
+ * - Empty input returns empty Map
+ * - Todos without contexts will be included in "未分類" group
+ * - Todos with multiple contexts will appear in all corresponding groups
+ * - Order within each group is preserved from input array
+ */
+export function groupByContext(todos: Todo[]): Map<string, Todo[]> {
+	const grouped = new Map<string, Todo[]>();
+
+	for (const todo of todos) {
+		if (todo.contexts.length === 0) {
+			// Todos without contexts go to "未分類" group
+			addToGroup(grouped, "未分類", todo);
+		} else {
+			for (const context of todo.contexts) {
+				addToGroup(grouped, context, todo);
+			}
+		}
+	}
+
+	return grouped;
+}

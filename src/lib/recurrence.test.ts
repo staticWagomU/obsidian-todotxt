@@ -207,7 +207,7 @@ describe('createRecurringTask', () => {
     expect(result.completed).toBe(false);
     expect(result.completionDate).toBeUndefined();
     expect(result.creationDate).toBe('2026-01-09');
-    expect(result.tags.due).toBe('2026-01-10'); // 完了日 + 1日
+    expect(result.tags.due).toBe('due:2026-01-10'); // 完了日 + 1日
     expect(result.description).toBe('Daily task');
     expect(result.tags.rec).toBe('rec:1d'); // rec:は保持
   });
@@ -227,11 +227,11 @@ describe('createRecurringTask', () => {
     const result = createRecurringTask(completedTodo, '2026-01-10');
 
     expect(result.completed).toBe(false);
-    expect(result.tags.due).toBe('2026-01-12'); // due: + 1週間
+    expect(result.tags.due).toBe('due:2026-01-12'); // due: + 1週間
     expect(result.tags.rec).toBe('rec:+1w');
   });
 
-  it('rec:1m, due:1/31, t:1/24 → due:2/28, t:2/21(7日間隔保持)', () => {
+  it('rec:1m, due:1/31, t:1/24 → due:3/5, t:2/26(7日間隔保持) - non-strictは完了日基準', () => {
     const completedTodo: Todo = {
       completed: true,
       completionDate: '2026-02-05',
@@ -246,8 +246,8 @@ describe('createRecurringTask', () => {
     const result = createRecurringTask(completedTodo, '2026-02-05');
 
     expect(result.completed).toBe(false);
-    expect(result.tags.due).toBe('2026-02-28'); // 月末補正
-    expect(result.tags.t).toBe('2026-02-21'); // 7日間隔保持
+    expect(result.tags.due).toBe('due:2026-03-05'); // 完了日 + 1ヶ月(non-strict)
+    expect(result.tags.t).toBe('t:2026-02-26'); // 7日間隔保持
   });
 
   it('pri:タグは削除される(新タスクは優先度なし)', () => {

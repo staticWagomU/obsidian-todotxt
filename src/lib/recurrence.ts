@@ -3,6 +3,8 @@
  * rec: tag parsing and recurring task generation
  */
 
+import type { Todo } from './todo';
+
 export interface RecurrencePattern {
   value: number;      // 数値 (1, 2, 3, ...)
   unit: 'd' | 'w' | 'm' | 'y';  // 期間単位
@@ -106,4 +108,60 @@ export function preserveThresholdInterval(
   const newThreshold = new Date(newDue.getTime() - intervalMs);
 
   return newThreshold.toISOString().split('T')[0];
+}
+
+/**
+ * Create a recurring task from a completed task
+ * Updates due:/t: dates, resets completion status, sets creationDate to today
+ * Removes pri: tag and priority field
+ * Returns null if rec: tag is not present
+ */
+export function createRecurringTask(
+  completedTask: Todo,
+  completionDate: string
+): Todo | null {
+  // Check for rec: tag
+  const recTag = completedTask.tags.rec;
+  if (!recTag) {
+    return null;
+  }
+
+  // Parse recurrence pattern
+  const pattern = parseRecurrenceTag(recTag);
+  if (!pattern) {
+    return null;
+  }
+
+  // Extract current due date from tags (remove prefix if present)
+  const currentDueTag = completedTask.tags.due;
+  const currentDueDate = currentDueTag?.replace(/^due:/, '');
+
+  // Calculate next due date
+  const nextDueDate = calculateNextDueDate(pattern, completionDate, currentDueDate);
+
+  // Clone task
+  const newTask: Todo = {
+    ...completedTask,
+    completed: false,
+    completionDate: undefined,
+    creationDate: completionDate,
+    priority: undefined, // Remove priority
+    tags: { ...completedTask.tags },
+  };
+
+  // Update due: tag
+  newTask.tags.due = `due:${nextDueDate}`;
+
+  // Update threshold if present
+  const currentThresholdTag = completedTask.tags.t;
+  if (currentThresholdTag && currentDueDate) {
+    const currentThreshold = currentThresholdTag.replace(/^t:/, '');
+    const newThreshold = preserveThresholdInterval(currentThreshold, currentDueDate, nextDueDate);
+    newTask.tags.t = `t:${newThreshold}`;
+  }
+
+  // Remove pri: tag
+  delete newTask.tags.pri;
+
+  return newTask;
 }

@@ -103,9 +103,12 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-002"], status: "done",
     complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   // Phase 3: 拡張機能
-  { id: "PBI-013", story: { role: "Obsidianユーザー", capability: "t:グレーアウト", benefit: "未着手タスク区別" }, acceptanceCriteria: [
-      { criterion: "しきい値表示", verification: "pnpm vitest run --grep 'threshold'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+  { id: "PBI-013", story: { role: "Obsidianユーザー", capability: "t:YYYY-MM-DD形式のしきい値日付タグ表示", benefit: "着手可能時期を視覚的に区別し、未来のタスクを判別可能にする" }, acceptanceCriteria: [
+      { criterion: "t:YYYY-MM-DD形式をDate型として正しく抽出", verification: "pnpm vitest run --grep 'getThresholdDate'" },
+      { criterion: "しきい値が未来のタスク（未着手期間）を判定", verification: "pnpm vitest run --grep 'threshold.*not.*ready'" },
+      { criterion: "しきい値が本日または過去のタスク（着手可能）を判定", verification: "pnpm vitest run --grep 'threshold.*ready'" },
+    ], dependencies: ["PBI-002"], status: "ready",
+    complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 4 } },
   { id: "PBI-014", story: { role: "Obsidianユーザー", capability: "[[Note]]リンク", benefit: "ノート遷移" }, acceptanceCriteria: [
       { criterion: "内部リンク", verification: "pnpm vitest run --grep 'internal link'" },
     ], dependencies: ["PBI-002"], status: "draft" },

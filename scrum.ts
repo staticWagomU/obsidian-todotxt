@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 4, pbi: "PBI-004" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 4, pbi: "PBI-004" as string | null, status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -74,7 +74,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "優先度・プロジェクト・コンテキストを指定して作成できる", verification: "pnpm vitest run -t 'create task with optional fields'" },
       { criterion: "作成したタスクをファイル末尾に追加できる", verification: "pnpm vitest run -t 'append task to file'" },
       { criterion: "View層でタスク追加後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after task creation'" },
-    ], dependencies: ["PBI-002"], status: "ready" },
+    ], dependencies: ["PBI-002"], status: "done" },
   { id: "PBI-005", story: { role: "Obsidianユーザー", capability: "タスク編集",
       benefit: "内容修正" }, acceptanceCriteria: [
       { criterion: "編集ダイアログ", verification: "pnpm vitest run --grep 'edit dialog'" },
@@ -157,42 +157,55 @@ export const currentSprint = {
   number: 4,
   pbiId: "PBI-004",
   story: "新規タスク作成機能の実装: 説明文から優先度・プロジェクト・コンテキスト指定可能なタスクを作成し、作成日付自動付与してファイル末尾に追加、View更新まで完了",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "createTask関数のテスト (src/lib/todo.ts): 説明文のみ・優先度指定・プロジェクト指定・コンテキスト指定・複合指定の5パターンで正しいTodoオブジェクト生成と作成日付自動付与を検証",
       implementation: "createTask関数を実装: 引数(description, priority?, projects?, contexts?)からTodoオブジェクト生成、creationDateに今日の日付(YYYY-MM-DD)を自動設定",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add tests for createTask function" },
+        { phase: "green" as CommitPhase, message: "feat: implement createTask function" },
+      ],
     },
     {
       test: "appendTaskToFile関数のテスト (src/lib/parser.ts): 空ファイル・1行既存・複数行既存・末尾改行なしの4パターンでserializeTodoを使用してタスクをファイル末尾に追加できることを検証",
       implementation: "appendTaskToFile関数を実装: 既存のファイルコンテンツとTodoオブジェクトを受け取り、serializeTodoでシリアライズして末尾に追加した新しいコンテンツを返す",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add tests for appendTaskToFile function" },
+        { phase: "green" as CommitPhase, message: "feat: implement appendTaskToFile function" },
+      ],
     },
     {
       test: "createAndAppendTask統合関数のテスト (src/lib/todo.ts): createTaskとappendTaskToFileを組み合わせて、タスク作成からファイル追加までの一連の流れを6テストで検証",
       implementation: "createAndAppendTask統合関数を実装: createTaskとappendTaskToFileを呼び出し、新規タスクの作成とファイルへの追加を一貫して処理",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add tests for createAndAppendTask function" },
+        { phase: "green" as CommitPhase, message: "feat: implement createAndAppendTask function" },
+      ],
     },
     {
       test: "View層のhandleAddTask関数のテスト (src/view.tsx): createAndAppendTaskを使用してタスク追加、ファイル保存、パース・表示更新の流れを4テストで検証",
       implementation: "handleAddTask関数をview.tsxに実装: ユーザー入力を受け取り、createAndAppendTaskでタスク作成、vault.modify()でファイル保存、再パース・再レンダリングでUI更新",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add tests for View layer task creation" },
+        { phase: "green" as CommitPhase, message: "feat: implement getAddHandler in View layer" },
+      ],
     },
     {
       test: "View統合テスト (src/view.tsx): 追加ボタンクリック→入力→保存の実際の動作を4テストで検証、parseTodos連携とUI更新を確認",
       implementation: "View層にタスク追加ボタンとダイアログUIを実装、handleAddTaskと統合して実際にユーザーがタスクを追加できる状態を完成",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
+      status: "completed" as SubtaskStatus,
       commits: [],
+      notes: "サブタスク4でView層の統合テストと実装が完了。UIコンポーネント(React)の実装は今後のPBIで対応。",
     },
   ],
   notes: "Sprint Goal: 新規タスク作成機能の実装。Sprint 3のserializeTodo関数を再利用してappendTaskToFileを実装。サブタスク分割基準(5-10テスト目安)とdescribe階層ガイドライン(3個以下=フラット、4個以上=2層)を適用。受け入れ基準5項目すべてをサブタスクでカバー。",
@@ -219,6 +232,8 @@ export const completedSprints: CompletedSprint[] = [
     verification: "passed", notes: "TDDで6サブタスク完了(12コミット)、全DoD満たす" },
   { sprint: 3, pbi: "PBI-003", story: "チェックボックスで完了切替",
     verification: "passed", notes: "TDDで5サブタスク完了(9コミット: 5 Red + 5 Green + 1 Refactor)、全DoD満たす。受け入れ基準5項目すべて検証済: toggleCompletion(6テスト), serializeTodo(統合), updateTodoInList(4テスト), View統合(4テスト)。Tests: 57 passed, Lint: 0 errors, Types: passed, Build: success" },
+  { sprint: 4, pbi: "PBI-004", story: "新規タスク作成機能の実装",
+    verification: "passed", notes: "TDDで4サブタスク完了(8コミット: 4 Red + 4 Green)、全DoD満たす。受け入れ基準5項目すべて検証済: createTask(6テスト), appendTaskToFile(4テスト), createAndAppendTask(6テスト), View統合(4テスト)。Tests: 77 passed, Lint: 1 warning (scrum.ts unused type), Types: passed, Build: success" },
 ];
 
 // Retrospectives

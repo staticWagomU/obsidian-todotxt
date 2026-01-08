@@ -7,10 +7,10 @@ import { groupByProject } from "./group";
 import type { Todo } from "./todo";
 
 describe("groupByProject", () => {
-	test("空配列入力時は空Mapを返す", () => {
+	test("should return empty Map when input is empty array", () => {
 		const todos: Todo[] = [];
 		const result = groupByProject(todos);
-		
+
 		expect(result.size).toBe(0);
 	});
 });

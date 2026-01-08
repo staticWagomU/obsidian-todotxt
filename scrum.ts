@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 13, pbi: "PBI-013" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -141,8 +141,41 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 13,
+  pbiId: "PBI-013" as string | null,
+  story: "t:YYYY-MM-DD形式のしきい値日付タグ表示により、着手可能時期を視覚的に区別し、未来のタスクを判別可能にする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "getThresholdDate: t:YYYY-MM-DD形式を正しくDate型として抽出する(正常系/異常系/境界値)",
+      implementation: "getThresholdDate(tags: Record<string, string>): Date | null - t:タグから日付を抽出、parseValidDate補助関数活用",
+      type: "behavioral",
+      status: "pending",
+      commits: []
+    },
+    {
+      test: "getThresholdDateStatus: しきい値日付の状態判定（not_ready: 未来、ready: 本日または過去）",
+      implementation: "getThresholdDateStatus(todo: Todo): 'not_ready' | 'ready' | null - しきい値日付と現在日付を比較して状態判定",
+      type: "behavioral",
+      status: "pending",
+      commits: []
+    },
+    {
+      test: "統合テスト: タグ抽出→状態判定の完全フロー検証（getThresholdDate + getThresholdDateStatus）",
+      implementation: "エンドツーエンド統合テストでタグ抽出から状態判定までのフロー検証、UI未実装でも機能完全性保証",
+      type: "behavioral",
+      status: "pending",
+      commits: []
+    },
+    {
+      test: "UI統合: TodoItemコンポーネントでしきい値日付状態に応じたグレーアウト表示",
+      implementation: "getThresholdDateStatus活用、not_ready状態タスクのグレーアウトスタイル適用、視覚的フィードバック提供",
+      type: "behavioral",
+      status: "pending",
+      commits: []
+    }
+  ] as Subtask[],
+  notes: "Sprint Goal: t:タグによるしきい値日付機能を実装し、着手可能時期を視覚的に区別する。Sprint 12のdue:表示実装パターンを踏襲（日付抽出→状態判定→統合テスト→UI統合）。Phase 3初Sprint、Refactor発生率50%維持目標。",
 };
 
 // Impediments

@@ -31,8 +31,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 3, pbi: "PBI-003" as string | null, status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 3, pbi: "PBI-003" as string | null, status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -66,7 +66,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "未完了に戻す時に完了日を削除する", verification: "pnpm vitest run -t 'remove completion date when marking incomplete'" },
       { criterion: "トグル後のタスクをファイルに保存できる", verification: "pnpm vitest run -t 'save toggled task to file'" },
       { criterion: "View層でトグル後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after toggle'" },
-    ], dependencies: ["PBI-002"], status: "ready" },
+    ], dependencies: ["PBI-002"], status: "done" },
   { id: "PBI-004", story: { role: "Obsidianユーザー", capability: "新規タスク作成",
       benefit: "簡単に追加" }, acceptanceCriteria: [
       { criterion: "作成ダイアログ", verification: "pnpm vitest run --grep 'create dialog'" },
@@ -155,42 +155,58 @@ export const currentSprint = {
   number: 3,
   pbiId: "PBI-003" as string | null,
   story: "チェックボックスクリックでタスクの完了状態をトグルし、完了日の自動管理とファイル保存を実現する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "toggleCompletion - 未完了→完了トグル時に今日の日付を自動付与",
       implementation: "src/lib/todo.ts - toggleCompletion関数で完了フラグと完了日を設定",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add toggleCompletion tests for task completion status toggle" },
+        { phase: "green" as CommitPhase, message: "feat: implement toggleCompletion function" },
+      ],
     },
     {
       test: "toggleCompletion - 完了→未完了トグル時に完了日を削除",
       implementation: "src/lib/todo.ts - toggleCompletion関数で完了フラグと完了日をクリア",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "(同上 - toggleCompletionテストに含まれる)" },
+        { phase: "green" as CommitPhase, message: "(同上 - toggleCompletion実装に含まれる)" },
+      ],
     },
     {
       test: "serializeTodo - Todoオブジェクトをtodo.txt形式文字列に変換",
       implementation: "src/lib/parser.ts - serializeTodo関数でTodo→文字列変換 (完了マーク/優先度/日付/説明/タグ)",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add serializeTodo tests for Todo to todo.txt format conversion" },
+        { phase: "green" as CommitPhase, message: "feat: implement serializeTodo function" },
+      ],
     },
     {
       test: "saveTodoToFile - トグル後のタスクをファイルに保存",
-      implementation: "src/lib/parser.ts - saveTodoToFile関数で配列の特定インデックスを更新して保存",
+      implementation: "src/lib/parser.ts - updateTodoInList関数で配列の特定インデックスを更新して保存",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add updateTodoInList tests for saving updated task to file" },
+        { phase: "green" as CommitPhase, message: "feat: implement updateTodoInList function" },
+      ],
     },
     {
       test: "View統合テスト - トグル操作でView表示とファイルが更新される",
-      implementation: "src/view.tsx - handleToggle関数でtoggleCompletion→serializeTodo→saveTodoToFileを連携",
+      implementation: "src/view.ts - getToggleHandler関数でtoggleCompletion→serializeTodo→updateTodoInListを連携",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add View integration tests for toggle functionality" },
+        { phase: "green" as CommitPhase, message: "feat: implement View toggle handler and fix parser description" },
+        { phase: "refactor" as CommitPhase, message: "refactor: fix TypeScript any types in view tests" },
+      ],
     },
   ] as Subtask[],
   notes: "Sprint Goal: チェックボックストグルで完了状態管理と永続化を完成させる。Sprint 2振り返りアクション適用: describe階層化(toggleCompletionは3層)、統合テスト追加、各describe 3-7ケース目安。",
@@ -215,6 +231,8 @@ export const completedSprints: CompletedSprint[] = [
     verification: "passed", notes: "TDDで3サブタスク完了、全DoD満たす" },
   { sprint: 2, pbi: "PBI-002", story: "todo.txtをパースしてタスク一覧表示",
     verification: "passed", notes: "TDDで6サブタスク完了(12コミット)、全DoD満たす" },
+  { sprint: 3, pbi: "PBI-003", story: "チェックボックスで完了切替",
+    verification: "passed", notes: "TDDで5サブタスク完了(9コミット: 5 Red + 5 Green + 1 Refactor)、全DoD満たす。parser修正でdescription重複問題解決" },
 ];
 
 // Retrospectives

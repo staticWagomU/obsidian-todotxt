@@ -5,7 +5,7 @@
 *.iml
 .idea
 
-# npm
+# pnpm
 node_modules
 
 # Don't include the compiled main.js file in the repo.
@@ -20,3 +20,5 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+refferencies/

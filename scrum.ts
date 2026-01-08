@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 17, pbi: "PBI-017", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 17, pbi: "PBI-017", status: "done" as SprintStatus,
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -143,7 +143,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "未完了時にpri:タグ→優先度復元: pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される", verification: "pnpm vitest run -t 'toggleCompletion.*pri tag to priority'" },
       { criterion: "優先度なしタスクはpri:タグ追加しない: 優先度なしタスクを完了してもpri:タグは追加されない", verification: "pnpm vitest run -t 'toggleCompletion.*no priority no pri tag'" },
       { criterion: "description内のpri:タグ保持: 説明文に含まれるpri:Aなどの文字列を誤検出せず、tagsオブジェクトのpri:のみ処理", verification: "pnpm vitest run -t 'toggleCompletion.*preserve description pri'" },
-    ], dependencies: ["PBI-003"], status: "ready",
+    ], dependencies: ["PBI-003"], status: "done",
     complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 3 } },
   { id: "PBI-018", story: { role: "Obsidianユーザー", capability: "設定画面", benefit: "カスタマイズ" }, acceptanceCriteria: [
       { criterion: "設定タブ", verification: "pnpm vitest run --grep 'settings'" },
@@ -168,28 +168,36 @@ export const currentSprint = {
   number: 17,
   pbiId: "PBI-017",
   story: "完了時にpri:タグとして優先度を保存し、未完了時に復元することで、優先度を失わずトグル可能にする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "toggleCompletion - 完了時変換: (A)のタスクを完了すると、(A)が削除されpri:Aタグが追加される (AC1)",
       implementation: "src/lib/todo.ts: toggleCompletion関数内に優先度→pri:タグ変換ロジック追加。未完了→完了時、priorityがnull以外なら tags配列にpri:${priority}追加 → priority=nullに設定 → 再シリアライズ。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 完了時にpriority→pri:タグ変換テスト追加 (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: 完了時にpriority→pri:タグ変換を実装 (GREEN)" }
+      ]
     },
     {
       test: "toggleCompletion - 未完了時復元: pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される (AC2)",
       implementation: "src/lib/todo.ts: toggleCompletion関数内にpri:タグ→優先度復元ロジック追加。完了→未完了時、tags配列からpri:パターン検出 → priority設定 → tags配列からpri:削除 → 再シリアライズ。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 未完了時にpri:タグ→priority復元テスト追加 (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: 未完了時にpri:タグ→priority復元を実装 (GREEN)" }
+      ]
     },
     {
       test: "toggleCompletion - 統合テスト: 優先度なしタスクはpri:タグ追加せず、説明文のpri:文字列を誤検出しない (AC3-4)",
       implementation: "src/lib/todo.test.ts: 統合テスト追加。優先度なしタスク完了時pri:タグ不在確認、説明文\"priority: high\"等pri:誤検出しないことをアサート。tagsオブジェクトのpri:のみ処理確認。",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "test: 優先度なし/誤検出防止の統合テスト追加" }
+      ]
     }
   ]
 };

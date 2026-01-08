@@ -1,5 +1,12 @@
 export class App {}
 
+export class WorkspaceLeaf {
+	app: App;
+	constructor() {
+		this.app = new App();
+	}
+}
+
 export class Plugin {
 	app: App;
 	manifest: any;
@@ -44,6 +51,7 @@ export class Setting {
 export class TextFileView {
 	app: App;
 	leaf: any;
+	data: string = "";
 
 	constructor(leaf: any) {
 		this.leaf = leaf;

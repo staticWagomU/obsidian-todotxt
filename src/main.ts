@@ -1,5 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab } from "./settings";
+import { TodotxtView, VIEW_TYPE_TODOTXT } from "./view";
 
 // Remember to rename these classes and interfaces!
 
@@ -8,6 +9,9 @@ export default class MyPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+
+		// Register TodotxtView
+		this.registerView(VIEW_TYPE_TODOTXT, (leaf) => new TodotxtView(leaf));
 
 		// This creates an icon in the left ribbon.
 		this.addRibbonIcon("dice", "Sample", (_evt: MouseEvent) => {

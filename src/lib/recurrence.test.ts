@@ -103,3 +103,45 @@ describe('calculateNextDueDate (non-strict)', () => {
     expect(result).toBe('2025-02-28'); // 平年に自動補正
   });
 });
+
+describe('calculateNextDueDate (strict)', () => {
+  it('strict=true: currentDueDate基準で1日後', () => {
+    const baseDate = '2026-01-09'; // 完了日
+    const currentDueDate = '2026-01-05'; // 元のdue:
+    const pattern: RecurrencePattern = { value: 1, unit: 'd', strict: true };
+    const result = calculateNextDueDate(pattern, baseDate, currentDueDate);
+    expect(result).toBe('2026-01-06'); // due: + 1日
+  });
+
+  it('strict=true: currentDueDate基準で1週間後', () => {
+    const baseDate = '2026-01-10';
+    const currentDueDate = '2026-01-05';
+    const pattern: RecurrencePattern = { value: 1, unit: 'w', strict: true };
+    const result = calculateNextDueDate(pattern, baseDate, currentDueDate);
+    expect(result).toBe('2026-01-12'); // due: + 7日
+  });
+
+  it('strict=true: currentDueDate基準で1ヶ月後', () => {
+    const baseDate = '2026-02-05';
+    const currentDueDate = '2026-01-31';
+    const pattern: RecurrencePattern = { value: 1, unit: 'm', strict: true };
+    const result = calculateNextDueDate(pattern, baseDate, currentDueDate);
+    expect(result).toBe('2026-02-28'); // due: + 1ヶ月(月末補正)
+  });
+
+  it('strict=true: currentDueDate基準で1年後', () => {
+    const baseDate = '2027-02-28';
+    const currentDueDate = '2024-02-29'; // 閏年
+    const pattern: RecurrencePattern = { value: 1, unit: 'y', strict: true };
+    const result = calculateNextDueDate(pattern, baseDate, currentDueDate);
+    expect(result).toBe('2025-02-28'); // due: + 1年(閏年補正)
+  });
+
+  it('strict=false (non-strict再確認): baseDate基準', () => {
+    const baseDate = '2026-01-15';
+    const currentDueDate = '2026-01-10'; // 無視される
+    const pattern: RecurrencePattern = { value: 1, unit: 'd', strict: false };
+    const result = calculateNextDueDate(pattern, baseDate, currentDueDate);
+    expect(result).toBe('2026-01-16'); // baseDate + 1日
+  });
+});

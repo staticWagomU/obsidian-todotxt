@@ -98,11 +98,11 @@ interface DoDCheck {
 
 export const quickStatus = {
   sprint: {
-    number: 1,
-    pbi: "PBI-001" as string | null,
-    status: "done" as SprintStatus,
-    subtasksCompleted: 3,
-    subtasksTotal: 3,
+    number: 0,
+    pbi: null as string | null,
+    status: "not_started" as SprintStatus,
+    subtasksCompleted: 0,
+    subtasksTotal: 0,
     impediments: 0,
   },
 };
@@ -629,61 +629,12 @@ export const definitionOfReady = {
 // =============================================================================
 
 export const currentSprint = {
-  number: 1,
-  pbiId: "PBI-001",
-  story: ".txt/.todotxtファイルを専用ビューで開けるようにし、Obsidianプラグインの基盤を確立する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "プラグインがTextFileViewを継承したTodotxtViewクラスを登録することを検証する",
-      implementation: "main.tsでTodotxtViewをregisterViewし、view.tsxでTextFileViewを継承したTodotxtViewクラスを実装する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        {
-          phase: "red" as CommitPhase,
-          message: "test: add failing test for TodotxtView registration",
-        },
-        {
-          phase: "green" as CommitPhase,
-          message: "feat: implement TodotxtView and register it in plugin",
-        },
-      ],
-    },
-    {
-      test: ".txt拡張子のファイルが専用ビューで開かれることを検証する",
-      implementation: "main.tsのregisterExtensionsで'txt'拡張子を登録する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        {
-          phase: "red" as CommitPhase,
-          message: "test: add failing test for .txt extension registration",
-        },
-        {
-          phase: "green" as CommitPhase,
-          message: "feat: register .txt extension for TodotxtView",
-        },
-      ],
-    },
-    {
-      test: ".todotxt拡張子のファイルが専用ビューで開かれることを検証する",
-      implementation: "main.tsのregisterExtensionsで'todotxt'拡張子を登録する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        {
-          phase: "red" as CommitPhase,
-          message: "test: add failing test for .todotxt extension registration",
-        },
-        {
-          phase: "green" as CommitPhase,
-          message: "feat: register .todotxt extension for TodotxtView",
-        },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Sprint 1 started. Focus: PBI-001 - Register custom view for todo.txt files.",
+  number: 0,
+  pbiId: null as string | null,
+  story: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
+  notes: "",
 };
 
 // =============================================================================
@@ -712,7 +663,15 @@ export const definitionOfDone = {
 // 5. Completed Sprints
 // =============================================================================
 
-export const completedSprints: CompletedSprint[] = [];
+export const completedSprints: CompletedSprint[] = [
+  {
+    sprint: 1,
+    pbi: "PBI-001",
+    story: ".txt/.todotxtファイルを専用ビューで開く",
+    verification: "passed",
+    notes: "全ての受け入れ基準とDefinition of Doneを満たしました。3つのサブタスクが完了し、TDDサイクル(Red-Green-Refactor)に従って実装されました。",
+  },
+];
 
 // =============================================================================
 // 6. Retrospective Log

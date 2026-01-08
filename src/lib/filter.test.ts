@@ -487,4 +487,112 @@ describe("filterBySearch", () => {
 			expect(result[0]?.description).toBe("Complete the report");
 		});
 	});
+
+	describe("filter by search projects contexts", () => {
+		it("should return tasks that contain the search keyword in projects", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Implement feature",
+					projects: ["website", "mobile"],
+					contexts: [],
+					tags: {},
+					raw: "Implement feature +website +mobile",
+				},
+				{
+					completed: false,
+					description: "Fix bug",
+					projects: ["backend"],
+					contexts: [],
+					tags: {},
+					raw: "Fix bug +backend",
+				},
+				{
+					completed: false,
+					description: "Write docs",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Write docs",
+				},
+			];
+
+			const result = filterBySearch(todos, "website");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Implement feature");
+			expect(result[0]?.projects).toContain("website");
+		});
+
+		it("should return tasks that contain the search keyword in contexts", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Call client",
+					projects: [],
+					contexts: ["phone", "office"],
+					tags: {},
+					raw: "Call client @phone @office",
+				},
+				{
+					completed: false,
+					description: "Send email",
+					projects: [],
+					contexts: ["computer"],
+					tags: {},
+					raw: "Send email @computer",
+				},
+			];
+
+			const result = filterBySearch(todos, "phone");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Call client");
+			expect(result[0]?.contexts).toContain("phone");
+		});
+
+		it("should return tasks that match keyword in description, projects, or contexts", () => {
+			const todos: Todo[] = [
+				{
+					completed: false,
+					description: "Task with home in description",
+					projects: [],
+					contexts: [],
+					tags: {},
+					raw: "Task with home in description",
+				},
+				{
+					completed: false,
+					description: "Task A",
+					projects: ["home"],
+					contexts: [],
+					tags: {},
+					raw: "Task A +home",
+				},
+				{
+					completed: false,
+					description: "Task B",
+					projects: [],
+					contexts: ["home"],
+					tags: {},
+					raw: "Task B @home",
+				},
+				{
+					completed: false,
+					description: "Task C",
+					projects: ["work"],
+					contexts: ["office"],
+					tags: {},
+					raw: "Task C +work @office",
+				},
+			];
+
+			const result = filterBySearch(todos, "home");
+
+			expect(result).toHaveLength(3);
+			expect(result[0]?.description).toBe("Task with home in description");
+			expect(result[1]?.projects).toContain("home");
+			expect(result[2]?.contexts).toContain("home");
+		});
+	});
 });

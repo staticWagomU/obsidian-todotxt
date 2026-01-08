@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTodoLine, parseTodoTxt, serializeTodo } from "./parser";
+import { parseTodoLine, parseTodoTxt, serializeTodo, updateTodoInList } from "./parser";
 import type { Todo } from "./todo";
 
 describe("parse completion", () => {
@@ -366,5 +366,131 @@ describe("serialize Todo to todo.txt format", () => {
 			const result = serializeTodo(todo);
 			expect(result).toBe("x (A) 2026-01-08 2026-01-01 Review +ProjectX code @office due:2026-01-10");
 		});
+	});
+});
+
+describe("save toggled task to file", () => {
+	it("指定インデックスのタスクを更新した文字列を返す", () => {
+		const todos: Todo[] = [
+			{
+				completed: false,
+				description: "Task 1",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 1",
+			},
+			{
+				completed: false,
+				description: "Task 2",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 2",
+			},
+			{
+				completed: false,
+				description: "Task 3",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 3",
+			},
+		];
+
+		const updatedTodo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			description: "Task 2",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Task 2",
+		};
+
+		const result = updateTodoInList(todos, 1, updatedTodo);
+
+		expect(result).toBe("Task 1\nx 2026-01-08 Task 2\nTask 3");
+	});
+
+	it("空のtodos配列の場合は空文字列を返す", () => {
+		const todos: Todo[] = [];
+		const updatedTodo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			description: "Task 1",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Task 1",
+		};
+
+		const result = updateTodoInList(todos, 0, updatedTodo);
+
+		expect(result).toBe("");
+	});
+
+	it("インデックスが範囲外の場合は元の文字列を返す", () => {
+		const todos: Todo[] = [
+			{
+				completed: false,
+				description: "Task 1",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Task 1",
+			},
+		];
+
+		const updatedTodo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			description: "Task 2",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Task 2",
+		};
+
+		const result = updateTodoInList(todos, 5, updatedTodo);
+
+		expect(result).toBe("Task 1");
+	});
+
+	it("複雑なtodo.txtの特定行を更新", () => {
+		const todos: Todo[] = [
+			{
+				completed: false,
+				priority: "A",
+				creationDate: "2026-01-01",
+				description: "Call Mom +Family @phone",
+				projects: ["Family"],
+				contexts: ["phone"],
+				tags: {},
+				raw: "(A) 2026-01-01 Call Mom +Family @phone",
+			},
+			{
+				completed: false,
+				description: "Buy milk +GroceryShopping",
+				projects: ["GroceryShopping"],
+				contexts: [],
+				tags: {},
+				raw: "Buy milk +GroceryShopping",
+			},
+		];
+
+		const updatedTodo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			description: "Buy milk +GroceryShopping",
+			projects: ["GroceryShopping"],
+			contexts: [],
+			tags: {},
+			raw: "Buy milk +GroceryShopping",
+		};
+
+		const result = updateTodoInList(todos, 1, updatedTodo);
+
+		expect(result).toBe("(A) 2026-01-01 Call Mom +Family @phone\nx 2026-01-08 Buy milk +GroceryShopping");
 	});
 });

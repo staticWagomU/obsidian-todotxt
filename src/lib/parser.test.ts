@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { parseTodoLine, parseTodoTxt } from "./parser";
+import { parseTodoLine, parseTodoTxt, serializeTodo } from "./parser";
+import type { Todo } from "./todo";
 
 describe("parse completion", () => {
 	it("行頭にxがある場合、completedがtrueになる", () => {
@@ -204,5 +205,166 @@ Task 2`;
 
 		const result = parseTodoTxt(text);
 		expect(result).toHaveLength(2);
+	});
+});
+
+describe("serialize Todo to todo.txt format", () => {
+	describe("基本的な変換", () => {
+		it("未完了タスクの最小構成", () => {
+			const todo: Todo = {
+				completed: false,
+				description: "Buy milk",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Buy milk",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("Buy milk");
+		});
+
+		it("完了タスクの最小構成", () => {
+			const todo: Todo = {
+				completed: true,
+				completionDate: "2026-01-08",
+				description: "Buy milk",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "x 2026-01-08 Buy milk",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("x 2026-01-08 Buy milk");
+		});
+
+		it("優先度付きタスク", () => {
+			const todo: Todo = {
+				completed: false,
+				priority: "A",
+				description: "Call Mom",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "(A) Call Mom",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("(A) Call Mom");
+		});
+	});
+
+	describe("日付の変換", () => {
+		it("作成日のみ", () => {
+			const todo: Todo = {
+				completed: false,
+				creationDate: "2026-01-01",
+				description: "Buy milk",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "2026-01-01 Buy milk",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("2026-01-01 Buy milk");
+		});
+
+		it("完了日と作成日（完了タスク）", () => {
+			const todo: Todo = {
+				completed: true,
+				completionDate: "2026-01-08",
+				creationDate: "2026-01-01",
+				description: "Buy milk",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "x 2026-01-08 2026-01-01 Buy milk",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("x 2026-01-08 2026-01-01 Buy milk");
+		});
+
+		it("優先度+作成日", () => {
+			const todo: Todo = {
+				completed: false,
+				priority: "A",
+				creationDate: "2026-01-01",
+				description: "Call Mom",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "(A) 2026-01-01 Call Mom",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("(A) 2026-01-01 Call Mom");
+		});
+
+		it("完了+優先度+完了日+作成日", () => {
+			const todo: Todo = {
+				completed: true,
+				priority: "B",
+				completionDate: "2026-01-08",
+				creationDate: "2026-01-01",
+				description: "Review code",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "x (B) 2026-01-08 2026-01-01 Review code",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("x (B) 2026-01-08 2026-01-01 Review code");
+		});
+	});
+
+	describe("複雑な構成の変換", () => {
+		it("プロジェクトとコンテキストを含む", () => {
+			const todo: Todo = {
+				completed: false,
+				description: "Buy milk +GroceryShopping @store",
+				projects: ["GroceryShopping"],
+				contexts: ["store"],
+				tags: {},
+				raw: "Buy milk +GroceryShopping @store",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("Buy milk +GroceryShopping @store");
+		});
+
+		it("タグを含む", () => {
+			const todo: Todo = {
+				completed: false,
+				description: "Buy milk due:2026-01-15",
+				projects: [],
+				contexts: [],
+				tags: { due: "2026-01-15" },
+				raw: "Buy milk due:2026-01-15",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("Buy milk due:2026-01-15");
+		});
+
+		it("全要素を含む完全な構成", () => {
+			const todo: Todo = {
+				completed: true,
+				priority: "A",
+				completionDate: "2026-01-08",
+				creationDate: "2026-01-01",
+				description: "Review +ProjectX code @office due:2026-01-10",
+				projects: ["ProjectX"],
+				contexts: ["office"],
+				tags: { due: "2026-01-10" },
+				raw: "x (A) 2026-01-08 2026-01-01 Review +ProjectX code @office due:2026-01-10",
+			};
+
+			const result = serializeTodo(todo);
+			expect(result).toBe("x (A) 2026-01-08 2026-01-01 Review +ProjectX code @office due:2026-01-10");
+		});
 	});
 });

@@ -187,3 +187,67 @@ describe("update view after task creation", () => {
 		vi.useRealTimers();
 	});
 });
+
+describe("update view after task edit", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("編集後のView更新（モック）", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom\n(B) 2026-01-02 Buy milk\n(C) 2026-01-03 Write report";
+		view.setViewData(initialData, false);
+
+		const handleEdit = view.getEditHandler();
+		await handleEdit(1, { description: "Buy bread +GroceryShopping", priority: "A" });
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n(A) 2026-01-02 Buy bread +GroceryShopping\n(C) 2026-01-03 Write report");
+	});
+
+	it("ファイル保存（setViewData）", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom";
+		view.setViewData(initialData, false);
+
+		const handleEdit = view.getEditHandler();
+		await handleEdit(0, { description: "Call Mom +Family @phone" });
+
+		// setViewDataが呼ばれてデータが更新される
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(A) 2026-01-01 Call Mom +Family @phone");
+	});
+
+	it("編集前後のTodo比較", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom";
+		view.setViewData(initialData, false);
+
+		const todoBefore = parseTodoTxt(view.getViewData())[0];
+		expect(todoBefore?.description).toBe("Call Mom");
+		expect(todoBefore?.priority).toBe("A");
+
+		const handleEdit = view.getEditHandler();
+		await handleEdit(0, { priority: "B" });
+
+		const todoAfter = parseTodoTxt(view.getViewData())[0];
+		expect(todoAfter?.description).toBe("Call Mom");
+		expect(todoAfter?.priority).toBe("B");
+	});
+
+	it("エラーハンドリング（無効な編集）", async () => {
+		const initialData = "(A) 2026-01-01 Call Mom";
+		view.setViewData(initialData, false);
+
+		const handleEdit = view.getEditHandler();
+
+		// 範囲外のインデックス
+		await handleEdit(99, { description: "Invalid" });
+
+		// データは変更されない
+		expect(view.getViewData()).toBe("(A) 2026-01-01 Call Mom");
+	});
+});

@@ -70,6 +70,19 @@ export function serializeTodo(todo: Todo): string {
 }
 
 /**
+ * Append a new task to the end of the file content
+ */
+export function appendTaskToFile(content: string, newTask: Todo): string {
+	const serializedTask = serializeTodo(newTask);
+
+	if (content.length === 0) {
+		return serializedTask;
+	}
+
+	return `${content}\n${serializedTask}`;
+}
+
+/**
  * Parse a single line of todo.txt format
  */
 export function parseTodoLine(line: string): Todo {

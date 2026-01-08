@@ -89,3 +89,41 @@ describe("parse dates", () => {
 		expect(result.creationDate).toBeUndefined();
 	});
 });
+
+describe("parse project context", () => {
+	it("+記号で始まるプロジェクトを抽出", () => {
+		const result = parseTodoLine("Buy milk +GroceryShopping");
+		expect(result.projects).toEqual(["GroceryShopping"]);
+	});
+
+	it("@記号で始まるコンテキストを抽出", () => {
+		const result = parseTodoLine("Call Mom @phone");
+		expect(result.contexts).toEqual(["phone"]);
+	});
+
+	it("複数のプロジェクトとコンテキストを抽出", () => {
+		const result = parseTodoLine(
+			"Email report +ProjectA +ProjectB @work @email",
+		);
+		expect(result.projects).toEqual(["ProjectA", "ProjectB"]);
+		expect(result.contexts).toEqual(["work", "email"]);
+	});
+
+	it("説明文の途中のプロジェクト・コンテキストも抽出", () => {
+		const result = parseTodoLine("Review +ProjectX code @office");
+		expect(result.projects).toEqual(["ProjectX"]);
+		expect(result.contexts).toEqual(["office"]);
+	});
+
+	it("プロジェクト・コンテキストがない場合は空配列", () => {
+		const result = parseTodoLine("Buy milk");
+		expect(result.projects).toEqual([]);
+		expect(result.contexts).toEqual([]);
+	});
+
+	it("スペースが続く場合は無効", () => {
+		const result = parseTodoLine("Task + invalid @ invalid");
+		expect(result.projects).toEqual([]);
+		expect(result.contexts).toEqual([]);
+	});
+});

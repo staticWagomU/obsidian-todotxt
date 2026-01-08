@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { toggleCompletion, createTask, createAndAppendTask } from "./todo";
+import { toggleCompletion, createTask, createAndAppendTask, editTask } from "./todo";
 import type { Todo } from "./todo";
 
 describe("toggle task completion status", () => {
@@ -246,5 +246,116 @@ describe("create and append task", () => {
 		const result = createAndAppendTask(content, "Write report +Work @office", "C");
 
 		expect(result).toBe("(A) 2026-01-01 Call Mom\n(C) 2026-01-08 Write report +Work @office");
+	});
+});
+
+describe("edit task properties", () => {
+	it("説明文のみを編集できる", () => {
+		const todo: Todo = {
+			completed: false,
+			priority: "A",
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "(A) 2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { description: "Buy bread" });
+
+		expect(result.description).toBe("Buy bread");
+		expect(result.priority).toBe("A");
+		expect(result.creationDate).toBe("2026-01-01");
+		expect(result.completed).toBe(false);
+	});
+
+	it("優先度のみを編集できる", () => {
+		const todo: Todo = {
+			completed: false,
+			priority: "A",
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "(A) 2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { priority: "B" });
+
+		expect(result.priority).toBe("B");
+		expect(result.description).toBe("Buy milk");
+		expect(result.creationDate).toBe("2026-01-01");
+	});
+
+	it("完了状態を保持する", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "x 2026-01-08 2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { description: "Buy bread" });
+
+		expect(result.completed).toBe(true);
+		expect(result.completionDate).toBe("2026-01-08");
+	});
+
+	it("作成日を保持する", () => {
+		const todo: Todo = {
+			completed: false,
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { description: "Buy bread" });
+
+		expect(result.creationDate).toBe("2026-01-01");
+	});
+
+	it("完了日を保持する", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-07",
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "x 2026-01-07 2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { priority: "A" });
+
+		expect(result.completionDate).toBe("2026-01-07");
+		expect(result.completed).toBe(true);
+	});
+
+	it("空文字列やundefinedを処理できる", () => {
+		const todo: Todo = {
+			completed: false,
+			priority: "A",
+			creationDate: "2026-01-01",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "(A) 2026-01-01 Buy milk",
+		};
+
+		const result = editTask(todo, { priority: undefined, description: "" });
+
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("");
 	});
 });

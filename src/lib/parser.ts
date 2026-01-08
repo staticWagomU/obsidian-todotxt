@@ -40,14 +40,30 @@ export function parseTodoLine(line: string): Todo {
 		}
 	}
 
+	// Parse projects and contexts from the entire line
+	const projects: string[] = [];
+	const contexts: string[] = [];
+
+	// +project (+ followed by non-whitespace)
+	const projectMatches = trimmed.matchAll(/\+(\S+)/g);
+	for (const match of projectMatches) {
+		projects.push(match[1]);
+	}
+
+	// @context (@ followed by non-whitespace)
+	const contextMatches = trimmed.matchAll(/@(\S+)/g);
+	for (const match of contextMatches) {
+		contexts.push(match[1]);
+	}
+
 	return {
 		completed,
 		priority,
 		completionDate,
 		creationDate,
 		description: trimmed,
-		projects: [],
-		contexts: [],
+		projects,
+		contexts,
 		tags: {},
 		raw: line,
 	};

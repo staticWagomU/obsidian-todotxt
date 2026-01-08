@@ -61,10 +61,12 @@ export const productBacklog: ProductBacklogItem[] = [
     ], dependencies: ["PBI-001"], status: "done" },
   { id: "PBI-003", story: { role: "Obsidianユーザー", capability: "チェックボックスで完了切替",
       benefit: "ワンクリックで状態更新" }, acceptanceCriteria: [
-      { criterion: "完了トグル", verification: "pnpm vitest run --grep 'toggle'" },
-      { criterion: "完了日自動付与", verification: "pnpm vitest run --grep 'completion date'" },
-      { criterion: "ファイル保存", verification: "pnpm vitest run --grep 'save'" },
-    ], dependencies: ["PBI-002"], status: "draft" },
+      { criterion: "完了状態を未完了↔完了にトグルできる", verification: "pnpm vitest run -t 'toggle task completion status'" },
+      { criterion: "完了時に今日の日付(YYYY-MM-DD)を自動付与する", verification: "pnpm vitest run -t 'add completion date when marking complete'" },
+      { criterion: "未完了に戻す時に完了日を削除する", verification: "pnpm vitest run -t 'remove completion date when marking incomplete'" },
+      { criterion: "トグル後のタスクをファイルに保存できる", verification: "pnpm vitest run -t 'save toggled task to file'" },
+      { criterion: "View層でトグル後の表示を更新できる (統合テスト)", verification: "pnpm vitest run -t 'update view after toggle'" },
+    ], dependencies: ["PBI-002"], status: "ready" },
   { id: "PBI-004", story: { role: "Obsidianユーザー", capability: "新規タスク作成",
       benefit: "簡単に追加" }, acceptanceCriteria: [
       { criterion: "作成ダイアログ", verification: "pnpm vitest run --grep 'create dialog'" },

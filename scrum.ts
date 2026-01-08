@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 9, pbi: "PBI-009" as string | null, status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -138,56 +138,8 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 9,
-  pbiId: "PBI-009" as string | null,
-  story: "優先度指定によるタスクフィルタリング機能を提供し、ユーザーが特定優先度のタスクのみを表示できるようにする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "指定優先度(A)のタスクのみ返すテスト、異なる優先度タスクを除外するテスト",
-      implementation: "filterByPriority(todos, priority) 関数の基本実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 1 - add basic priority filter tests (RED)" },
-        { phase: "green", message: "feat: Subtask 1 - implement basic priority filter (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 1 - add JSDoc parameters to filterByPriority" },
-      ],
-    },
-    {
-      test: "優先度なし(null/undefined)タスクのフィルタリングテスト",
-      implementation: "priority=null 時の処理追加",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 2 - add tests for no-priority filtering (RED)" },
-        { phase: "green", message: "feat: Subtask 2 - handle null/undefined priority filtering (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 2 - extract isNullOrUndefined helper" },
-      ],
-    },
-    {
-      test: "フィルタ実行後も元配列が変更されないことを検証するテスト",
-      implementation: "明示的な配列コピー処理、非破壊的実装の確認",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 3 - add immutability verification tests (RED)" },
-        { phase: "green", message: "feat: Subtask 3 - document immutability guarantee (GREEN)" },
-      ],
-    },
-    {
-      test: "空配列処理、該当なし時の空配列返却、複数優先度混在時の正確なフィルタリング",
-      implementation: "エッジケース処理の堅牢化",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: Subtask 4 - add edge case tests (RED)" },
-        { phase: "green", message: "feat: Subtask 4 - edge cases confirmed (GREEN)" },
-        { phase: "refactor", message: "refactor: Subtask 4 - document edge case handling" },
-      ],
-    },
-  ] as Subtask[],
-  notes: "Sprint 8 Retrospective Action適用: Refactorチェックリスト強制実施、Refactorコミット発生率50%目標",
+  number: 0, pbiId: null as string | null, story: "",
+  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
 };
 
 // Impediments
@@ -218,24 +170,25 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 8,
+  { sprint: 9,
     workedWell: [
-      "Backlog Refinement完璧実行: Phase 2最初の5 PBI (PBI-008～012)をready化、複雑度評価基準拡張完了",
-      "TDD Red-Greenサイクル完璧実践: 全4サブタスクでRED→GREEN実施 (8コミット)",
-      "アクセシビリティ自発追加: 正規化処理+ARIA対応で予定外品質向上 (+6テスト)",
-      "見積もり実績分析: 15見積→21実績(140%) はポジティブな品質向上",
+      "Refactorチェックリスト強制実施成功: 3つのRefactorコミット作成 (発生率0%→27%改善)",
+      "Type Guard Pattern導入: isNullOrUndefined関数で型安全性向上、再利用性確保",
+      "テスト見積もり精度向上: 15見積→11実績(73%) で効率的実装達成",
+      "コードドキュメント充実: JSDoc + 実装コメントで保守性向上",
+      "TDD Red-Green-Refactorサイクル完全実践: 全4サブタスクで実施 (11コミット)",
     ],
     toImprove: [
-      "Refactorフェーズ継続不在: Sprint 8でもRefactorコミット0件 (発生率33%)",
-      "Refactorチェックリスト未実施: Sprint 7定着化目標が未達成",
-      "Phase 1テクニカルレビュー未実施: Sprint 7 Action #1が継続課題",
-      "テスト見積もりの甘さ: エッジケース+アクセシビリティ未考慮",
+      "Refactorコミット発生率目標未達: 目標50%に対し27%達成 (3/11コミット)",
+      "Phase 1テクニカルレビュー継続ペンディング: Sprint 8から継続課題",
+      "Refactorチェックリスト結果記録不足: 実施観点の体系的記録なし",
+      "Subtask 3でRefactor機会見逃し: テストコードもRefactor対象とすべき",
     ],
     actions: [
-      "Refactorチェックリスト強制実施: Sprint完了コミット前に必須、結果をNotes記録、改善余地ありなら必須Refactorコミット",
-      "Phase 1テクニカルレビュー: Sprint 9開始前に実施、PBI-001～007全コードレビュー",
-      "テスト見積もり精度向上: 基本70% + エッジ20% + 品質10%の配分で見積もり",
-      "Refactorコミット発生率目標: 次6 Sprint (Sprint 9-14)で50%以上 (現状33%)",
+      "Refactor発生率50%達成強化策: Greenフェーズ後必須チェック、チェックリスト結果をコミットメッセージに明記",
+      "Phase 1テクニカルレビュー実施タイミング明確化: Sprint 11開始前 (Phase 2基礎機能完了後) に実施",
+      "Refactorチェックリスト結果の体系的記録: 各Subtask完了時に実施観点と結果を記録",
+      "テストコードもRefactor対象として明確化: テストデータ重複削減、アサーション改善、ヘルパー関数抽出",
     ] },
 ];
 

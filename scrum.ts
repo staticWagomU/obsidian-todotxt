@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: null as string | null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 8, pbi: "PBI-008" as string | null, status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -138,8 +138,41 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0, pbiId: null as string | null, story: "",
-  status: "not_started" as SprintStatus, subtasks: [] as Subtask[], notes: "",
+  number: 8,
+  pbiId: "PBI-008",
+  story: "優先度色分けバッジを表示し、視覚的識別ができる",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "優先度A/B/Cを受け取り、それぞれ赤/橙/黄の色コードを返すこと。優先度D-Zはデフォルト色を返すこと。優先度なし(undefined)の場合もデフォルト色を返すこと",
+      implementation: "getPriorityColor(priority?: string): string 関数を実装",
+      type: "behavioral",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "優先度A-Zの場合はtrue、優先度なし(undefined)の場合はfalseを返すこと",
+      implementation: "shouldShowPriorityBadge(priority?: string): boolean 関数を実装",
+      type: "behavioral",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "優先度に応じた色のバッジが表示されること。優先度なしの場合はバッジが非表示になること",
+      implementation: "TodoItemコンポーネントにバッジ表示ロジックを統合",
+      type: "behavioral",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "小文字優先度の正規化、色覚異常対応、ARIA属性の追加",
+      implementation: "入力値の正規化処理と、アクセシビリティ属性の追加",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+  ] as Subtask[],
+  notes: "Sprint Goal: 優先度の視覚的識別を実現し、ユーザーがタスクの重要度を瞬時に認識できるようにする",
 };
 
 // Impediments

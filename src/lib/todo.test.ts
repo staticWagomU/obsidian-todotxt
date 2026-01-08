@@ -698,6 +698,27 @@ describe("toggle task completion with priority preservation (pri: tag)", () => {
 		expect(result.originalTask.tags.pri).toBe("A");
 		expect(result.originalTask.completed).toBe(true);
 	});
+
+	it("pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			creationDate: "2026-01-01",
+			description: "Important task",
+			projects: [],
+			contexts: [],
+			tags: { pri: "A" },
+			raw: "x 2026-01-08 2026-01-01 Important task pri:A",
+		};
+
+		const result = toggleCompletion(todo);
+
+		// 未完了後、pri:タグが削除される
+		expect(result.originalTask.tags.pri).toBeUndefined();
+		// priorityが復元される
+		expect(result.originalTask.priority).toBe("A");
+		expect(result.originalTask.completed).toBe(false);
+	});
 });
 
 describe("toggle task completion with recurrence", () => {

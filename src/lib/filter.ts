@@ -8,11 +8,12 @@ function isNullOrUndefined(value: unknown): value is null | undefined {
 }
 
 /**
- * Filter todos by priority
- * Returns only tasks that match the specified priority
+ * Filter todos by priority (immutable)
+ * Returns a new array containing only tasks that match the specified priority
+ * The original array is not modified
  * @param todos - Array of todos to filter
  * @param priority - Priority value to filter by (A-Z, null, or undefined for no priority)
- * @returns Filtered array of todos matching the priority
+ * @returns New filtered array of todos matching the priority
  */
 export function filterByPriority(todos: Todo[], priority: string | null | undefined): Todo[] {
 	// Handle null/undefined priority - treat them as equivalent

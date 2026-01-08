@@ -142,3 +142,61 @@ describe("getDueDateStatus", () => {
 		});
 	});
 });
+
+describe("due: integration - タグ抽出から状態判定まで", () => {
+	const today = new Date("2026-01-10");
+
+	describe("期限切れタスク（overdue）の判定", () => {
+		it("期限が過去のdue:タグを持つタスクは'overdue'状態", () => {
+			const tags = ["due:2026-01-01"];
+			const dueDate = getDueDate(tags);
+			expect(dueDate).toBeDefined();
+			const status = getDueDateStatus(dueDate!, today);
+			expect(status).toBe("overdue");
+		});
+
+		it("期限が1日前のdue:タグを持つタスクは'overdue'状態", () => {
+			const tags = ["due:2026-01-09"];
+			const dueDate = getDueDate(tags);
+			expect(dueDate).toBeDefined();
+			const status = getDueDateStatus(dueDate!, today);
+			expect(status).toBe("overdue");
+		});
+	});
+
+	describe("本日期限タスク（today）の判定", () => {
+		it("期限が本日のdue:タグを持つタスクは'today'状態", () => {
+			const tags = ["due:2026-01-10"];
+			const dueDate = getDueDate(tags);
+			expect(dueDate).toBeDefined();
+			const status = getDueDateStatus(dueDate!, today);
+			expect(status).toBe("today");
+		});
+	});
+
+	describe("未来の期限タスク（future）の判定", () => {
+		it("期限が未来のdue:タグを持つタスクは'future'状態", () => {
+			const tags = ["due:2026-01-20"];
+			const dueDate = getDueDate(tags);
+			expect(dueDate).toBeDefined();
+			const status = getDueDateStatus(dueDate!, today);
+			expect(status).toBe("future");
+		});
+
+		it("期限が1日後のdue:タグを持つタスクは'future'状態", () => {
+			const tags = ["due:2026-01-11"];
+			const dueDate = getDueDate(tags);
+			expect(dueDate).toBeDefined();
+			const status = getDueDateStatus(dueDate!, today);
+			expect(status).toBe("future");
+		});
+	});
+
+	describe("due:タグが存在しない場合", () => {
+		it("due:タグがない場合、状態判定は行われない", () => {
+			const tags = ["priority:A", "category:work"];
+			const dueDate = getDueDate(tags);
+			expect(dueDate).toBeUndefined();
+		});
+	});
+});

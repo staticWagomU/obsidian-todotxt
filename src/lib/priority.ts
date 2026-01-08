@@ -42,3 +42,36 @@ export function getPriorityBadgeStyle(
     marginRight: "4px",
   };
 }
+
+/**
+ * 優先度を正規化する
+ * @param priority 優先度 (a-z, A-Z, または undefined)
+ * @returns 正規化された優先度 (A-Z または undefined)
+ */
+export function normalizePriority(priority?: string): string | undefined {
+  if (priority === undefined) {
+    return undefined;
+  }
+
+  const normalized = priority.toUpperCase();
+
+  // A-Zの単一文字のみ有効
+  if (normalized.length === 1 && normalized >= "A" && normalized <= "Z") {
+    return normalized;
+  }
+
+  return undefined;
+}
+
+/**
+ * 優先度バッジのARIAラベルを返す
+ * @param priority 優先度 (A-Z または undefined)
+ * @returns ARIAラベル文字列
+ */
+export function getPriorityBadgeAriaLabel(priority?: string): string {
+  if (!shouldShowPriorityBadge(priority)) {
+    return "";
+  }
+
+  return `Priority ${priority}`;
+}

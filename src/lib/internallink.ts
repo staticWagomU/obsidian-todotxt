@@ -3,6 +3,26 @@
  */
 export interface InternalLink {
 	link: string; // リンク先ノート名
+	alias?: string; // エイリアス(表示テキスト)
+}
+
+/**
+ * wikilinkの内容をlink/aliasに分割する
+ * @param linkContent [[...]]内の文字列
+ * @returns InternalLink型オブジェクト
+ */
+function parseWikilinkContent(linkContent: string): InternalLink {
+	// パイプ(|)が含まれている場合はエイリアス形式
+	const pipeIndex = linkContent.indexOf("|");
+	if (pipeIndex === -1) {
+		// エイリアスなしの基本形式
+		return { link: linkContent };
+	}
+
+	// エイリアス形式: [[link|alias]]
+	const link = linkContent.substring(0, pipeIndex);
+	const alias = linkContent.substring(pipeIndex + 1);
+	return { link, alias };
 }
 
 /**
@@ -20,5 +40,5 @@ export function extractInternalLinks(description: string): InternalLink[] {
 	const linkContent = match[1];
 	if (!linkContent || linkContent.trim().length === 0) return [];
 
-	return [{ link: linkContent }];
+	return [parseWikilinkContent(linkContent)];
 }

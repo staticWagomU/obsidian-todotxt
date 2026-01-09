@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 18, pbi: "PBI-020", status: "done" as SprintStatus,
-    subtasksCompleted: 10, subtasksTotal: 10, impediments: 0 },
+  sprint: { number: 19, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -174,88 +174,12 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 18,
-  pbiId: "PBI-020",
-  story: "Phase 2+3の7機能をTodoItem.tsxに統合し、Obsidian API連携による実働デモを達成する",
-  status: "done" as SprintStatus,
-  goal: "Phase 2+3の7機能(優先度バッジ/due表示/threshold表示/内部リンク/外部リンク/rec:繰り返し/pri:タグ)をTodoItem.tsxに統合し、Obsidian API連携による実働デモを達成する",
-  subtasks: [
-    // Phase 2統合(AC1): 優先度バッジ + due表示
-    {
-      test: "PBI-008統合 - TodoItem.tsxで優先度(A)が赤色バッジ、(B)が橙色バッジ、(C)が黄色バッジ、優先度なしがバッジ非表示となることをテスト",
-      implementation: "src/ui/TodoItem.test.ts: 優先度バッジのスタイル検証テスト追加(priority A→赤, B→橙, C→黄, なし→非表示) - 既存getPriorityBadgeStyle関数で4テストパス",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "red" as CommitPhase, message: "test: PBI-008/012統合 - 優先度バッジとdue表示のスタイル検証テスト追加" }]
-    },
-    {
-      test: "PBI-012統合 - TodoItem.tsxでdue:が期限切れ(過去)時に赤色、本日時にオレンジ色、未来時に通常表示となることをテスト",
-      implementation: "src/ui/TodoItem.test.ts: due表示のスタイル検証テスト追加(overdue→赤, today→橙, future→通常) - getDueDateStyle未実装で3テスト失敗(RED確認)",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "red" as CommitPhase, message: "test: PBI-008/012統合 - 優先度バッジとdue表示のスタイル検証テスト追加" }]
-    },
-    {
-      test: "上記2サブタスクのテストをパス",
-      implementation: "src/lib/due.ts: getDueDateStyle関数追加 - 7テストすべてパス、Phase 2統合(PBI-008/012)完了",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: PBI-012統合 - due表示のスタイル関数追加" }]
-    },
-    // Phase 3前半統合(AC2): threshold + 内部リンク + 外部リンク
-    {
-      test: "PBI-013統合 - TodoItem.tsxでt:(threshold)が未来時にグレーアウト、本日/過去時に通常表示となることをテスト",
-      implementation: "src/ui/TodoItem.test.ts: threshold表示のスタイル検証テスト追加(future→グレーアウト, today/past→通常) - getThresholdDateStyle未実装で4テスト失敗",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "red" as CommitPhase, message: "test: PBI-013/014/015/016/017統合 - Phase 3機能テスト追加" }]
-    },
-    {
-      test: "PBI-014統合 - TodoItem.tsx内で[[Note]]形式の内部リンク抽出テスト",
-      implementation: "src/ui/TodoItem.test.ts: 内部リンク抽出テスト追加(extractInternalLinks検証) - 既存関数で3テストパス",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "red" as CommitPhase, message: "test: PBI-013/014/015/016/017統合 - Phase 3機能テスト追加" }]
-    },
-    {
-      test: "PBI-015統合 - TodoItem.tsx内で[text](url)形式の外部リンク抽出テスト",
-      implementation: "src/ui/TodoItem.test.ts: 外部リンク抽出テスト追加(extractExternalLinks検証) - 既存関数で3テストパス",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "red" as CommitPhase, message: "test: PBI-013/014/015/016/017統合 - Phase 3機能テスト追加" }]
-    },
-    // Phase 3後半統合(AC3): rec: + pri:
-    {
-      test: "PBI-016統合 - TodoItem.tsxでrec:タグ付きタスクの完了トグル時に新タスク生成され、元タスクが完了状態になることをテスト",
-      implementation: "src/ui/TodoItem.test.ts: rec:タグ付き完了トグルのテスト追加(toggleCompletion→新タスク生成検証) - 既存関数で2テストパス(1テストはテストデータ修正必要)",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "red" as CommitPhase, message: "test: PBI-013/014/015/016/017統合 - Phase 3機能テスト追加" }]
-    },
-    {
-      test: "PBI-017統合 - TodoItem.tsxで(A)タスク完了時にpri:A追加、pri:A付き完了タスク未完了時に(A)復元されることをテスト",
-      implementation: "src/ui/TodoItem.test.ts: pri:タグ完了トグルのテスト追加(toggleCompletion検証) - 既存関数で3テストパス",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "red" as CommitPhase, message: "test: PBI-013/014/015/016/017統合 - Phase 3機能テスト追加" }]
-    },
-    // Phase 3統合実装(AC3): getThresholdDateStyle実装
-    {
-      test: "上記Subtask 4-8のテストをパス",
-      implementation: "src/lib/threshold.ts: getThresholdDateStyle関数追加 + rec:テストデータ修正 - 22テストすべてパス、Phase 3統合完了",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: PBI-013統合 - threshold表示のスタイル関数追加とrec:テスト修正" }]
-    },
-    // 成果物デモ(AC5): DoD検証とデモドキュメント
-    {
-      test: "DoD検証完了とデモドキュメント作成",
-      implementation: "docs/demo-sprint-18.md: 7機能統合実装のデモドキュメント作成、DoD検証完了(353テストパス、lint/type/build成功)",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "chore: Sprint 18完了 - 7機能UI統合実装とデモドキュメント作成" }]
-    }
-  ]
+  number: 19,
+  pbiId: "TBD",
+  story: "Sprint 19 Planning待ち",
+  status: "not_started" as SprintStatus,
+  goal: "Sprint Planning実施後に決定",
+  subtasks: []
 };
 
 // Impediments

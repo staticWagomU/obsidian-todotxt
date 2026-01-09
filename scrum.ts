@@ -156,27 +156,27 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 22,
+  { sprint: 23,
     workedWell: [
-      "ドキュメント専用Sprint成功: 初のstructural subtasksのみSprint、TDDサイクルなし（テスト数438維持）、3重要ドキュメント作成（product-roadmap-2026.md/release-checklist.md/CHANGELOG.md）、Phase 5リリース準備明確化",
-      "Sprint 21 Action#2完遂（2 Sprint継続項目）: Roadmap 2026完成、1.0.0機能スコープ定義、Phase 5-6計画策定（Sprint 21-30）、Phase 7-8 Post-1.0.0 Vision明示、Release Criteria 4項目確立",
-      "リリース準備基盤確立: Release Checklist体系化（8セクション245チェック項目）、obsidian-releases PR手順文書化、Hotfixプロセス定義（v1.0.1緊急対応）、コミュニティプラグイン登録準備完了",
-      "CHANGELOG標準化達成: Keep a Changelog形式採用、Phase 1-4変更履歴構造化（機能/技術改善/ドキュメント分類）、Sprint履歴との相互参照可能性確保、開発履歴の可視化実現",
-      "プロジェクト終了判断基準明確化: Success Metrics定義（テストカバレッジ80%/ダウンロード100+/Stars 10+）、Risk Management体系化（技術/プロセスリスク）、Timeline明示（2026 Q1-Q4）、1.0.0リリース判断可能",
+      "3連続ドキュメント専用Sprint成功: Sprint 21（リファクタ）→Sprint 22（Roadmap）→Sprint 23（README）、ドキュメント品質向上基盤確立、テスト数438維持（3 Sprint連続）、TDDサイクルなしstructural subtasks成功パターン確立",
+      "README整備完遂: 5 structural subtasks全完了（README/user-guide/images/manifest/package）、プラグイン価値提案・主要機能7つ・インストール手順明示、todo.txt基本構文+プラグイン独自機能説明、利用者視点ドキュメント実現",
+      "Release Criteria進捗50%達成: 4項目中2項目完了（README✅、CHANGELOG✅）、残り2項目明確（DoD常時✅、manifest.json✅）、1.0.0リリース到達度可視化、Phase 5完了条件明確",
+      "ドキュメント構造体系化: README.md/docs/user-guide.md/docs/images/スクリーンショット配置、todo.txt形式知識なし利用者も理解可能、価値提案（ソフトウェア非依存/人間可読/ソート可能）前面展開",
+      "Sprint 22 Action部分実行: Action#2（subtasks設計基準）部分実施（5 structural subtasks設計成功）、Action#3（Action追跡自動化）Sprint 23判定準備完了、継続的改善プロセス機能",
     ],
     toImprove: [
-      "Phase 5残りPBI優先順位未決定: PBI-022（README整備）とPBI-024（デモ動画）ready状態継続、Sprint 21 Action#1（Phase 5優先順位明確化）部分完了のみ、Roadmap策定したが次Sprint選択基準未定",
-      "PBI-022/PBI-024 Complexity精度: PBI-022 subtasks=5だがstructural（関数0/テスト0）、PBI-024 subtasks=4だがexternalDependencies=1（録画ツール）、ドキュメント/デモPBIのsubtasks設計最適化余地",
-      "Action追跡自動化ルール未適用: Sprint 21 Action#5（Sprint 23判定予定）継続中、Sprint 20 Action#2/4が3 Sprint放置基準（Sprint 23時点）判定待ち、自動化ルール実行タイミング明確化必要",
-      "CHANGELOG Unreleased管理不在: v1.0.0セクション存在するがUnreleased活用なし、Sprint単位の変更をUnreleasedに蓄積→リリース時v1.0.0へ移動フローなし、継続的CHANGELOG更新プロセス未定義",
-      "completedSprints肥大化継続: Sprint 22追加で22要素（Sprint 21 Retro指摘継続）、git履歴参照ルール存在するがアクセス性改善なし",
+      "Phase 5残り1 PBI: PBI-024（デモ動画）のみ残存、Phase 5完了まであと1 Sprint、早期完遂可能性（Sprint 24でPhase 5完遂見込み）",
+      "Sprint 22 Action未実行: Action#4（CHANGELOG継続更新）未実施（Sprint 23でCHANGELOG更新なし）、Action#5（PBI-025 refinement）未実施、継続項目管理必要",
+      "Action追跡自動化ルール判定実施必要: Sprint 20 Action#2（Roadmap）→Sprint 22完了（削除判定）、Sprint 20 Action#4（Demo動画）→3 Sprint経過判定（Sprint 20→21→22→23）、判定結果反映待ち",
+      "PBI-024 externalDependencies認識不足: デモ動画録画にツール依存（QuickTime/OBS/Loom等）、スクリーンキャプチャ/編集スキル必要性、Phase 4全機能（7機能）デモシナリオ設計必要、Complexity再評価余地",
+      "completedSprints肥大化継続: Sprint 23追加で23要素、Sprint 21-22 Retro継続指摘（3 Sprint未改善）、git履歴参照ルール存在するがアクセス性改善なし",
     ],
     actions: [
-      "Sprint 23 Planning前にPBI-022/024優先順位決定: リリース準備シーケンス最適化（README→Demo or Demo→README）、PBI-022（README 5 subtasks）とPBI-024（Demo 4 subtasks+録画）コスト比較、Phase 5完了条件（Release Criteria 4項目）達成への最短経路選択",
-      "ドキュメントPBI subtasks設計基準策定: structural subtasksのスコープ定義（目安: 1 subtask=1ドキュメントセクション）、externalDependencies考慮（録画ツール/画像編集等）、Complexity scoreとsubtasks数の整合性検証ルール",
-      "Action追跡自動化ルール実行（Sprint 23）: Sprint 20 Action#2（Roadmap）→Sprint 22完了（削除）、Sprint 20 Action#4（Demo動画）→Sprint 23判定（3 Sprint経過判定）、Sprint 21 Action全5項目→Sprint 23-24時点で3 Sprint基準適用",
-      "CHANGELOG継続更新プロセス定義: Sprint完了時にUnreleasedセクション更新（AC達成内容記録）、Sprint Review時にCHANGELOG更新をDoD項目追加検討、v1.0.0リリース時にUnreleased→v1.0.0セクション移動",
-      "PBI-025（manifest最終調整）subtask追加検討: Roadmap記載のPBI-025（manifest.json/versions.json）はBacklog未定義、Sprint 23-24でPBI-025 refinement実施、Release Criteria達成への明示的PBI追加",
+      "Sprint 24でPBI-024実施決定: Phase 5残り1 PBI、デモ動画撮影（5分）＋docs/demo-phase-4.md作成、Phase 5完遂（Sprint 21-24）、1.0.0リリース最終準備加速",
+      "Action追跡自動化ルール実行結果反映: Sprint 20 Action#2（Roadmap Sprint 22完了）削除、Sprint 20 Action#4（Demo Sprint 24実施予定）削除、Sprint 21 Action#1（Sprint 22完了）削除、Sprint 21 Action#2/5継続監視、Sprint 22 Action#4/5継続項目",
+      "PBI-024録画ツール事前準備: QuickTime/OBS/Loom等選定、Phase 4全機能デモシナリオ設計（新規作成→優先度設定→due:/t:設定→rec:繰り返し→完了トグル→設定変更）、5分動画構成策定（機能7つ網羅）",
+      "CHANGELOG Sprint完了時更新ルール定義: Sprint Review時にCHANGELOG.mdのUnreleasedセクション更新（AC達成内容記録）、v1.0.0リリース時にUnreleased→v1.0.0セクション移動、Sprint 24から適用開始",
+      "1.0.0リリース最終準備確認: PBI-024完了後にRelease Criteria 4項目全検証（README✅、CHANGELOG✅、DoD✅、manifest.json要確認）、Sprint 25でPBI-025（manifest最終調整）検討、Phase 5完了判定基準明確化",
     ] },
 ];
 

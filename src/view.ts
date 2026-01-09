@@ -118,6 +118,12 @@ export class TodotxtView extends TextFileView {
 	 */
 	renderTaskList(): void {
 		this.contentEl.empty();
-		this.contentEl.createEl("ul");
+		const ul = this.contentEl.createEl("ul");
+
+		const todos = parseTodoTxt(this.data);
+		for (const todo of todos) {
+			const li = ul.createEl("li");
+			li.textContent = todo.description;
+		}
 	}
 }

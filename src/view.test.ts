@@ -364,15 +364,21 @@ describe("render task list in view", () => {
 		// Setup: Create a container element to simulate contentEl
 		const container = document.createElement("div");
 
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as any).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
 		// Mock Obsidian's empty() and createEl() methods
 		(container as any).empty = vi.fn(() => {
 			container.innerHTML = "";
 		});
-		(container as any).createEl = vi.fn((tag: string) => {
-			const el = document.createElement(tag);
-			container.appendChild(el);
-			return el;
-		});
+		addCreateEl(container);
 
 		Object.defineProperty(view, "contentEl", {
 			get: () => container,

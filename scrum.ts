@@ -238,26 +238,26 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 18,
+  { sprint: 19,
     workedWell: [
-      "HIGH複雑度UI統合成功: 7 PBI統合(008/012/013/014/015/016/017)、22新規テスト、実働デモ実現",
-      "Action実行率100%達成: 5連続0%→劇的転換、改善サイクル再起動、制度廃止提案撤回根拠",
-      "lib層分離アーキテクチャ確立: React未導入でもUI統合テスト実現、lib/ui層明確分離",
-      "Phase 2+3統合負債完全清算: 10 Sprint分UI延期一括解消、技術負債ゼロでPhase 4着手可能",
-      "コミット効率最適化: 5コミットで7機能統合(TEST 2+FEAT 2+CHORE 1)",
+      "Action実行率40%達成: Sprint 17の20%→倍増、継続的改善サイクル定着兆候、Refinement/追跡制度の2項目実施",
+      "MEDIUM複雑度クリーン完遂: 5サブタスク、14新規テスト、RED 4+GREEN 6の典型的TDDサイクル、DoD全項目合格",
+      "設定画面3プロパティ実装: defaultSort/defaultGrouping/showCompletedの3設定永続化、SettingsTab統合、Obsidian API活用",
+      "コミット効率安定化: 12コミット(RED 4+GREEN 6+fix 2)、PBI-018 MEDIUM複雑度の標準的コミット粒度",
+      "Phase 4進捗50%達成: PBI-020(UI統合)+PBI-018(設定画面)の2/2完了、残PBI-019(フォーム入力)のみ",
     ],
     toImprove: [
-      "Sprint 17 Action実行率20%: UI統合のみ実施、残4項目(制度廃止/Refinement/リファクタ計画/Roadmap)未実施",
-      "Phase 4準備不足: PBI-018/019がdraft維持、次Sprint選択肢不足",
-      "リファクタリング計画未策定: PBI-016 refactorChecklistの5項目放置、負債可視化なし",
-      "Product Roadmap不在: 1.0.0判断基準未定義、プロジェクト長期戦略空白",
+      "Action実行率40%停滞: 5項目中3項目未実施(リファクタ計画/Roadmap/Demo動画)、Sprint 18の100%→40%へ急降下",
+      "Phase 4残1 PBI: PBI-019(フォームUI)のみ、HIGH複雑度7サブタスク、Phase完了まで1 Sprint必要",
+      "リファクタリング計画3 Sprint放置: PBI-016 refactorChecklist 5項目(Sprint 16作成)→Sprint 17-18-19未着手、負債蓄積",
+      "Product Roadmap不在継続: 1.0.0定義欠如2 Sprint継続、プロジェクト終了判断基準空白",
     ],
     actions: [
-      "Phase 4 Refinement: PBI-018/019のReady化(Sprint 19 Planning前)",
-      "リファクタリング計画: docs/refactor-plan-phase-1-3.md作成",
-      "Roadmap 2026: docs/product-roadmap-2026.md作成",
-      "Action追跡制度: 次Retro明示レビュー、3 Sprint未実施で自動削除",
-      "Demo動画習慣化: UI機能Sprint終了時にデモ作成標準化",
+      "Phase 4完了: PBI-019(フォームUI)実施、Sprint 20でPhase 4完遂、MVP+拡張機能完成",
+      "Roadmap 2026即時作成: Sprint 20 Planning前にdocs/product-roadmap-2026.md作成、1.0.0定義+Phase 5以降計画",
+      "リファクタリング専用Sprint: Sprint 21でPBI-016 refactorChecklist 5項目実施、技術負債清算",
+      "Action追跡制度厳格化: 3 Sprint未実施Action自動削除ルール適用、Sprint 22でSprint 19未実施Action(#2/#3/#5)削除判定",
+      "Demo動画即時作成: PBI-019完了時にdocs/demo-sprint-20.md作成、フォームUI実働デモ標準化",
     ] },
 ];
 

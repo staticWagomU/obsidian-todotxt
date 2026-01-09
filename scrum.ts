@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 22, pbi: "PBI-023", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: null, pbi: null, status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -81,18 +81,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "package.json/manifest.json更新: name/description/author/authorUrlをtodo.txt固有の内容に更新し、サンプルプラグインの記述を削除", verification: "grep -q 'todo.txt' package.json && grep -q 'todo.txt' manifest.json" },
     ], dependencies: ["PBI-020"], status: "ready",
     complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 5 } },
-  { id: "PBI-023", story: {
-      role: "プロジェクト運営者",
-      capability: "Product Roadmap 2026とリリース基準を定義し、1.0.0リリースの判断基準を明確化する",
-      benefit: "プロジェクトの方向性・優先順位・リリース判断が明確になり、コミュニティプラグイン登録の準備とマイルストーン管理が可能になる"
-    }, acceptanceCriteria: [
-      { criterion: "1.0.0定義: MVP(Phase 1)+拡張機能(Phase 2-3)+UI統合(Phase 4)を含む1.0.0の機能スコープをdocs/product-roadmap-2026.mdに記載", verification: "ls docs/product-roadmap-2026.md && grep -q '1.0.0' docs/product-roadmap-2026.md" },
-      { criterion: "リリース基準: DoD合格(Tests/Lint/Types/Build)、README/ドキュメント整備、manifest.json更新、CHANGELOG.md作成の4項目をリリース基準として定義", verification: "grep -q 'Release Criteria' docs/product-roadmap-2026.md" },
-      { criterion: "Phase 5-6計画: Phase 5(リファクタリング/ドキュメント/リリース準備)とPhase 6(コミュニティフィードバック/バグ修正)の計画を記載", verification: "grep -q 'Phase 5' docs/product-roadmap-2026.md && grep -q 'Phase 6' docs/product-roadmap-2026.md" },
-      { criterion: "コミュニティプラグイン登録計画: obsidian-releasesへのPR手順・plugin guidelines準拠チェックリストをdocs/release-checklist.mdに記載", verification: "ls docs/release-checklist.md && grep -q 'obsidian-releases' docs/release-checklist.md" },
-      { criterion: "CHANGELOG.md作成: Phase 1-4の変更履歴(Sprint 1-20のPBI)をCHANGELOG.mdに記載し、1.0.0リリースノートのベースを作成", verification: "ls CHANGELOG.md && grep -q 'Phase 4' CHANGELOG.md" },
-    ], dependencies: [], status: "ready",
-    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 5 } },
+  { id: "PBI-023", story: { role: "プロジェクト運営者", capability: "Product Roadmap 2026とリリース基準定義", benefit: "プロジェクトの方向性・優先順位・リリース判断明確化" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-024", story: {
       role: "プラグイン利用者",
       capability: "Phase 4完了時点の全機能(MVP+7拡張+UI統合+設定+フォーム)の実働デモ動画を視聴する",
@@ -117,50 +106,7 @@ export const definitionOfReady = {
 };
 
 // Current Sprint
-export const currentSprint = {
-  number: 22,
-  pbiId: "PBI-023",
-  story: "Product Roadmap 2026とリリース基準定義",
-  status: "in_progress" as SprintStatus,
-  goal: "Product Roadmap 2026とリリース基準を定義し、1.0.0リリースの判断基準とコミュニティプラグイン登録準備を完了する",
-  subtasks: [
-    {
-      test: "AC#1: 1.0.0定義 - MVP(Phase 1)+拡張機能(Phase 2-3)+UI統合(Phase 4)を含む1.0.0の機能スコープをdocs/product-roadmap-2026.mdに記載",
-      implementation: "docs/product-roadmap-2026.md作成 - 1.0.0機能スコープ(Phase 1-4の20 PBI)を整理して記載",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
-    },
-    {
-      test: "AC#2: リリース基準 - DoD合格(Tests/Lint/Types/Build)、README/ドキュメント整備、manifest.json更新、CHANGELOG.md作成の4項目をリリース基準として定義",
-      implementation: "docs/product-roadmap-2026.mdに'Release Criteria'セクション追記 - 4項目のリリース基準を明記",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
-    },
-    {
-      test: "AC#3: Phase 5-6計画 - Phase 5(リファクタリング/ドキュメント/リリース準備)とPhase 6(コミュニティフィードバック/バグ修正)の計画を記載",
-      implementation: "docs/product-roadmap-2026.mdに'Phase 5'/'Phase 6'セクション追記 - 各Phaseの目的とPBI対応を記載",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
-    },
-    {
-      test: "AC#4: コミュニティプラグイン登録計画 - obsidian-releasesへのPR手順・plugin guidelines準拠チェックリストをdocs/release-checklist.mdに記載",
-      implementation: "docs/release-checklist.md作成 - obsidian-releases PR手順、plugin guidelines準拠チェックリスト、リリース前確認項目を記載",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
-    },
-    {
-      test: "AC#5: CHANGELOG.md作成 - Phase 1-4の変更履歴(Sprint 1-20のPBI)をCHANGELOG.mdに記載し、1.0.0リリースノートのベースを作成",
-      implementation: "CHANGELOG.md作成 - Phase 1-4の20 PBI変更履歴を整理、v1.0.0リリースノート形式で記載",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
-    }
-  ]
-};
+export const currentSprint = null;
 
 // Impediments
 export const impediments = { active: [] as { id: string; description: string; status: string }[], resolved: [] as string[] };
@@ -175,7 +121,7 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints (Phase 1: Sprint 1-7, Phase 2: Sprint 8-12, Phase 3: Sprint 13-17, Phase 4: Sprint 18-19, Phase 5: Sprint 20-21)
+// Completed Sprints (Phase 1: Sprint 1-7, Phase 2: Sprint 8-12, Phase 3: Sprint 13-17, Phase 4: Sprint 18-19, Phase 5: Sprint 20-22)
 export const completedSprints: CompletedSprint[] = [
   { sprint: 1, pbi: "PBI-001", story: ".txt/.todotxt専用ビュー", verification: "passed", notes: "3st" },
   { sprint: 2, pbi: "PBI-002", story: "todo.txtパース", verification: "passed", notes: "6st,30t" },
@@ -198,6 +144,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 19, pbi: "PBI-018", story: "設定画面", verification: "passed", notes: "5st,367t(+14),MEDIUM,3設定プロパティ+UI" },
   { sprint: 20, pbi: "PBI-019", story: "構造化フォーム", verification: "passed", notes: "7st,438t(+71=62form+9existing),HIGH,7新規ファイル,15commit(RED7+GREEN7+fix1),Phase4完" },
   { sprint: 21, pbi: "PBI-021", story: "recurrence.tsリファクタリング", verification: "passed", notes: "5st,438t(+0),MEDIUM,4refactor,1verification" },
+  { sprint: 22, pbi: "PBI-023", story: "Product Roadmap 2026とリリース基準定義", verification: "passed", notes: "5st,438t(+0),LOW,3docs(roadmap/checklist/CHANGELOG),5structural" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

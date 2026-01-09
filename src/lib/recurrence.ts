@@ -5,6 +5,15 @@
 
 import type { Todo } from './todo';
 
+/**
+ * Recurrence pattern format: rec:[+]<value><unit>
+ * - Group 1: '+' prefix for strict mode (optional)
+ * - Group 2: numeric value (1, 2, 3, ...)
+ * - Group 3: unit (d=days, w=weeks, m=months, y=years)
+ * Example: rec:1d, rec:+1w, rec:3m, rec:1y
+ */
+const RECURRENCE_PATTERN = /^(\+?)(\d+)([dwmy])$/;
+
 export interface RecurrencePattern {
   value: number;      // 数値 (1, 2, 3, ...)
   unit: 'd' | 'w' | 'm' | 'y';  // 期間単位
@@ -22,7 +31,7 @@ export function parseRecurrenceTag(recTag: string): RecurrencePattern | null {
   }
 
   const value = recTag.substring(4); // Remove 'rec:' prefix
-  const match = value.match(/^(\+?)(\d+)([dwmy])$/);
+  const match = value.match(RECURRENCE_PATTERN);
 
   if (!match) {
     return null;

@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 24, pbi: "PBI-024", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 24, pbi: "PBI-024", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -110,14 +110,16 @@ export const currentSprint = {
   sprint: 24,
   pbi: "PBI-024",
   goal: "Phase 4全機能のデモシナリオドキュメントを作成し、利用者が機能連携を理解できるようにする",
-  status: "not_started" as SprintStatus,
+  status: "in_progress" as SprintStatus,
   subtasks: [
     {
       test: "",
       implementation: "docs/demo-phase-4.md作成: Phase 4全機能の概要とデモシナリオ構成を記載",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "docs(demo): Phase 4デモシナリオドキュメント作成" }
+      ]
     },
     {
       test: "",

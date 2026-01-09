@@ -321,6 +321,35 @@ describe("render task list in view", () => {
 	let view: TodotxtView;
 	let mockLeaf: { view: null };
 
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		createEl: (tag: string) => HTMLElement;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
 	beforeEach(() => {
 		mockLeaf = {
 			view: null,
@@ -329,18 +358,7 @@ describe("render task list in view", () => {
 	});
 
 	it("空のtodo.txtファイルを読み込んでも例外が発生せず、空のリストが描画される", () => {
-		// Setup: Create a container element to simulate contentEl
-		const container = document.createElement("div");
-
-		// Mock Obsidian's empty() and createEl() methods
-		(container as any).empty = vi.fn(() => {
-			container.innerHTML = "";
-		});
-		(container as any).createEl = vi.fn((tag: string) => {
-			const el = document.createElement(tag);
-			container.appendChild(el);
-			return el;
-		});
+		const container = createMockContainer();
 
 		Object.defineProperty(view, "contentEl", {
 			get: () => container,
@@ -361,24 +379,7 @@ describe("render task list in view", () => {
 	});
 
 	it("1行のタスク「Buy milk」を含むファイル読み込み時、liタグで「Buy milk」が表示される", () => {
-		// Setup: Create a container element to simulate contentEl
-		const container = document.createElement("div");
-
-		// Helper function to add createEl method to an element
-		const addCreateEl = (element: HTMLElement) => {
-			(element as any).createEl = vi.fn((tag: string) => {
-				const el = document.createElement(tag);
-				element.appendChild(el);
-				addCreateEl(el); // Recursively add createEl to child elements
-				return el;
-			});
-		};
-
-		// Mock Obsidian's empty() and createEl() methods
-		(container as any).empty = vi.fn(() => {
-			container.innerHTML = "";
-		});
-		addCreateEl(container);
+		const container = createMockContainer();
 
 		Object.defineProperty(view, "contentEl", {
 			get: () => container,
@@ -401,24 +402,7 @@ describe("render task list in view", () => {
 	});
 
 	it("完了タスク「x Buy milk」読み込み時、liタグにcompletedクラスが適用される", () => {
-		// Setup: Create a container element to simulate contentEl
-		const container = document.createElement("div");
-
-		// Helper function to add createEl method to an element
-		const addCreateEl = (element: HTMLElement) => {
-			(element as any).createEl = vi.fn((tag: string) => {
-				const el = document.createElement(tag);
-				element.appendChild(el);
-				addCreateEl(el); // Recursively add createEl to child elements
-				return el;
-			});
-		};
-
-		// Mock Obsidian's empty() and createEl() methods
-		(container as any).empty = vi.fn(() => {
-			container.innerHTML = "";
-		});
-		addCreateEl(container);
+		const container = createMockContainer();
 
 		Object.defineProperty(view, "contentEl", {
 			get: () => container,
@@ -441,24 +425,7 @@ describe("render task list in view", () => {
 	});
 
 	it("setViewData()を2回呼び出しても古いliタグが残らず最新のタスクリストのみ表示される", () => {
-		// Setup: Create a container element to simulate contentEl
-		const container = document.createElement("div");
-
-		// Helper function to add createEl method to an element
-		const addCreateEl = (element: HTMLElement) => {
-			(element as any).createEl = vi.fn((tag: string) => {
-				const el = document.createElement(tag);
-				element.appendChild(el);
-				addCreateEl(el); // Recursively add createEl to child elements
-				return el;
-			});
-		};
-
-		// Mock Obsidian's empty() and createEl() methods
-		(container as any).empty = vi.fn(() => {
-			container.innerHTML = "";
-		});
-		addCreateEl(container);
+		const container = createMockContainer();
 
 		Object.defineProperty(view, "contentEl", {
 			get: () => container,
@@ -486,24 +453,7 @@ describe("render task list in view", () => {
 	});
 
 	it("優先度付きタスク「(A) Buy milk」読み込み時、liタグに優先度バッジspan要素が表示される", () => {
-		// Setup: Create a container element to simulate contentEl
-		const container = document.createElement("div");
-
-		// Helper function to add createEl method to an element
-		const addCreateEl = (element: HTMLElement) => {
-			(element as any).createEl = vi.fn((tag: string) => {
-				const el = document.createElement(tag);
-				element.appendChild(el);
-				addCreateEl(el); // Recursively add createEl to child elements
-				return el;
-			});
-		};
-
-		// Mock Obsidian's empty() and createEl() methods
-		(container as any).empty = vi.fn(() => {
-			container.innerHTML = "";
-		});
-		addCreateEl(container);
+		const container = createMockContainer();
 
 		Object.defineProperty(view, "contentEl", {
 			get: () => container,

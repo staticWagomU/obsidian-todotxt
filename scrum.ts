@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 23, pbi: "PBI-022", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -79,7 +79,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "使い方ガイド: todo.txt形式の基本構文(完了/優先度/日付/project/context/tags)とプラグイン独自機能(due:/t:/rec:/pri:)の説明をdocs/user-guide.mdに記載", verification: "ls docs/user-guide.md && grep -q 'rec:' docs/user-guide.md" },
       { criterion: "スクリーンショット: 7機能の動作が分かるスクリーンショット(優先度バッジ/due表示/threshold/リンク/フォーム/設定画面)をdocs/images/に配置し、README/user-guideから参照", verification: "ls docs/images/*.png && grep -q '![' README.md" },
       { criterion: "package.json/manifest.json更新: name/description/author/authorUrlをtodo.txt固有の内容に更新し、サンプルプラグインの記述を削除", verification: "grep -q 'todo.txt' package.json && grep -q 'todo.txt' manifest.json" },
-    ], dependencies: ["PBI-020"], status: "ready",
+    ], dependencies: ["PBI-020"], status: "done",
     complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 5 } },
   { id: "PBI-023", story: { role: "プロジェクト運営者", capability: "Product Roadmap 2026とリリース基準定義", benefit: "プロジェクトの方向性・優先順位・リリース判断明確化" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-024", story: {
@@ -107,47 +107,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 23,
-  pbi: "PBI-022",
-  goal: "プラグイン利用者がREADME/ドキュメント/manifest.jsonからtodo.txt for Obsidianの価値提案・機能・使い方を理解できる",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "AC1+AC2: README.md更新（プラグイン名・概要・価値提案・主要機能7つ・インストール手順）",
-      implementation: "README.md全体を書き換え: プラグイン概要セクション（価値提案3項目: ソフトウェア非依存/人間可読/ソート可能）、主要機能セクション（7機能: 優先度バッジ/due表示/threshold/内部リンク/外部リンク/繰り返し/フォーム）、インストールセクション（手動/コミュニティプラグイン手順）を記載",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "AC3: docs/user-guide.md作成（todo.txt基本構文+プラグイン独自機能）",
-      implementation: "docs/user-guide.md新規作成: todo.txt基本構文セクション（完了マーク/優先度/作成日/完了日/project/context/tags）、プラグイン独自機能セクション（due:/t:/rec:/pri:タグ詳細）、実例付き説明を記載",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "AC4-1: docs/images/スクリーンショット配置（7機能プレースホルダー）",
-      implementation: "docs/images/ディレクトリ作成、7機能スクリーンショットプレースホルダー配置: priority-badge.png/due-display.png/threshold-grayout.png/internal-links.png/external-links.png/form-input.png/settings-screen.png（実画像は後日置換可能）",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "AC4-2: README/user-guide画像参照追加",
-      implementation: "README.mdの主要機能セクションにスクリーンショット参照追加（![優先度バッジ](docs/images/priority-badge.png)形式）、user-guide.mdの各機能説明にスクリーンショット参照追加",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "AC5: package.json/manifest.json更新（todo.txt固有内容）",
-      implementation: "package.json更新（name: obsidian-todotxt, description: Todo.txt format task management plugin, author/authorUrl設定）、manifest.json更新（id: obsidian-todotxt, name: Todo.txt for Obsidian, description更新、サンプルプラグイン記述削除）",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-  ],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [],
 };
 
 // Impediments
@@ -163,7 +127,7 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints (Phase 1: Sprint 1-7, Phase 2: Sprint 8-12, Phase 3: Sprint 13-17, Phase 4: Sprint 18-19, Phase 5: Sprint 20-22)
+// Completed Sprints (Phase 1: Sprint 1-7, Phase 2: Sprint 8-12, Phase 3: Sprint 13-17, Phase 4: Sprint 18-19, Phase 5: Sprint 20-23)
 export const completedSprints: CompletedSprint[] = [
   { sprint: 1, pbi: "PBI-001", story: ".txt/.todotxt専用ビュー", verification: "passed", notes: "3st" },
   { sprint: 2, pbi: "PBI-002", story: "todo.txtパース", verification: "passed", notes: "6st,30t" },
@@ -187,6 +151,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 20, pbi: "PBI-019", story: "構造化フォーム", verification: "passed", notes: "7st,438t(+71=62form+9existing),HIGH,7新規ファイル,15commit(RED7+GREEN7+fix1),Phase4完" },
   { sprint: 21, pbi: "PBI-021", story: "recurrence.tsリファクタリング", verification: "passed", notes: "5st,438t(+0),MEDIUM,4refactor,1verification" },
   { sprint: 22, pbi: "PBI-023", story: "Product Roadmap 2026とリリース基準定義", verification: "passed", notes: "5st,438t(+0),LOW,3docs(roadmap/checklist/CHANGELOG),5structural" },
+  { sprint: 23, pbi: "PBI-022", story: "READMEとドキュメント整備", verification: "passed", notes: "5st,438t(+0),LOW,5structural(README/user-guide/images/manifest/package)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

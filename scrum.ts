@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 25, pbi: "PBI-025", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -72,6 +72,19 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-022", story: { role: "user", capability: "READMEドキュメント", benefit: "機能理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-023", story: { role: "dev", capability: "Roadmap定義", benefit: "方向性明確化" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-024", story: { role: "user", capability: "デモシナリオ", benefit: "使い方理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
+  // Phase 6: UI実装 (ready)
+  { id: "PBI-025", story: {
+      role: "プラグイン利用者",
+      capability: "todo.txtファイルを開いたときにタスクリストがビューに表示される",
+      benefit: "ファイル内容を視覚的に確認でき、タスク管理を開始できる"
+    }, acceptanceCriteria: [
+      { criterion: "基本描画: setViewData()でthis.contentElにタスクリストをHTML要素として描画する", verification: "grep -q 'contentEl' src/view.ts && pnpm build" },
+      { criterion: "タスク表示: parseTodoTxt()でパースした各タスクのdescriptionがリスト形式で表示される", verification: "grep -q 'parseTodoTxt' src/view.ts && grep -q 'description' src/view.ts" },
+      { criterion: "完了状態: 完了タスク(x )にはチェックマークまたは取り消し線で視覚的区別がある", verification: "grep -q 'completed' src/view.ts" },
+      { criterion: "空ファイル対応: 空のtodo.txtを開いても例外が発生せず、空のリストが表示される", verification: "pnpm vitest run src/view.test.ts" },
+      { criterion: "再描画: setViewData()が呼ばれるたびにcontentElがクリア・再描画され、最新状態が反映される", verification: "grep -q 'empty\\|clear' src/view.ts" },
+    ], dependencies: [], status: "ready",
+    complexity: { functions: 2, estimatedTests: 5, externalDependencies: 0, score: "MEDIUM", subtasks: 5 } },
 ];
 
 // Definition of Ready
@@ -86,11 +99,47 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [],
+  sprint: 25,
+  pbi: "PBI-025",
+  goal: "todo.txtファイルを開いたときにタスクリストがビューに表示される基本UI描画を実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "空のtodo.txtファイル読み込み時、contentElが空のリスト要素を描画し、例外が発生しないことをテストする",
+      implementation: "setViewData()でthis.contentElをempty()でクリアし、空配列に対してcreateEl()でulタグを生成する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "1行のタスク「Buy milk」を含むファイル読み込み時、contentElにliタグで「Buy milk」が表示されることをテストする",
+      implementation: "parseTodoTxt()で取得したtodos配列をループし、各todo.descriptionをcreateEl('li')で描画する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "完了タスク「x Buy milk」読み込み時、liタグにtext-decorationスタイル（取り消し線）が適用されることをテストする",
+      implementation: "todo.completedフラグをチェックし、true時にliタグにclass='completed'を追加、CSSで.completed{text-decoration:line-through}を定義する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "複数タスク含むファイル読み込み時、setViewData()を2回呼び出しても古いliタグが残らず最新のタスクリストのみ表示されることをテストする",
+      implementation: "setViewData()の最初でthis.contentEl.empty()を呼び出し、既存のDOM要素をクリアしてから再描画する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "優先度付きタスク「(A) Buy milk」読み込み時、liタグに優先度バッジspan要素が表示されることをテストする",
+      implementation: "todo.priorityが存在する場合、createEl('span')で優先度バッジを生成しliタグに追加する（class='priority priority-{A-Z}'）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ],
 };
 
 // Impediments

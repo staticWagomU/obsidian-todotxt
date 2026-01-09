@@ -124,6 +124,10 @@ export class TodotxtView extends TextFileView {
 		for (const todo of todos) {
 			const li = ul.createEl("li");
 			li.textContent = todo.description;
+
+			if (todo.completed) {
+				li.classList.add("completed");
+			}
 		}
 	}
 }

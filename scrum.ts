@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 21, pbi: "PBI-021", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -248,12 +248,48 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0,
-  pbiId: "",
-  story: "",
-  status: "not_started" as SprintStatus,
-  goal: "",
-  subtasks: []
+  number: 21,
+  pbiId: "PBI-021",
+  story: "recurrence.tsリファクタリング",
+  status: "in_progress" as SprintStatus,
+  goal: "recurrence.tsのリファクタリングにより保守性・可読性・型安全性を向上させ、既存35テスト全合格を維持する",
+  subtasks: [
+    {
+      test: "既存テスト全合格維持",
+      implementation: "正規表現パターンをRECURRENCE_PATTERN定数として抽出し、magic number /^(\\+?)(\\d+)([dwmy])$/ を排除",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "既存テスト全合格維持",
+      implementation: "calculateNextDueDate内の月末/閏年境界処理をadjustToMonthEnd関数に分割し、日付計算ロジックを独立化",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "既存テスト全合格維持",
+      implementation: "RecurrencePatternをDuration型({ days: number } | { weeks: number } | { months: number } | { years: number })に置き換え、型安全性を強化",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "既存テスト全合格維持",
+      implementation: "createRecurringTask内のタスククローン処理を既存パターンと統一し、共通化を検討",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "既存テスト全合格維持",
+      implementation: "既存35テスト(recurrence.test.ts 31件 + todo.test.ts 4件)全合格+DoD全項目(Tests/Lint/Types/Build)合格確認",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ]
 };
 
 // Impediments

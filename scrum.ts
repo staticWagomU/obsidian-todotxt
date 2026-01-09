@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 26, pbi: "PBI-026", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -74,16 +74,8 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-024", story: { role: "user", capability: "デモシナリオ", benefit: "使い方理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI実装 (Sprint 25 done)
   { id: "PBI-025", story: { role: "user", capability: "todo.txt基本UI描画", benefit: "視覚的タスク確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Phase 6: UI実装 (Sprint 26+)
-  { id: "PBI-026", story: { role: "user", capability: "タスク追加UI", benefit: "GUIでタスク追加" },
-    acceptanceCriteria: [
-      { criterion: "ビューに「+」ボタンが表示される", verification: "UIに追加ボタンが存在することを確認" },
-      { criterion: "ボタンクリックでモーダルが開く", verification: "クリック時にモーダルが表示されることを確認" },
-      { criterion: "モーダルでタスク説明を入力できる", verification: "入力フィールドが機能することを確認" },
-      { criterion: "保存でタスクがリストに追加される", verification: "getAddHandler()経由でタスクが追加されることを確認" },
-    ],
-    dependencies: ["PBI-025", "PBI-019"], status: "ready",
-    complexity: { functions: 3, estimatedTests: 8, externalDependencies: 1, score: "MEDIUM", subtasks: 5 } },
+  // Phase 6: UI実装 (Sprint 26 done)
+  { id: "PBI-026", story: { role: "user", capability: "タスク追加UI", benefit: "GUIでタスク追加" }, acceptanceCriteria: [], dependencies: [], status: "done" },
 ];
 
 // Definition of Ready
@@ -98,17 +90,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 26,
-  pbi: "PBI-026",
-  goal: "ユーザーがGUIでタスクを追加できるようにする",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    { test: "renderTaskList()が追加ボタン要素を含むこと", implementation: "ul要素の前に「+」ボタンを描画", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "AddTaskModal classが存在しModalを継承すること", implementation: "AddTaskModalクラスをui/AddTaskModal.tsに作成", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "モーダルにタスク説明入力フィールドが存在すること", implementation: "Modal.onOpen()でinput要素を描画", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "モーダルに保存ボタンが存在しクリックでonSaveが呼ばれること", implementation: "保存ボタンとonSaveコールバック実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "追加ボタンクリックでモーダルが開きタスク追加後にリスト更新されること", implementation: "view.tsで追加ボタンにAddTaskModalを接続しgetAddHandler()を呼び出す", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-  ],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [],
 };
 
 // Impediments
@@ -151,6 +137,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 23, pbi: "PBI-022", story: "READMEとドキュメント整備", verification: "passed", notes: "5st,438t(+0),LOW,5structural(README/user-guide/images/manifest/package)" },
   { sprint: 24, pbi: "PBI-024", story: "Phase 4デモシナリオ", verification: "passed", notes: "4st,438t(+0),LOW,4structural(demo-phase-4/scenario/7features/README)" },
   { sprint: 25, pbi: "PBI-025", story: "todo.txt基本UI描画", verification: "passed", notes: "5st,443t(+5),MEDIUM,5behavioral,view.test.ts type fix" },
+  { sprint: 26, pbi: "PBI-026", story: "タスク追加UI", verification: "passed", notes: "5st,449t(+6),MEDIUM,5behavioral,AddTaskModal+view統合" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

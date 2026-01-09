@@ -522,6 +522,137 @@ describe("getViewData returns correct data for file save", () => {
 	});
 });
 
+describe("data persistence after task operations", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("タスク追加後にファイル保存可能なデータが保持される", async () => {
+		const initialData = "(A) 2026-01-01 Existing task";
+		view.setViewData(initialData, false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		const handleAdd = view.getAddHandler();
+		await handleAdd("New task", "B");
+
+		const savedData = view.getViewData();
+		expect(savedData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task");
+
+		vi.useRealTimers();
+	});
+
+	it("タスク削除後にファイル保存可能なデータが保持される", async () => {
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+
+		const handleDelete = view.getDeleteHandler();
+		await handleDelete(1);
+
+		const savedData = view.getViewData();
+		expect(savedData).toBe("Task 1\nTask 3");
+	});
+
+	it("タスク編集後にファイル保存可能なデータが保持される", async () => {
+		const initialData = "(A) 2026-01-01 Task 1\n(B) 2026-01-02 Task 2";
+		view.setViewData(initialData, false);
+
+		const handleEdit = view.getEditHandler();
+		await handleEdit(1, { description: "Modified task", priority: "C" });
+
+		const savedData = view.getViewData();
+		expect(savedData).toBe("(A) 2026-01-01 Task 1\n(C) 2026-01-02 Modified task");
+	});
+
+	it("タスクトグル後にファイル保存可能なデータが保持される", async () => {
+		const initialData = "(A) 2026-01-09 Task to complete";
+		view.setViewData(initialData, false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		const handleToggle = view.getToggleHandler();
+		await handleToggle(0);
+
+		const savedData = view.getViewData();
+		// Data should not be lost after toggle
+		expect(savedData).not.toBe("");
+		expect(savedData).toContain("x 2026-01-10");
+		expect(savedData).toContain("Task to complete");
+
+		vi.useRealTimers();
+	});
+
+	it("複数操作の連鎖後もデータが正確に保持される", async () => {
+		view.setViewData("(A) 2026-01-09 Task 1\n(B) 2026-01-08 Task 2", false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		// Add task
+		const handleAdd = view.getAddHandler();
+		await handleAdd("Task 3", "C");
+
+		// Toggle first task
+		const handleToggle = view.getToggleHandler();
+		await handleToggle(0);
+
+		// Edit second task
+		const handleEdit = view.getEditHandler();
+		await handleEdit(1, { priority: "Z" });
+
+		// Delete third task
+		const handleDelete = view.getDeleteHandler();
+		await handleDelete(2);
+
+		const savedData = view.getViewData();
+		// Verify data is not lost during multiple operations
+		expect(savedData).not.toBe("");
+		expect(savedData).toContain("x 2026-01-10");
+		expect(savedData).toContain("Task 1");
+		expect(savedData).toContain("(Z)");
+		expect(savedData).toContain("Task 2");
+
+		vi.useRealTimers();
+	});
+
+	it("繰り返しタスクのトグル後もデータが失われない", async () => {
+		const initialData = "(A) 2026-01-10 Daily standup rec:+1d";
+		view.setViewData(initialData, false);
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		const handleToggle = view.getToggleHandler();
+		await handleToggle(0);
+
+		const savedData = view.getViewData();
+		// Data should not be lost - verify it's not empty and contains completion
+		expect(savedData).not.toBe("");
+		expect(savedData).toContain("x 2026-01-10");
+		expect(savedData).toContain("rec:+1d");
+
+		vi.useRealTimers();
+	});
+
+	it("空になったファイルも正しく保存できる", async () => {
+		view.setViewData("Only task", false);
+
+		const handleDelete = view.getDeleteHandler();
+		await handleDelete(0);
+
+		const savedData = view.getViewData();
+		expect(savedData).toBe("");
+	});
+});
+
 describe("render task list in view", () => {
 	let view: TodotxtView;
 	let mockLeaf: { view: null };

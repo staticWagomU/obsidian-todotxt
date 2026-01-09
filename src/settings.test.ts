@@ -159,3 +159,63 @@ describe("completed tasks visibility setting", () => {
 		expect(plugin.settings.showCompletedTasks).toBe(true);
 	});
 });
+
+describe("settings persistence", () => {
+	let plugin: TodotxtPlugin;
+	let mockApp: App;
+	const mockManifest: PluginManifest = {
+		id: "obsidian-todotxt",
+		name: "Todo.txt Plugin",
+		version: "1.0.0",
+		minAppVersion: "0.15.0",
+		description: "Todo.txt format support for Obsidian",
+		author: "wagomu",
+		authorUrl: "",
+		isDesktopOnly: false,
+	};
+
+	beforeEach(() => {
+		mockApp = {} as App;
+		plugin = new TodotxtPlugin(mockApp, mockManifest);
+	});
+
+	it("should load default settings when no saved data exists", async () => {
+		plugin.loadData = async () => null;
+		await plugin.loadSettings();
+
+		expect(plugin.settings.defaultSortOrder).toBe("completion");
+		expect(plugin.settings.defaultGrouping).toBe("none");
+		expect(plugin.settings.showCompletedTasks).toBe(true);
+	});
+
+	it("should merge saved data with default settings on load", async () => {
+		plugin.loadData = async () => ({
+			defaultSortOrder: "priority",
+		});
+		await plugin.loadSettings();
+
+		expect(plugin.settings.defaultSortOrder).toBe("priority");
+		expect(plugin.settings.defaultGrouping).toBe("none"); // default
+		expect(plugin.settings.showCompletedTasks).toBe(true); // default
+	});
+
+	it("should persist all settings when saveSettings is called", async () => {
+		let savedData: Partial<TodotxtPluginSettings> | null = null;
+		plugin.saveData = async (data: Partial<TodotxtPluginSettings>) => {
+			savedData = data;
+		};
+
+		plugin.settings = {
+			defaultSortOrder: "date",
+			defaultGrouping: "project",
+			showCompletedTasks: false,
+		};
+		await plugin.saveSettings();
+
+		expect(savedData).toEqual({
+			defaultSortOrder: "date",
+			defaultGrouping: "project",
+			showCompletedTasks: false,
+		});
+	});
+});

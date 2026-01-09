@@ -91,7 +91,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "実働シナリオ文書化: 新規タスク作成(フォーム)→優先度設定→due:/t:設定→繰り返しタスク(rec:)→完了トグル(pri:保存)→設定変更の一連の流れを手順として記載", verification: "grep -q 'rec:' docs/demo-phase-4.md && grep -q 'pri:' docs/demo-phase-4.md" },
       { criterion: "7機能統合説明: Sprint 18で統合した7機能(PBI-008/012/013/014/015/016/017)の連携動作を説明", verification: "grep -q 'PBI-008' docs/demo-phase-4.md && grep -q 'PBI-017' docs/demo-phase-4.md" },
       { criterion: "READMEリンク: docs/demo-phase-4.mdへのリンクをREADMEに追加", verification: "grep -q 'demo-phase-4' README.md" },
-    ], dependencies: ["PBI-020", "PBI-019"], status: "ready",
+    ], dependencies: ["PBI-020", "PBI-019"], status: "done",
     complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 } },
 ];
 
@@ -164,7 +164,7 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints (Phase 1: Sprint 1-7, Phase 2: Sprint 8-12, Phase 3: Sprint 13-17, Phase 4: Sprint 18-19, Phase 5: Sprint 20-23)
+// Completed Sprints (Phase 1: Sprint 1-7, Phase 2: Sprint 8-12, Phase 3: Sprint 13-17, Phase 4: Sprint 18-19, Phase 5: Sprint 20-24)
 export const completedSprints: CompletedSprint[] = [
   { sprint: 1, pbi: "PBI-001", story: ".txt/.todotxt専用ビュー", verification: "passed", notes: "3st" },
   { sprint: 2, pbi: "PBI-002", story: "todo.txtパース", verification: "passed", notes: "6st,30t" },
@@ -189,6 +189,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 21, pbi: "PBI-021", story: "recurrence.tsリファクタリング", verification: "passed", notes: "5st,438t(+0),MEDIUM,4refactor,1verification" },
   { sprint: 22, pbi: "PBI-023", story: "Product Roadmap 2026とリリース基準定義", verification: "passed", notes: "5st,438t(+0),LOW,3docs(roadmap/checklist/CHANGELOG),5structural" },
   { sprint: 23, pbi: "PBI-022", story: "READMEとドキュメント整備", verification: "passed", notes: "5st,438t(+0),LOW,5structural(README/user-guide/images/manifest/package)" },
+  { sprint: 24, pbi: "PBI-024", story: "Phase 4デモシナリオ", verification: "passed", notes: "4st,438t(+0),LOW,4structural(demo-phase-4/scenario/7features/README)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

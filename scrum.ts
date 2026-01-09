@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 19, pbi: "PBI-018", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -192,63 +192,12 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 19,
-  pbiId: "PBI-018",
-  story: "プラグイン設定画面でtodo.txtビューの表示動作をカスタマイズする",
-  status: "done" as SprintStatus,
-  goal: "プラグイン設定画面を実装し、ソート・グループ化・完了タスク表示のデフォルト動作をユーザーがカスタマイズできるようにする",
-  subtasks: [
-    {
-      test: "設定タブ登録テスト: ObsidianのSettings画面に「Todo.txt」プラグイン設定タブが表示され、addSettingTabで正しく登録されることを検証",
-      implementation: "PluginSettingTabを継承したTodotxtSettingTabクラスを作成し、main.tsでaddSettingTabメソッドを使用して登録する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 設定タブ登録のテスト作成 (PBI-018, Subtask 1, RED)" },
-        { phase: "green" as CommitPhase, message: "feat: 設定タブ登録の実装 (PBI-018, Subtask 1, GREEN)" }
-      ]
-    },
-    {
-      test: "デフォルトソート設定テスト: ソート順(completion/priority/date/alphabetical)をドロップダウンで選択でき、選択した値がsettings.defaultSortOrderに反映されることを検証",
-      implementation: "settings.tsにdefaultSortOrderプロパティを追加し、SettingTabでドロップダウンUI(.addDropdown)を実装してloadData/saveDataで永続化する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: デフォルトソート設定のテスト作成 (PBI-018, Subtask 2, RED)" },
-        { phase: "green" as CommitPhase, message: "feat: デフォルトソート設定の実装 (PBI-018, Subtask 2, GREEN)" },
-        { phase: "green" as CommitPhase, message: "fix: SortOrder型のインポート追加 (PBI-018, Subtask 2)" }
-      ]
-    },
-    {
-      test: "デフォルトグループ化設定テスト: グループ化(none/project/context)をドロップダウンで選択でき、選択した値がsettings.defaultGroupingに反映されることを検証",
-      implementation: "settings.tsにdefaultGroupingプロパティを追加し、SettingTabでドロップダウンUI(.addDropdown)を実装してloadData/saveDataで永続化する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: デフォルトグループ化設定のテスト作成 (PBI-018, Subtask 3, RED)" },
-        { phase: "green" as CommitPhase, message: "feat: デフォルトグループ化設定の実装 (PBI-018, Subtask 3, GREEN)" }
-      ]
-    },
-    {
-      test: "完了タスク表示設定テスト: 完了タスクの表示/非表示をトグルで切り替え可能で、選択した値がsettings.showCompletedTasksに反映されることを検証",
-      implementation: "settings.tsにshowCompletedTasksプロパティを追加し、SettingTabでトグルUI(.addToggle)を実装してloadData/saveDataで永続化する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 完了タスク表示設定のテスト作成 (PBI-018, Subtask 4, RED)" },
-        { phase: "green" as CommitPhase, message: "feat: 完了タスク表示設定の実装 (PBI-018, Subtask 4, GREEN)" }
-      ]
-    },
-    {
-      test: "設定の永続化と読み込みテスト: 設定変更がloadData/saveDataで永続化され、プラグイン再起動後も設定が保持されることをエンドツーエンドで検証",
-      implementation: "main.tsのonloadメソッドでloadData()を呼び出して設定を読み込み、設定変更時にsaveData()で保存するライフサイクルを実装する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: 設定の永続化と読み込みのテスト作成 (PBI-018, Subtask 5, GREEN)" }
-      ]
-    }
-  ]
+  number: 0,
+  pbiId: "",
+  story: "",
+  status: "not_started" as SprintStatus,
+  goal: "",
+  subtasks: []
 };
 
 // Impediments
@@ -284,7 +233,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 16, pbi: "PBI-016", story: "rec:繰り返しタスク", verification: "passed", notes: "6st,331t(+39),HIGH" },
   { sprint: 17, pbi: "PBI-017", story: "pri:タグ保存", verification: "passed", notes: "3st,331t,Phase3完" },
   { sprint: 18, pbi: "PBI-020", story: "UI統合メガSprint", verification: "passed", notes: "10st,353t(+22),HIGH,7機能統合" },
-  { sprint: 19, pbi: "PBI-018", story: "設定画面", verification: "passed", notes: "5st,367t(+14),MEDIUM" },
+  { sprint: 19, pbi: "PBI-018", story: "設定画面", verification: "passed", notes: "5st,367t(+14),MEDIUM,3設定プロパティ+UI" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

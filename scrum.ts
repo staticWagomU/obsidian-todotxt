@@ -154,12 +154,30 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "7機能実働デモ動画作成(成果物確認): Obsidian vault内で7機能すべてが動作するデモ動画を撮影し、docs/demo-sprint-18.mdにリンク配置", verification: "ls docs/demo-sprint-18.md" },
     ], dependencies: ["PBI-008", "PBI-012", "PBI-013", "PBI-014", "PBI-015", "PBI-016", "PBI-017"], status: "done",
     complexity: { functions: 8, estimatedTests: 50, externalDependencies: 4, score: "HIGH", subtasks: 10 } },
-  { id: "PBI-018", story: { role: "Obsidianユーザー", capability: "設定画面", benefit: "カスタマイズ" }, acceptanceCriteria: [
-      { criterion: "設定タブ", verification: "pnpm vitest run --grep 'settings'" },
-    ], dependencies: [], status: "draft" },
-  { id: "PBI-019", story: { role: "Obsidianユーザー", capability: "構造化フォーム", benefit: "形式不要の入力" }, acceptanceCriteria: [
-      { criterion: "フォーム入力", verification: "pnpm vitest run --grep 'form'" },
-    ], dependencies: ["PBI-004", "PBI-005"], status: "draft" },
+  { id: "PBI-018", story: {
+      role: "Obsidianユーザー",
+      capability: "プラグイン設定画面でtodo.txtビューの表示動作をカスタマイズする",
+      benefit: "個人の作業スタイルに合わせて、デフォルトのソート順・フィルタ・表示形式を設定し、毎回手動で調整する手間を省ける"
+    }, acceptanceCriteria: [
+      { criterion: "設定タブ登録: ObsidianのSettings画面に「Todo.txt」プラグイン設定タブが表示され、設定項目にアクセスできる", verification: "pnpm vitest run -t 'settings tab registration'" },
+      { criterion: "デフォルトソート設定: ソート順(未完了優先/優先度順/作成日順/辞書順)をドロップダウンで選択でき、選択した設定が永続化される", verification: "pnpm vitest run -t 'default sort setting'" },
+      { criterion: "デフォルトグループ化設定: グループ化(なし/プロジェクト/コンテキスト)をドロップダウンで選択でき、選択した設定が永続化される", verification: "pnpm vitest run -t 'default grouping setting'" },
+      { criterion: "完了タスク表示設定: 完了タスクの表示/非表示をトグルで切り替え可能で、選択した設定が永続化される", verification: "pnpm vitest run -t 'completed tasks visibility setting'" },
+      { criterion: "設定の永続化と読み込み: 設定変更がloadData/saveDataで永続化され、プラグイン再起動後も設定が保持される", verification: "pnpm vitest run -t 'settings persistence'" },
+    ], dependencies: [], status: "ready",
+    complexity: { functions: 3, estimatedTests: 25, externalDependencies: 1, score: "MEDIUM", subtasks: 5 } },
+  { id: "PBI-019", story: {
+      role: "Obsidianユーザー",
+      capability: "todo.txt形式を意識せず、フォーム入力でタスクを作成・編集する",
+      benefit: "todo.txt形式の構文を覚えなくても、UIフォームで優先度・日付・プロジェクト・コンテキスト・タグを入力でき、フォーマットエラーを防げる"
+    }, acceptanceCriteria: [
+      { criterion: "フォームベース作成: 優先度ドロップダウン(A-Z/なし)、作成日・期限日付ピッカー、プロジェクト/コンテキスト入力欄、タグkey:value入力欄を持つ作成フォームが表示される", verification: "pnpm vitest run -t 'task creation form fields'" },
+      { criterion: "フォームベース編集: 既存タスクの編集時、現在の優先度・日付・プロジェクト・コンテキスト・タグがフォームに自動入力され、編集後にtodo.txt形式で保存される", verification: "pnpm vitest run -t 'task edit form prefill'" },
+      { criterion: "日付ピッカー統合: 作成日・期限(due:)・しきい値(t:)日付をカレンダーUIで選択でき、YYYY-MM-DD形式に自動変換される", verification: "pnpm vitest run -t 'date picker integration'" },
+      { criterion: "プロジェクト/コンテキスト補完: 既存のtodo.txtファイルから+project/@contextを抽出し、入力時にサジェスト(オートコンプリート)する", verification: "pnpm vitest run -t 'project context autocomplete'" },
+      { criterion: "フォーム検証とエラー表示: 必須項目(説明文)の未入力、無効な日付形式などのエラーをリアルタイムで表示し、保存ボタンを無効化する", verification: "pnpm vitest run -t 'form validation errors'" },
+    ], dependencies: ["PBI-004", "PBI-005"], status: "ready",
+    complexity: { functions: 6, estimatedTests: 35, externalDependencies: 2, score: "HIGH", subtasks: 7 } },
 ];
 
 // Definition of Ready

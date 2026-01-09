@@ -359,4 +359,38 @@ describe("render task list in view", () => {
 		expect(ul).not.toBeNull();
 		expect(ul?.children.length).toBe(0);
 	});
+
+	it("1行のタスク「Buy milk」を含むファイル読み込み時、liタグで「Buy milk」が表示される", () => {
+		// Setup: Create a container element to simulate contentEl
+		const container = document.createElement("div");
+
+		// Mock Obsidian's empty() and createEl() methods
+		(container as any).empty = vi.fn(() => {
+			container.innerHTML = "";
+		});
+		(container as any).createEl = vi.fn((tag: string) => {
+			const el = document.createElement(tag);
+			container.appendChild(el);
+			return el;
+		});
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with one task and render
+		view.setViewData("Buy milk", false);
+		view.renderTaskList();
+
+		// Verify: ul element exists with one li child
+		const ul = container.querySelector("ul");
+		expect(ul).not.toBeNull();
+		expect(ul?.children.length).toBe(1);
+
+		// Verify: li element contains the task description
+		const li = ul?.children[0] as HTMLLIElement;
+		expect(li.tagName).toBe("LI");
+		expect(li.textContent).toContain("Buy milk");
+	});
 });

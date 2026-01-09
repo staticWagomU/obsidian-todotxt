@@ -316,3 +316,47 @@ describe("update view after task deletion", () => {
 		expect(view.getViewData()).toBe("(A) 2026-01-01 Call Mom");
 	});
 });
+
+describe("render task list in view", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("空のtodo.txtファイルを読み込んでも例外が発生せず、空のリストが描画される", () => {
+		// Setup: Create a container element to simulate contentEl
+		const container = document.createElement("div");
+
+		// Mock Obsidian's empty() and createEl() methods
+		(container as any).empty = vi.fn(() => {
+			container.innerHTML = "";
+		});
+		(container as any).createEl = vi.fn((tag: string) => {
+			const el = document.createElement(tag);
+			container.appendChild(el);
+			return el;
+		});
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load empty file and render
+		view.setViewData("", false);
+		view.renderTaskList();
+
+		// Verify: contentEl.empty() was called
+		expect(container.empty).toHaveBeenCalled();
+
+		// Verify: ul element was created
+		const ul = container.querySelector("ul");
+		expect(ul).not.toBeNull();
+		expect(ul?.children.length).toBe(0);
+	});
+});

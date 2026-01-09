@@ -484,4 +484,47 @@ describe("render task list in view", () => {
 		const li = ul?.children[0] as HTMLLIElement;
 		expect(li.textContent).toContain("Task 3");
 	});
+
+	it("優先度付きタスク「(A) Buy milk」読み込み時、liタグに優先度バッジspan要素が表示される", () => {
+		// Setup: Create a container element to simulate contentEl
+		const container = document.createElement("div");
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as any).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		(container as any).empty = vi.fn(() => {
+			container.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with priority task and render
+		view.setViewData("(A) Buy milk", false);
+		view.renderTaskList();
+
+		// Verify: ul element exists with one li child
+		const ul = container.querySelector("ul");
+		expect(ul).not.toBeNull();
+		expect(ul?.children.length).toBe(1);
+
+		const li = ul?.children[0] as HTMLLIElement;
+
+		// Verify: span element with priority class exists
+		const priorityBadge = li.querySelector("span.priority");
+		expect(priorityBadge).not.toBeNull();
+		expect(priorityBadge?.classList.contains("priority-A")).toBe(true);
+		expect(priorityBadge?.textContent).toContain("A");
+	});
 });

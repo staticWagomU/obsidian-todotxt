@@ -112,4 +112,12 @@ export class TodotxtView extends TextFileView {
 			this.setViewData(updatedData, false);
 		};
 	}
+
+	/**
+	 * Render task list in contentEl
+	 */
+	renderTaskList(): void {
+		this.contentEl.empty();
+		this.contentEl.createEl("ul");
+	}
 }

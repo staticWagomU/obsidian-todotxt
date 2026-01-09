@@ -14,10 +14,20 @@ import type { Todo } from './todo';
  */
 const RECURRENCE_PATTERN = /^(\+?)(\d+)([dwmy])$/;
 
+/**
+ * Recurrence pattern representation
+ * This structure maintains a balance between type safety and usability.
+ * Alternative discriminated union ({ days: number } | { weeks: number } | ...)
+ * was considered but rejected due to:
+ * - Complexity in parsing logic
+ * - Difficulty in testing (requires more verbose test fixtures)
+ * - Loss of strict flag integration
+ * Current design provides sufficient type safety with literal union type for 'unit'
+ */
 export interface RecurrencePattern {
   value: number;      // 数値 (1, 2, 3, ...)
-  unit: 'd' | 'w' | 'm' | 'y';  // 期間単位
-  strict: boolean;    // +の有無
+  unit: 'd' | 'w' | 'm' | 'y';  // 期間単位 (d=days, w=weeks, m=months, y=years)
+  strict: boolean;    // +の有無 (strict mode: based on due date)
 }
 
 /**

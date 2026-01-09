@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 24, pbi: "PBI-024", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -107,11 +107,40 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
+  sprint: 24,
+  pbi: "PBI-024",
+  goal: "Phase 4全機能のデモシナリオドキュメントを作成し、利用者が機能連携を理解できるようにする",
   status: "not_started" as SprintStatus,
-  subtasks: [],
+  subtasks: [
+    {
+      test: "",
+      implementation: "docs/demo-phase-4.md作成: Phase 4全機能の概要とデモシナリオ構成を記載",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "",
+      implementation: "実働シナリオ文書化: 新規タスク作成→優先度設定→due:/t:設定→rec:繰り返し→完了トグル(pri:保存)→設定変更の手順をdocs/demo-phase-4.mdに詳細記載",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "",
+      implementation: "7機能統合説明: Sprint 18統合7機能(PBI-008優先度バッジ/012due表示/013threshold/014内部リンク/015外部リンク/016繰り返し/017pri:保存)の連携動作説明をdocs/demo-phase-4.mdに追加",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "",
+      implementation: "READMEリンク追加: docs/demo-phase-4.mdへのリンクをREADME.mdの適切なセクションに追加",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    }
+  ],
 };
 
 // Impediments

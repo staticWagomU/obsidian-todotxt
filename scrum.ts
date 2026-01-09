@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 24, pbi: "PBI-024", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -68,31 +68,10 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-019", story: { role: "user", capability: "フォーム入力", benefit: "構文不要" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-020", story: { role: "user", capability: "UI統合", benefit: "実働確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-021", story: { role: "dev", capability: "recurrence.tsリファクタ", benefit: "保守性向上" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Phase 5: リリース準備 (ready)
-  { id: "PBI-022", story: {
-      role: "プラグイン利用者",
-      capability: "READMEとドキュメントを読んでプラグインの機能・使い方・インストール方法を理解する",
-      benefit: "todo.txt形式の知識がなくても、プラグインの価値提案・主要機能・設定方法を把握でき、すぐに使い始められる"
-    }, acceptanceCriteria: [
-      { criterion: "README更新: プラグイン名(Todo.txt for Obsidian)・概要・価値提案(ソフトウェア非依存/人間可読/ソート可能)・主要機能7つ(優先度/due/threshold/リンク/繰り返し/フォーム/設定)をREADME.mdに記載", verification: "ls README.md && grep -q 'Todo.txt for Obsidian' README.md" },
-      { criterion: "インストール手順: 手動インストール(manifest.json/main.js/styles.css配置)とコミュニティプラグイン登録準備の手順をREADME.mdに記載", verification: "grep -q 'Installation' README.md && grep -q 'manifest.json' README.md" },
-      { criterion: "使い方ガイド: todo.txt形式の基本構文(完了/優先度/日付/project/context/tags)とプラグイン独自機能(due:/t:/rec:/pri:)の説明をdocs/user-guide.mdに記載", verification: "ls docs/user-guide.md && grep -q 'rec:' docs/user-guide.md" },
-      { criterion: "スクリーンショット: 7機能の動作が分かるスクリーンショット(優先度バッジ/due表示/threshold/リンク/フォーム/設定画面)をdocs/images/に配置し、README/user-guideから参照", verification: "ls docs/images/*.png && grep -q '![' README.md" },
-      { criterion: "package.json/manifest.json更新: name/description/author/authorUrlをtodo.txt固有の内容に更新し、サンプルプラグインの記述を削除", verification: "grep -q 'todo.txt' package.json && grep -q 'todo.txt' manifest.json" },
-    ], dependencies: ["PBI-020"], status: "done",
-    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 5 } },
-  { id: "PBI-023", story: { role: "プロジェクト運営者", capability: "Product Roadmap 2026とリリース基準定義", benefit: "プロジェクトの方向性・優先順位・リリース判断明確化" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  { id: "PBI-024", story: {
-      role: "プラグイン利用者",
-      capability: "Phase 4全機能のデモシナリオドキュメントを読んで、プラグインの使い方と機能連携を理解する",
-      benefit: "各機能の操作手順・期待動作を事前把握でき、自分で試す際のガイドとして活用できる"
-    }, acceptanceCriteria: [
-      { criterion: "デモシナリオ作成: Phase 4全機能(優先度バッジ/due/threshold/内部リンク/外部リンク/繰り返し/pri:タグ/設定/フォーム)の操作手順をdocs/demo-phase-4.mdに記載", verification: "ls docs/demo-phase-4.md && grep -q 'Phase 4' docs/demo-phase-4.md" },
-      { criterion: "実働シナリオ文書化: 新規タスク作成(フォーム)→優先度設定→due:/t:設定→繰り返しタスク(rec:)→完了トグル(pri:保存)→設定変更の一連の流れを手順として記載", verification: "grep -q 'rec:' docs/demo-phase-4.md && grep -q 'pri:' docs/demo-phase-4.md" },
-      { criterion: "7機能統合説明: Sprint 18で統合した7機能(PBI-008/012/013/014/015/016/017)の連携動作を説明", verification: "grep -q 'PBI-008' docs/demo-phase-4.md && grep -q 'PBI-017' docs/demo-phase-4.md" },
-      { criterion: "READMEリンク: docs/demo-phase-4.mdへのリンクをREADMEに追加", verification: "grep -q 'demo-phase-4' README.md" },
-    ], dependencies: ["PBI-020", "PBI-019"], status: "done",
-    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 } },
+  // Phase 5: COMPLETE (Sprint 21-24) - リリース準備完了、see completedSprints for summary
+  { id: "PBI-022", story: { role: "user", capability: "READMEドキュメント", benefit: "機能理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
+  { id: "PBI-023", story: { role: "dev", capability: "Roadmap定義", benefit: "方向性明確化" }, acceptanceCriteria: [], dependencies: [], status: "done" },
+  { id: "PBI-024", story: { role: "user", capability: "デモシナリオ", benefit: "使い方理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
 ];
 
 // Definition of Ready
@@ -107,48 +86,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 24,
-  pbi: "PBI-024",
-  goal: "Phase 4全機能のデモシナリオドキュメントを作成し、利用者が機能連携を理解できるようにする",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "",
-      implementation: "docs/demo-phase-4.md作成: Phase 4全機能の概要とデモシナリオ構成を記載",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "docs(demo): Phase 4デモシナリオドキュメント作成" }
-      ]
-    },
-    {
-      test: "",
-      implementation: "実働シナリオ文書化: 新規タスク作成→優先度設定→due:/t:設定→rec:繰り返し→完了トグル(pri:保存)→設定変更の手順をdocs/demo-phase-4.mdに詳細記載",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "docs(demo): 実働シナリオ詳細記載（含まれる）" }
-      ]
-    },
-    {
-      test: "",
-      implementation: "7機能統合説明: Sprint 18統合7機能(PBI-008優先度バッジ/012due表示/013threshold/014内部リンク/015外部リンク/016繰り返し/017pri:保存)の連携動作説明をdocs/demo-phase-4.mdに追加",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "docs(demo): 7機能統合説明追加（含まれる）" }
-      ]
-    },
-    {
-      test: "",
-      implementation: "READMEリンク追加: docs/demo-phase-4.mdへのリンクをREADME.mdの適切なセクションに追加",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "docs(readme): demo-phase-4.mdリンク追加" }
-      ]
-    }
-  ],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [],
 };
 
 // Impediments
@@ -194,27 +136,27 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 23,
+  { sprint: 24,
     workedWell: [
-      "3連続ドキュメント専用Sprint成功: Sprint 21（リファクタ）→Sprint 22（Roadmap）→Sprint 23（README）、ドキュメント品質向上基盤確立、テスト数438維持（3 Sprint連続）、TDDサイクルなしstructural subtasks成功パターン確立",
-      "README整備完遂: 5 structural subtasks全完了（README/user-guide/images/manifest/package）、プラグイン価値提案・主要機能7つ・インストール手順明示、todo.txt基本構文+プラグイン独自機能説明、利用者視点ドキュメント実現",
-      "Release Criteria進捗50%達成: 4項目中2項目完了（README✅、CHANGELOG✅）、残り2項目明確（DoD常時✅、manifest.json✅）、1.0.0リリース到達度可視化、Phase 5完了条件明確",
-      "ドキュメント構造体系化: README.md/docs/user-guide.md/docs/images/スクリーンショット配置、todo.txt形式知識なし利用者も理解可能、価値提案（ソフトウェア非依存/人間可読/ソート可能）前面展開",
-      "Sprint 22 Action部分実行: Action#2（subtasks設計基準）部分実施（5 structural subtasks設計成功）、Action#3（Action追跡自動化）Sprint 23判定準備完了、継続的改善プロセス機能",
+      "Phase 5完遂達成: Sprint 21-24（4連続Sprint）でPhase 5全PBI完了、PBI-021リファクタ→PBI-023 Roadmap→PBI-022 README→PBI-024デモシナリオ、リリース準備基盤確立、1.0.0到達条件整備完了",
+      "Refinementスコープ変更判断成功: PBI-024当初「デモ動画撮影」→AI実行不可判明→「デモシナリオドキュメント」変更、externalDependencies（録画ツール/編集スキル）リスク回避、Definition of Ready違反防止、適切な範囲定義実現",
+      "デモシナリオドキュメント高品質: docs/demo-phase-4.md（473行）、実働シナリオ（8ステップ詳細手順）+7機能統合説明+期待動作検証、Phase 4全機能網羅（PBI-008/012/013/014/015/016/017/018/019）、利用者視点の機能理解促進",
+      "4連続structural subtasks成功: Sprint 21-24全てTDDサイクルなし、テスト数438維持（4 Sprint連続）、ドキュメント専用Sprint効率化パターン確立、behavioral/structural subtask分離設計成功",
+      "README統合完遂: demo-phase-4.mdリンク追加、価値提案+主要機能7つ+インストール+デモシナリオの完全体系、利用者が機能理解→導入→実践の一連フロー実現、コミュニティプラグイン登録準備完了",
     ],
     toImprove: [
-      "Phase 5残り1 PBI: PBI-024（デモ動画）のみ残存、Phase 5完了まであと1 Sprint、早期完遂可能性（Sprint 24でPhase 5完遂見込み）",
-      "Sprint 22 Action未実行: Action#4（CHANGELOG継続更新）未実施（Sprint 23でCHANGELOG更新なし）、Action#5（PBI-025 refinement）未実施、継続項目管理必要",
-      "Action追跡自動化ルール判定実施必要: Sprint 20 Action#2（Roadmap）→Sprint 22完了（削除判定）、Sprint 20 Action#4（Demo動画）→3 Sprint経過判定（Sprint 20→21→22→23）、判定結果反映待ち",
-      "PBI-024 externalDependencies認識不足: デモ動画録画にツール依存（QuickTime/OBS/Loom等）、スクリーンキャプチャ/編集スキル必要性、Phase 4全機能（7機能）デモシナリオ設計必要、Complexity再評価余地",
-      "completedSprints肥大化継続: Sprint 23追加で23要素、Sprint 21-22 Retro継続指摘（3 Sprint未改善）、git履歴参照ルール存在するがアクセス性改善なし",
+      "Sprint 23 Action#2未実行: Action追跡自動化ルール実行結果反映未実施、Sprint 20/21/22完了Action削除処理なし、retrospectives肥大化防止ルール未適用、Action追跡メンテナンス継続課題",
+      "CHANGELOG更新ルール未適用: Sprint 23 Action#4定義（Sprint完了時Unreleased更新）、Sprint 24で適用せず、Phase 5完遂の重要マイルストーンがCHANGELOG未反映、リリースノート品質低下リスク",
+      "1.0.0リリース最終チェック未実施: Release Criteria 4項目（README✅/CHANGELOG✅/DoD✅/manifest.json✅）の最終検証なし、Sprint 23 Action#5（1.0.0リリース最終準備確認）未実行、リリース判定基準達成確認必要",
+      "次Sprint不明確: Phase 5完遂後の方向性未定義、PBI-025以降のBacklog refinement未実施、1.0.0リリース実施タイミング不明、Phase 6計画なし、Sprint 25目標設定必要",
+      "completedSprints肥大化継続: Sprint 24追加で24要素、4 Sprint連続改善なし（Sprint 21-24）、git履歴参照ルール形骸化、アクセス性改善なし、構造的課題放置",
     ],
     actions: [
-      "Sprint 24でPBI-024実施決定: Phase 5残り1 PBI、デモ動画撮影（5分）＋docs/demo-phase-4.md作成、Phase 5完遂（Sprint 21-24）、1.0.0リリース最終準備加速",
-      "Action追跡自動化ルール実行結果反映: Sprint 20 Action#2（Roadmap Sprint 22完了）削除、Sprint 20 Action#4（Demo Sprint 24実施予定）削除、Sprint 21 Action#1（Sprint 22完了）削除、Sprint 21 Action#2/5継続監視、Sprint 22 Action#4/5継続項目",
-      "PBI-024録画ツール事前準備: QuickTime/OBS/Loom等選定、Phase 4全機能デモシナリオ設計（新規作成→優先度設定→due:/t:設定→rec:繰り返し→完了トグル→設定変更）、5分動画構成策定（機能7つ網羅）",
-      "CHANGELOG Sprint完了時更新ルール定義: Sprint Review時にCHANGELOG.mdのUnreleasedセクション更新（AC達成内容記録）、v1.0.0リリース時にUnreleased→v1.0.0セクション移動、Sprint 24から適用開始",
-      "1.0.0リリース最終準備確認: PBI-024完了後にRelease Criteria 4項目全検証（README✅、CHANGELOG✅、DoD✅、manifest.json要確認）、Sprint 25でPBI-025（manifest最終調整）検討、Phase 5完了判定基準明確化",
+      "1.0.0リリース最終検証実施: Release Criteria 4項目全確認（README✅/CHANGELOG✅検証、DoD常時✅確認、manifest.json最終チェック）、Phase 5完遂をCHANGELOG Unreleased反映、リリース判定会議開催",
+      "Phase 6計画策定: Product Roadmap 2026のv1.1.0機能（カレンダービュー/タグオートコンプリート/一括編集）優先順位決定、PBI-025以降Backlog refinement、1.0.0リリース後の開発方針明確化",
+      "Action追跡自動化実行: Sprint 20/21/22完了Action削除、Sprint 23 Action#1（PBI-024完了）削除、Sprint 23 Action#4（CHANGELOG更新）継続、retrospectives肥大化防止ルール適用開始",
+      "CHANGELOG Unreleased更新: Phase 5完遂（PBI-021/022/023/024）をUnreleasedセクション記載、Sprint 21-24ドキュメント整備内容追加、v1.0.0リリース準備完了マーク、Sprint Review時更新ルール再定義",
+      "Sprint 25 Planning準備: 1.0.0リリース実施 or Phase 6開始判断、manifest.json最終調整（PBI-025相当）必要性確認、コミュニティプラグイン登録準備チェックリスト実行、次Sprint目標明確化",
     ] },
 ];
 

@@ -149,26 +149,27 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 21,
+  { sprint: 22,
     workedWell: [
-      "リファクタリング専用Sprint初実施成功: Sprint 20 Action#3実行、4 Sprint放置技術負債(PBI-016 refactorChecklist)解消、RED/GREENなしのstructural subtasksのみ構成",
-      "設計判断の文書化実践: Duration型導入検討→現行設計維持の意思決定、判断根拠をJSDocに記録、'なぜその設計にしなかったか'の文書化によるナレッジ共有実現",
-      "Action実行率改善継続: Sprint 20 Action 5項目中2項目完了(#1 Backlog補充4 PBI定義、#3リファクタリング専用Sprint実施)、計画的負債解消実践",
-      "保守性・可読性・型安全性向上達成: 正規表現パターン定数化(magic number排除)、日付計算ロジック分割(複雑度削減)、JSDoc設計根拠明示化",
-      "既存機能完全保護: 5サブタスク全完了、既存35テスト全合格維持、DoD全項目PASSED(4 refactor+1 verification)、AC全5項目達成、回帰バグゼロ",
+      "ドキュメント専用Sprint成功: 初のstructural subtasksのみSprint、TDDサイクルなし（テスト数438維持）、3重要ドキュメント作成（product-roadmap-2026.md/release-checklist.md/CHANGELOG.md）、Phase 5リリース準備明確化",
+      "Sprint 21 Action#2完遂（2 Sprint継続項目）: Roadmap 2026完成、1.0.0機能スコープ定義、Phase 5-6計画策定（Sprint 21-30）、Phase 7-8 Post-1.0.0 Vision明示、Release Criteria 4項目確立",
+      "リリース準備基盤確立: Release Checklist体系化（8セクション245チェック項目）、obsidian-releases PR手順文書化、Hotfixプロセス定義（v1.0.1緊急対応）、コミュニティプラグイン登録準備完了",
+      "CHANGELOG標準化達成: Keep a Changelog形式採用、Phase 1-4変更履歴構造化（機能/技術改善/ドキュメント分類）、Sprint履歴との相互参照可能性確保、開発履歴の可視化実現",
+      "プロジェクト終了判断基準明確化: Success Metrics定義（テストカバレッジ80%/ダウンロード100+/Stars 10+）、Risk Management体系化（技術/プロセスリスク）、Timeline明示（2026 Q1-Q4）、1.0.0リリース判断可能",
     ],
     toImprove: [
-      "Action未完了項目の2 Sprint継続: Action#2(Roadmap 2026)、Action#4(Demo動画)がPBI-023/024 ready状態継続、Action#5(追跡自動化)具体的進展なし",
-      "リファクタリング専用Sprintの位置づけ不明確: Sprint 21実施したが今後方針未策定、PBI-021以外技術負債(他モジュール)計画なし、refactorChecklist体系的管理不在",
-      "Phase 5全体計画の不在: PBI-021完了、次Phase 5タスク(PBI-022/023/024)優先順位未明確化、リリース準備プロセス(ドキュメント/デモ/Roadmap)実施順序未定義",
-      "git履歴肥大化懸念: completedSprints配列21要素、retrospectives配列1要素(最新のみ)、過去Retrospectiveはgit履歴参照だがアクセス性低下",
+      "Phase 5残りPBI優先順位未決定: PBI-022（README整備）とPBI-024（デモ動画）ready状態継続、Sprint 21 Action#1（Phase 5優先順位明確化）部分完了のみ、Roadmap策定したが次Sprint選択基準未定",
+      "PBI-022/PBI-024 Complexity精度: PBI-022 subtasks=5だがstructural（関数0/テスト0）、PBI-024 subtasks=4だがexternalDependencies=1（録画ツール）、ドキュメント/デモPBIのsubtasks設計最適化余地",
+      "Action追跡自動化ルール未適用: Sprint 21 Action#5（Sprint 23判定予定）継続中、Sprint 20 Action#2/4が3 Sprint放置基準（Sprint 23時点）判定待ち、自動化ルール実行タイミング明確化必要",
+      "CHANGELOG Unreleased管理不在: v1.0.0セクション存在するがUnreleased活用なし、Sprint単位の変更をUnreleasedに蓄積→リリース時v1.0.0へ移動フローなし、継続的CHANGELOG更新プロセス未定義",
+      "completedSprints肥大化継続: Sprint 22追加で22要素（Sprint 21 Retro指摘継続）、git履歴参照ルール存在するがアクセス性改善なし",
     ],
     actions: [
-      "Phase 5優先順位明確化: Sprint 22 Planning前にPBI-022/023/024実施優先順位定義、リリース準備の最適シーケンス策定(ドキュメント→Roadmap→Demo等)",
-      "Roadmap 2026完遂(2 Sprint継続): Sprint 22でPBI-023実施、1.0.0定義+Phase 5以降計画+リリース基準策定完了、プロジェクト終了判断基準確立",
-      "Demo動画作成完遂(2 Sprint継続): Sprint 22またはSprint 23でPBI-024実施、Phase 4全機能実働デモ標準化、利用者価値提案可視化",
-      "技術負債管理プロセス確立: refactorChecklist体系的管理ルール策定、各PBI refactorChecklist項目優先順位判定基準定義、放置期間許容値設定(例: 3 Sprint)",
-      "Action追跡自動化ルール適用(Sprint 23判定): Sprint 23でSprint 20未完了Action(#2/#4)3 Sprint経過判定実施、削除/継続意思決定、実行率改善サイクル確立",
+      "Sprint 23 Planning前にPBI-022/024優先順位決定: リリース準備シーケンス最適化（README→Demo or Demo→README）、PBI-022（README 5 subtasks）とPBI-024（Demo 4 subtasks+録画）コスト比較、Phase 5完了条件（Release Criteria 4項目）達成への最短経路選択",
+      "ドキュメントPBI subtasks設計基準策定: structural subtasksのスコープ定義（目安: 1 subtask=1ドキュメントセクション）、externalDependencies考慮（録画ツール/画像編集等）、Complexity scoreとsubtasks数の整合性検証ルール",
+      "Action追跡自動化ルール実行（Sprint 23）: Sprint 20 Action#2（Roadmap）→Sprint 22完了（削除）、Sprint 20 Action#4（Demo動画）→Sprint 23判定（3 Sprint経過判定）、Sprint 21 Action全5項目→Sprint 23-24時点で3 Sprint基準適用",
+      "CHANGELOG継続更新プロセス定義: Sprint完了時にUnreleasedセクション更新（AC達成内容記録）、Sprint Review時にCHANGELOG更新をDoD項目追加検討、v1.0.0リリース時にUnreleased→v1.0.0セクション移動",
+      "PBI-025（manifest最終調整）subtask追加検討: Roadmap記載のPBI-025（manifest.json/versions.json）はBacklog未定義、Sprint 23-24でPBI-025 refinement実施、Release Criteria達成への明示的PBI追加",
     ] },
 ];
 

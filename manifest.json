@@ -1,6 +1,6 @@
 {
 	"id": "obsidian-todotxt",
-	"name": "Todo.txt for Obsidian",
+	"name": "Obsidian Todo.txt",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Todo.txt format task management - Plain text, software-agnostic, human-readable task manager with priority badges, due dates, recurring tasks, and form input.",

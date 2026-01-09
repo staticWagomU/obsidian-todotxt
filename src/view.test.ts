@@ -457,6 +457,71 @@ describe("clear parameter is optimization flag only", () => {
 	});
 });
 
+describe("getViewData returns correct data for file save", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("setViewDataで設定したデータをgetViewDataで取得できる", () => {
+		const fileContent = "(A) 2026-01-01 Call Mom\nBuy milk\nx 2026-01-08 Done task";
+		view.setViewData(fileContent, false);
+
+		const retrievedData = view.getViewData();
+		expect(retrievedData).toBe(fileContent);
+	});
+
+	it("タスク操作後もgetViewDataで最新データを取得できる", async () => {
+		view.setViewData("Task 1\nTask 2", false);
+
+		// Simulate adding a task
+		const handleAdd = view.getAddHandler();
+		const originalData = view.getViewData();
+
+		// Add task modifies data
+		await handleAdd("New task", "A");
+
+		const updatedData = view.getViewData();
+		expect(updatedData).not.toBe(originalData);
+		expect(updatedData).toContain("New task");
+	});
+
+	it("複数回のタスク操作後もgetViewDataで正しいデータを返す", async () => {
+		const initialData = "(A) Task 1\n(B) Task 2\n(C) Task 3";
+		view.setViewData(initialData, false);
+
+		// Delete task
+		const handleDelete = view.getDeleteHandler();
+		await handleDelete(1);
+
+		let currentData = view.getViewData();
+		expect(currentData).toBe("(A) Task 1\n(C) Task 3");
+
+		// Edit task
+		const handleEdit = view.getEditHandler();
+		await handleEdit(0, { priority: "Z" });
+
+		currentData = view.getViewData();
+		expect(currentData).toBe("(Z) Task 1\n(C) Task 3");
+	});
+
+	it("空ファイルでもgetViewDataが正しく動作する", () => {
+		view.setViewData("", false);
+		expect(view.getViewData()).toBe("");
+	});
+
+	it("改行のみのデータも正確に返す", () => {
+		const dataWithNewlines = "Task 1\n\n\nTask 2";
+		view.setViewData(dataWithNewlines, false);
+		expect(view.getViewData()).toBe(dataWithNewlines);
+	});
+});
+
 describe("render task list in view", () => {
 	let view: TodotxtView;
 	let mockLeaf: { view: null };

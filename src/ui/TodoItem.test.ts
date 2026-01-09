@@ -3,7 +3,7 @@
  * Phase 2+3の7機能統合テスト
  */
 
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { getPriorityBadgeStyle } from "../lib/priority";
 import { getDueDateStyle } from "../lib/due";
 import { getThresholdDateStyle } from "../lib/threshold";

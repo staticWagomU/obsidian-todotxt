@@ -20,6 +20,18 @@ export class AddTaskModal extends Modal {
 		input.type = "text";
 		input.classList.add("task-description-input");
 		input.placeholder = "タスクを入力...";
+
+		// Save button
+		const saveButton = contentEl.createEl("button");
+		saveButton.classList.add("save-task-button");
+		saveButton.textContent = "保存";
+		saveButton.addEventListener("click", () => {
+			const description = input.value.trim();
+			if (description) {
+				this.onSave(description, undefined);
+				this.close();
+			}
+		});
 	}
 
 	onClose(): void {

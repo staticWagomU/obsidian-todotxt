@@ -82,4 +82,24 @@ describe("AddTaskModal", () => {
 		expect(input?.getAttribute("type")).toBe("text");
 		expect(input?.getAttribute("placeholder")).toContain("タスク");
 	});
+
+	it("モーダルに保存ボタンが存在しクリックでonSaveが呼ばれること", () => {
+		const modal = new AddTaskModal(mockApp, mockOnSave);
+		modal.onOpen();
+
+		// Verify: Save button exists
+		const saveButton = modal.contentEl.querySelector("button.save-task-button");
+		expect(saveButton).not.toBeNull();
+		expect(saveButton?.textContent).toContain("保存");
+
+		// Enter task description
+		const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+		input.value = "新しいタスク";
+
+		// Click save button
+		saveButton?.dispatchEvent(new Event("click"));
+
+		// Verify: onSave was called with the input value
+		expect(mockOnSave).toHaveBeenCalledWith("新しいタスク", undefined);
+	});
 });

@@ -104,6 +104,8 @@ Todo.txt for Obsidianは、標準todo.txt形式に加えて、以下の拡張機
 営業会議資料作成 due:2026-01-10 +sales @office
 ```
 
+![期日表示のスクリーンショット](images/due-display.png)
+
 ### 2. 開始日（t:タグ）
 
 **構文**: `t:YYYY-MM-DD` (threshold date)
@@ -127,6 +129,8 @@ t:2026-02-01 確定申告の準備開始 due:2026-03-15 +taxes
 ```
 
 上記の例では、1月9日時点では最後のタスクのみが通常表示され、他はグレーアウトされます。
+
+![開始日グレーアウトのスクリーンショット](images/threshold-grayout.png)
 
 ### 3. 繰り返しタスク（rec:タグ）
 
@@ -201,6 +205,8 @@ Obsidianのノートへリンクできます。
 
 タスクから関連するノート、議事録、資料へ素早くアクセスできます。
 
+![Obsidian内部リンクのスクリーンショット](images/internal-links.png)
+
 ### 6. 外部リンク
 
 **構文**: `http://...` または `https://...`
@@ -211,6 +217,8 @@ URLを含めると、クリック可能なリンクとして表示されます�
 (B) Obsidianプラグインドキュメント確認 https://docs.obsidian.md/Plugins +learning
 GitHub issueレビュー https://github.com/user/repo/issues/123 +development
 ```
+
+![外部リンクのスクリーンショット](images/external-links.png)
 
 ### 7. 構造化フォーム入力
 
@@ -234,6 +242,8 @@ GitHub issueレビュー https://github.com/user/repo/issues/123 +development
 - 入力ミスを防げる
 - 日付はカレンダーから選択できる
 - 初心者でも簡単に使える
+
+![構造化フォーム入力のスクリーンショット](images/form-input.png)
 
 ## 実践例
 

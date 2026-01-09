@@ -25,23 +25,33 @@ Todo.txt for Obsidianは、[todo.txt形式](https://github.com/todotxt/todo.txt)
 - `(A)`～`(Z)`の優先度をカラフルなバッジで視覚化
 - 優先度に応じた色分け（A=赤、B=オレンジ、C=黄色など）
 
+![優先度バッジ表示](docs/images/priority-badge.png)
+
 ### 2. 期日（due:）表示
 - `due:YYYY-MM-DD`タグで期日を設定
 - 期日超過タスクを赤文字でハイライト
 - 今日・明日の期日を強調表示
+
+![期日表示](docs/images/due-display.png)
 
 ### 3. 開始日（t:）によるグレーアウト
 - `t:YYYY-MM-DD`タグで開始日を設定
 - 開始日前のタスクをグレーアウトして表示
 - 「今やるべきタスク」に集中できる
 
+![開始日グレーアウト](docs/images/threshold-grayout.png)
+
 ### 4. Obsidian内部リンク対応
 - `[[ノート名]]`記法でObsidianノートへリンク
 - タスクから関連ノートへ素早くアクセス
 
+![内部リンク](docs/images/internal-links.png)
+
 ### 5. 外部リンク表示
 - `http://`、`https://`のURLを自動検出
 - クリック可能なリンクとして表示
+
+![外部リンク](docs/images/external-links.png)
 
 ### 6. 繰り返しタスク（rec:）
 - `rec:+1d`、`rec:1w`などで繰り返しタスクを設定
@@ -52,6 +62,8 @@ Todo.txt for Obsidianは、[todo.txt形式](https://github.com/todotxt/todo.txt)
 - 新規タスク作成用のフォームUI
 - 優先度、期日、開始日、プロジェクト、コンテキストを入力フィールドで設定
 - todo.txt構文を意識せずにタスクを作成可能
+
+![構造化フォーム入力](docs/images/form-input.png)
 
 ## インストール
 

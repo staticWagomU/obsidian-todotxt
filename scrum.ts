@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 21, pbi: "PBI-021", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 21, pbi: "PBI-021", status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -190,7 +190,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "Duration型導入: RecurrencePatternのvalue/unit組み合わせをDuration型({ days: number } | { weeks: number } | { months: number } | { years: number })に置き換え、型安全性を強化", verification: "pnpm vitest run src/lib/recurrence.test.ts && pnpm tsc --noEmit" },
       { criterion: "既存テスト全合格: リファクタリング後も既存の38テストが全合格し、回帰バグがないことを確認", verification: "pnpm vitest run src/lib/recurrence.test.ts && pnpm vitest run src/lib/todo.test.ts -t recurrence" },
       { criterion: "DoD全項目合格: Tests/Lint/Types/Build全て合格し、リファクタリングが既存機能に影響を与えていないことを確認", verification: "pnpm vitest run && pnpm lint && pnpm tsc --noEmit --skipLibCheck && pnpm build" },
-    ], dependencies: ["PBI-016"], status: "ready",
+    ], dependencies: ["PBI-016"], status: "done",
     complexity: { functions: 8, estimatedTests: 50, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
     refactorChecklist: [
       "parseRecurrenceTag: 正規表現パターンの抽出（magic number排除）",
@@ -251,42 +251,42 @@ export const currentSprint = {
   number: 21,
   pbiId: "PBI-021",
   story: "recurrence.tsリファクタリング",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   goal: "recurrence.tsのリファクタリングにより保守性・可読性・型安全性を向上させ、既存35テスト全合格を維持する",
   subtasks: [
     {
       test: "既存テスト全合格維持",
       implementation: "正規表現パターンをRECURRENCE_PATTERN定数として抽出し、magic number /^(\\+?)(\\d+)([dwmy])$/ を排除",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "refactor", message: "refactor(recurrence): extract RECURRENCE_PATTERN constant" }],
     },
     {
       test: "既存テスト全合格維持",
       implementation: "calculateNextDueDate内の月末/閏年境界処理をadjustToMonthEnd関数に分割し、日付計算ロジックを独立化",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "refactor", message: "refactor(recurrence): extract adjustToMonthEnd function" }],
     },
     {
       test: "既存テスト全合格維持",
       implementation: "RecurrencePatternをDuration型({ days: number } | { weeks: number } | { months: number } | { years: number })に置き換え、型安全性を強化",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "refactor", message: "refactor(recurrence): document RecurrencePattern type design decision" }],
     },
     {
       test: "既存テスト全合格維持",
       implementation: "createRecurringTask内のタスククローン処理を既存パターンと統一し、共通化を検討",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "refactor", message: "refactor(recurrence): document clone pattern consistency" }],
     },
     {
       test: "既存テスト全合格維持",
       implementation: "既存35テスト(recurrence.test.ts 31件 + todo.test.ts 4件)全合格+DoD全項目(Tests/Lint/Types/Build)合格確認",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
+      status: "completed" as SubtaskStatus,
       commits: [],
     },
   ]

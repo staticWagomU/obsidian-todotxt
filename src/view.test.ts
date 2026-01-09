@@ -402,6 +402,61 @@ describe("setViewData preserves file data correctly", () => {
 	});
 });
 
+describe("clear parameter is optimization flag only", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("clear=trueでもclear=falseでも同じデータ保持動作をする", () => {
+		const testData = "(A) Task with data";
+
+		// Test with clear=true
+		view.setViewData(testData, true);
+		const dataWithClearTrue = view.getViewData();
+
+		// Reset and test with clear=false
+		view.setViewData("", false);
+		view.setViewData(testData, false);
+		const dataWithClearFalse = view.getViewData();
+
+		// Both should preserve data identically
+		expect(dataWithClearTrue).toBe(testData);
+		expect(dataWithClearFalse).toBe(testData);
+		expect(dataWithClearTrue).toBe(dataWithClearFalse);
+	});
+
+	it("clearパラメータの値に関わらずデータが消えない", () => {
+		const scenarios = [
+			{ data: "Task 1", clear: true },
+			{ data: "Task 2", clear: false },
+			{ data: "(A) 2026-01-01 Task 3", clear: true },
+			{ data: "x 2026-01-01 Completed", clear: false },
+		];
+
+		for (const scenario of scenarios) {
+			view.setViewData(scenario.data, scenario.clear);
+			expect(view.getViewData()).toBe(scenario.data);
+		}
+	});
+
+	it("clear()メソッドを直接呼んでもデータに影響しない", () => {
+		const originalData = "(A) Important task";
+		view.setViewData(originalData, false);
+
+		// Directly call clear() - should not affect data
+		view.clear();
+
+		// Data should still be preserved
+		expect(view.getViewData()).toBe(originalData);
+	});
+});
+
 describe("render task list in view", () => {
 	let view: TodotxtView;
 	let mockLeaf: { view: null };

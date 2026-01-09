@@ -19,6 +19,7 @@ interface ProductBacklogItem {
   complexity?: Complexity; refactorChecklist?: string[];
 }
 interface Commit { phase: CommitPhase; message: string; }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Subtask {
   test: string; implementation: string; type: SubtaskType;
   status: SubtaskStatus; commits: Commit[];
@@ -34,7 +35,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 20, pbi: "PBI-019", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
 };
 
 // Product Goal
@@ -202,50 +203,71 @@ export const currentSprint = {
       test: "説明文必須検証、無効日付形式エラー表示、保存ボタン無効化をテスト",
       implementation: "TaskFormDialog.tsx基本構造、バリデーションロジック、エラー表示UI実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(form): フォームバリデーション失敗テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat(form): フォームバリデーションロジック実装" }
+      ]
     },
     {
       test: "優先度A-Z/なし選択、選択値反映、todo.txt形式変換をテスト",
       implementation: "優先度ドロップダウンコンポーネント、Todo.priority変換実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(form): 優先度オプション生成・バリデーション失敗テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat(form): 優先度オプション生成・バリデーションロジック実装" }
+      ]
     },
     {
       test: "作成日・due・t:日付選択、YYYY-MM-DD形式変換、カレンダーUIをテスト",
       implementation: "日付ピッカーコンポーネント、Date↔YYYY-MM-DD変換ユーティリティ実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(form): 日付変換ユーティリティ失敗テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat(form): 日付変換ユーティリティ実装" }
+      ]
     },
     {
       test: "既存+project/@context抽出、入力時サジェスト、複数値対応をテスト",
       implementation: "オートコンプリートコンポーネント、既存タスクからの抽出ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(form): プロジェクト/コンテキスト抽出失敗テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat(form): プロジェクト/コンテキスト抽出ロジック実装" }
+      ]
     },
     {
       test: "key:value形式入力、タグ追加/削除、Todo.tags変換をテスト",
       implementation: "タグ入力コンポーネント(key:valueペア管理)実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(form): タグ操作ロジック失敗テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat(form): タグ操作ロジック実装" }
+      ]
     },
     {
       test: "新規作成ダイアログ表示、フォーム→todo.txt変換、ファイル保存をテスト",
       implementation: "TodosView.tsxへの作成ボタン統合、createTask連携実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(form): フォームデータ→Todo変換失敗テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat(form): フォームデータ→Todo変換ロジック実装" }
+      ]
     },
     {
       test: "既存タスク編集時の自動入力、todo.txt→フォーム変換、更新保存をテスト",
       implementation: "TodoItem.tsxへの編集ボタン統合、updateTask連携実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(form): Todo→フォームデータ変換失敗テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat(form): Todo→フォームデータ変換ロジック実装" }
+      ]
     }
   ]
 };

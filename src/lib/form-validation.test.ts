@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test } from "vitest";
-import { validateTaskForm, type TaskFormData, type ValidationErrors } from "./form-validation";
+import { validateTaskForm, type TaskFormData } from "./form-validation";
 
 describe("validateTaskForm", () => {
 	test("説明文が空文字列の場合、エラーを返す", () => {

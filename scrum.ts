@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 27, pbi: "PBI-027", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -93,6 +93,53 @@ export const productBacklog: ProductBacklogItem[] = [
     status: "ready",
     complexity: { functions: 2, estimatedTests: 8, externalDependencies: 1, score: "HIGH", subtasks: 5 },
   },
+  // Phase 6: UI統合 (Sprint 27以降予定) - requirements.md/user-guide.mdの未実装機能
+  {
+    id: "PBI-028",
+    story: { role: "user", capability: "タスク完了・編集・削除のUI操作", benefit: "直感的タスク管理" },
+    acceptanceCriteria: [
+      { criterion: "チェックボックス表示", verification: "各タスク行にチェックボックスが表示される" },
+      { criterion: "完了トグル動作", verification: "チェックボックスクリックで完了/未完了切替" },
+      { criterion: "編集ボタン表示と動作", verification: "編集ボタンクリックで編集モーダル表示" },
+      { criterion: "削除ボタン表示と動作", verification: "削除ボタンクリックでタスク削除" },
+    ],
+    dependencies: ["PBI-027"],
+    status: "ready",
+  },
+  {
+    id: "PBI-029",
+    story: { role: "user", capability: "due:とt:の視覚的表示", benefit: "期限と着手日の一目確認" },
+    acceptanceCriteria: [
+      { criterion: "due:表示", verification: "due:タグのあるタスクに期限日表示" },
+      { criterion: "期限ハイライト", verification: "過期=赤、今日=強調、間近=注意の色分け" },
+      { criterion: "t:グレーアウト", verification: "t:以前のタスクがグレーアウト表示" },
+    ],
+    dependencies: ["PBI-028"],
+    status: "ready",
+  },
+  {
+    id: "PBI-030",
+    story: { role: "user", capability: "コントロールバーによるフィルタ・ソート・グループ", benefit: "タスク整理と絞込" },
+    acceptanceCriteria: [
+      { criterion: "優先度フィルタ", verification: "ドロップダウンで優先度フィルタ動作" },
+      { criterion: "テキスト検索", verification: "検索ボックスでリアルタイム絞込" },
+      { criterion: "グループ化", verification: "プロジェクト/コンテキスト/優先度でグループ表示" },
+      { criterion: "ソート", verification: "未完了→完了、優先度順、テキスト順でソート" },
+    ],
+    dependencies: ["PBI-028"],
+    status: "ready",
+  },
+  {
+    id: "PBI-031",
+    story: { role: "user", capability: "内部/外部リンクのクリック可能表示", benefit: "関連リソースへ素早くアクセス" },
+    acceptanceCriteria: [
+      { criterion: "内部リンク", verification: "[[Note]]がクリック可能、クリックでノート開く" },
+      { criterion: "外部リンク", verification: "http/https URLがクリック可能" },
+      { criterion: "rec:表示", verification: "rec:タグに繰り返しアイコン表示" },
+    ],
+    dependencies: ["PBI-028"],
+    status: "ready",
+  },
 ];
 
 // Definition of Ready
@@ -107,11 +154,47 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [],
+  sprint: 27,
+  pbi: "PBI-027",
+  goal: "ファイル再オープン時にデータ損失を防ぎ、既存タスクを確実に保持する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "setViewData preserves file data correctly",
+      implementation: "setViewData stores data before any clearing operations",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "clear parameter handled as optimization flag only",
+      implementation: "setViewData interprets clear parameter for DOM clearing, not data deletion",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "getViewData returns correct data for file save",
+      implementation: "getViewData consistently returns this.data after setViewData operations",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "Data persistence after task operations",
+      implementation: "Task add/edit/delete operations preserve this.data state correctly",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "Integration test - data preserved on file reopen",
+      implementation: "Full workflow test: open file → modify → reopen → verify data intact",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ],
 };
 
 // Impediments

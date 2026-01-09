@@ -74,6 +74,16 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-024", story: { role: "user", capability: "デモシナリオ", benefit: "使い方理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI実装 (Sprint 25 done)
   { id: "PBI-025", story: { role: "user", capability: "todo.txt基本UI描画", benefit: "視覚的タスク確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
+  // Phase 6: UI実装 (Sprint 26+)
+  { id: "PBI-026", story: { role: "user", capability: "タスク追加UI", benefit: "GUIでタスク追加" },
+    acceptanceCriteria: [
+      { criterion: "ビューに「+」ボタンが表示される", verification: "UIに追加ボタンが存在することを確認" },
+      { criterion: "ボタンクリックでモーダルが開く", verification: "クリック時にモーダルが表示されることを確認" },
+      { criterion: "モーダルでタスク説明を入力できる", verification: "入力フィールドが機能することを確認" },
+      { criterion: "保存でタスクがリストに追加される", verification: "getAddHandler()経由でタスクが追加されることを確認" },
+    ],
+    dependencies: ["PBI-025", "PBI-019"], status: "ready",
+    complexity: { functions: 3, estimatedTests: 8, externalDependencies: 1, score: "MEDIUM", subtasks: 5 } },
 ];
 
 // Definition of Ready

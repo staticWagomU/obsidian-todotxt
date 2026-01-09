@@ -66,3 +66,24 @@ export function getDueDateStatus(dueDate: Date, today: Date): DueDateStatus {
 	if (diffDays === 0) return "today";
 	return "future";
 }
+
+/**
+ * 期限日付に応じたスタイルを返す
+ * @param dueDate 期限日付
+ * @param today 現在日付
+ * @returns CSSスタイルオブジェクト
+ */
+export function getDueDateStyle(
+	dueDate: Date,
+	today: Date,
+): Record<string, string> {
+	const status = getDueDateStatus(dueDate, today);
+
+	if (status === "overdue") {
+		return { color: "#ff4444" };
+	}
+	if (status === "today") {
+		return { color: "#ff9944" };
+	}
+	return {};
+}

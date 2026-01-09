@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 25, pbi: "PBI-025", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -72,19 +72,8 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-022", story: { role: "user", capability: "READMEドキュメント", benefit: "機能理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-023", story: { role: "dev", capability: "Roadmap定義", benefit: "方向性明確化" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-024", story: { role: "user", capability: "デモシナリオ", benefit: "使い方理解" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Phase 6: UI実装 (ready)
-  { id: "PBI-025", story: {
-      role: "プラグイン利用者",
-      capability: "todo.txtファイルを開いたときにタスクリストがビューに表示される",
-      benefit: "ファイル内容を視覚的に確認でき、タスク管理を開始できる"
-    }, acceptanceCriteria: [
-      { criterion: "基本描画: setViewData()でthis.contentElにタスクリストをHTML要素として描画する", verification: "grep -q 'contentEl' src/view.ts && pnpm build" },
-      { criterion: "タスク表示: parseTodoTxt()でパースした各タスクのdescriptionがリスト形式で表示される", verification: "grep -q 'parseTodoTxt' src/view.ts && grep -q 'description' src/view.ts" },
-      { criterion: "完了状態: 完了タスク(x )にはチェックマークまたは取り消し線で視覚的区別がある", verification: "grep -q 'completed' src/view.ts" },
-      { criterion: "空ファイル対応: 空のtodo.txtを開いても例外が発生せず、空のリストが表示される", verification: "pnpm vitest run src/view.test.ts" },
-      { criterion: "再描画: setViewData()が呼ばれるたびにcontentElがクリア・再描画され、最新状態が反映される", verification: "grep -q 'empty\\|clear' src/view.ts" },
-    ], dependencies: [], status: "ready",
-    complexity: { functions: 2, estimatedTests: 5, externalDependencies: 0, score: "MEDIUM", subtasks: 5 } },
+  // Phase 6: UI実装 (Sprint 25 done)
+  { id: "PBI-025", story: { role: "user", capability: "todo.txt基本UI描画", benefit: "視覚的タスク確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
 ];
 
 // Definition of Ready
@@ -99,61 +88,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 25,
-  pbi: "PBI-025",
-  goal: "todo.txtファイルを開いたときにタスクリストがビューに表示される基本UI描画を実現する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "空のtodo.txtファイル読み込み時、contentElが空のリスト要素を描画し、例外が発生しないことをテストする",
-      implementation: "setViewData()でthis.contentElをempty()でクリアし、空配列に対してcreateEl()でulタグを生成する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 空のtodo.txtファイル読み込み時の空リスト描画テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: renderTaskList()メソッド実装で空リスト描画対応" },
-      ],
-    },
-    {
-      test: "1行のタスク「Buy milk」を含むファイル読み込み時、contentElにliタグで「Buy milk」が表示されることをテストする",
-      implementation: "parseTodoTxt()で取得したtodos配列をループし、各todo.descriptionをcreateEl('li')で描画する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 1行タスク「Buy milk」のliタグ描画テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: parseTodoTxt()によるタスクリスト描画実装" },
-      ],
-    },
-    {
-      test: "完了タスク「x Buy milk」読み込み時、liタグにtext-decorationスタイル（取り消し線）が適用されることをテストする",
-      implementation: "todo.completedフラグをチェックし、true時にliタグにclass='completed'を追加、CSSで.completed{text-decoration:line-through}を定義する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 完了タスク「x Buy milk」のcompletedクラス適用テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: 完了タスクにcompletedクラス追加実装" },
-      ],
-    },
-    {
-      test: "複数タスク含むファイル読み込み時、setViewData()を2回呼び出しても古いliタグが残らず最新のタスクリストのみ表示されることをテストする",
-      implementation: "setViewData()の最初でthis.contentEl.empty()を呼び出し、既存のDOM要素をクリアしてから再描画する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: setViewData()2回呼び出しの再描画テスト追加 (既存実装で既にGREEN)" },
-      ],
-    },
-    {
-      test: "優先度付きタスク「(A) Buy milk」読み込み時、liタグに優先度バッジspan要素が表示されることをテストする",
-      implementation: "todo.priorityが存在する場合、createEl('span')で優先度バッジを生成しliタグに追加する（class='priority priority-{A-Z}'）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 優先度付きタスク「(A) Buy milk」の優先度バッジspan表示テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: 優先度バッジspan要素生成実装" },
-      ],
-    },
-  ],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [],
 };
 
 // Impediments
@@ -195,31 +134,32 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 22, pbi: "PBI-023", story: "Product Roadmap 2026とリリース基準定義", verification: "passed", notes: "5st,438t(+0),LOW,3docs(roadmap/checklist/CHANGELOG),5structural" },
   { sprint: 23, pbi: "PBI-022", story: "READMEとドキュメント整備", verification: "passed", notes: "5st,438t(+0),LOW,5structural(README/user-guide/images/manifest/package)" },
   { sprint: 24, pbi: "PBI-024", story: "Phase 4デモシナリオ", verification: "passed", notes: "4st,438t(+0),LOW,4structural(demo-phase-4/scenario/7features/README)" },
+  { sprint: 25, pbi: "PBI-025", story: "todo.txt基本UI描画", verification: "passed", notes: "5st,443t(+5),MEDIUM,5behavioral,view.test.ts type fix" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 24,
+  { sprint: 25,
     workedWell: [
-      "Phase 5完遂達成: Sprint 21-24（4連続Sprint）でPhase 5全PBI完了、PBI-021リファクタ→PBI-023 Roadmap→PBI-022 README→PBI-024デモシナリオ、リリース準備基盤確立、1.0.0到達条件整備完了",
-      "Refinementスコープ変更判断成功: PBI-024当初「デモ動画撮影」→AI実行不可判明→「デモシナリオドキュメント」変更、externalDependencies（録画ツール/編集スキル）リスク回避、Definition of Ready違反防止、適切な範囲定義実現",
-      "デモシナリオドキュメント高品質: docs/demo-phase-4.md（473行）、実働シナリオ（8ステップ詳細手順）+7機能統合説明+期待動作検証、Phase 4全機能網羅（PBI-008/012/013/014/015/016/017/018/019）、利用者視点の機能理解促進",
-      "4連続structural subtasks成功: Sprint 21-24全てTDDサイクルなし、テスト数438維持（4 Sprint連続）、ドキュメント専用Sprint効率化パターン確立、behavioral/structural subtask分離設計成功",
-      "README統合完遂: demo-phase-4.mdリンク追加、価値提案+主要機能7つ+インストール+デモシナリオの完全体系、利用者が機能理解→導入→実践の一連フロー実現、コミュニティプラグイン登録準備完了",
+      "Phase 6初Sprint完遂: Sprint 25でPhase 6（UI実装フェーズ）開始、PBI-025完了（5 behavioral subtasks全完遂）、テスト数438→443（+5）、TDDサイクル完全実施（RED×4, GREEN×4）、UI実装フェーズへの移行成功",
+      "全behavioral subtasks成功: 5 subtasks全てbehavioral type、TDD Red-Green-Refactorサイクル完全遵守、空ファイル→基本描画→完了状態→再描画→優先度バッジの段階的実装、Sprint 20以来の完全TDD Sprint復活",
+      "型安全性改善リファクタリング実施: Sprint Review中のTypeScript型エラー（createEl型互換性）即座修正、DOMモック型安全性向上リファクタリング実施、テスト品質向上、型システム活用強化",
+      "DoD全項目PASS達成: Tests✅ Lint✅ Types✅ Build✅全通過、型エラー修正含めた完全DoD達成、Phase 6初Sprintから品質基準維持",
+      "UI実装基盤確立: view.tsにrenderTaskList()メソッド実装、parseTodoTxt()統合、contentEl DOM操作基盤確立、Phase 6以降のUI機能追加基盤完成",
     ],
     toImprove: [
-      "Sprint 23 Action#2未実行: Action追跡自動化ルール実行結果反映未実施、Sprint 20/21/22完了Action削除処理なし、retrospectives肥大化防止ルール未適用、Action追跡メンテナンス継続課題",
-      "CHANGELOG更新ルール未適用: Sprint 23 Action#4定義（Sprint完了時Unreleased更新）、Sprint 24で適用せず、Phase 5完遂の重要マイルストーンがCHANGELOG未反映、リリースノート品質低下リスク",
-      "1.0.0リリース最終チェック未実施: Release Criteria 4項目（README✅/CHANGELOG✅/DoD✅/manifest.json✅）の最終検証なし、Sprint 23 Action#5（1.0.0リリース最終準備確認）未実行、リリース判定基準達成確認必要",
-      "次Sprint不明確: Phase 5完遂後の方向性未定義、PBI-025以降のBacklog refinement未実施、1.0.0リリース実施タイミング不明、Phase 6計画なし、Sprint 25目標設定必要",
-      "completedSprints肥大化継続: Sprint 24追加で24要素、4 Sprint連続改善なし（Sprint 21-24）、git履歴参照ルール形骸化、アクセス性改善なし、構造的課題放置",
+      "Sprint Review中の型エラー発生: DoD検証時にTypeScript型エラー（createEl互換性）発見、開発中の型チェック漏れ、TDDサイクル中のtsc --noEmit実行不足、型安全性検証プロセス改善必要",
+      "Sprint 24 Action未完遂: Action#1（1.0.0リリース最終検証）未実施、Action#2（Phase 6計画策定）未実施、Action#3（Action追跡自動化）未実施、Action#4（CHANGELOG Unreleased更新）未実施、Action#5（Sprint 25 Planning準備）のみ部分実施、Retrospective Action実行率低下",
+      "PBI-026以降Backlog未定義: Phase 6 Roadmap存在するがPBI未定義、Product Backlog最新状態PBI-025まで、次Sprint候補不明確、Backlog refinement実施必要",
+      "completedSprints肥大化継続: Sprint 25追加で25要素、5 Sprint連続改善なし（Sprint 21-25）、Phase 1-5完遂後も圧縮なし、git履歴参照ルール形骸化継続",
+      "DOMモックメンテナンス性: view.test.tsのDOMモック記述分散（createElement/appendChild/empty型定義）、型修正時の影響範囲広い、テストユーティリティ関数化検討余地",
     ],
     actions: [
-      "1.0.0リリース最終検証実施: Release Criteria 4項目全確認（README✅/CHANGELOG✅検証、DoD常時✅確認、manifest.json最終チェック）、Phase 5完遂をCHANGELOG Unreleased反映、リリース判定会議開催",
-      "Phase 6計画策定: Product Roadmap 2026のv1.1.0機能（カレンダービュー/タグオートコンプリート/一括編集）優先順位決定、PBI-025以降Backlog refinement、1.0.0リリース後の開発方針明確化",
-      "Action追跡自動化実行: Sprint 20/21/22完了Action削除、Sprint 23 Action#1（PBI-024完了）削除、Sprint 23 Action#4（CHANGELOG更新）継続、retrospectives肥大化防止ルール適用開始",
-      "CHANGELOG Unreleased更新: Phase 5完遂（PBI-021/022/023/024）をUnreleasedセクション記載、Sprint 21-24ドキュメント整備内容追加、v1.0.0リリース準備完了マーク、Sprint Review時更新ルール再定義",
-      "Sprint 25 Planning準備: 1.0.0リリース実施 or Phase 6開始判断、manifest.json最終調整（PBI-025相当）必要性確認、コミュニティプラグイン登録準備チェックリスト実行、次Sprint目標明確化",
+      "TDDサイクル型チェック強化: 各commit前にtsc --noEmit実行ルール化、RED/GREEN phase両方で型エラー検証、vitest実行と並行して型チェック、Sprint Review前の型エラー防止",
+      "Phase 6 Backlog refinement実施: Product Roadmap 2026のv1.1.0機能からPBI-026以降定義、優先順位付けとcomplexity見積もり、最低3 PBI ready状態達成、Sprint 26 Planning準備",
+      "Sprint 24 Action再実行: Action#1（1.0.0リリース最終検証）Phase 6区切りで再検討、Action#3（Action追跡自動化）Sprint 20-24完了Action削除、Action#4（CHANGELOG更新）Sprint 25内容反映、遅延Action解消",
+      "テストユーティリティ関数化検討: DOMモック型定義をtest-utils.ts集約、createElement/appendChild/empty型安全ラッパー作成、view.test.ts可読性向上、型修正時の影響範囲局所化",
+      "Sprint 26 Planning準備: PBI-026候補選定（カレンダービュー/タグオートコンプリート/一括編集/優先度編集UI）、Definition of Ready確認、complexity見積もり、Phase 6継続Sprint計画",
     ] },
 ];
 

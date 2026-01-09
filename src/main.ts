@@ -15,7 +15,7 @@ export default class TodotxtPlugin extends Plugin {
 		this.registerExtensions(["txt", "todotxt"], VIEW_TYPE_TODOTXT);
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new TodotxtSettingTab(this.app, this));
+		// this.addSettingTab(new TodotxtSettingTab(this.app, this));
 	}
 
 	onunload() {}

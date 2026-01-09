@@ -359,6 +359,49 @@ describe("update view after task deletion", () => {
 	});
 });
 
+describe("setViewData preserves file data correctly", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("clear=trueでもファイルデータを保持する", () => {
+		const fileData = "(A) 2026-01-01 Call Mom\nBuy milk";
+
+		// Simulate Obsidian calling setViewData with clear=true (file reopen)
+		view.setViewData(fileData, true);
+
+		// Data should be preserved
+		const retrievedData = view.getViewData();
+		expect(retrievedData).toBe(fileData);
+	});
+
+	it("clear=falseの場合もファイルデータを保持する", () => {
+		const fileData = "(A) Task 1\n(B) Task 2";
+
+		view.setViewData(fileData, false);
+
+		const retrievedData = view.getViewData();
+		expect(retrievedData).toBe(fileData);
+	});
+
+	it("連続してsetViewDataを呼び出しても最新のデータを保持する", () => {
+		view.setViewData("First data", true);
+		expect(view.getViewData()).toBe("First data");
+
+		view.setViewData("Second data", true);
+		expect(view.getViewData()).toBe("Second data");
+
+		view.setViewData("Third data", false);
+		expect(view.getViewData()).toBe("Third data");
+	});
+});
+
 describe("render task list in view", () => {
 	let view: TodotxtView;
 	let mockLeaf: { view: null };

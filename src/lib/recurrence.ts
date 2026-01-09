@@ -163,14 +163,15 @@ export function createRecurringTask(
   // Calculate next due date
   const nextDueDate = calculateNextDueDate(pattern, completionDate, currentDueDate);
 
-  // Clone task
+  // Clone task (follows same pattern as toggleCompletion in todo.ts)
+  // Shallow clone with spread operator, override specific fields
   const newTask: Todo = {
     ...completedTask,
     completed: false,
     completionDate: undefined,
     creationDate: completionDate,
-    priority: undefined, // Remove priority
-    tags: { ...completedTask.tags },
+    priority: undefined, // Remove priority (will be restored if user uncompletes)
+    tags: { ...completedTask.tags }, // Shallow clone tags for safe mutation
   };
 
   // Update due: tag

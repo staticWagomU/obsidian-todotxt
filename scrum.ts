@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 18, pbi: "PBI-020", status: "not_started" as SprintStatus,
+  sprint: { number: 18, pbi: "PBI-020", status: "in_progress" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 10, impediments: 0 },
 };
 
@@ -174,39 +174,86 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 17,
-  pbiId: "PBI-017",
-  story: "完了時にpri:タグとして優先度を保存し、未完了時に復元することで、優先度を失わずトグル可能にする",
-  status: "done" as SprintStatus,
+  number: 18,
+  pbiId: "PBI-020",
+  story: "Phase 2+3の7機能をTodoItem.tsxに統合し、Obsidian API連携による実働デモを達成する",
+  status: "in_progress" as SprintStatus,
+  goal: "Phase 2+3の7機能(優先度バッジ/due表示/threshold表示/内部リンク/外部リンク/rec:繰り返し/pri:タグ)をTodoItem.tsxに統合し、Obsidian API連携による実働デモを達成する",
   subtasks: [
+    // Phase 2統合(AC1): 優先度バッジ + due表示
     {
-      test: "toggleCompletion - 完了時変換: (A)のタスクを完了すると、(A)が削除されpri:Aタグが追加される (AC1)",
-      implementation: "src/lib/todo.ts: toggleCompletion関数内に優先度→pri:タグ変換ロジック追加。未完了→完了時、priorityがnull以外なら tags配列にpri:${priority}追加 → priority=nullに設定 → 再シリアライズ。",
+      test: "PBI-008統合 - TodoItem.tsxで優先度(A)が赤色バッジ、(B)が橙色バッジ、(C)が黄色バッジ、優先度なしがバッジ非表示となることをテスト",
+      implementation: "src/ui/TodoItem.test.tsx: 優先度バッジのスタイル検証テスト追加(priority A→赤, B→橙, C→黄, なし→非表示)",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 完了時にpriority→pri:タグ変換テスト追加 (RED)" },
-        { phase: "green" as CommitPhase, message: "feat: 完了時にpriority→pri:タグ変換を実装 (GREEN)" }
-      ]
+      status: "pending" as SubtaskStatus,
+      commits: []
     },
     {
-      test: "toggleCompletion - 未完了時復元: pri:Aタグ付き完了タスクを未完了にすると、pri:Aが削除され(A)が復元される (AC2)",
-      implementation: "src/lib/todo.ts: toggleCompletion関数内にpri:タグ→優先度復元ロジック追加。完了→未完了時、tags配列からpri:パターン検出 → priority設定 → tags配列からpri:削除 → 再シリアライズ。",
+      test: "PBI-012統合 - TodoItem.tsxでdue:が期限切れ(過去)時に赤色、本日時にオレンジ色、未来時に通常表示となることをテスト",
+      implementation: "src/ui/TodoItem.test.tsx: due表示のスタイル検証テスト追加(overdue→赤, today→橙, future→通常)",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 未完了時にpri:タグ→priority復元テスト追加 (RED)" },
-        { phase: "green" as CommitPhase, message: "feat: 未完了時にpri:タグ→priority復元を実装 (GREEN)" }
-      ]
+      status: "pending" as SubtaskStatus,
+      commits: []
     },
     {
-      test: "toggleCompletion - 統合テスト: 優先度なしタスクはpri:タグ追加せず、説明文のpri:文字列を誤検出しない (AC3-4)",
-      implementation: "src/lib/todo.test.ts: 統合テスト追加。優先度なしタスク完了時pri:タグ不在確認、説明文\"priority: high\"等pri:誤検出しないことをアサート。tagsオブジェクトのpri:のみ処理確認。",
+      test: "上記2サブタスクのテストをパス",
+      implementation: "src/ui/TodoItem.tsx: getPriorityBadgeStyle/getDueDateStatusヘルパー関数追加、優先度バッジとdue表示のスタイル適用実装",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: 優先度なし/誤検出防止の統合テスト追加" }
-      ]
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    // Phase 3前半統合(AC2): threshold + 内部リンク + 外部リンク
+    {
+      test: "PBI-013統合 - TodoItem.tsxでt:(threshold)が未来時にグレーアウト、本日/過去時に通常表示となることをテスト",
+      implementation: "src/ui/TodoItem.test.tsx: threshold表示のスタイル検証テスト追加(future→グレーアウト, today/past→通常)",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "PBI-014統合 - TodoItem.tsx内で[[Note]]形式の内部リンククリック時にObsidian APIのopenLinkTextが呼ばれることをテスト",
+      implementation: "src/ui/TodoItem.test.tsx: 内部リンククリックハンドラのモックテスト追加(app.workspace.openLinkText呼び出し検証)",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "PBI-015統合 - TodoItem.tsx内で[text](url)形式の外部リンククリック時にwindow.openが呼ばれることをテスト",
+      implementation: "src/ui/TodoItem.test.tsx: 外部リンククリックハンドラのモックテスト追加(window.open呼び出し検証)",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    // Phase 3後半統合(AC3): rec: + pri:
+    {
+      test: "PBI-016統合 - TodoItem.tsxでrec:タグ付きタスクの完了トグル時に新タスク生成され、元タスクが完了状態になることをテスト",
+      implementation: "src/ui/TodoItem.test.tsx: rec:タグ付き完了トグルのテスト追加(toggleCompletion→新タスク生成検証)",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "PBI-017統合 - TodoItem.tsxで(A)タスク完了時にpri:A追加、pri:A付き完了タスク未完了時に(A)復元されることをテスト",
+      implementation: "src/ui/TodoItem.test.tsx: pri:タグ完了トグルのテスト追加 + src/ui/TodoItem.tsx: Phase 3前半(threshold/内部リンク/外部リンク)とPhase 3後半(rec:/pri:)の統合実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    // Obsidian API統合(AC4): 実働プラグイン実現
+    {
+      test: "上記Subtask 5-6のテストをパス",
+      implementation: "src/ui/TodoItem.tsx: 内部リンククリックハンドラ(this.app.workspace.openLinkText)と外部リンククリックハンドラ(window.open)実装、Obsidian API型定義の統合",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    // 成果物デモ(AC5): 7機能実働確認
+    {
+      test: "`ls docs/demo-sprint-18.md`でデモドキュメント存在確認",
+      implementation: "docs/demo-sprint-18.md: Obsidian vault内で7機能(優先度バッジ/due/threshold/内部リンク/外部リンク/rec:/pri:)すべての動作デモ動画リンク配置、各機能の動作スクリーンショット添付",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
     }
   ]
 };

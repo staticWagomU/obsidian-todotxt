@@ -399,4 +399,44 @@ describe("render task list in view", () => {
 		expect(li.tagName).toBe("LI");
 		expect(li.textContent).toContain("Buy milk");
 	});
+
+	it("完了タスク「x Buy milk」読み込み時、liタグにcompletedクラスが適用される", () => {
+		// Setup: Create a container element to simulate contentEl
+		const container = document.createElement("div");
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as any).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		(container as any).empty = vi.fn(() => {
+			container.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with completed task and render
+		view.setViewData("x Buy milk", false);
+		view.renderTaskList();
+
+		// Verify: ul element exists with one li child
+		const ul = container.querySelector("ul");
+		expect(ul).not.toBeNull();
+		expect(ul?.children.length).toBe(1);
+
+		// Verify: li element has 'completed' class
+		const li = ul?.children[0] as HTMLLIElement;
+		expect(li.classList.contains("completed")).toBe(true);
+		expect(li.textContent).toContain("Buy milk");
+	});
 });

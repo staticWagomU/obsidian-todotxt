@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 26, pbi: "PBI-026", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -98,11 +98,17 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [],
+  sprint: 26,
+  pbi: "PBI-026",
+  goal: "ユーザーがGUIでタスクを追加できるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    { test: "renderTaskList()が追加ボタン要素を含むこと", implementation: "ul要素の前に「+」ボタンを描画", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "AddTaskModal classが存在しModalを継承すること", implementation: "AddTaskModalクラスをui/AddTaskModal.tsに作成", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "モーダルにタスク説明入力フィールドが存在すること", implementation: "Modal.onOpen()でinput要素を描画", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "モーダルに保存ボタンが存在しクリックでonSaveが呼ばれること", implementation: "保存ボタンとonSaveコールバック実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "追加ボタンクリックでモーダルが開きタスク追加後にリスト更新されること", implementation: "view.tsで追加ボタンにAddTaskModalを接続しgetAddHandler()を呼び出す", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+  ],
 };
 
 // Impediments

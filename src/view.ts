@@ -33,14 +33,14 @@ export class TodotxtView extends TextFileView {
 
 	setViewData(data: string, clear: boolean): void {
 		this.data = data;
-		if (clear) {
-			this.clear();
-		}
+		// Note: 'clear' parameter is for UI optimization, not data clearing
+		// It tells Obsidian whether to clear the DOM before rendering
 		this.renderTaskList();
 	}
 
 	clear(): void {
-		this.data = "";
+		// Intentionally empty - data should never be cleared
+		// The 'data' field is managed through setViewData only
 	}
 
 	/**

@@ -6,16 +6,34 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AddTaskModal } from "./AddTaskModal";
 import type { App } from "obsidian";
 
-// Mock Obsidian Modal
+// Mock Obsidian Modal with createEl method
 vi.mock("obsidian", () => {
+	// Helper function to add Obsidian-like createEl method to elements
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const addCreateElMethod = (el: HTMLElement): any => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+		(el as any).createEl = (childTag: string) => {
+			const childEl = document.createElement(childTag);
+			el.appendChild(childEl);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+			return addCreateElMethod(childEl);
+		};
+		return el;
+	};
+
 	return {
 		Modal: class {
 			app: unknown;
-			contentEl: HTMLElement;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			contentEl: any;
 
 			constructor(app: unknown) {
 				this.app = app;
-				this.contentEl = document.createElement("div");
+				const container = document.createElement("div");
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				this.contentEl = addCreateElMethod(container);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				this.contentEl.empty = () => { container.innerHTML = ""; };
 			}
 
 			open(): void {}
@@ -50,5 +68,18 @@ describe("AddTaskModal", () => {
 
 		// Modal should store the onSave callback
 		expect(modal.onSave).toBe(mockOnSave);
+	});
+
+	it("モーダルにタスク説明入力フィールドが存在すること", () => {
+		const modal = new AddTaskModal(mockApp, mockOnSave);
+
+		// Call onOpen to render the modal content
+		modal.onOpen();
+
+		// Verify: input field for task description exists
+		const input = modal.contentEl.querySelector("input.task-description-input");
+		expect(input).not.toBeNull();
+		expect(input?.getAttribute("type")).toBe("text");
+		expect(input?.getAttribute("placeholder")).toContain("タスク");
 	});
 });

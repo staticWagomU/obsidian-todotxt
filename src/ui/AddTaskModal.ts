@@ -13,7 +13,13 @@ export class AddTaskModal extends Modal {
 	}
 
 	onOpen(): void {
-		// To be implemented in subsequent subtasks
+		const { contentEl } = this;
+
+		// Task description input
+		const input = contentEl.createEl("input");
+		input.type = "text";
+		input.classList.add("task-description-input");
+		input.placeholder = "タスクを入力...";
 	}
 
 	onClose(): void {

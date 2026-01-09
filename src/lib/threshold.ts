@@ -111,3 +111,21 @@ export function getThresholdDateStatus(
 	if (isThresholdInFuture) return "not_ready";
 	return "ready";
 }
+
+/**
+ * しきい値日付に応じたスタイルを返す
+ * @param todo Todoオブジェクト
+ * @param today 現在日付
+ * @returns CSSスタイルオブジェクト
+ */
+export function getThresholdDateStyle(
+	todo: { tags: Record<string, string> },
+	today: Date,
+): Record<string, string> {
+	const status = getThresholdDateStatus(todo, today);
+
+	if (status === "not_ready") {
+		return { opacity: "0.5" };
+	}
+	return {};
+}

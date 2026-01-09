@@ -172,7 +172,7 @@ describe("TodoItem - Phase 3統合", () => {
         description: "Recurring task",
         projects: [],
         contexts: [],
-        tags: { rec: "1w", due: "2024-12-31" },
+        tags: { rec: "rec:1w", due: "2024-12-31" },
         raw: "Recurring task rec:1w due:2024-12-31",
       };
       const result = toggleCompletion(todo);

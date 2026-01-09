@@ -196,7 +196,7 @@ export const currentSprint = {
   number: 20,
   pbiId: "PBI-019",
   story: "構造化フォーム",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   goal: "todo.txt形式の構文知識不要で、UIフォームから直感的にタスクを作成・編集できる",
   subtasks: [
     {

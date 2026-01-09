@@ -439,4 +439,49 @@ describe("render task list in view", () => {
 		expect(li.classList.contains("completed")).toBe(true);
 		expect(li.textContent).toContain("Buy milk");
 	});
+
+	it("setViewData()を2回呼び出しても古いliタグが残らず最新のタスクリストのみ表示される", () => {
+		// Setup: Create a container element to simulate contentEl
+		const container = document.createElement("div");
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as any).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		(container as any).empty = vi.fn(() => {
+			container.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load first file and render
+		view.setViewData("Task 1\nTask 2", false);
+		view.renderTaskList();
+
+		// Verify: First render shows 2 tasks
+		let ul = container.querySelector("ul");
+		expect(ul?.children.length).toBe(2);
+
+		// Execute: Load second file and render
+		view.setViewData("Task 3", false);
+		view.renderTaskList();
+
+		// Verify: Second render shows only 1 task (old tasks are cleared)
+		ul = container.querySelector("ul");
+		expect(ul?.children.length).toBe(1);
+
+		const li = ul?.children[0] as HTMLLIElement;
+		expect(li.textContent).toContain("Task 3");
+	});
 });

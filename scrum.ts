@@ -84,15 +84,15 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-023", story: { role: "プロジェクト運営者", capability: "Product Roadmap 2026とリリース基準定義", benefit: "プロジェクトの方向性・優先順位・リリース判断明確化" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   { id: "PBI-024", story: {
       role: "プラグイン利用者",
-      capability: "Phase 4完了時点の全機能(MVP+7拡張+UI統合+設定+フォーム)の実働デモ動画を視聴する",
-      benefit: "プラグインの実際の使用感・UI/UX・機能連携を動画で確認でき、導入前に期待値を把握できる"
+      capability: "Phase 4全機能のデモシナリオドキュメントを読んで、プラグインの使い方と機能連携を理解する",
+      benefit: "各機能の操作手順・期待動作を事前把握でき、自分で試す際のガイドとして活用できる"
     }, acceptanceCriteria: [
-      { criterion: "デモ動画撮影: Phase 4全機能(優先度バッジ/due/threshold/内部リンク/外部リンク/繰り返し/pri:タグ/設定/フォーム)を含む5分程度のデモ動画を撮影", verification: "ls docs/demo-phase-4.md && grep -q 'demo-phase-4' docs/demo-phase-4.md" },
-      { criterion: "実働シナリオ: 新規タスク作成(フォーム)→優先度設定→due:/t:設定→繰り返しタスク(rec:)→完了トグル(pri:保存)→設定変更の一連の流れをデモ", verification: "grep -q 'rec:' docs/demo-phase-4.md && grep -q 'pri:' docs/demo-phase-4.md" },
-      { criterion: "7機能統合確認: Sprint 18で統合した7機能(PBI-008/012/013/014/015/016/017)がすべて動作していることをデモ動画で確認", verification: "grep -q 'PBI-008' docs/demo-phase-4.md && grep -q 'PBI-017' docs/demo-phase-4.md" },
-      { criterion: "デモ動画リンク配置: docs/demo-phase-4.mdに動画へのリンク(YouTube/Vimeo/ファイル)を配置し、READMEからリンク", verification: "grep -q 'demo-phase-4' README.md" },
+      { criterion: "デモシナリオ作成: Phase 4全機能(優先度バッジ/due/threshold/内部リンク/外部リンク/繰り返し/pri:タグ/設定/フォーム)の操作手順をdocs/demo-phase-4.mdに記載", verification: "ls docs/demo-phase-4.md && grep -q 'Phase 4' docs/demo-phase-4.md" },
+      { criterion: "実働シナリオ文書化: 新規タスク作成(フォーム)→優先度設定→due:/t:設定→繰り返しタスク(rec:)→完了トグル(pri:保存)→設定変更の一連の流れを手順として記載", verification: "grep -q 'rec:' docs/demo-phase-4.md && grep -q 'pri:' docs/demo-phase-4.md" },
+      { criterion: "7機能統合説明: Sprint 18で統合した7機能(PBI-008/012/013/014/015/016/017)の連携動作を説明", verification: "grep -q 'PBI-008' docs/demo-phase-4.md && grep -q 'PBI-017' docs/demo-phase-4.md" },
+      { criterion: "READMEリンク: docs/demo-phase-4.mdへのリンクをREADMEに追加", verification: "grep -q 'demo-phase-4' README.md" },
     ], dependencies: ["PBI-020", "PBI-019"], status: "ready",
-    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 1, score: "LOW", subtasks: 4 } },
+    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 } },
 ];
 
 // Definition of Ready

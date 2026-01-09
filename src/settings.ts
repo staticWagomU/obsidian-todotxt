@@ -2,13 +2,16 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import type TodotxtPlugin from "./main";
 
 export type SortOrder = "completion" | "priority" | "date" | "alphabetical";
+export type Grouping = "none" | "project" | "context";
 
 export interface TodotxtPluginSettings {
 	defaultSortOrder: SortOrder;
+	defaultGrouping: Grouping;
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	defaultSortOrder: "completion",
+	defaultGrouping: "none",
 };
 
 export class TodotxtSettingTab extends PluginSettingTab {
@@ -35,6 +38,21 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.defaultSortOrder)
 					.onChange(async (value) => {
 						this.plugin.settings.defaultSortOrder = value as SortOrder;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("デフォルトグループ化")
+			.setDesc("todo.txtファイルを開いたときのデフォルトのグループ化方法を選択します")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOption("none", "なし")
+					.addOption("project", "プロジェクト別")
+					.addOption("context", "コンテキスト別")
+					.setValue(this.plugin.settings.defaultGrouping)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultGrouping = value as Grouping;
 						await this.plugin.saveSettings();
 					})
 			);

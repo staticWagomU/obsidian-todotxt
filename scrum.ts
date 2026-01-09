@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 27, pbi: "PBI-027", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -76,9 +76,9 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-025", story: { role: "user", capability: "todo.txt基本UI描画", benefit: "視覚的タスク確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI実装 (Sprint 26 done)
   { id: "PBI-026", story: { role: "user", capability: "タスク追加UI", benefit: "GUIでタスク追加" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Critical Bug Fix (Sprint 27完了)
-  { id: "PBI-027", story: { role: "user", capability: "ファイルを開いても既存内容が保持される", benefit: "データ損失なくタスク管理継続" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Phase 6: UI統合 (Sprint 27以降予定) - requirements.md/user-guide.mdの未実装機能
+  // Phase 6: Critical Bug Fix (Sprint 27 done)
+  { id: "PBI-027", story: { role: "user", capability: "データ保持", benefit: "損失防止" }, acceptanceCriteria: [], dependencies: [], status: "done" },
+  // Phase 6: UI統合 (Sprint 28以降予定) - requirements.md/user-guide.mdの未実装機能
   {
     id: "PBI-028",
     story: { role: "user", capability: "タスク完了・編集・削除のUI操作", benefit: "直感的タスク管理" },
@@ -139,58 +139,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 27,
-  pbi: "PBI-027",
-  goal: "ファイル再オープン時にデータ損失を防ぎ、既存タスクを確実に保持する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "setViewData preserves file data correctly",
-      implementation: "setViewData stores data before any clearing operations",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add failing tests for setViewData data preservation (10dd502)" },
-        { phase: "green" as CommitPhase, message: "fix: prevent data loss in setViewData by removing incorrect clear() call (a7daecd)" },
-      ],
-    },
-    {
-      test: "clear parameter handled as optimization flag only",
-      implementation: "setViewData interprets clear parameter for DOM clearing, not data deletion",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: verify clear parameter is optimization flag only (628627e)" },
-      ],
-    },
-    {
-      test: "getViewData returns correct data for file save",
-      implementation: "getViewData consistently returns this.data after setViewData operations",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: verify getViewData returns correct data for file save (e2419b0)" },
-      ],
-    },
-    {
-      test: "Data persistence after task operations",
-      implementation: "Task add/edit/delete operations preserve this.data state correctly",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: verify data persistence after all task operations (1e9bd94)" },
-      ],
-    },
-    {
-      test: "Integration test - data preserved on file reopen",
-      implementation: "Full workflow test: open file → modify → reopen → verify data intact",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: add integration tests for file reopen data preservation (75d17ec)" },
-      ],
-    },
-  ],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [],
 };
 
 // Impediments
@@ -239,27 +192,27 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 25,
+  { sprint: 27,
     workedWell: [
-      "Phase 6初Sprint完遂: Sprint 25でPhase 6（UI実装フェーズ）開始、PBI-025完了（5 behavioral subtasks全完遂）、テスト数438→443（+5）、TDDサイクル完全実施（RED×4, GREEN×4）、UI実装フェーズへの移行成功",
-      "全behavioral subtasks成功: 5 subtasks全てbehavioral type、TDD Red-Green-Refactorサイクル完全遵守、空ファイル→基本描画→完了状態→再描画→優先度バッジの段階的実装、Sprint 20以来の完全TDD Sprint復活",
-      "型安全性改善リファクタリング実施: Sprint Review中のTypeScript型エラー（createEl型互換性）即座修正、DOMモック型安全性向上リファクタリング実施、テスト品質向上、型システム活用強化",
-      "DoD全項目PASS達成: Tests✅ Lint✅ Types✅ Build✅全通過、型エラー修正含めた完全DoD達成、Phase 6初Sprintから品質基準維持",
-      "UI実装基盤確立: view.tsにrenderTaskList()メソッド実装、parseTodoTxt()統合、contentEl DOM操作基盤確立、Phase 6以降のUI機能追加基盤完成",
+      "Critical Bug迅速修正完遂: データ損失バグ（PBI-027）をHIGH複雑度として5 subtasks完遂、1 RED + 5 GREENコミット、テスト数449→471（+22）、DoD全項目PASS達成、Phase 6継続の基盤確保",
+      "根本原因の的確な特定: setViewData()内のclear()誤用を正確に特定、this.dataを誤削除する問題を解明、clearパラメータをDOM最適化フラグと再解釈、根本原因ベースの修正実施",
+      "包括的テストカバレッジ追加: +22テストで徹底的データ保持検証、setViewData/getViewData/タスク操作/ファイル再オープンの統合テスト全実装、将来の再発防止基盤確立",
+      "全behavioral subtasksでTDD実践: 5 subtasks全てbehavioral type、RED-GREENサイクル遵守（Subtask 1のみRED、Subtask 2-5はGREEN phase testing）、バグ修正でもTDD原則維持",
+      "Phase 6開発継続可能化: データ損失バグ解消によりPBI-028（タスク完了・編集・削除UI）への進行可能、UI実装フェーズの信頼性確保、ユーザーエクスペリエンス品質保証",
     ],
     toImprove: [
-      "Sprint Review中の型エラー発生: DoD検証時にTypeScript型エラー（createEl互換性）発見、開発中の型チェック漏れ、TDDサイクル中のtsc --noEmit実行不足、型安全性検証プロセス改善必要",
-      "Sprint 24 Action未完遂: Action#1（1.0.0リリース最終検証）未実施、Action#2（Phase 6計画策定）未実施、Action#3（Action追跡自動化）未実施、Action#4（CHANGELOG Unreleased更新）未実施、Action#5（Sprint 25 Planning準備）のみ部分実施、Retrospective Action実行率低下",
-      "PBI-026以降Backlog未定義: Phase 6 Roadmap存在するがPBI未定義、Product Backlog最新状態PBI-025まで、次Sprint候補不明確、Backlog refinement実施必要",
-      "completedSprints肥大化継続: Sprint 25追加で25要素、5 Sprint連続改善なし（Sprint 21-25）、Phase 1-5完遂後も圧縮なし、git履歴参照ルール形骸化継続",
-      "DOMモックメンテナンス性: view.test.tsのDOMモック記述分散（createElement/appendChild/empty型定義）、型修正時の影響範囲広い、テストユーティリティ関数化検討余地",
+      "REFACTORフェーズ完全欠如: 6コミット全てRED/GREENフェーズ、Refactor発生率0%（Sprint 25以前は37%達成実績）、Sprint 11-24で構築したRefactor文化の一時的停止、バグ修正優先による構造改善機会損失",
+      "Sprint 26 Action未実行: Action#1（UI操作フィードバック追加）未実施、Action#2（テストユーティリティ関数化）未実施、Action#3（Phase 6 PBI ready化）未実施、Action#4（DoD型チェック自動化）未実施、Action#5（Sprint 27 Planning）のみ実施、Retrospective Action実行率20%",
+      "バグ混入の事前検出失敗: Sprint 26でsetViewData()実装時にclear()誤用混入、開発中のテスト不足（view integration test未実装）、DoD型チェックのみで動作検証不足、バグ予防プロセスの脆弱性露呈",
+      "緊急対応による計画外Sprint発生: PBI-027はBacklog refinement未実施でSprint投入、Definition of Ready未確認、complexity見積もり事後判定（HIGH）、計画的開発プロセスの一時的中断",
+      "Refactorチャンス未活用: view.ts内のsetViewData/clear/getViewDataメソッド群のリファクタリング機会あり、DOM操作とデータ管理の責務分離余地、テストコードのDRY原則適用余地、構造改善の先送り",
     ],
     actions: [
-      "TDDサイクル型チェック強化: 各commit前にtsc --noEmit実行ルール化、RED/GREEN phase両方で型エラー検証、vitest実行と並行して型チェック、Sprint Review前の型エラー防止",
-      "Phase 6 Backlog refinement実施: Product Roadmap 2026のv1.1.0機能からPBI-026以降定義、優先順位付けとcomplexity見積もり、最低3 PBI ready状態達成、Sprint 26 Planning準備",
-      "Sprint 24 Action再実行: Action#1（1.0.0リリース最終検証）Phase 6区切りで再検討、Action#3（Action追跡自動化）Sprint 20-24完了Action削除、Action#4（CHANGELOG更新）Sprint 25内容反映、遅延Action解消",
-      "テストユーティリティ関数化検討: DOMモック型定義をtest-utils.ts集約、createElement/appendChild/empty型安全ラッパー作成、view.test.ts可読性向上、型修正時の影響範囲局所化",
-      "Sprint 26 Planning準備: PBI-026候補選定（カレンダービュー/タグオートコンプリート/一括編集/優先度編集UI）、Definition of Ready確認、complexity見積もり、Phase 6継続Sprint計画",
+      "Phase 6統合テスト戦略策定: view integration testカテゴリ定義、UI操作→データ保持→ファイル保存の一連フロー検証、各PBI完了時に統合テスト追加ルール化、バグ混入の事前検出強化",
+      "Critical Bug後のRefactoring Sprint実施: Sprint 28開始前にview.ts構造改善検討、setViewData/clear責務分離Refactoring PBI作成、テストコードDRY原則適用、Technical Debt返済機会確保",
+      "Sprint 26 Action再実行と優先度付け: Action#2（テストユーティリティ）優先実施（統合テスト基盤）、Action#3（Phase 6 PBI ready化）Sprint 28 Planning前完了、Action#1/4は次Sprintで再評価、遅延Action解消計画",
+      "DoD動作検証ステップ追加: DoD checklistに「主要ユースケース手動検証」項目追加、Tests PASSのみでは不十分な動作保証を補完、Critical path検証の明文化、品質保証プロセス強化",
+      "Phase 6 Roadmap再確認とPBI優先順位調整: PBI-028（タスク完了・編集・削除UI）をSprint 28候補確定、PBI-029以降のready状態確認、Technical Debt返済PBI追加検討、Phase 6継続計画明確化",
     ] },
 ];
 

@@ -653,6 +653,110 @@ describe("data persistence after task operations", () => {
 	});
 });
 
+describe("integration test - data preserved on file reopen", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("ファイルを開く→編集→再度開く: データが保持される", async () => {
+		// Simulate initial file load (Obsidian calls with clear=true)
+		const originalFileContent = "(A) 2026-01-01 Buy milk\n(B) 2026-01-02 Call Mom";
+		view.setViewData(originalFileContent, true);
+
+		// Verify initial load
+		expect(view.getViewData()).toBe(originalFileContent);
+
+		// User adds a task
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+		const handleAdd = view.getAddHandler();
+		await handleAdd("New task", "C");
+
+		// Get updated content that would be saved to disk
+		const updatedContent = view.getViewData();
+		expect(updatedContent).not.toBe("");
+		expect(updatedContent).toContain("Buy milk");
+		expect(updatedContent).toContain("Call Mom");
+		expect(updatedContent).toContain("New task");
+
+		// Simulate file reopen (this was causing data loss before the fix)
+		view.setViewData(updatedContent, true);
+
+		// Critical: Data should still be there after reopen
+		const dataAfterReopen = view.getViewData();
+		expect(dataAfterReopen).toBe(updatedContent);
+		expect(dataAfterReopen).toContain("Buy milk");
+		expect(dataAfterReopen).toContain("Call Mom");
+		expect(dataAfterReopen).toContain("New task");
+
+		vi.useRealTimers();
+	});
+
+	it("複数回のファイルオープン・クローズサイクル", () => {
+		// First open
+		const content1 = "Task 1\nTask 2";
+		view.setViewData(content1, true);
+		expect(view.getViewData()).toBe(content1);
+
+		// Close and reopen with different content
+		const content2 = "Task 3\nTask 4\nTask 5";
+		view.setViewData(content2, true);
+		expect(view.getViewData()).toBe(content2);
+
+		// Close and reopen again
+		const content3 = "(A) Important task";
+		view.setViewData(content3, true);
+		expect(view.getViewData()).toBe(content3);
+	});
+
+	it("タスク操作後のファイル再オープンでデータ保持", async () => {
+		// Initial file load
+		view.setViewData("(A) Task 1\n(B) Task 2\n(C) Task 3", true);
+
+		// Perform multiple operations
+		const handleToggle = view.getToggleHandler();
+		const handleEdit = view.getEditHandler();
+		const handleDelete = view.getDeleteHandler();
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		await handleToggle(0);
+		await handleEdit(1, { priority: "Z" });
+		await handleDelete(2);
+
+		const savedContent = view.getViewData();
+		expect(savedContent).not.toBe("");
+
+		// Simulate file reopen with the saved content
+		view.setViewData(savedContent, true);
+
+		// Data must be preserved
+		const reopenedData = view.getViewData();
+		expect(reopenedData).toBe(savedContent);
+		expect(reopenedData).toContain("x 2026-01-10");
+		expect(reopenedData).toContain("(Z)");
+
+		vi.useRealTimers();
+	});
+
+	it("空ファイルのオープン・クローズ", () => {
+		// Open empty file
+		view.setViewData("", true);
+		expect(view.getViewData()).toBe("");
+
+		// Reopen empty file
+		view.setViewData("", true);
+		expect(view.getViewData()).toBe("");
+	});
+});
+
 describe("render task list in view", () => {
 	let view: TodotxtView;
 	let mockLeaf: { view: null };

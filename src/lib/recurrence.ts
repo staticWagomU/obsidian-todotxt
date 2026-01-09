@@ -47,6 +47,17 @@ export function parseRecurrenceTag(recTag: string): RecurrencePattern | null {
 }
 
 /**
+ * Adjust date to month-end if overflow occurred
+ * Handles month-end and leap year edge cases
+ * Example: Jan 31 + 1 month -> Feb 28, Feb 29 (leap) + 1 year -> Feb 28 (non-leap)
+ */
+function adjustToMonthEnd(date: Date, originalDay: number): void {
+  if (date.getDate() !== originalDay) {
+    date.setDate(0); // Set to last day of previous month
+  }
+}
+
+/**
  * Calculate next due date based on recurrence pattern
  * Non-strict mode: based on completion date (baseDate)
  * Strict mode: based on current due date (currentDueDate)
@@ -76,18 +87,12 @@ export function calculateNextDueDate(
     case 'm':
       nextDate = new Date(base);
       nextDate.setMonth(base.getMonth() + pattern.value);
-      // Handle month-end overflow (e.g., Jan 31 + 1 month should be Feb 28, not Mar 3)
-      if (nextDate.getDate() !== originalDay) {
-        nextDate.setDate(0); // Set to last day of previous month
-      }
+      adjustToMonthEnd(nextDate, originalDay);
       break;
     case 'y':
       nextDate = new Date(base);
       nextDate.setFullYear(base.getFullYear() + pattern.value);
-      // Handle leap year overflow (e.g., Feb 29, 2024 + 1 year should be Feb 28, 2025)
-      if (nextDate.getDate() !== originalDay) {
-        nextDate.setDate(0); // Set to last day of previous month
-      }
+      adjustToMonthEnd(nextDate, originalDay);
       break;
     default:
       nextDate = base;

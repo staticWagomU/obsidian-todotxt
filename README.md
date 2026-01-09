@@ -1,90 +1,119 @@
-# Obsidian Sample Plugin
+# Todo.txt for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+Todo.txt for Obsidianは、[todo.txt形式](https://github.com/todotxt/todo.txt)のタスク管理をObsidian内で実現するコミュニティプラグインです。プレーンテキストベースのタスク管理により、特定のソフトウェアに依存しない持続可能なタスク管理環境を提供します。
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## 価値提案
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+### 1. ソフトウェア非依存
+- **プレーンテキスト形式**: `.txt`または`.todotxt`ファイルで保存
+- **どのエディタでも編集可能**: Obsidian以外のテキストエディタ、専用todo.txtアプリ、コマンドラインツールでも編集可能
+- **永続性**: ファイル形式が廃れることなく、長期的なアーカイブに最適
 
-## First time developing plugins?
+### 2. 人間可読
+- **直感的な構文**: `(A) 2026-01-09 重要なタスク +project @context`
+- **特別なツール不要**: ファイルを開けばすぐに内容を理解できる
+- **学習コストが低い**: シンプルな記法で誰でも素早く習得可能
 
-Quick starting guide for new plugin devs:
+### 3. ソート可能
+- **アルファベット順で意味のある順序**: 優先度`(A)`、日付`YYYY-MM-DD`、完了マーク`x`が先頭に来る設計
+- **コマンドラインフレンドリー**: `sort`コマンドでタスクを即座に整理可能
+- **プログラマティックな処理**: スクリプトやツールで簡単に自動処理
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+## 主要機能
 
-## Releasing new releases
+### 1. 優先度バッジ表示
+- `(A)`～`(Z)`の優先度をカラフルなバッジで視覚化
+- 優先度に応じた色分け（A=赤、B=オレンジ、C=黄色など）
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+### 2. 期日（due:）表示
+- `due:YYYY-MM-DD`タグで期日を設定
+- 期日超過タスクを赤文字でハイライト
+- 今日・明日の期日を強調表示
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+### 3. 開始日（t:）によるグレーアウト
+- `t:YYYY-MM-DD`タグで開始日を設定
+- 開始日前のタスクをグレーアウトして表示
+- 「今やるべきタスク」に集中できる
 
-## Adding your plugin to the community plugin list
+### 4. Obsidian内部リンク対応
+- `[[ノート名]]`記法でObsidianノートへリンク
+- タスクから関連ノートへ素早くアクセス
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+### 5. 外部リンク表示
+- `http://`、`https://`のURLを自動検出
+- クリック可能なリンクとして表示
 
-## How to use
+### 6. 繰り返しタスク（rec:）
+- `rec:+1d`、`rec:1w`などで繰り返しタスクを設定
+- 完了時に自動的に次回の期日を計算
+- 日次・週次・月次の定期タスクに対応
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+### 7. 構造化フォーム入力
+- 新規タスク作成用のフォームUI
+- 優先度、期日、開始日、プロジェクト、コンテキストを入力フィールドで設定
+- todo.txt構文を意識せずにタスクを作成可能
 
-## Manually installing the plugin
+## インストール
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+### 手動インストール（推奨）
 
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
+1. [リリースページ](https://github.com/staticWagomU/obsidian-todotxt/releases)から最新版の`main.js`、`manifest.json`、`styles.css`をダウンロード
+2. Obsidian Vaultの`.obsidian/plugins/obsidian-todotxt/`ディレクトリを作成
+3. ダウンロードしたファイルをディレクトリに配置
+4. Obsidianの設定→コミュニティプラグインで「Todo.txt for Obsidian」を有効化
 
-## Funding URL
+### コミュニティプラグイン（準備中）
 
-You can include funding URLs where people who use your plugin can financially support it.
+現在、Obsidianコミュニティプラグインへの登録を準備中です。登録が完了すれば、Obsidianの設定画面から直接インストールできるようになります。
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+## 使い方
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
+詳細な使用方法は[ユーザーガイド](docs/user-guide.md)を参照してください。
+
+### 基本的なワークフロー
+
+1. `.txt`または`.todotxt`ファイルを作成
+2. todo.txt形式でタスクを記述
+3. プラグインが自動的にタスクビューを表示
+4. タスクをクリックして完了マークを付ける
+
+### 設定
+
+Settings → Todo.txt で以下の設定が可能です：
+
+- **Default Priority**: 新規タスクのデフォルト優先度
+- **Date Format**: 日付の表示形式
+- **Show Completed Tasks**: 完了済みタスクの表示/非表示
+- **Compact Mode**: コンパクト表示モード
+
+## 開発
+
+```bash
+# 依存関係のインストール
+pnpm install
+
+# 開発モード（watch mode）
+pnpm dev
+
+# プロダクションビルド
+pnpm build
+
+# テスト実行
+pnpm test
+
+# リント
+pnpm lint
+
+# 型チェック
+pnpm tsc --noEmit
 ```
 
-If you have multiple URLs, you can also do:
+## ライセンス
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+0-BSD License
 
-## API Documentation
+## 関連リンク
 
-See https://docs.obsidian.md
+- [todo.txt形式仕様](https://github.com/todotxt/todo.txt)
+- [Obsidianプラグイン開発ドキュメント](https://docs.obsidian.md/Plugins)
+- [ユーザーガイド](docs/user-guide.md)

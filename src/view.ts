@@ -35,6 +35,7 @@ export class TodotxtView extends TextFileView {
 		if (clear) {
 			this.clear();
 		}
+		this.renderTaskList();
 	}
 
 	clear(): void {

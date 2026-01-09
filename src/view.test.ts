@@ -4,20 +4,54 @@ import { TodotxtView } from "./view";
 import { parseTodoTxt } from "./lib/parser";
 
 // Mock Obsidian modules
-vi.mock("obsidian", () => ({
-	TextFileView: class {
-		data = "";
-		leaf: unknown;
-		file: unknown = null;
+vi.mock("obsidian", () => {
+	// Helper to add Obsidian-like createEl method to elements recursively
+	// Must be defined inside the factory function due to vi.mock hoisting
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	function addCreateElMethod(el: HTMLElement): any {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+		(el as any).createEl = (childTag: string) => {
+			const childEl = document.createElement(childTag);
+			el.appendChild(childEl);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+			return addCreateElMethod(childEl);
+		};
+		return el;
+	}
 
-		constructor(leaf: unknown) {
-			this.leaf = leaf;
-		}
+	return {
+		TextFileView: class {
+			data = "";
+			leaf: unknown;
+			file: unknown = null;
+			contentEl: {
+				empty: () => void;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				createEl: any;
+			};
 
-		async onLoadFile(_file: unknown): Promise<void> {}
-		async onUnloadFile(_file: unknown): Promise<void> {}
-	},
-}));
+			constructor(leaf: unknown) {
+				this.leaf = leaf;
+				// Create contentEl mock in constructor (after JSDOM is available)
+				const container = document.createElement("div");
+				this.contentEl = {
+					empty: () => {
+						container.innerHTML = "";
+					},
+					createEl: (tag: string) => {
+						const el = document.createElement(tag);
+						container.appendChild(el);
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+						return addCreateElMethod(el);
+					},
+				};
+			}
+
+			async onLoadFile(_file: unknown): Promise<void> {}
+			async onUnloadFile(_file: unknown): Promise<void> {}
+		},
+	};
+});
 
 describe("update view after toggle", () => {
 	let view: TodotxtView;
@@ -324,7 +358,8 @@ describe("render task list in view", () => {
 	// Helper type for mock container
 	type MockContainer = HTMLElement & {
 		empty: () => void;
-		createEl: (tag: string) => HTMLElement;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
 	};
 
 	// Helper function to create a mock container

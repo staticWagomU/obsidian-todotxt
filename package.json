@@ -1,7 +1,9 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-todotxt",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Todo.txt format task management plugin for Obsidian - Plain text, software-agnostic, human-readable task manager",
+	"author": "staticWagomU",
+	"authorUrl": "https://github.com/staticWagomU",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {

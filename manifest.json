@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-todotxt",
+	"name": "Todo.txt for Obsidian",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Todo.txt format task management - Plain text, software-agnostic, human-readable task manager with priority badges, due dates, recurring tasks, and form input.",
+	"author": "staticWagomU",
+	"authorUrl": "https://github.com/staticWagomU",
 	"isDesktopOnly": false
 }

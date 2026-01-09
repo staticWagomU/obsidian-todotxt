@@ -179,6 +179,61 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "フォーム検証とエラー表示: 必須項目(説明文)の未入力、無効な日付形式などのエラーをリアルタイムで表示し、保存ボタンを無効化する", verification: "pnpm vitest run -t 'form validation errors'" },
     ], dependencies: ["PBI-004", "PBI-005"], status: "done",
     complexity: { functions: 6, estimatedTests: 35, externalDependencies: 2, score: "HIGH", subtasks: 7 } },
+  // Phase 5: リファクタリング & リリース準備
+  { id: "PBI-021", story: {
+      role: "開発者",
+      capability: "recurrence.tsのリファクタリングによりコードの保守性・可読性・型安全性を向上させる",
+      benefit: "正規表現のmagic number排除、日付計算ロジックの分割、Duration型導入により、バグ修正・機能追加が容易になり、長期的なメンテナンスコストを削減できる"
+    }, acceptanceCriteria: [
+      { criterion: "正規表現パターン抽出: parseRecurrenceTag内のmagic number(/^(\\+?)(\\d+)([dwmy])$/)を名前付き定数として抽出し、コメントで各グループの意味を説明", verification: "pnpm vitest run src/lib/recurrence.test.ts && pnpm tsc --noEmit" },
+      { criterion: "日付計算ロジック分割: calculateNextDueDate内の月末/閏年境界処理を独立関数(adjustToMonthEnd等)に分割し、単体テストを追加", verification: "pnpm vitest run -t 'adjustToMonthEnd' && pnpm vitest run src/lib/recurrence.test.ts" },
+      { criterion: "Duration型導入: RecurrencePatternのvalue/unit組み合わせをDuration型({ days: number } | { weeks: number } | { months: number } | { years: number })に置き換え、型安全性を強化", verification: "pnpm vitest run src/lib/recurrence.test.ts && pnpm tsc --noEmit" },
+      { criterion: "既存テスト全合格: リファクタリング後も既存の38テストが全合格し、回帰バグがないことを確認", verification: "pnpm vitest run src/lib/recurrence.test.ts && pnpm vitest run src/lib/todo.test.ts -t recurrence" },
+      { criterion: "DoD全項目合格: Tests/Lint/Types/Build全て合格し、リファクタリングが既存機能に影響を与えていないことを確認", verification: "pnpm vitest run && pnpm lint && pnpm tsc --noEmit --skipLibCheck && pnpm build" },
+    ], dependencies: ["PBI-016"], status: "ready",
+    complexity: { functions: 8, estimatedTests: 50, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
+    refactorChecklist: [
+      "parseRecurrenceTag: 正規表現パターンの抽出（magic number排除）",
+      "calculateNextDueDate: 日付計算ロジックの関数分割（月末/年末境界処理の独立）",
+      "createRecurringTask: タスククローン処理の共通化（既存clone処理との統一検討）",
+      "月/年の日数計算: Date APIの月末自動補正を利用した堅牢な実装（2月/閏年対応）",
+      "期間計算の型安全性: Duration型の導入検討（days/weeks/months/yearsの型区別）",
+    ] },
+  { id: "PBI-022", story: {
+      role: "プラグイン利用者",
+      capability: "READMEとドキュメントを読んでプラグインの機能・使い方・インストール方法を理解する",
+      benefit: "todo.txt形式の知識がなくても、プラグインの価値提案・主要機能・設定方法を把握でき、すぐに使い始められる"
+    }, acceptanceCriteria: [
+      { criterion: "README更新: プラグイン名(Todo.txt for Obsidian)・概要・価値提案(ソフトウェア非依存/人間可読/ソート可能)・主要機能7つ(優先度/due/threshold/リンク/繰り返し/フォーム/設定)をREADME.mdに記載", verification: "ls README.md && grep -q 'Todo.txt for Obsidian' README.md" },
+      { criterion: "インストール手順: 手動インストール(manifest.json/main.js/styles.css配置)とコミュニティプラグイン登録準備の手順をREADME.mdに記載", verification: "grep -q 'Installation' README.md && grep -q 'manifest.json' README.md" },
+      { criterion: "使い方ガイド: todo.txt形式の基本構文(完了/優先度/日付/project/context/tags)とプラグイン独自機能(due:/t:/rec:/pri:)の説明をdocs/user-guide.mdに記載", verification: "ls docs/user-guide.md && grep -q 'rec:' docs/user-guide.md" },
+      { criterion: "スクリーンショット: 7機能の動作が分かるスクリーンショット(優先度バッジ/due表示/threshold/リンク/フォーム/設定画面)をdocs/images/に配置し、README/user-guideから参照", verification: "ls docs/images/*.png && grep -q '![' README.md" },
+      { criterion: "package.json/manifest.json更新: name/description/author/authorUrlをtodo.txt固有の内容に更新し、サンプルプラグインの記述を削除", verification: "grep -q 'todo.txt' package.json && grep -q 'todo.txt' manifest.json" },
+    ], dependencies: ["PBI-020"], status: "ready",
+    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 5 } },
+  { id: "PBI-023", story: {
+      role: "プロジェクト運営者",
+      capability: "Product Roadmap 2026とリリース基準を定義し、1.0.0リリースの判断基準を明確化する",
+      benefit: "プロジェクトの方向性・優先順位・リリース判断が明確になり、コミュニティプラグイン登録の準備とマイルストーン管理が可能になる"
+    }, acceptanceCriteria: [
+      { criterion: "1.0.0定義: MVP(Phase 1)+拡張機能(Phase 2-3)+UI統合(Phase 4)を含む1.0.0の機能スコープをdocs/product-roadmap-2026.mdに記載", verification: "ls docs/product-roadmap-2026.md && grep -q '1.0.0' docs/product-roadmap-2026.md" },
+      { criterion: "リリース基準: DoD合格(Tests/Lint/Types/Build)、README/ドキュメント整備、manifest.json更新、CHANGELOG.md作成の4項目をリリース基準として定義", verification: "grep -q 'Release Criteria' docs/product-roadmap-2026.md" },
+      { criterion: "Phase 5-6計画: Phase 5(リファクタリング/ドキュメント/リリース準備)とPhase 6(コミュニティフィードバック/バグ修正)の計画を記載", verification: "grep -q 'Phase 5' docs/product-roadmap-2026.md && grep -q 'Phase 6' docs/product-roadmap-2026.md" },
+      { criterion: "コミュニティプラグイン登録計画: obsidian-releasesへのPR手順・plugin guidelines準拠チェックリストをdocs/release-checklist.mdに記載", verification: "ls docs/release-checklist.md && grep -q 'obsidian-releases' docs/release-checklist.md" },
+      { criterion: "CHANGELOG.md作成: Phase 1-4の変更履歴(Sprint 1-20のPBI)をCHANGELOG.mdに記載し、1.0.0リリースノートのベースを作成", verification: "ls CHANGELOG.md && grep -q 'Phase 4' CHANGELOG.md" },
+    ], dependencies: [], status: "ready",
+    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 5 } },
+  { id: "PBI-024", story: {
+      role: "プラグイン利用者",
+      capability: "Phase 4完了時点の全機能(MVP+7拡張+UI統合+設定+フォーム)の実働デモ動画を視聴する",
+      benefit: "プラグインの実際の使用感・UI/UX・機能連携を動画で確認でき、導入前に期待値を把握できる"
+    }, acceptanceCriteria: [
+      { criterion: "デモ動画撮影: Phase 4全機能(優先度バッジ/due/threshold/内部リンク/外部リンク/繰り返し/pri:タグ/設定/フォーム)を含む5分程度のデモ動画を撮影", verification: "ls docs/demo-phase-4.md && grep -q 'demo-phase-4' docs/demo-phase-4.md" },
+      { criterion: "実働シナリオ: 新規タスク作成(フォーム)→優先度設定→due:/t:設定→繰り返しタスク(rec:)→完了トグル(pri:保存)→設定変更の一連の流れをデモ", verification: "grep -q 'rec:' docs/demo-phase-4.md && grep -q 'pri:' docs/demo-phase-4.md" },
+      { criterion: "7機能統合確認: Sprint 18で統合した7機能(PBI-008/012/013/014/015/016/017)がすべて動作していることをデモ動画で確認", verification: "grep -q 'PBI-008' docs/demo-phase-4.md && grep -q 'PBI-017' docs/demo-phase-4.md" },
+      { criterion: "デモ動画リンク配置: docs/demo-phase-4.mdに動画へのリンク(YouTube/Vimeo/ファイル)を配置し、READMEからリンク", verification: "grep -q 'demo-phase-4' README.md" },
+    ], dependencies: ["PBI-020", "PBI-019"], status: "ready",
+    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 1, score: "LOW", subtasks: 4 } },
 ];
 
 // Definition of Ready

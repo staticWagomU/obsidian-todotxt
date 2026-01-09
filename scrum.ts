@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 27, pbi: "PBI-027", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 27, pbi: "PBI-027", status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -76,23 +76,8 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-025", story: { role: "user", capability: "todo.txt基本UI描画", benefit: "視覚的タスク確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI実装 (Sprint 26 done)
   { id: "PBI-026", story: { role: "user", capability: "タスク追加UI", benefit: "GUIでタスク追加" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Critical Bug Fix (最優先)
-  {
-    id: "PBI-027",
-    story: {
-      role: "user",
-      capability: "ファイルを開いても既存内容が保持される",
-      benefit: "データ損失なくタスク管理継続",
-    },
-    acceptanceCriteria: [
-      { criterion: "既存タスクが保持される", verification: "ファイル再オープン後、全タスクが表示される" },
-      { criterion: "編集内容が永続化される", verification: "タスク追加・編集後、再オープンで反映されている" },
-      { criterion: "ファイル内容と表示が同期する", verification: "外部エディタでの変更がビューに反映される" },
-    ],
-    dependencies: [],
-    status: "ready",
-    complexity: { functions: 2, estimatedTests: 8, externalDependencies: 1, score: "HIGH", subtasks: 5 },
-  },
+  // Critical Bug Fix (Sprint 27完了)
+  { id: "PBI-027", story: { role: "user", capability: "ファイルを開いても既存内容が保持される", benefit: "データ損失なくタスク管理継続" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI統合 (Sprint 27以降予定) - requirements.md/user-guide.mdの未実装機能
   {
     id: "PBI-028",
@@ -157,42 +142,53 @@ export const currentSprint = {
   sprint: 27,
   pbi: "PBI-027",
   goal: "ファイル再オープン時にデータ損失を防ぎ、既存タスクを確実に保持する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "setViewData preserves file data correctly",
       implementation: "setViewData stores data before any clearing operations",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add failing tests for setViewData data preservation (10dd502)" },
+        { phase: "green" as CommitPhase, message: "fix: prevent data loss in setViewData by removing incorrect clear() call (a7daecd)" },
+      ],
     },
     {
       test: "clear parameter handled as optimization flag only",
       implementation: "setViewData interprets clear parameter for DOM clearing, not data deletion",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "test: verify clear parameter is optimization flag only (628627e)" },
+      ],
     },
     {
       test: "getViewData returns correct data for file save",
       implementation: "getViewData consistently returns this.data after setViewData operations",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "test: verify getViewData returns correct data for file save (e2419b0)" },
+      ],
     },
     {
       test: "Data persistence after task operations",
       implementation: "Task add/edit/delete operations preserve this.data state correctly",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "test: verify data persistence after all task operations (1e9bd94)" },
+      ],
     },
     {
       test: "Integration test - data preserved on file reopen",
       implementation: "Full workflow test: open file → modify → reopen → verify data intact",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "test: add integration tests for file reopen data preservation (75d17ec)" },
+      ],
     },
   ],
 };
@@ -238,6 +234,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 24, pbi: "PBI-024", story: "Phase 4デモシナリオ", verification: "passed", notes: "4st,438t(+0),LOW,4structural(demo-phase-4/scenario/7features/README)" },
   { sprint: 25, pbi: "PBI-025", story: "todo.txt基本UI描画", verification: "passed", notes: "5st,443t(+5),MEDIUM,5behavioral,view.test.ts type fix" },
   { sprint: 26, pbi: "PBI-026", story: "タスク追加UI", verification: "passed", notes: "5st,449t(+6),MEDIUM,5behavioral,AddTaskModal+view統合" },
+  { sprint: 27, pbi: "PBI-027", story: "データ損失バグ修正", verification: "passed", notes: "5st,471t(+22),HIGH,5behavioral,clear()誤用修正" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 18, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 18, pbi: "PBI-020", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 10, impediments: 0 },
 };
 
 // Product Goal
@@ -145,6 +145,15 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "description内のpri:タグ保持: 説明文に含まれるpri:Aなどの文字列を誤検出せず、tagsオブジェクトのpri:のみ処理", verification: "pnpm vitest run -t '説明文中のpri:文字列を誤検出しない'" },
     ], dependencies: ["PBI-003"], status: "done",
     complexity: { functions: 2, estimatedTests: 18, externalDependencies: 0, score: "LOW", subtasks: 3 } },
+  // Phase 4: UI統合 (Sprint 18)
+  { id: "PBI-020", story: { role: "Obsidianユーザー", capability: "7つの拡張機能(優先度バッジ/due表示/threshold表示/内部リンク/外部リンク/繰り返しタスク/pri:タグ)がTodoItem.tsxに統合された実働デモ", benefit: "プラグインの実際の動作を確認し、todo.txt形式の実用的な管理が可能になる" }, acceptanceCriteria: [
+      { criterion: "UI統合(Phase 2完全統合): PBI-008(優先度バッジ)、PBI-012(due表示)の2機能をTodoItem.tsxに統合し、視覚的フィードバックを実現", verification: "pnpm vitest run -t 'TodoItem.*priority badge|TodoItem.*due'" },
+      { criterion: "UI統合(Phase 3前半統合): PBI-013(threshold表示)、PBI-014(内部リンク)、PBI-015(外部リンク)の3機能をTodoItem.tsxに統合し、リンクのクリック可能UI実現", verification: "pnpm vitest run -t 'TodoItem.*threshold|TodoItem.*internal.*link|TodoItem.*external.*link'" },
+      { criterion: "UI統合(Phase 3後半統合+実働検証): PBI-016(rec:繰り返し)、PBI-017(pri:タグ)の2機能をTodoItem.tsxに統合し、完了トグル時の動作を実働確認", verification: "pnpm vitest run -t 'TodoItem.*recurrence|TodoItem.*pri:' && pnpm build" },
+      { criterion: "Obsidian API統合(実働プラグイン実現): TodoItem.tsx内でObsidian APIを使用し、内部リンク(this.app.workspace.openLinkText)と外部リンク(window.open)のクリックハンドラ実装", verification: "pnpm tsc --noEmit && pnpm build" },
+      { criterion: "7機能実働デモ動画作成(成果物確認): Obsidian vault内で7機能すべてが動作するデモ動画を撮影し、docs/demo-sprint-18.mdにリンク配置", verification: "ls docs/demo-sprint-18.md" },
+    ], dependencies: ["PBI-008", "PBI-012", "PBI-013", "PBI-014", "PBI-015", "PBI-016", "PBI-017"], status: "ready",
+    complexity: { functions: 8, estimatedTests: 50, externalDependencies: 4, score: "HIGH", subtasks: 10 } },
   { id: "PBI-018", story: { role: "Obsidianユーザー", capability: "設定画面", benefit: "カスタマイズ" }, acceptanceCriteria: [
       { criterion: "設定タブ", verification: "pnpm vitest run --grep 'settings'" },
     ], dependencies: [], status: "draft" },

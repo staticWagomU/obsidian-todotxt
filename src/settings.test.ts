@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import TodotxtPlugin from "./main";
 import { TodotxtSettingTab, DEFAULT_SETTINGS, type SortOrder, type Grouping } from "./settings";
-import { App, type PluginManifest, Setting } from "obsidian";
+import { App, type PluginManifest } from "obsidian";
 
 describe("settings tab registration", () => {
 	let plugin: TodotxtPlugin;
@@ -84,7 +84,6 @@ describe("default sort setting", () => {
 
 describe("default grouping setting", () => {
 	let plugin: TodotxtPlugin;
-	let settingTab: TodotxtSettingTab;
 	let mockApp: App;
 	const mockManifest: PluginManifest = {
 		id: "obsidian-todotxt",
@@ -101,7 +100,6 @@ describe("default grouping setting", () => {
 		mockApp = {} as App;
 		plugin = new TodotxtPlugin(mockApp, mockManifest);
 		plugin.settings = { ...DEFAULT_SETTINGS };
-		settingTab = new TodotxtSettingTab(mockApp, plugin);
 	});
 
 	it("should have defaultGrouping property in settings", () => {
@@ -123,7 +121,6 @@ describe("default grouping setting", () => {
 
 describe("completed tasks visibility setting", () => {
 	let plugin: TodotxtPlugin;
-	let settingTab: TodotxtSettingTab;
 	let mockApp: App;
 	const mockManifest: PluginManifest = {
 		id: "obsidian-todotxt",
@@ -140,7 +137,6 @@ describe("completed tasks visibility setting", () => {
 		mockApp = {} as App;
 		plugin = new TodotxtPlugin(mockApp, mockManifest);
 		plugin.settings = { ...DEFAULT_SETTINGS };
-		settingTab = new TodotxtSettingTab(mockApp, plugin);
 	});
 
 	it("should have showCompletedTasks property in settings", () => {
@@ -200,8 +196,8 @@ describe("settings persistence", () => {
 	});
 
 	it("should persist all settings when saveSettings is called", async () => {
-		let savedData: Partial<TodotxtPluginSettings> | null = null;
-		plugin.saveData = async (data: Partial<TodotxtPluginSettings>) => {
+		let savedData: unknown = null;
+		plugin.saveData = async (data: unknown) => {
 			savedData = data;
 		};
 

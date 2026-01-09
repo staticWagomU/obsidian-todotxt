@@ -29,8 +29,8 @@ export class TodotxtSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("デフォルトソート順")
-			.setDesc("todo.txtファイルを開いたときのデフォルトのソート順を選択します")
+			.setName("Default sort order")
+			.setDesc("Select the default sort order when opening todo.txt files")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOption("completion", "完了状態優先")
@@ -45,8 +45,8 @@ export class TodotxtSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("デフォルトグループ化")
-			.setDesc("todo.txtファイルを開いたときのデフォルトのグループ化方法を選択します")
+			.setName("Default grouping")
+			.setDesc("Select the default grouping method when opening todo.txt files")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOption("none", "なし")

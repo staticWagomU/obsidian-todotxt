@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: null, pbi: null, status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 23, pbi: "PBI-022", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -106,7 +106,49 @@ export const definitionOfReady = {
 };
 
 // Current Sprint
-export const currentSprint = null;
+export const currentSprint = {
+  sprint: 23,
+  pbi: "PBI-022",
+  goal: "プラグイン利用者がREADME/ドキュメント/manifest.jsonからtodo.txt for Obsidianの価値提案・機能・使い方を理解できる",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "AC1+AC2: README.md更新（プラグイン名・概要・価値提案・主要機能7つ・インストール手順）",
+      implementation: "README.md全体を書き換え: プラグイン概要セクション（価値提案3項目: ソフトウェア非依存/人間可読/ソート可能）、主要機能セクション（7機能: 優先度バッジ/due表示/threshold/内部リンク/外部リンク/繰り返し/フォーム）、インストールセクション（手動/コミュニティプラグイン手順）を記載",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AC3: docs/user-guide.md作成（todo.txt基本構文+プラグイン独自機能）",
+      implementation: "docs/user-guide.md新規作成: todo.txt基本構文セクション（完了マーク/優先度/作成日/完了日/project/context/tags）、プラグイン独自機能セクション（due:/t:/rec:/pri:タグ詳細）、実例付き説明を記載",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AC4-1: docs/images/スクリーンショット配置（7機能プレースホルダー）",
+      implementation: "docs/images/ディレクトリ作成、7機能スクリーンショットプレースホルダー配置: priority-badge.png/due-display.png/threshold-grayout.png/internal-links.png/external-links.png/form-input.png/settings-screen.png（実画像は後日置換可能）",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AC4-2: README/user-guide画像参照追加",
+      implementation: "README.mdの主要機能セクションにスクリーンショット参照追加（![優先度バッジ](docs/images/priority-badge.png)形式）、user-guide.mdの各機能説明にスクリーンショット参照追加",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AC5: package.json/manifest.json更新（todo.txt固有内容）",
+      implementation: "package.json更新（name: obsidian-todotxt, description: Todo.txt format task management plugin, author/authorUrl設定）、manifest.json更新（id: obsidian-todotxt, name: Todo.txt for Obsidian, description更新、サンプルプラグイン記述削除）",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ],
+};
 
 // Impediments
 export const impediments = { active: [] as { id: string; description: string; status: string }[], resolved: [] as string[] };

@@ -7,11 +7,13 @@ export type Grouping = "none" | "project" | "context";
 export interface TodotxtPluginSettings {
 	defaultSortOrder: SortOrder;
 	defaultGrouping: Grouping;
+	showCompletedTasks: boolean;
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	defaultSortOrder: "completion",
 	defaultGrouping: "none",
+	showCompletedTasks: true,
 };
 
 export class TodotxtSettingTab extends PluginSettingTab {
@@ -53,6 +55,18 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.defaultGrouping)
 					.onChange(async (value) => {
 						this.plugin.settings.defaultGrouping = value as Grouping;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("完了タスクを表示")
+			.setDesc("完了したタスクを表示するかどうかを設定します")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showCompletedTasks)
+					.onChange(async (value) => {
+						this.plugin.settings.showCompletedTasks = value;
 						await this.plugin.saveSettings();
 					})
 			);

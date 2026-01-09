@@ -24,31 +24,39 @@ vi.mock("obsidian", () => {
 			data = "";
 			leaf: unknown;
 			file: unknown = null;
-			contentEl: {
-				empty: () => void;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				createEl: any;
-			};
+			app = {}; // Mock app property
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			contentEl: any;
 
 			constructor(leaf: unknown) {
 				this.leaf = leaf;
 				// Create contentEl mock in constructor (after JSDOM is available)
 				const container = document.createElement("div");
-				this.contentEl = {
-					empty: () => {
-						container.innerHTML = "";
-					},
-					createEl: (tag: string) => {
-						const el = document.createElement(tag);
-						container.appendChild(el);
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-						return addCreateElMethod(el);
-					},
-				};
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				this.contentEl = addCreateElMethod(container);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				this.contentEl.empty = () => { container.innerHTML = ""; };
 			}
 
 			async onLoadFile(_file: unknown): Promise<void> {}
 			async onUnloadFile(_file: unknown): Promise<void> {}
+		},
+		Modal: class {
+			app: unknown;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			contentEl: any;
+
+			constructor(app: unknown) {
+				this.app = app;
+				const container = document.createElement("div");
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				this.contentEl = addCreateElMethod(container);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				this.contentEl.empty = () => { container.innerHTML = ""; };
+			}
+
+			open(): void {}
+			close(): void {}
 		},
 	};
 });
@@ -529,5 +537,28 @@ describe("render task list in view", () => {
 		const addButton = container.querySelector("button.add-task-button");
 		expect(addButton).not.toBeNull();
 		expect(addButton?.textContent).toBe("+");
+	});
+
+	it("追加ボタンクリックでopenAddTaskModalが呼ばれること", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock openAddTaskModal method
+		const openAddTaskModalSpy = vi.spyOn(view, "openAddTaskModal").mockImplementation(() => {});
+
+		// Execute: Render task list
+		view.setViewData("", false);
+		view.renderTaskList();
+
+		// Click add button
+		const addButton = container.querySelector("button.add-task-button");
+		addButton?.dispatchEvent(new Event("click"));
+
+		// Verify: openAddTaskModal was called
+		expect(openAddTaskModalSpy).toHaveBeenCalled();
 	});
 });

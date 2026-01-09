@@ -1,6 +1,7 @@
 import { TextFileView, type TFile, type WorkspaceLeaf } from "obsidian";
 import { parseTodoTxt, updateTodoInList } from "./lib/parser";
 import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type Todo } from "./lib/todo";
+import { AddTaskModal } from "./ui/AddTaskModal";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
@@ -115,6 +116,17 @@ export class TodotxtView extends TextFileView {
 	}
 
 	/**
+	 * Open add task modal
+	 */
+	openAddTaskModal(): void {
+		const addHandler = this.getAddHandler();
+		const modal = new AddTaskModal(this.app, (description, priority) => {
+			void addHandler(description, priority);
+		});
+		modal.open();
+	}
+
+	/**
 	 * Render task list in contentEl
 	 */
 	renderTaskList(): void {
@@ -124,6 +136,9 @@ export class TodotxtView extends TextFileView {
 		const addButton = this.contentEl.createEl("button");
 		addButton.classList.add("add-task-button");
 		addButton.textContent = "+";
+		addButton.addEventListener("click", () => {
+			this.openAddTaskModal();
+		});
 
 		const ul = this.contentEl.createEl("ul");
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import TodotxtPlugin from "./main";
-import { TodotxtSettingTab, DEFAULT_SETTINGS } from "./settings";
+import { TodotxtSettingTab, DEFAULT_SETTINGS, type SortOrder } from "./settings";
 import { App, type PluginManifest, Setting } from "obsidian";
 
 describe("settings tab registration", () => {

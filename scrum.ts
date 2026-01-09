@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 19, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 19, pbi: "PBI-018", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -193,11 +193,47 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   number: 19,
-  pbiId: "TBD",
-  story: "Sprint 19 Planning待ち",
-  status: "not_started" as SprintStatus,
-  goal: "Sprint Planning実施後に決定",
-  subtasks: []
+  pbiId: "PBI-018",
+  story: "プラグイン設定画面でtodo.txtビューの表示動作をカスタマイズする",
+  status: "in_progress" as SprintStatus,
+  goal: "プラグイン設定画面を実装し、ソート・グループ化・完了タスク表示のデフォルト動作をユーザーがカスタマイズできるようにする",
+  subtasks: [
+    {
+      test: "設定タブ登録テスト: ObsidianのSettings画面に「Todo.txt」プラグイン設定タブが表示され、addSettingTabで正しく登録されることを検証",
+      implementation: "PluginSettingTabを継承したTodotxtSettingTabクラスを作成し、main.tsでaddSettingTabメソッドを使用して登録する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "デフォルトソート設定テスト: ソート順(completion/priority/date/alphabetical)をドロップダウンで選択でき、選択した値がsettings.defaultSortOrderに反映されることを検証",
+      implementation: "settings.tsにdefaultSortOrderプロパティを追加し、SettingTabでドロップダウンUI(.addDropdown)を実装してloadData/saveDataで永続化する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "デフォルトグループ化設定テスト: グループ化(none/project/context)をドロップダウンで選択でき、選択した値がsettings.defaultGroupingに反映されることを検証",
+      implementation: "settings.tsにdefaultGroupingプロパティを追加し、SettingTabでドロップダウンUI(.addDropdown)を実装してloadData/saveDataで永続化する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "完了タスク表示設定テスト: 完了タスクの表示/非表示をトグルで切り替え可能で、選択した値がsettings.showCompletedTasksに反映されることを検証",
+      implementation: "settings.tsにshowCompletedTasksプロパティを追加し、SettingTabでトグルUI(.addToggle)を実装してloadData/saveDataで永続化する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "設定の永続化と読み込みテスト: 設定変更がloadData/saveDataで永続化され、プラグイン再起動後も設定が保持されることをエンドツーエンドで検証",
+      implementation: "main.tsのonloadメソッドでloadData()を呼び出して設定を読み込み、設定変更時にsaveData()で保存するライフサイクルを実装する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    }
+  ]
 };
 
 // Impediments

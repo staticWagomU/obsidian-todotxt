@@ -512,4 +512,22 @@ describe("render task list in view", () => {
 		expect(priorityBadge?.classList.contains("priority-A")).toBe(true);
 		expect(priorityBadge?.textContent).toContain("A");
 	});
+
+	it("renderTaskList()が追加ボタン要素を含むこと", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Render task list
+		view.setViewData("", false);
+		view.renderTaskList();
+
+		// Verify: Add button exists
+		const addButton = container.querySelector("button.add-task-button");
+		expect(addButton).not.toBeNull();
+		expect(addButton?.textContent).toBe("+");
+	});
 });

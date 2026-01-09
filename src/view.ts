@@ -119,6 +119,12 @@ export class TodotxtView extends TextFileView {
 	 */
 	renderTaskList(): void {
 		this.contentEl.empty();
+
+		// Add task button
+		const addButton = this.contentEl.createEl("button");
+		addButton.classList.add("add-task-button");
+		addButton.textContent = "+";
+
 		const ul = this.contentEl.createEl("ul");
 
 		const todos = parseTodoTxt(this.data);

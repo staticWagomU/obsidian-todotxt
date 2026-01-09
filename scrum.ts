@@ -35,7 +35,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 24, pbi: "PBI-024", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -125,22 +125,28 @@ export const currentSprint = {
       test: "",
       implementation: "実働シナリオ文書化: 新規タスク作成→優先度設定→due:/t:設定→rec:繰り返し→完了トグル(pri:保存)→設定変更の手順をdocs/demo-phase-4.mdに詳細記載",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "docs(demo): 実働シナリオ詳細記載（含まれる）" }
+      ]
     },
     {
       test: "",
       implementation: "7機能統合説明: Sprint 18統合7機能(PBI-008優先度バッジ/012due表示/013threshold/014内部リンク/015外部リンク/016繰り返し/017pri:保存)の連携動作説明をdocs/demo-phase-4.mdに追加",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "docs(demo): 7機能統合説明追加（含まれる）" }
+      ]
     },
     {
       test: "",
       implementation: "READMEリンク追加: docs/demo-phase-4.mdへのリンクをREADME.mdの適切なセクションに追加",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "docs(readme): demo-phase-4.mdリンク追加" }
+      ]
     }
   ],
 };

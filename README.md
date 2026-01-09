@@ -129,3 +129,4 @@ pnpm tsc --noEmit
 - [todo.txt形式仕様](https://github.com/todotxt/todo.txt)
 - [Obsidianプラグイン開発ドキュメント](https://docs.obsidian.md/Plugins)
 - [ユーザーガイド](docs/user-guide.md)
+- [Phase 4デモシナリオ](docs/demo-phase-4.md)

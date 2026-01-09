@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import TodotxtPlugin from "./main";
-import { TodotxtSettingTab, DEFAULT_SETTINGS, type SortOrder } from "./settings";
+import { TodotxtSettingTab, DEFAULT_SETTINGS, type SortOrder, type Grouping } from "./settings";
 import { App, type PluginManifest, Setting } from "obsidian";
 
 describe("settings tab registration", () => {
@@ -79,5 +79,44 @@ describe("default sort setting", () => {
 		// Verify that the display method exists and is callable
 		// UI integration testing is deferred to manual testing
 		expect(typeof settingTab.display).toBe("function");
+	});
+});
+
+describe("default grouping setting", () => {
+	let plugin: TodotxtPlugin;
+	let settingTab: TodotxtSettingTab;
+	let mockApp: App;
+	const mockManifest: PluginManifest = {
+		id: "obsidian-todotxt",
+		name: "Todo.txt Plugin",
+		version: "1.0.0",
+		minAppVersion: "0.15.0",
+		description: "Todo.txt format support for Obsidian",
+		author: "wagomu",
+		authorUrl: "",
+		isDesktopOnly: false,
+	};
+
+	beforeEach(() => {
+		mockApp = {} as App;
+		plugin = new TodotxtPlugin(mockApp, mockManifest);
+		plugin.settings = { ...DEFAULT_SETTINGS };
+		settingTab = new TodotxtSettingTab(mockApp, plugin);
+	});
+
+	it("should have defaultGrouping property in settings", () => {
+		expect(plugin.settings).toHaveProperty("defaultGrouping");
+	});
+
+	it("should have 'none' as default grouping", () => {
+		expect(DEFAULT_SETTINGS.defaultGrouping).toBe("none");
+	});
+
+	it("should support all three grouping options", () => {
+		const validGroupings: Grouping[] = ["none", "project", "context"];
+		validGroupings.forEach((grouping) => {
+			plugin.settings.defaultGrouping = grouping;
+			expect(plugin.settings.defaultGrouping).toBe(grouping);
+		});
 	});
 });

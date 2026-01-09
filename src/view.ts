@@ -123,7 +123,19 @@ export class TodotxtView extends TextFileView {
 		const todos = parseTodoTxt(this.data);
 		for (const todo of todos) {
 			const li = ul.createEl("li");
-			li.textContent = todo.description;
+
+			// Add priority badge if priority exists
+			if (todo.priority) {
+				const badge = li.createEl("span");
+				badge.classList.add("priority");
+				badge.classList.add(`priority-${todo.priority}`);
+				badge.textContent = todo.priority;
+
+				// Add space after badge
+				li.appendChild(document.createTextNode(" "));
+			}
+
+			li.appendChild(document.createTextNode(todo.description));
 
 			if (todo.completed) {
 				li.classList.add("completed");

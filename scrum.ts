@@ -18,11 +18,11 @@ interface ProductBacklogItem {
   dependencies: string[]; status: PBIStatus;
   complexity?: Complexity; refactorChecklist?: string[];
 }
-// interface Commit { phase: CommitPhase; message: string; }
-// interface Subtask {
-//   test: string; implementation: string; type: SubtaskType;
-//   status: SubtaskStatus; commits: Commit[];
-// }
+interface Commit { phase: CommitPhase; message: string; }
+interface Subtask {
+  test: string; implementation: string; type: SubtaskType;
+  status: SubtaskStatus; commits: Commit[];
+}
 interface CompletedSprint {
   sprint: number; pbi: string; story: string;
   verification: "passed" | "failed"; notes: string;
@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 20, pbi: "PBI-019", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
 };
 
 // Product Goal
@@ -192,12 +192,62 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  number: 0,
-  pbiId: "",
-  story: "",
-  status: "not_started" as SprintStatus,
-  goal: "",
-  subtasks: []
+  number: 20,
+  pbiId: "PBI-019",
+  story: "構造化フォーム",
+  status: "in_progress" as SprintStatus,
+  goal: "todo.txt形式の構文知識不要で、UIフォームから直感的にタスクを作成・編集できる",
+  subtasks: [
+    {
+      test: "説明文必須検証、無効日付形式エラー表示、保存ボタン無効化をテスト",
+      implementation: "TaskFormDialog.tsx基本構造、バリデーションロジック、エラー表示UI実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "優先度A-Z/なし選択、選択値反映、todo.txt形式変換をテスト",
+      implementation: "優先度ドロップダウンコンポーネント、Todo.priority変換実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "作成日・due・t:日付選択、YYYY-MM-DD形式変換、カレンダーUIをテスト",
+      implementation: "日付ピッカーコンポーネント、Date↔YYYY-MM-DD変換ユーティリティ実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "既存+project/@context抽出、入力時サジェスト、複数値対応をテスト",
+      implementation: "オートコンプリートコンポーネント、既存タスクからの抽出ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "key:value形式入力、タグ追加/削除、Todo.tags変換をテスト",
+      implementation: "タグ入力コンポーネント(key:valueペア管理)実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "新規作成ダイアログ表示、フォーム→todo.txt変換、ファイル保存をテスト",
+      implementation: "TodosView.tsxへの作成ボタン統合、createTask連携実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "既存タスク編集時の自動入力、todo.txt→フォーム変換、更新保存をテスト",
+      implementation: "TodoItem.tsxへの編集ボタン統合、updateTask連携実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    }
+  ]
 };
 
 // Impediments

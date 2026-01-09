@@ -120,3 +120,42 @@ describe("default grouping setting", () => {
 		});
 	});
 });
+
+describe("completed tasks visibility setting", () => {
+	let plugin: TodotxtPlugin;
+	let settingTab: TodotxtSettingTab;
+	let mockApp: App;
+	const mockManifest: PluginManifest = {
+		id: "obsidian-todotxt",
+		name: "Todo.txt Plugin",
+		version: "1.0.0",
+		minAppVersion: "0.15.0",
+		description: "Todo.txt format support for Obsidian",
+		author: "wagomu",
+		authorUrl: "",
+		isDesktopOnly: false,
+	};
+
+	beforeEach(() => {
+		mockApp = {} as App;
+		plugin = new TodotxtPlugin(mockApp, mockManifest);
+		plugin.settings = { ...DEFAULT_SETTINGS };
+		settingTab = new TodotxtSettingTab(mockApp, plugin);
+	});
+
+	it("should have showCompletedTasks property in settings", () => {
+		expect(plugin.settings).toHaveProperty("showCompletedTasks");
+	});
+
+	it("should have 'true' as default for showing completed tasks", () => {
+		expect(DEFAULT_SETTINGS.showCompletedTasks).toBe(true);
+	});
+
+	it("should support toggling completed tasks visibility", () => {
+		plugin.settings.showCompletedTasks = false;
+		expect(plugin.settings.showCompletedTasks).toBe(false);
+
+		plugin.settings.showCompletedTasks = true;
+		expect(plugin.settings.showCompletedTasks).toBe(true);
+	});
+});

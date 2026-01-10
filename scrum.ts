@@ -65,7 +65,9 @@ export const productBacklog: ProductBacklogItem[] = [
     refactorChecklist: [
       "REFACTOR率目標30%（Sprint 32 Action 4: 20-50%レンジ）",
       "Link解析ロジックとRenderingの分離",
-      "Obsidian API呼び出しの抽象化",
+      "Obsidian API呼び出しの抽象化（app.workspace.openLinkText）",
+      "モック戦略: 単体テストvi.mock、統合テストLinkHandlerインターフェース抽象化",
+      "Subtask構成: 内部リンク(4t) + 外部リンク(4t) + rec:表示(4t) = 12t",
     ],
   },
 ];

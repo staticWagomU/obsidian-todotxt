@@ -151,12 +151,7 @@ export class TodotxtView extends TextFileView {
 		this.contentEl.empty();
 
 		// Add task button
-		const addButton = this.contentEl.createEl("button");
-		addButton.classList.add("add-task-button");
-		addButton.textContent = "+";
-		addButton.addEventListener("click", () => {
-			this.openAddTaskModal();
-		});
+		this.renderAddButton();
 
 		const ul = this.contentEl.createEl("ul");
 
@@ -167,78 +162,97 @@ export class TodotxtView extends TextFileView {
 			const todo = todos[index];
 			if (!todo) continue;
 
-			const li = ul.createEl("li");
+			this.renderTaskItem(ul, todo, index, today);
+		}
+	}
 
-			// Apply threshold date grayout style if t: tag exists
-			const thresholdStyle = getThresholdDateStyle(todo, today);
-			Object.assign(li.style, thresholdStyle);
+	/**
+	 * Render add task button
+	 */
+	private renderAddButton(): void {
+		const addButton = this.contentEl.createEl("button");
+		addButton.classList.add("add-task-button");
+		addButton.textContent = "+";
+		addButton.addEventListener("click", () => {
+			this.openAddTaskModal();
+		});
+	}
 
-			// Add checkbox
-			const checkbox = li.createEl("input");
-			checkbox.type = "checkbox";
-			checkbox.classList.add("task-checkbox");
-			checkbox.checked = todo.completed;
-			checkbox.dataset.index = String(index);
+	/**
+	 * Render single task item
+	 */
+	private renderTaskItem(ul: HTMLUListElement, todo: Todo, index: number, today: Date): void {
+		const li = ul.createEl("li");
 
-			// Add click handler
-			checkbox.addEventListener("click", () => {
-				const toggleHandler = this.getToggleHandler();
-				void toggleHandler(index);
-			});
+		// Apply threshold date grayout style if t: tag exists
+		const thresholdStyle = getThresholdDateStyle(todo, today);
+		Object.assign(li.style, thresholdStyle);
 
-			// Add space after checkbox
+		// Add checkbox
+		const checkbox = li.createEl("input");
+		checkbox.type = "checkbox";
+		checkbox.classList.add("task-checkbox");
+		checkbox.checked = todo.completed;
+		checkbox.dataset.index = String(index);
+
+		// Add click handler
+		checkbox.addEventListener("click", () => {
+			const toggleHandler = this.getToggleHandler();
+			void toggleHandler(index);
+		});
+
+		// Add space after checkbox
+		li.appendChild(document.createTextNode(" "));
+
+		// Add priority badge if priority exists
+		if (todo.priority) {
+			const badge = li.createEl("span");
+			badge.classList.add("priority");
+			badge.classList.add(`priority-${todo.priority}`);
+			badge.textContent = todo.priority;
+
+			// Add space after badge
+			li.appendChild(document.createTextNode(" "));
+		}
+
+		li.appendChild(document.createTextNode(todo.description));
+
+		// Add due date badge if due: tag exists
+		const dueDate = getDueDateFromTodo(todo);
+		if (dueDate) {
+			// Add space before badge
 			li.appendChild(document.createTextNode(" "));
 
-			// Add priority badge if priority exists
-			if (todo.priority) {
-				const badge = li.createEl("span");
-				badge.classList.add("priority");
-				badge.classList.add(`priority-${todo.priority}`);
-				badge.textContent = todo.priority;
+			const dueBadge = li.createEl("span");
+			dueBadge.classList.add("due-date");
+			dueBadge.textContent = dueDate.toISOString().split("T")[0]!;
 
-				// Add space after badge
-				li.appendChild(document.createTextNode(" "));
-			}
+			// Apply style based on due date status
+			const dueDateStyle = getDueDateStyle(dueDate, today);
+			Object.assign(dueBadge.style, dueDateStyle);
+		}
 
-			li.appendChild(document.createTextNode(todo.description));
+		// Add edit button
+		const editButton = li.createEl("button");
+		editButton.classList.add("edit-task-button");
+		editButton.textContent = "編集";
+		editButton.dataset.index = String(index);
+		editButton.addEventListener("click", () => {
+			this.openEditTaskModal(index);
+		});
 
-			// Add due date badge if due: tag exists
-			const dueDate = getDueDateFromTodo(todo);
-			if (dueDate) {
-				// Add space before badge
-				li.appendChild(document.createTextNode(" "));
+		// Add delete button
+		const deleteButton = li.createEl("button");
+		deleteButton.classList.add("delete-task-button");
+		deleteButton.textContent = "削除";
+		deleteButton.dataset.index = String(index);
+		deleteButton.addEventListener("click", () => {
+			const deleteHandler = this.getDeleteHandler();
+			void deleteHandler(index);
+		});
 
-				const dueBadge = li.createEl("span");
-				dueBadge.classList.add("due-date");
-				dueBadge.textContent = dueDate.toISOString().split("T")[0]!;
-
-				// Apply style based on due date status
-				const dueDateStyle = getDueDateStyle(dueDate, today);
-				Object.assign(dueBadge.style, dueDateStyle);
-			}
-
-			// Add edit button
-			const editButton = li.createEl("button");
-			editButton.classList.add("edit-task-button");
-			editButton.textContent = "編集";
-			editButton.dataset.index = String(index);
-			editButton.addEventListener("click", () => {
-				this.openEditTaskModal(index);
-			});
-
-			// Add delete button
-			const deleteButton = li.createEl("button");
-			deleteButton.classList.add("delete-task-button");
-			deleteButton.textContent = "削除";
-			deleteButton.dataset.index = String(index);
-			deleteButton.addEventListener("click", () => {
-				const deleteHandler = this.getDeleteHandler();
-				void deleteHandler(index);
-			});
-
-			if (todo.completed) {
-				li.classList.add("completed");
-			}
+		if (todo.completed) {
+			li.classList.add("completed");
 		}
 	}
 }

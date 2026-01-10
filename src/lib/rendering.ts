@@ -17,6 +17,16 @@ export interface FilterState {
 }
 
 /**
+ * Default filter state
+ */
+export const DEFAULT_FILTER_STATE: FilterState = {
+	priority: "all",
+	search: "",
+	group: "none",
+	sort: "default",
+};
+
+/**
  * Render task list in contentEl
  */
 export function renderTaskList(

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { WorkspaceLeaf } from "obsidian";
 import { TodotxtView } from "../view";
 import type { FilterState } from "../lib/rendering";
+import { DEFAULT_FILTER_STATE } from "../lib/rendering";
 
 // Mock Obsidian modules
 vi.mock("obsidian", () => {
@@ -74,6 +75,49 @@ describe("FilterState type", () => {
 		expect(state.search).toBe("");
 		expect(state.group).toBe("none");
 		expect(state.sort).toBe("default");
+	});
+
+	it("DEFAULT_FILTER_STATEがエクスポートされており、デフォルト値を持つ", () => {
+		// Verify: DEFAULT_FILTER_STATE is available and has correct values
+		expect(DEFAULT_FILTER_STATE).toBeDefined();
+		expect(DEFAULT_FILTER_STATE.priority).toBe("all");
+		expect(DEFAULT_FILTER_STATE.search).toBe("");
+		expect(DEFAULT_FILTER_STATE.group).toBe("none");
+		expect(DEFAULT_FILTER_STATE.sort).toBe("default");
+	});
+
+	it("コントロールバーの各要素が適切なCSS classを持つ", () => {
+		// Setup
+		const mockLeaf = { view: null };
+		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view.setViewData("Task 1", false);
+
+		// Verify: Control bar exists with proper class
+		const controlBar = view.contentEl.querySelector("div.control-bar");
+		expect(controlBar).not.toBeNull();
+
+		// Verify: All controls exist within control bar
+		expect(controlBar?.querySelector("select.priority-filter")).not.toBeNull();
+		expect(controlBar?.querySelector("input.search-box")).not.toBeNull();
+		expect(controlBar?.querySelector("select.group-selector")).not.toBeNull();
+		expect(controlBar?.querySelector("select.sort-selector")).not.toBeNull();
+	});
+
+	it("コントロールバーの要素が期待される順序で配置される", () => {
+		// Setup
+		const mockLeaf = { view: null };
+		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view.setViewData("Task 1", false);
+
+		// Verify: Control bar elements are in correct order
+		const controlBar = view.contentEl.querySelector("div.control-bar");
+		const children = Array.from(controlBar?.children || []);
+
+		expect(children.length).toBe(4);
+		expect(children[0]?.classList.contains("priority-filter")).toBe(true);
+		expect(children[1]?.classList.contains("search-box")).toBe(true);
+		expect(children[2]?.classList.contains("group-selector")).toBe(true);
+		expect(children[3]?.classList.contains("sort-selector")).toBe(true);
 	});
 });
 

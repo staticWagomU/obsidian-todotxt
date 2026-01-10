@@ -219,6 +219,16 @@ describe("text search box", () => {
 		expect((searchBox as HTMLInputElement).type).toBe("text");
 	});
 
+	it("テキスト検索ボックスにaria-labelが設定されている", () => {
+		// Setup
+		view.setViewData("Task 1", false);
+
+		// Verify: aria-label is set for accessibility
+		const searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		expect(searchBox).not.toBeNull();
+		expect(searchBox.getAttribute("aria-label")).toBe("タスク検索");
+	});
+
 	it("検索ボックスに「milk」と入力すると「Buy milk」のみ表示される", () => {
 		// Setup
 		view.setViewData("Buy milk\nCall Mom\nWrite report", false);
@@ -341,6 +351,16 @@ describe("group selector", () => {
 		expect(groupSelector).not.toBeNull();
 	});
 
+	it("グループ化セレクタにaria-labelが設定されている", () => {
+		// Setup
+		view.setViewData("Task 1", false);
+
+		// Verify: aria-label is set for accessibility
+		const groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		expect(groupSelector).not.toBeNull();
+		expect(groupSelector.getAttribute("aria-label")).toBe("グループ化");
+	});
+
 	it("グループ化セレクタに「なし」「プロジェクト」「コンテキスト」「優先度」オプションが含まれる", () => {
 		// Setup
 		view.setViewData("Task 1", false);
@@ -445,6 +465,16 @@ describe("sort selector", () => {
 		// Verify: Sort selector exists
 		const sortSelector = view.contentEl.querySelector("select.sort-selector");
 		expect(sortSelector).not.toBeNull();
+	});
+
+	it("ソートセレクタにaria-labelが設定されている", () => {
+		// Setup
+		view.setViewData("Task 1", false);
+
+		// Verify: aria-label is set for accessibility
+		const sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		expect(sortSelector).not.toBeNull();
+		expect(sortSelector.getAttribute("aria-label")).toBe("ソート順");
 	});
 
 	it("ソートセレクタに「デフォルト」「未完了→完了」オプションが含まれる", () => {

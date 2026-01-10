@@ -203,6 +203,7 @@ function renderSearchBox(
 	searchBox.type = "text";
 	searchBox.classList.add("search-box");
 	searchBox.placeholder = "検索...";
+	searchBox.setAttribute("aria-label", "タスク検索");
 
 	// Set current value
 	searchBox.value = currentValue;
@@ -221,6 +222,7 @@ function renderGroupSelector(
 ): void {
 	const groupSelector = container.createEl("select");
 	groupSelector.classList.add("group-selector");
+	groupSelector.setAttribute("aria-label", "グループ化");
 
 	// Add options
 	const noneOption = groupSelector.createEl("option");
@@ -256,6 +258,7 @@ function renderSortSelector(
 ): void {
 	const sortSelector = container.createEl("select");
 	sortSelector.classList.add("sort-selector");
+	sortSelector.setAttribute("aria-label", "ソート順");
 
 	// Add options
 	const defaultOption = sortSelector.createEl("option");

@@ -121,38 +121,27 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 32,
+  { sprint: 33,
     workedWell: [
-      "TDD Red-Green-Refactor完全適用: Sprint 31 Actionを実現、9コミット（RED 4 + GREEN 4 + REFACTOR 3）でサイクル完遂、behavioral型PBIで理想的なTDDフロー確立",
-      "REFACTOR率50%達成: 目標20%の2.5倍、3つのREFACTORコミット（優先度フィルタロジック分離・FilterState型統一・グループ化ロジック分離）で保守性向上",
-      "統合テスト拡充3.5倍: 目標2件→実績7件、controlbar.test.ts 29テスト追加でUI操作フロー完全検証",
-      "Sprint 31 Actions全達成: 4件全Action実行（Phase 7フォーカス・TDD適用・Action管理再起動・統合テスト拡充）、Action実行率100%",
-      "型安全性向上: FilterState型導入で状態管理統一、instanceof型ガード使用でLint修正",
+      "Sprint 32 Actions全達成: subtask粒度3件適用、PBI優先順位明文化、REFACTOR率50%達成（目標30%超過）",
+      "アクセシビリティ向上: aria-label追加で全コントロールバー要素がスクリーンリーダー対応",
+      "型安全性向上継続: FilterState型とDEFAULT_FILTER_STATE定数エクスポートで再利用性向上",
+      "TDD適用継続: 4コミット（RED 3 + REFACTOR 2）でサイクル維持",
     ],
     toImprove: [
-      "subtask粒度の大きさ: 6 subtaskで29テスト追加、1 subtaskあたり平均5テスト（最大は統合テストsubtaskで複数ケース含む）",
-      "統合テストsubtaskの重複: subtask 5と6が同じコミットを共有、subtask分割基準が曖昧",
-      "Action管理の可視化不足: Sprint 31残5件Action→Sprint 32で全達成したが、scrum.ts上のtracking更新漏れ",
-      "PBI-033 ready化の優先度: Sprint 32中にPBI-033をready化したが、PBI-031（同じくready）との優先順位根拠が不明確",
+      "GREEN phaseなし: 既存実装で満たされたためGREENコミット0件、TDDサイクル不完全",
+      "テスト増加+9は目標+10未達: 僅差だが計画精度向上余地あり",
     ],
     actions: [
-      "subtask粒度ガイドライン確立: 1 subtaskあたり5-10テスト目標、10テスト超過時は分割検討、統合テストsubtaskは明確に分離",
-      "Action Management tracking自動更新: Retrospective実施時にactionManagement.tracking更新を義務化、executed/rate計算を正確化",
-      "PBI優先順位基準明文化: ready状態PBI複数時の選択基準（依存関係・複雑度・Phase計画）をSprint Planning時に記録",
-      "REFACTOR率20-50%レンジ維持: 目標20%最低ライン、50%を健全上限として、機能実装速度とのバランス調整",
+      "Sprint 34でPBI-031完了: 最後のready PBI、Phase 7完了目標",
+      "Obsidian API統合テスト: externalDependencies 1のためモック戦略検討",
     ] },
 ];
 
-// Sprint 33 完了（2026-01-10）
-// - Backlog Refinement: PBI-033, PBI-031 Definition of Ready確認済、優先順位評価（PBI-033優先）
-// - Sprint Planning: PBI-033選択、Sprint Goal設定、Subtasks 3件作成（estimatedTests 10を3分割）
-// - Sprint Review: DoD全チェックPASS（542t/lint/types/build）、受入基準3件全検証PASS、PBI-033→done
-// - 成果: aria-label追加（アクセシビリティ向上）、FilterState型&DEFAULT_FILTER_STATE定数エクスポート、TDD適用（4commit:RED3+REFACTOR2）、REFACTOR率50%達成
-
-// Action Management (Sprint 30確立、Sprint 31でAction2達成、Sprint 32でAction4全達成)
+// Action Management (Sprint 33でSprint 32 Actions 4件達成)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 14, executed: 12, rate: 86, remaining: 2 }, // Sprint 32: Sprint31の4件Action全達成+4
+  tracking: { total: 18, executed: 16, rate: 89, remaining: 2 }, // Sprint 33: Sprint32の4件Action達成
 };
 
 // Agents & Events

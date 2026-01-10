@@ -2,10 +2,11 @@
  * AddTaskModal - タスク追加モーダル
  */
 
-import { Modal, type App } from "obsidian";
+import { type App } from "obsidian";
+import { BaseTaskModal } from "./BaseTaskModal";
 import { generatePriorityOptions } from "../lib/priority-options";
 
-export class AddTaskModal extends Modal {
+export class AddTaskModal extends BaseTaskModal {
 	onSave: (
 		description: string,
 		priority?: string,
@@ -73,13 +74,6 @@ export class AddTaskModal extends Modal {
 				this.close();
 			}
 		});
-	}
-
-	private createLabel(container: HTMLElement, text: string): void {
-		const label = container.createEl("label");
-		label.textContent = text;
-		label.style.display = "block";
-		label.style.marginTop = "10px";
 	}
 
 	onClose(): void {

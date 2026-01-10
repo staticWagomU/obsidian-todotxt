@@ -107,16 +107,33 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 35,
-    workedWell: [],
-    toImprove: [],
-    actions: [] },
+  { sprint: 34,
+    workedWell: [
+      "Phase 7完了: Sprint 32-34で計画通りUI機能実装完遂、+50テスト達成（504t→554t）",
+      "全34 PBI完了: Product Backlog初期計画全て完遂",
+      "LinkHandler抽象化: Obsidian API依存を抽象化、テスタビリティ向上",
+      "Sprint 33 Actions完全達成: 2件のAction全て実行（実行率100%）",
+      "高いAction実行率維持: 86%（18/21）、Excellent基準（90%）に近接",
+      "TDD継続: 5コミット中3コミットがRED/GREEN、テストファースト維持"
+    ],
+    toImprove: [
+      "REFACTOR率低下: Sprint 34は40%、Sprint 32-33の50%から10%低下",
+      "Phase 8未計画: Phase 7完了したが次フェーズの方向性未定義",
+      "Action実行率低下: 69%（18/26）、Sprint 34で新規Action追加により低下"
+    ],
+    actions: [
+      "Phase 8計画策定: Product Owner/Scrum Masterと協議し、次期フェーズの方向性を定義",
+      "残Action優先順位付け: 8件の残Actionから次Sprint実行分を特定",
+      "REFACTOR率目標再確認: 50%目標を維持するか、柔軟に調整するか検討",
+      "プロダクト品質評価: 554テスト、26ファイル構成の品質・保守性を評価",
+      "ドキュメント更新: Phase 7完了、全34 PBI完了をCLAUDE.mdに反映"
+    ] },
 ];
 
-// Action Management (Sprint 34でSprint 33 Actions 2件達成)
+// Action Management (Sprint 34完了、Sprint 35 Actions 5件追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 21, executed: 18, rate: 86, remaining: 3 }, // Sprint 34: Sprint33の2件Action達成、新規3件追加
+  tracking: { total: 26, executed: 18, rate: 69, remaining: 8 }, // Sprint 34完了、新規5件Action追加（Phase 8計画/残Action優先順位付け/REFACTOR率目標再確認/品質評価/ドキュメント更新）
 };
 
 // Agents & Events

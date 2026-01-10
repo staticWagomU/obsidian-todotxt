@@ -231,4 +231,104 @@ describe("AddTaskModal", () => {
 		// Verify: onSave was called with threshold date
 		expect(mockOnSave).toHaveBeenCalledWith("しきい値付きタスク", undefined, undefined, "2026-01-20");
 	});
+
+	it("既存プロジェクト一覧がマルチセレクトで表示されること", () => {
+		const mockTodos = [
+			{
+				completed: false,
+				description: "Task 1 +project1 +project2",
+				projects: ["project1", "project2"],
+				contexts: [],
+				tags: {},
+				raw: "",
+			},
+			{
+				completed: false,
+				description: "Task 2 +project3",
+				projects: ["project3"],
+				contexts: [],
+				tags: {},
+				raw: "",
+			},
+		];
+
+		const modal = new AddTaskModal(mockApp, mockOnSave, mockTodos);
+		modal.onOpen();
+
+		// Verify: Project multi-select exists
+		const projectSelect = modal.contentEl.querySelector("select.project-select") as HTMLSelectElement;
+		expect(projectSelect).not.toBeNull();
+		expect(projectSelect?.multiple).toBe(true);
+
+		// Verify: Options are sorted and unique
+		const options = Array.from(projectSelect?.querySelectorAll("option") || []);
+		expect(options.length).toBe(3);
+		expect(options[0]?.textContent).toBe("+project1");
+		expect(options[1]?.textContent).toBe("+project2");
+		expect(options[2]?.textContent).toBe("+project3");
+	});
+
+	it("既存コンテキスト一覧がマルチセレクトで表示されること", () => {
+		const mockTodos = [
+			{
+				completed: false,
+				description: "Task 1 @home @work",
+				projects: [],
+				contexts: ["home", "work"],
+				tags: {},
+				raw: "",
+			},
+			{
+				completed: false,
+				description: "Task 2 @email",
+				projects: [],
+				contexts: ["email"],
+				tags: {},
+				raw: "",
+			},
+		];
+
+		const modal = new AddTaskModal(mockApp, mockOnSave, mockTodos);
+		modal.onOpen();
+
+		// Verify: Context multi-select exists
+		const contextSelect = modal.contentEl.querySelector("select.context-select") as HTMLSelectElement;
+		expect(contextSelect).not.toBeNull();
+		expect(contextSelect?.multiple).toBe(true);
+
+		// Verify: Options are sorted and unique
+		const options = Array.from(contextSelect?.querySelectorAll("option") || []);
+		expect(options.length).toBe(3);
+		expect(options[0]?.textContent).toBe("@email");
+		expect(options[1]?.textContent).toBe("@home");
+		expect(options[2]?.textContent).toBe("@work");
+	});
+
+	it("プロジェクト/コンテキストが存在しない場合、空のマルチセレクトが表示されること", () => {
+		const mockTodos = [
+			{
+				completed: false,
+				description: "Task without tags",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "",
+			},
+		];
+
+		const modal = new AddTaskModal(mockApp, mockOnSave, mockTodos);
+		modal.onOpen();
+
+		// Verify: Empty project select
+		const projectSelect = modal.contentEl.querySelector("select.project-select") as HTMLSelectElement;
+		expect(projectSelect).not.toBeNull();
+		const projectOptions = Array.from(projectSelect?.querySelectorAll("option") || []);
+		expect(projectOptions.length).toBe(0);
+
+		// Verify: Empty context select
+		const contextSelect = modal.contentEl.querySelector("select.context-select") as HTMLSelectElement;
+		expect(contextSelect).not.toBeNull();
+		const contextOptions = Array.from(contextSelect?.querySelectorAll("option") || []);
+		expect(contextOptions.length).toBe(0);
+	});
 });

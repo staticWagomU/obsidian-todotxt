@@ -331,4 +331,65 @@ describe("AddTaskModal", () => {
 		const contextOptions = Array.from(contextSelect?.querySelectorAll("option") || []);
 		expect(contextOptions.length).toBe(0);
 	});
+
+	describe("プレビュー機能", () => {
+		it("フォーム下部にプレビューエリアが表示されること", () => {
+			const modal = new AddTaskModal(mockApp, mockOnSave);
+			modal.onOpen();
+
+			// Verify: Preview label exists
+			const labels = Array.from(modal.contentEl.querySelectorAll("label"));
+			const previewLabel = labels.find((label) => label.textContent === "プレビュー");
+			expect(previewLabel).not.toBeNull();
+
+			// Verify: Preview area exists
+			const previewArea = modal.contentEl.querySelector("pre.preview-area");
+			expect(previewArea).not.toBeNull();
+		});
+
+		it("入力変更時にリアルタイムでプレビューが更新されること", () => {
+			const modal = new AddTaskModal(mockApp, mockOnSave);
+			modal.onOpen();
+
+			const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+			const prioritySelect = modal.contentEl.querySelector("select.priority-select") as HTMLSelectElement;
+			const previewArea = modal.contentEl.querySelector("pre.preview-area");
+
+			// Enter task description
+			input.value = "Test task";
+			input.dispatchEvent(new Event("input"));
+
+			// Verify: Preview updated
+			expect(previewArea?.textContent).toContain("Test task");
+
+			// Select priority
+			prioritySelect.value = "A";
+			prioritySelect.dispatchEvent(new Event("change"));
+
+			// Verify: Preview shows priority
+			expect(previewArea?.textContent).toContain("(A)");
+		});
+
+		it("プレビューがtodo.txt形式に準拠していること", () => {
+			const modal = new AddTaskModal(mockApp, mockOnSave);
+			modal.onOpen();
+
+			const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+			const prioritySelect = modal.contentEl.querySelector("select.priority-select") as HTMLSelectElement;
+			const dueDateInput = modal.contentEl.querySelector("input.due-date-input") as HTMLInputElement;
+			const previewArea = modal.contentEl.querySelector("pre.preview-area");
+
+			// Set values
+			prioritySelect.value = "A";
+			prioritySelect.dispatchEvent(new Event("change"));
+			input.value = "Important task";
+			input.dispatchEvent(new Event("input"));
+			dueDateInput.value = "2026-01-15";
+			dueDateInput.dispatchEvent(new Event("change"));
+
+			// Verify: todo.txt format
+			const previewText = previewArea?.textContent || "";
+			expect(previewText).toMatch(/^\(A\) \d{4}-\d{2}-\d{2} Important task due:2026-01-15$/);
+		});
+	});
 });

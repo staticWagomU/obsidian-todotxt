@@ -88,7 +88,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "複数のプロジェクト/コンテキストを選択できる", verification: "pnpm vitest run -- AddTaskModal" },
     ],
     dependencies: ["PBI-035"],
-    status: "draft",
+    status: "ready",
     complexity: { functions: 5, estimatedTests: 12, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
   },
   {

@@ -118,6 +118,122 @@ export abstract class BaseTaskModal extends Modal {
 	}
 
 	/**
+	 * フォーム値からtodo.txt形式のテキストを構築
+	 * @param description タスク説明
+	 * @param priority 優先度
+	 * @param dueDate 期限日
+	 * @param thresholdDate 開始日
+	 * @returns todo.txt形式のテキスト
+	 */
+	protected buildTextFromFormValues(
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string,
+	): string {
+		let text = "";
+
+		if (priority) {
+			text += `(${priority}) `;
+		}
+
+		text += description;
+
+		if (dueDate) {
+			text += ` due:${dueDate}`;
+		}
+
+		if (thresholdDate) {
+			text += ` t:${thresholdDate}`;
+		}
+
+		return text;
+	}
+
+	/**
+	 * todo.txt形式のテキストからフォーム値を抽出
+	 * @param text todo.txt形式のテキスト
+	 * @returns フォーム値
+	 */
+	protected parseFormValuesFromText(text: string): {
+		description: string;
+		priority?: string;
+		dueDate?: string;
+		thresholdDate?: string;
+	} {
+		let remaining = text.trim();
+		let priority: string | undefined;
+		let dueDate: string | undefined;
+		let thresholdDate: string | undefined;
+
+		// Parse priority
+		const priorityMatch = remaining.match(/^\(([A-Z])\)\s/);
+		if (priorityMatch) {
+			priority = priorityMatch[1];
+			remaining = remaining.slice(priorityMatch[0].length);
+		}
+
+		// Parse due: tag
+		const dueMatch = remaining.match(/\bdue:(\d{4}-\d{2}-\d{2})/);
+		if (dueMatch) {
+			dueDate = dueMatch[1];
+			remaining = remaining.replace(dueMatch[0], "");
+		}
+
+		// Parse t: tag
+		const thresholdMatch = remaining.match(/\bt:(\d{4}-\d{2}-\d{2})/);
+		if (thresholdMatch) {
+			thresholdDate = thresholdMatch[1];
+			remaining = remaining.replace(thresholdMatch[0], "");
+		}
+
+		// Clean up description (remove extra spaces)
+		const description = remaining.trim();
+
+		return { description, priority, dueDate, thresholdDate };
+	}
+
+	/**
+	 * モード切替時の値変換処理
+	 * @param container フォーム要素とtextareaを含む親要素
+	 */
+	protected onToggleMode(container: HTMLElement): void {
+		const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
+		const descInput = container.querySelector("input.task-description-input") as HTMLInputElement;
+		const prioritySelect = container.querySelector("select.priority-select") as HTMLSelectElement;
+		const dueDateInput = container.querySelector("input.due-date-input") as HTMLInputElement;
+		const thresholdDateInput = container.querySelector("input.threshold-date-input") as HTMLInputElement;
+
+		if (!textarea || !descInput || !prioritySelect || !dueDateInput) {
+			return;
+		}
+
+		if (this.isTextMode) {
+			// フォーム → テキスト: フォーム値をテキストに変換
+			const description = descInput.value.trim();
+			const priority = prioritySelect.value || undefined;
+			const dueDate = dueDateInput.value || undefined;
+			const thresholdDate = thresholdDateInput?.value || undefined;
+
+			if (description) {
+				textarea.value = this.buildTextFromFormValues(description, priority, dueDate, thresholdDate);
+			}
+		} else {
+			// テキスト → フォーム: テキストをフォーム値に変換
+			const text = textarea.value.trim();
+			if (text) {
+				const values = this.parseFormValuesFromText(text);
+				descInput.value = values.description;
+				prioritySelect.value = values.priority || "";
+				dueDateInput.value = values.dueDate || "";
+				if (thresholdDateInput) {
+					thresholdDateInput.value = values.thresholdDate || "";
+				}
+			}
+		}
+	}
+
+	/**
 	 * プレビューエリアを作成
 	 * @param container 親要素
 	 */

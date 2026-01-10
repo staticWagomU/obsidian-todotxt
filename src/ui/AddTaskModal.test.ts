@@ -46,7 +46,12 @@ vi.mock("obsidian", () => {
 
 describe("AddTaskModal", () => {
 	let mockApp: App;
-	let mockOnSave: (description: string, priority?: string) => void;
+	let mockOnSave: (
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string,
+	) => void;
 
 	beforeEach(() => {
 		mockApp = {} as App;
@@ -100,7 +105,7 @@ describe("AddTaskModal", () => {
 		saveButton?.dispatchEvent(new Event("click"));
 
 		// Verify: onSave was called with the input value
-		expect(mockOnSave).toHaveBeenCalledWith("新しいタスク", undefined);
+		expect(mockOnSave).toHaveBeenCalledWith("新しいタスク", undefined, undefined, undefined);
 	});
 
 	it("優先度ドロップダウン（なし/A-Z）が表示されること", () => {
@@ -141,7 +146,7 @@ describe("AddTaskModal", () => {
 		saveButton?.dispatchEvent(new Event("click"));
 
 		// Verify: onSave was called with priority
-		expect(mockOnSave).toHaveBeenCalledWith("優先度テスト", "A");
+		expect(mockOnSave).toHaveBeenCalledWith("優先度テスト", "A", undefined, undefined);
 	});
 
 	it("優先度「なし」を選択した場合はundefinedがonSaveに渡されること", () => {
@@ -161,7 +166,7 @@ describe("AddTaskModal", () => {
 		saveButton?.dispatchEvent(new Event("click"));
 
 		// Verify: onSave was called with undefined
-		expect(mockOnSave).toHaveBeenCalledWith("優先度なしタスク", undefined);
+		expect(mockOnSave).toHaveBeenCalledWith("優先度なしタスク", undefined, undefined, undefined);
 	});
 
 	it("due:日付入力フィールドが表示されること", () => {

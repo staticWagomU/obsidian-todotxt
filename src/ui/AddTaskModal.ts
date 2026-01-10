@@ -6,9 +6,22 @@ import { Modal, type App } from "obsidian";
 import { generatePriorityOptions } from "../lib/priority-options";
 
 export class AddTaskModal extends Modal {
-	onSave: (description: string, priority?: string) => void;
+	onSave: (
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string,
+	) => void;
 
-	constructor(app: App, onSave: (description: string, priority?: string) => void) {
+	constructor(
+		app: App,
+		onSave: (
+			description: string,
+			priority?: string,
+			dueDate?: string,
+			thresholdDate?: string,
+		) => void,
+	) {
 		super(app);
 		this.onSave = onSave;
 	}
@@ -32,6 +45,16 @@ export class AddTaskModal extends Modal {
 			optionEl.value = option.value ?? "";
 		}
 
+		// Due date input
+		const dueDateInput = contentEl.createEl("input");
+		dueDateInput.type = "date";
+		dueDateInput.classList.add("due-date-input");
+
+		// Threshold date input
+		const thresholdDateInput = contentEl.createEl("input");
+		thresholdDateInput.type = "date";
+		thresholdDateInput.classList.add("threshold-date-input");
+
 		// Save button
 		const saveButton = contentEl.createEl("button");
 		saveButton.classList.add("save-task-button");
@@ -40,7 +63,9 @@ export class AddTaskModal extends Modal {
 			const description = input.value.trim();
 			if (description) {
 				const priority = prioritySelect.value || undefined;
-				this.onSave(description, priority);
+				const dueDate = dueDateInput.value || undefined;
+				const thresholdDate = thresholdDateInput.value || undefined;
+				this.onSave(description, priority, dueDate, thresholdDate);
 				this.close();
 			}
 		});

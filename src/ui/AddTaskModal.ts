@@ -67,6 +67,50 @@ export class AddTaskModal extends BaseTaskModal {
 		// Project/Context multi-select
 		this.createProjectContextSelects(contentEl, this.todos);
 
+		// Preview area
+		this.createPreviewArea(contentEl);
+
+		// プレビュー更新関数
+		const updatePreviewContent = (): void => {
+			const description = input.value.trim();
+			if (!description) {
+				return;
+			}
+
+			const priority = prioritySelect.value || undefined;
+			const dueDate = dueDateInput.value || undefined;
+			const thresholdDate = thresholdDateInput.value || undefined;
+
+			// Create Todo object for preview
+			const today = new Date().toISOString().split("T")[0];
+			let descriptionWithTags = description;
+			if (dueDate) {
+				descriptionWithTags += ` due:${dueDate}`;
+			}
+			if (thresholdDate) {
+				descriptionWithTags += ` t:${thresholdDate}`;
+			}
+
+			const previewTodo: Todo = {
+				completed: false,
+				priority,
+				creationDate: today,
+				description: descriptionWithTags,
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "",
+			};
+
+			this.updatePreview(contentEl, previewTodo);
+		};
+
+		// Add event listeners for real-time preview
+		input.addEventListener("input", updatePreviewContent);
+		prioritySelect.addEventListener("change", updatePreviewContent);
+		dueDateInput.addEventListener("change", updatePreviewContent);
+		thresholdDateInput.addEventListener("change", updatePreviewContent);
+
 		// Save button
 		const saveButton = contentEl.createEl("button");
 		saveButton.classList.add("save-task-button");

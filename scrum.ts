@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 33, pbi: "PBI-033", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 33, pbi: "PBI-033", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -97,13 +97,35 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 32完了、次Sprint未開始)
+// Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 33,
+  pbi: "PBI-033",
+  goal: "rendering.tsのコントロールバー関数をUI化し、フィルタ・検索・ソート・グループ化機能を視覚的に操作可能にする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "フィルタUI（優先度ドロップダウン）の表示と選択機能をテスト",
+      implementation: "renderPriorityFilterDropdown関数のUI表示・選択イベント・フィルタ適用を実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "検索UIとソート/グループUIの表示と操作機能をテスト",
+      implementation: "renderSearchBox/renderSortSelector/renderGroupSelector関数のUI表示・イベントハンドリング・表示変更を実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "コントロールバーUI関数の責務分離とFilterState統一をテスト",
+      implementation: "UI component抽出、Filter/Sort/Group状態管理の統一、重複ロジックの集約を実施",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments
@@ -163,6 +185,13 @@ export const retrospectives: Retrospective[] = [
 // - 優先順位評価: PBI-033優先（Sprint 32ロジック実装済、externalDependencies 0）
 // - Sprint 32 Actions適用: subtask粒度ガイドライン適用（5→3 subtasks）、REFACTOR率目標30%設定
 // - PBI-033/031にrefactorChecklist追加、productBacklogに優先順位決定根拠記録
+
+// Sprint 33 Sprint Planning実施（2026-01-10）
+// - PBI-033選択: コントロールバーUI化（Sprint 32ロジック実装済、UI化のみ残作業）
+// - Sprint Goal: rendering.tsのコントロールバー関数をUI化し、フィルタ・検索・ソート・グループ化機能を視覚的に操作可能にする
+// - Subtasks 3件作成: 1 subtaskあたり3-4テスト目標（Sprint 32 Action 1適用、estimatedTests 10を3分割）
+// - REFACTOR率30%達成計画: subtask 3をstructural型に設定（UI component抽出、FilterState統一）
+// - 既存実装活用: rendering.tsのrenderControlBar/renderPriorityFilterDropdown/renderSearchBox/renderSortSelector/renderGroupSelector関数を基に、ロジック検証とUI改善を実施
 
 // Action Management (Sprint 30確立、Sprint 31でAction2達成、Sprint 32でAction4全達成)
 export const actionManagement = {

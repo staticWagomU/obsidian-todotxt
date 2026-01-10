@@ -178,3 +178,126 @@ describe("priority filter dropdown", () => {
 		expect(ul?.children.length).toBe(2);
 	});
 });
+
+describe("text search box", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("テキスト検索ボックスが表示される", () => {
+		// Setup
+		view.setViewData("Task 1\nTask 2\nTask 3", false);
+
+		// Verify: Search box exists
+		const searchBox = view.contentEl.querySelector("input.search-box");
+		expect(searchBox).not.toBeNull();
+		expect((searchBox as HTMLInputElement).type).toBe("text");
+	});
+
+	it("検索ボックスに「milk」と入力すると「Buy milk」のみ表示される", () => {
+		// Setup
+		view.setViewData("Buy milk\nCall Mom\nWrite report", false);
+
+		// Execute: Type in search box
+		const searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "milk";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Verify: Only matching task is visible
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		expect(liElements.length).toBe(1);
+		expect(liElements[0]?.textContent).toContain("Buy milk");
+	});
+
+	it("検索ボックスに「work」と入力すると「+Work」プロジェクトを含むタスクが表示される", () => {
+		// Setup
+		view.setViewData("Buy milk\nWrite report +Work\nCall Mom +Personal", false);
+
+		// Execute: Search for project
+		const searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "work";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Verify: Task with +Work is visible
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		expect(liElements.length).toBe(1);
+		expect(liElements[0]?.textContent).toContain("Write report");
+	});
+
+	it("検索ボックスを空にすると全てのタスクが表示される", () => {
+		// Setup
+		view.setViewData("Task 1\nTask 2\nTask 3", false);
+
+		// First, filter
+		let searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "Task 1";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Verify: Only 1 task visible
+		let ul = view.contentEl.querySelector("ul");
+		expect(ul?.children.length).toBe(1);
+
+		// Clear search (need to re-query after input event)
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Verify: All tasks visible
+		ul = view.contentEl.querySelector("ul");
+		expect(ul?.children.length).toBe(3);
+	});
+
+	it("検索適用後もタスク追加・削除が正常に動作する", async () => {
+		// Setup
+		view.setViewData("Buy milk\nCall Mom", false);
+
+		// Apply search filter
+		const searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "milk";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Verify: Only 1 task visible
+		let ul = view.contentEl.querySelector("ul");
+		expect(ul?.children.length).toBe(1);
+
+		// Add new task with "milk" in description
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		const handleAdd = view.getAddHandler();
+		await handleAdd("Drink milk", "A");
+
+		vi.useRealTimers();
+
+		// Verify: 2 tasks visible (filter still applied)
+		ul = view.contentEl.querySelector("ul");
+		expect(ul?.children.length).toBe(2);
+	});
+
+	it("大文字小文字を区別せずに検索できる", () => {
+		// Setup
+		view.setViewData("Buy MILK\nCall Mom\nWrite REPORT", false);
+
+		// Execute: Search with lowercase
+		const searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "milk";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Verify: Task with "MILK" is found
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		expect(liElements.length).toBe(1);
+		expect(liElements[0]?.textContent).toContain("MILK");
+	});
+});

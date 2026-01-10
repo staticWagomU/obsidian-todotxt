@@ -2,7 +2,7 @@ import { type Todo } from "./todo";
 import { parseTodoTxt } from "./parser";
 import { getDueDateFromTodo, getDueDateStyle } from "./due";
 import { getThresholdDateStyle } from "./threshold";
-import { filterByPriority } from "./filter";
+import { filterByPriority, filterBySearch } from "./filter";
 
 /**
  * Render task list in contentEl
@@ -18,21 +18,24 @@ export function renderTaskList(
 	// Save current filter state before clearing
 	const previousPriorityFilter = contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
 	const previousPriorityValue = previousPriorityFilter?.value || "all";
+	const previousSearchBox = contentEl.querySelector("input.search-box") as HTMLInputElement | null;
+	const previousSearchValue = previousSearchBox?.value || "";
 
 	contentEl.empty();
 
 	// Add task button
 	renderAddButton(contentEl, onAddTask);
 
-	// Add control bar with priority filter
-	renderControlBar(contentEl, data, previousPriorityValue, onAddTask, onToggle, onEdit, onDelete);
+	// Add control bar with priority filter and search box
+	renderControlBar(contentEl, data, previousPriorityValue, previousSearchValue, onAddTask, onToggle, onEdit, onDelete);
 
 	const ul = contentEl.createEl("ul");
 
 	const todos = parseTodoTxt(data);
 
-	// Apply priority filter
-	const filteredTodos = applyPriorityFilter(todos, previousPriorityValue);
+	// Apply filters
+	let filteredTodos = applyPriorityFilter(todos, previousPriorityValue);
+	filteredTodos = filterBySearch(filteredTodos, previousSearchValue);
 
 	const today = new Date(); // Get current date once for all todos
 
@@ -82,6 +85,7 @@ function renderControlBar(
 	contentEl: HTMLElement,
 	data: string,
 	previousPriorityValue: string,
+	previousSearchValue: string,
 	onAddTask: () => void,
 	onToggle: (index: number) => Promise<void>,
 	onEdit: (index: number) => void,
@@ -94,6 +98,13 @@ function renderControlBar(
 	renderPriorityFilterDropdown(
 		controlBar,
 		previousPriorityValue,
+		() => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete)
+	);
+
+	// Render search box
+	renderSearchBox(
+		controlBar,
+		previousSearchValue,
 		() => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete)
 	);
 }
@@ -132,6 +143,26 @@ function renderPriorityFilterDropdown(
 
 	// Add change event listener
 	priorityFilter.addEventListener("change", onChange);
+}
+
+/**
+ * Render search box
+ */
+function renderSearchBox(
+	container: HTMLElement,
+	currentValue: string,
+	onInput: () => void,
+): void {
+	const searchBox = container.createEl("input");
+	searchBox.type = "text";
+	searchBox.classList.add("search-box");
+	searchBox.placeholder = "検索...";
+
+	// Set current value
+	searchBox.value = currentValue;
+
+	// Add input event listener
+	searchBox.addEventListener("input", onInput);
 }
 
 /**

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 32, pbi: "PBI-030", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
+  sprint: { number: 32, pbi: "PBI-030", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 1, subtasksTotal: 6, impediments: 0 },
 };
 
 // Product Goal
@@ -104,14 +104,18 @@ export const currentSprint = {
   sprint: 32,
   pbi: "PBI-030",
   goal: "コントロールバーでフィルタ・ソート・グループ機能を提供し、ユーザーがタスクを効率的に整理・絞込できるようにする",
-  status: "not_started" as SprintStatus,
+  status: "in_progress" as SprintStatus,
   subtasks: [
     {
       test: "優先度フィルタドロップダウンの選択で該当優先度のタスクのみ表示される",
       implementation: "優先度フィルタドロップダウンUI実装とフィルタロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 優先度フィルタドロップダウンの統合テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: 優先度フィルタドロップダウンUI実装" },
+        { phase: "refactor" as CommitPhase, message: "refactor: 優先度フィルタロジックを関数分離" },
+      ],
     },
     {
       test: "テキスト検索ボックスへの入力でdescriptionに含まれるタスクのみリアルタイム絞込表示される",

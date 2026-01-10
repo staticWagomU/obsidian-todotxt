@@ -74,6 +74,14 @@ class TestTaskModal extends BaseTaskModal {
 	public getIsTextMode(): boolean {
 		return this.isTextMode;
 	}
+
+	public testCreateTextModeArea(container: HTMLElement): void {
+		this.createTextModeArea(container);
+	}
+
+	public testUpdateTextModeVisibility(container: HTMLElement): void {
+		this.updateTextModeVisibility(container);
+	}
 }
 
 describe("BaseTaskModal - Preview", () => {
@@ -170,6 +178,55 @@ describe("BaseTaskModal - Preview", () => {
 			button.click();
 			expect(modal.getIsTextMode()).toBe(false);
 			expect(button.textContent).toBe("テキストモード");
+		});
+	});
+
+	describe("createTextModeArea", () => {
+		it("テキストモード用のtextareaが作成される", () => {
+			const container = modal.contentEl;
+
+			modal.testCreateTextModeArea(container);
+
+			// textareaが作成されている
+			const textarea = container.querySelector("textarea.text-mode-input");
+			expect(textarea).toBeTruthy();
+			expect(textarea?.getAttribute("aria-label")).toBe("Todo.txt format input");
+		});
+
+		it("textareaの初期値は空文字", () => {
+			const container = modal.contentEl;
+
+			modal.testCreateTextModeArea(container);
+
+			const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
+			expect(textarea?.value).toBe("");
+		});
+	});
+
+	describe("updateTextModeVisibility", () => {
+		it("フォームモード時にtextareaが非表示", () => {
+			const container = modal.contentEl;
+			modal.testCreateTextModeArea(container);
+
+			modal.testUpdateTextModeVisibility(container);
+
+			const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
+			expect(textarea?.style.display).toBe("none");
+		});
+
+		it("テキストモード時にtextareaが表示", () => {
+			const container = modal.contentEl;
+			modal.testCreateTextModeArea(container);
+
+			// モードを切り替え
+			modal.testCreateToggleButton(container);
+			const button = container.querySelector("button.mode-toggle-button") as HTMLButtonElement;
+			button.click();
+
+			modal.testUpdateTextModeVisibility(container);
+
+			const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
+			expect(textarea?.style.display).toBe("");
 		});
 	});
 });

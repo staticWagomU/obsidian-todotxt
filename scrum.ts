@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 34, pbi: "PBI-031", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 35, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -45,31 +45,10 @@ export const productGoal = {
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
-  // Phase 1-7: Sprint 1-32 完了（32 PBIs done）
-  // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ/コントロールバー
-  // Phase 7: UI機能実装継続（Sprint 33〜）
-  // Sprint 33 Planning優先順位: PBI-033 > PBI-031
-  // 理由: PBI-033はSprint 32ロジック実装済（UI化のみ）、externalDependencies 0、estimatedTests少
-  // PBI-033 done in Sprint 33: コントロールバーUI化、aria-label追加、FilterState型エクスポート、542t達成
-  {
-    id: "PBI-031",
-    story: { role: "user", capability: "内部/外部リンクのクリック可能表示", benefit: "関連リソースへ素早くアクセス" },
-    acceptanceCriteria: [
-      { criterion: "内部リンク", verification: "[[Note]]がクリック可能、クリックでノート開く" },
-      { criterion: "外部リンク", verification: "http/https URLがクリック可能" },
-      { criterion: "rec:表示", verification: "rec:タグに繰り返しアイコン表示" },
-    ],
-    dependencies: ["PBI-028"],
-    status: "ready",
-    complexity: { functions: 3, estimatedTests: 12, externalDependencies: 1, score: "MEDIUM", subtasks: 3 },
-    refactorChecklist: [
-      "REFACTOR率目標30%（Sprint 32 Action 4: 20-50%レンジ）",
-      "Link解析ロジックとRenderingの分離",
-      "Obsidian API呼び出しの抽象化（app.workspace.openLinkText）",
-      "モック戦略: 単体テストvi.mock、統合テストLinkHandlerインターフェース抽象化",
-      "Subtask構成: 内部リンク(4t) + 外部リンク(4t) + rec:表示(4t) = 12t",
-    ],
-  },
+  // Phase 1-7: Sprint 1-34 完了（34 PBIs done）
+  // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ/コントロールバー/リンククリック可能表示
+  // Phase 7完了 (Sprint 32-34): コントロールバー + リンク表示UI実装
+  // PBI-031 done in Sprint 34: 内部/外部リンククリック可能表示+rec:アイコン表示、554t達成(+12t)、REFACTOR率40%
 ];
 
 // Definition of Ready
@@ -85,33 +64,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 34,
-  pbi: "PBI-031",
-  goal: "Phase 7完了: 内部/外部リンクのクリック可能表示とrec:タグアイコン表示により、ユーザーのタスク間ナビゲーションと繰り返しタスク認識を改善する",
+  sprint: 35,
+  pbi: "TBD",
+  goal: "TBD",
   status: "not_started" as SprintStatus,
-  subtasks: [
-    {
-      test: "内部リンククリック可能表示テスト: extractInternalLinks結果をclickableな要素にレンダリング、Obsidian app.workspace.openLinkText呼び出し",
-      implementation: "TodoItem内で内部リンク[[Note]]をボタン化、クリックハンドラでapp.workspace.openLinkText呼び出し、LinkHandlerインターフェース抽象化でテスト容易性確保",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "外部リンククリック可能表示テスト: extractExternalLinks結果をclickableな要素にレンダリング、URL遷移動作確認",
-      implementation: "TodoItem内で外部リンク[text](url)をアンカー化、target=_blank/rel=noopener noreferrer設定、クリック動作検証",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "rec:タグ視覚表示テスト: rec:タグ存在時に繰り返しアイコン表示、parseRecurrenceTagによるパターン検証",
-      implementation: "TodoItem内でrec:タグ検出時にアイコン要素追加、aria-label設定でアクセシビリティ確保、パターン文字列（1d, +1w等）のtooltip表示",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-  ],
+  subtasks: [],
 };
 
 // Impediments
@@ -138,34 +95,38 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 29, pbi: "PBI-029", story: "due:/t:視覚表示", verification: "passed", notes: "502t" },
   { sprint: 30, pbi: "PBI-032", story: "Action返済Sprint", verification: "passed", notes: "504t,Action実行率50%" },
   { sprint: 31, pbi: "PBI-034", story: "view.ts層分離", verification: "passed", notes: "504t,view.ts258→126行(51%削減),handlers.ts87行+rendering.ts129行作成,REFACTOR率100%" },
-  // Phase 7 (Sprint 32~): UI機能実装継続
+  // Phase 7 (Sprint 32-34): UI機能実装継続→完了
   { sprint: 32, pbi: "PBI-030", story: "コントロールバー", verification: "passed", notes: "533t(+29t),TDD完全適用(9commit:RED4+GREEN4+REFACTOR3),REFACTOR率50%,controlbar.test.ts29t追加,FilterState型導入,CRUD後状態維持実装" },
   { sprint: 33, pbi: "PBI-033", story: "コントロールバーUI", verification: "passed", notes: "542t(+9t),aria-label追加でアクセシビリティ向上,FilterState型&DEFAULT_FILTER_STATE定数エクスポート,TDD適用(4commit:RED3+REFACTOR2),REFACTOR率50%(2/4),controlbar.test.ts38t(+9)" },
+  { sprint: 34, pbi: "PBI-031", story: "リンククリック可能表示", verification: "passed", notes: "554t(+12t),内部/外部リンク+rec:アイコン表示実装,rendering.test.ts12t追加,TDD適用(5commit:RED1+GREEN2+REFACTOR2),REFACTOR率40%(2/5),LinkHandlerインターフェース抽象化,Phase 7完了" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 33,
+  { sprint: 34,
     workedWell: [
-      "Sprint 32 Actions全達成: subtask粒度3件適用、PBI優先順位明文化、REFACTOR率50%達成（目標30%超過）",
-      "アクセシビリティ向上: aria-label追加で全コントロールバー要素がスクリーンリーダー対応",
-      "型安全性向上継続: FilterState型とDEFAULT_FILTER_STATE定数エクスポートで再利用性向上",
-      "TDD適用継続: 4コミット（RED 3 + REFACTOR 2）でサイクル維持",
+      "Phase 7完了: Sprint 32-34の3スプリントで計画通り完了（コントロールバー + リンク表示UI）",
+      "REFACTOR率40%達成: 目標30%を超過、2件のリファクタリングコミットで構造改善",
+      "テスト目標達成: +12テスト（rendering.test.ts新規作成）、合計554テスト到達",
+      "TDD適用継続: 5コミット（RED 1 + GREEN 2 + REFACTOR 2）で完全なサイクル実施",
+      "LinkHandlerインターフェース抽象化: Obsidian API依存を分離しテスト容易性向上",
+      "rendering.ts統合: 3つのレンダリング関数を適切なモジュールに配置",
     ],
     toImprove: [
-      "GREEN phaseなし: 既存実装で満たされたためGREENコミット0件、TDDサイクル不完全",
-      "テスト増加+9は目標+10未達: 僅差だが計画精度向上余地あり",
+      "内部/外部リンクの実際のクリックハンドラ統合は未実装: renderInternalLinks/renderExternalLinks関数は定義済だが、renderTaskItemへの統合は次フェーズ課題",
+      "LinkHandlerインターフェースの実装が未提供: テスト用の抽象化のみで、実際のObsidian API呼び出しは未実装",
     ],
     actions: [
-      "Sprint 34でPBI-031完了: 最後のready PBI、Phase 7完了目標",
-      "Obsidian API統合テスト: externalDependencies 1のためモック戦略検討",
+      "Phase 8検討: 全34 PBI完了、新規フェーズ計画が必要",
+      "内部/外部リンククリックハンドラ実装: renderTaskItemでリンク要素を実際にクリック可能にする",
+      "LinkHandler実装提供: Obsidian app.workspace.openLinkTextを呼び出す具体的実装を追加",
     ] },
 ];
 
-// Action Management (Sprint 33でSprint 32 Actions 4件達成)
+// Action Management (Sprint 34でSprint 33 Actions 2件達成)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 18, executed: 16, rate: 89, remaining: 2 }, // Sprint 33: Sprint32の4件Action達成
+  tracking: { total: 21, executed: 18, rate: 86, remaining: 3 }, // Sprint 34: Sprint33の2件Action達成、新規3件追加
 };
 
 // Agents & Events

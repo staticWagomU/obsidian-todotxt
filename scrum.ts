@@ -75,8 +75,15 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "編集時に既存の日付がピッカーに表示される", verification: "pnpm vitest run -- EditTaskModal" },
     ],
     dependencies: ["PBI-035"],
-    status: "draft",
+    status: "ready",
     complexity: { functions: 4, estimatedTests: 10, externalDependencies: 1, score: "MEDIUM", subtasks: 4 },
+    refactorChecklist: [
+      "HTML5 <input type=\"date\"> を使用したデートピッカー実装",
+      "due.ts/threshold.tsの既存日付パースロジックを活用",
+      "priority-options.tsパターンを踏襲してdate-picker-utils.ts作成",
+      "AddTaskModal/EditTaskModalへのdue:/t:入力フィールド追加",
+      "handlers.tsでタグ反映処理実装（tag-utils活用）",
+    ],
   },
   {
     id: "PBI-037",

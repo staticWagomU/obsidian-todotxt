@@ -32,14 +32,7 @@ export function renderTaskList(
 	const todos = parseTodoTxt(data);
 
 	// Apply priority filter
-	let filteredTodos = todos;
-	if (previousPriorityValue !== "all") {
-		if (previousPriorityValue === "none") {
-			filteredTodos = filterByPriority(todos, null);
-		} else {
-			filteredTodos = filterByPriority(todos, previousPriorityValue);
-		}
-	}
+	const filteredTodos = applyPriorityFilter(todos, previousPriorityValue);
 
 	const today = new Date(); // Get current date once for all todos
 
@@ -55,6 +48,19 @@ export function renderTaskList(
 
 		renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
 	}
+}
+
+/**
+ * Apply priority filter to todos
+ */
+function applyPriorityFilter(todos: Todo[], priorityValue: string): Todo[] {
+	if (priorityValue === "all") {
+		return todos;
+	}
+	if (priorityValue === "none") {
+		return filterByPriority(todos, null);
+	}
+	return filterByPriority(todos, priorityValue);
 }
 
 /**
@@ -84,11 +90,26 @@ function renderControlBar(
 	const controlBar = contentEl.createEl("div");
 	controlBar.classList.add("control-bar");
 
-	// Priority filter dropdown
-	const priorityFilter = controlBar.createEl("select");
+	// Render priority filter dropdown
+	renderPriorityFilterDropdown(
+		controlBar,
+		previousPriorityValue,
+		() => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete)
+	);
+}
+
+/**
+ * Render priority filter dropdown
+ */
+function renderPriorityFilterDropdown(
+	container: HTMLElement,
+	currentValue: string,
+	onChange: () => void,
+): void {
+	const priorityFilter = container.createEl("select");
 	priorityFilter.classList.add("priority-filter");
 
-	// Add options
+	// Add "all" option
 	const allOption = priorityFilter.createEl("option");
 	allOption.value = "all";
 	allOption.textContent = "全て";
@@ -106,13 +127,11 @@ function renderControlBar(
 	noneOption.value = "none";
 	noneOption.textContent = "優先度なし";
 
-	// Set previously selected value
-	priorityFilter.value = previousPriorityValue;
+	// Set current value
+	priorityFilter.value = currentValue;
 
-	// Add change event listener to re-render on selection change
-	priorityFilter.addEventListener("change", () => {
-		renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete);
-	});
+	// Add change event listener
+	priorityFilter.addEventListener("change", onChange);
 }
 
 /**

@@ -465,6 +465,13 @@ function renderTaskItem(
 
 	li.appendChild(document.createTextNode(todo.description));
 
+	// Add recurrence icon if rec: tag exists
+	const recIcon = renderRecurrenceIcon(todo);
+	if (recIcon) {
+		li.appendChild(document.createTextNode(" "));
+		li.appendChild(recIcon);
+	}
+
 	// Add due date badge if due: tag exists
 	const dueDate = getDueDateFromTodo(todo);
 	if (dueDate) {

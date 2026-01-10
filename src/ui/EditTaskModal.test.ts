@@ -383,4 +383,62 @@ describe("EditTaskModal", () => {
 		const contextOptions = Array.from(contextSelect.querySelectorAll("option"));
 		expect(contextOptions.length).toBe(0);
 	});
+
+	describe("プレビュー機能", () => {
+		it("フォーム下部にプレビューエリアが表示されること", () => {
+			modal.onOpen();
+
+			// Verify: Preview label exists
+			const labels = Array.from(modal.contentEl.querySelectorAll("label"));
+			const previewLabel = labels.find((label) => label.textContent === "プレビュー");
+			expect(previewLabel).not.toBeNull();
+
+			// Verify: Preview area exists
+			const previewArea = modal.contentEl.querySelector("pre.preview-area");
+			expect(previewArea).not.toBeNull();
+		});
+
+		it("入力変更時にリアルタイムでプレビューが更新されること", () => {
+			modal.onOpen();
+
+			const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+			const prioritySelect = modal.contentEl.querySelector("select.priority-select") as HTMLSelectElement;
+			const previewArea = modal.contentEl.querySelector("pre.preview-area");
+
+			// Enter task description
+			input.value = "Updated task";
+			input.dispatchEvent(new Event("input"));
+
+			// Verify: Preview updated
+			expect(previewArea?.textContent).toContain("Updated task");
+
+			// Select priority
+			prioritySelect.value = "B";
+			prioritySelect.dispatchEvent(new Event("change"));
+
+			// Verify: Preview shows priority
+			expect(previewArea?.textContent).toContain("(B)");
+		});
+
+		it("プレビューがtodo.txt形式に準拠していること", () => {
+			modal.onOpen();
+
+			const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+			const prioritySelect = modal.contentEl.querySelector("select.priority-select") as HTMLSelectElement;
+			const dueDateInput = modal.contentEl.querySelector("input.due-date-input") as HTMLInputElement;
+			const previewArea = modal.contentEl.querySelector("pre.preview-area");
+
+			// Set values
+			prioritySelect.value = "C";
+			prioritySelect.dispatchEvent(new Event("change"));
+			input.value = "Critical task";
+			input.dispatchEvent(new Event("input"));
+			dueDateInput.value = "2026-01-20";
+			dueDateInput.dispatchEvent(new Event("change"));
+
+			// Verify: todo.txt format
+			const previewText = previewArea?.textContent || "";
+			expect(previewText).toMatch(/^\(C\) \d{4}-\d{2}-\d{2} Critical task due:2026-01-20$/);
+		});
+	});
 });

@@ -3,71 +3,9 @@
  * Sprint 34: PBI-031 implementation
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { parseTodoTxt } from "./parser";
-import { extractInternalLinks } from "./internallink";
-import { extractExternalLinks } from "./externallink";
-import { parseRecurrenceTag } from "./recurrence";
+import { describe, it, expect } from "vitest";
+import { renderInternalLinks, renderExternalLinks, renderRecurrenceIcon } from "./rendering";
 import type { Todo } from "./todo";
-
-/**
- * LinkHandler interface for abstracting Obsidian API
- * Allows testing without Obsidian app dependency
- */
-export interface LinkHandler {
-	openInternalLink(link: string): void;
-}
-
-/**
- * Render internal links as clickable elements
- */
-export function renderInternalLinks(description: string): HTMLElement[] {
-	const links = extractInternalLinks(description);
-	return links.map(link => {
-		const el = document.createElement("button");
-		el.classList.add("internal-link");
-		el.textContent = link.alias || link.link;
-		el.dataset.link = link.link;
-		return el;
-	});
-}
-
-/**
- * Render external links as clickable anchor elements
- */
-export function renderExternalLinks(description: string): HTMLElement[] {
-	const links = extractExternalLinks(description);
-	return links.map(link => {
-		const el = document.createElement("a");
-		el.classList.add("external-link");
-		el.textContent = link.text;
-		el.href = link.url;
-		el.target = "_blank";
-		el.rel = "noopener noreferrer";
-		return el;
-	});
-}
-
-/**
- * Render recurrence icon if rec: tag exists
- */
-export function renderRecurrenceIcon(todo: Todo): HTMLElement | null {
-	const recTag = todo.tags.rec;
-	if (!recTag) {
-		return null;
-	}
-
-	// Extract pattern string (remove "rec:" prefix)
-	const pattern = recTag.replace(/^rec:/, "");
-
-	const el = document.createElement("span");
-	el.classList.add("recurrence-icon");
-	el.textContent = "🔁"; // Recurrence icon
-	el.setAttribute("aria-label", `繰り返し: ${pattern}`);
-	el.setAttribute("title", `繰り返し: ${pattern}`);
-
-	return el;
-}
 
 describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 	describe("内部リンククリック可能表示", () => {

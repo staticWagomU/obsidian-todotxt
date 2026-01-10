@@ -5,6 +5,16 @@ import { getThresholdDateStyle } from "./threshold";
 import { filterByPriority, filterBySearch } from "./filter";
 import { groupByProject, groupByContext } from "./group";
 import { sortTodos } from "./sort";
+import { extractInternalLinks } from "./internallink";
+import { extractExternalLinks } from "./externallink";
+
+/**
+ * LinkHandler interface for abstracting Obsidian API
+ * Allows testing without Obsidian app dependency
+ */
+export interface LinkHandler {
+	openInternalLink(link: string): void;
+}
 
 /**
  * Filter state for control bar
@@ -25,6 +35,57 @@ export const DEFAULT_FILTER_STATE: FilterState = {
 	group: "none",
 	sort: "default",
 };
+
+/**
+ * Render internal links as clickable elements
+ */
+export function renderInternalLinks(description: string): HTMLElement[] {
+	const links = extractInternalLinks(description);
+	return links.map(link => {
+		const el = document.createElement("button");
+		el.classList.add("internal-link");
+		el.textContent = link.alias || link.link;
+		el.dataset.link = link.link;
+		return el;
+	});
+}
+
+/**
+ * Render external links as clickable anchor elements
+ */
+export function renderExternalLinks(description: string): HTMLElement[] {
+	const links = extractExternalLinks(description);
+	return links.map(link => {
+		const el = document.createElement("a");
+		el.classList.add("external-link");
+		el.textContent = link.text;
+		el.href = link.url;
+		el.target = "_blank";
+		el.rel = "noopener noreferrer";
+		return el;
+	});
+}
+
+/**
+ * Render recurrence icon if rec: tag exists
+ */
+export function renderRecurrenceIcon(todo: Todo): HTMLElement | null {
+	const recTag = todo.tags.rec;
+	if (!recTag) {
+		return null;
+	}
+
+	// Extract pattern string (remove "rec:" prefix)
+	const pattern = recTag.replace(/^rec:/, "");
+
+	const el = document.createElement("span");
+	el.classList.add("recurrence-icon");
+	el.textContent = "🔁"; // Recurrence icon
+	el.setAttribute("aria-label", `繰り返し: ${pattern}`);
+	el.setAttribute("title", `繰り返し: ${pattern}`);
+
+	return el;
+}
 
 /**
  * Render task list in contentEl

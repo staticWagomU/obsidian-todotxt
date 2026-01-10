@@ -47,41 +47,10 @@ export const productGoal = {
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-7完了: Sprint 1-34（34 PBIs done）
-  // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ/コントロールバー/リンククリック可能表示
-  // Phase 7完了 (Sprint 32-34): コントロールバー実装 + UI統合 + リンク表示機能実装
-  //   Sprint 32 PBI-030: コントロールバーロジック実装、533t(+29t)、REFACTOR率50%
-  //   Sprint 33 PBI-033: コントロールバーUI統合、542t(+9t)、REFACTOR率50%、アクセシビリティ向上
-  //   Sprint 34 PBI-031: 内部/外部リンク+rec:アイコン表示、554t(+12t)、REFACTOR率40%、LinkHandler抽象化
-  // Phase 8: フォームUI強化（Sprint 35〜39）
-  {
-    id: "PBI-035",
-    story: { role: "ユーザー", capability: "タスク追加/編集時に優先度をドロップダウンから選択", benefit: "手入力の手間なく正確な優先度設定ができる" },
-    acceptanceCriteria: [
-      { criterion: "優先度ドロップダウン（なし/A-Z）が表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
-      { criterion: "選択した優先度がtodo.txt形式で保存される", verification: "pnpm vitest run -- handlers" },
-      { criterion: "編集時に既存の優先度が選択状態で表示される", verification: "pnpm vitest run -- EditTaskModal" },
-    ],
-    dependencies: [],
-    status: "done",
-    complexity: { functions: 3, estimatedTests: 8, externalDependencies: 0, score: "LOW", subtasks: 3 },
-  },
-  {
-    id: "PBI-036",
-    story: { role: "ユーザー", capability: "タスク追加/編集時にカレンダーから期限日・開始日を選択", benefit: "日付入力が直感的で入力ミスを防げる" },
-    acceptanceCriteria: [
-      { criterion: "due:用デートピッカーが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
-      { criterion: "t:（しきい値日）用デートピッカーが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
-      { criterion: "選択した日付がYYYY-MM-DD形式でタグに反映される", verification: "pnpm vitest run -- handlers" },
-      { criterion: "編集時に既存の日付がピッカーに表示される", verification: "pnpm vitest run -- EditTaskModal" },
-    ],
-    dependencies: ["PBI-035"],
-    status: "done",
-    complexity: { functions: 4, estimatedTests: 10, externalDependencies: 1, score: "MEDIUM", subtasks: 4 },
-  },
-  // Phase 8完了PBI（Sprint 35-37）
-  // { id: "PBI-035", story: "優先度ドロップダウン", status: "done" },
-  // { id: "PBI-036", story: "カレンダーからdue:/t:日付選択", status: "done" },
-  // { id: "PBI-037", story: "プロジェクト/コンテキスト選択", status: "done" },
+  // Phase 8進行中 (Sprint 35-39): フォームUI強化
+  //   Sprint 35 PBI-035: 優先度ドロップダウン、563t(+9t)、done
+  //   Sprint 36 PBI-036: デートピッカー、585t(+22t)、done
+  //   Sprint 37 PBI-037: プロジェクト/コンテキスト選択、597t(+12t)、done
   {
     id: "PBI-038",
     story: { role: "ユーザー", capability: "フォーム入力中にtodo.txt形式でリアルタイムプレビューを確認", benefit: "保存前に最終形式を確認でき、意図通りの入力ができる" },
@@ -159,11 +128,11 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 37完了、Sprint 38は未開始)
+// Current Sprint
 export const currentSprint = {
   sprint: 38,
-  pbi: "PBI-038",
-  goal: "フォーム入力中のtodo.txt形式リアルタイムプレビューで、保存前の確認を実現する",
+  pbi: "TBD",
+  goal: "TBD",
   status: "not_started" as SprintStatus,
   subtasks: [] as Subtask[],
 };
@@ -204,27 +173,6 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 35,
-    workedWell: [
-      "Phase 8初回Sprint完了: 優先度ドロップダウン実装、全AC達成",
-      "TDDサイクル遵守: 7コミット中6コミットがRED/GREEN、テストファースト維持",
-      "既存コード活用: priority-options.ts新規作成、再利用可能な設計",
-      "テスト増加: 554t→563t（+9t）、品質向上継続",
-      "3コンポーネント連携: AddTaskModal/EditTaskModal/view.tsの統合成功"
-    ],
-    toImprove: [
-      "REFACTOR率大幅低下: 14%（1/7コミット）vs 目標50%、Phase 7水準（40-50%）から大幅悪化",
-      "Sprint 34 Actions実行率低迷: 20%（1/5）、目標50%を大幅に下回る",
-      "累積Action実行率悪化: 69%→実質更に低下、Excellent基準（90%）から遠のく",
-      "REFACTORコミット不足: 1コミットのみ、技術的負債蓄積リスク"
-    ],
-    actions: [
-      "REFACTOR専念Sprint検討: Sprint 36-37間でREFACTOR専念Sprintを挿入し、REFACTOR率を目標50%に回復",
-      "Actions優先実行: Sprint 36で残8件のActionから最優先3件を実行（実行率60%以上目標）",
-      "REFACTOR基準明確化: 各Subtaskで最低1REFACTORコミットを義務付けるルール導入",
-      "品質評価実施: Sprint 36 Planning前に563テストのカバレッジ・保守性を評価",
-      "ドキュメント即時更新: Sprint完了時にCLAUDE.md/README.mdを即座に更新するフロー確立"
-    ] },
   { sprint: 36,
     workedWell: [
       "REFACTOR率大幅改善: 31%（4/13コミット）vs Sprint 35の14%、+17ptの改善達成",
@@ -248,12 +196,34 @@ export const retrospectives: Retrospective[] = [
       "date-picker-utilsパターン推進: 共通ユーティリティの抽出を積極的に行い、コードの再利用性向上",
       "REFACTOR専念Sprint再検討: Phase 8完了後（Sprint 39終了後）にREFACTOR専念Sprintの実施を評価"
     ] },
+  { sprint: 37,
+    workedWell: [
+      "BaseTaskModal活用成功: createMultiSelect/createProjectContextSelects追加でDRY原則実践",
+      "再利用可能ユーティリティ作成: project-context-utils.ts新規作成、date-picker-utilsパターンの継承",
+      "REFACTOR率安定化: 30%でSprint 35の14%から+16ptの改善を維持",
+      "マルチセレクトUI実装完了: HTML5標準要素活用で実装効率向上",
+      "TDDサイクル遵守: 10コミット中7コミットがRED/GREEN、テストファースト継続",
+      "全AC達成: ドロップダウン表示/新規作成/複数選択すべて実現"
+    ],
+    toImprove: [
+      "REFACTOR率未達継続: 30% vs 目標50%、3Sprint連続で未達成（Sprint 35: 14%, Sprint 36: 31%, Sprint 37: 30%）",
+      "Action実行率低迷: 40%（2/5件）vs 目標50%、健全水準70%から大幅に乖離",
+      "テスト増加数減少: +12t vs Sprint 36の+22t、成長ペースが鈍化",
+      "Action実行確認プロセス未確立: 今Sprint中に初めて明示的確認実施、定常化が必要"
+    ],
+    actions: [
+      "REFACTOR率50%目標再設定: Sprint 38でREFACTOR率50%達成を必須目標とし、Subtask設計時に最低2REFACTORコミットを計画",
+      "Action実行確認の定常化: Sprint Planning時に前SprintのActionsを必ずレビューし、実行率を記録",
+      "テスト設計強化: Sprint 38でテスト増加数+15t以上を目標に、複雑なシナリオのテスト追加",
+      "BaseTaskModal/utils系パターン推進: 共通ロジック抽出を積極化し、コードの再利用性を最大化",
+      "Phase 8完了後のREFACTOR専念Sprint実施: Sprint 39完了後にREFACTOR専念Sprintを挿入し、技術的負債解消"
+    ] },
 ];
 
-// Action Management (Sprint 36完了、新規5件Action追加)
+// Action Management (Sprint 37完了、新規5件Action追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 36, executed: 20, rate: 56, remaining: 16 }, // Sprint 36完了（Sprint 35 Action 1件実行: REFACTOR基準部分実施）、新規5件Action追加（REFACTOR率目標達成/Action実行確認プロセス確立/BaseTaskModal活用拡大/date-picker-utilsパターン推進/REFACTOR専念Sprint再検討）
+  tracking: { total: 41, executed: 22, rate: 54, remaining: 19 }, // Sprint 37完了（Sprint 36 Action 2件実行: BaseTaskModal活用拡大/date-picker-utilsパターン推進）、新規5件Action追加（REFACTOR率50%目標再設定/Action実行確認の定常化/テスト設計強化/BaseTaskModal-utils系パターン推進/REFACTOR専念Sprint実施）
 };
 
 // Agents & Events

@@ -5,6 +5,7 @@
 import { type App } from "obsidian";
 import { BaseTaskModal } from "./BaseTaskModal";
 import { generatePriorityOptions } from "../lib/priority-options";
+import type { Todo } from "../lib/todo";
 
 export class EditTaskModal extends BaseTaskModal {
 	onSave: (
@@ -17,6 +18,7 @@ export class EditTaskModal extends BaseTaskModal {
 	initialPriority?: string;
 	initialDueDate?: string;
 	initialThresholdDate?: string;
+	todos: Todo[];
 
 	constructor(
 		app: App,
@@ -30,12 +32,14 @@ export class EditTaskModal extends BaseTaskModal {
 		initialPriority?: string,
 		initialDueDate?: string,
 		initialThresholdDate?: string,
+		todos: Todo[] = [],
 	) {
 		super(app);
 		this.initialDescription = initialDescription;
 		this.initialPriority = initialPriority;
 		this.initialDueDate = initialDueDate;
 		this.initialThresholdDate = initialThresholdDate;
+		this.todos = todos;
 		this.onSave = onSave;
 	}
 
@@ -76,6 +80,9 @@ export class EditTaskModal extends BaseTaskModal {
 		thresholdDateInput.type = "date";
 		thresholdDateInput.classList.add("threshold-date-input");
 		thresholdDateInput.value = this.initialThresholdDate ?? "";
+
+		// Project/Context multi-select
+		this.createProjectContextSelects(contentEl, this.todos);
 
 		// Save button
 		const saveButton = contentEl.createEl("button");

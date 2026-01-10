@@ -12,8 +12,11 @@ vi.mock("obsidian", () => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const addCreateElMethod = (el: HTMLElement): any => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-		(el as any).createEl = (childTag: string) => {
+		(el as any).createEl = (childTag: string, options?: { cls?: string }) => {
 			const childEl = document.createElement(childTag);
+			if (options?.cls) {
+				childEl.className = options.cls;
+			}
 			el.appendChild(childEl);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return addCreateElMethod(childEl);

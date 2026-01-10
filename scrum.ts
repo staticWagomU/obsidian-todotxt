@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 36, pbi: "PBI-036", status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 37, pbi: "PBI-037", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -75,15 +75,8 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "編集時に既存の日付がピッカーに表示される", verification: "pnpm vitest run -- EditTaskModal" },
     ],
     dependencies: ["PBI-035"],
-    status: "ready",
+    status: "done",
     complexity: { functions: 4, estimatedTests: 10, externalDependencies: 1, score: "MEDIUM", subtasks: 4 },
-    refactorChecklist: [
-      "HTML5 <input type=\"date\"> を使用したデートピッカー実装",
-      "due.ts/threshold.tsの既存日付パースロジックを活用",
-      "priority-options.tsパターンを踏襲してdate-picker-utils.ts作成",
-      "AddTaskModal/EditTaskModalへのdue:/t:入力フィールド追加",
-      "handlers.tsでタグ反映処理実装（tag-utils活用）",
-    ],
   },
   {
     id: "PBI-037",
@@ -175,59 +168,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (Sprint 36完了 - 次回Planning時に更新)
 export const currentSprint = {
   sprint: 36,
   pbi: "PBI-036",
   goal: "デートピッカー実装により、ユーザーが直感的に日付を入力でき、入力ミスを防げるようにする",
   status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "date-picker-utils.tsのテスト作成: formatDateForInput/parseDateFromInput関数のテスト（YYYY-MM-DD形式の相互変換、無効な日付のハンドリング、空文字列処理）",
-      implementation: "date-picker-utils.ts実装: HTML5 date input用のフォーマット変換ユーティリティ作成（due.ts/threshold.tsのパース/フォーマットロジックを活用）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: date-picker-utils.ts - formatDateForInput/parseDateFromInput関数のテスト作成" },
-        { phase: "green", message: "feat: date-picker-utils.ts - HTML5 date input用のフォーマット変換ユーティリティ実装" },
-        { phase: "refactor", message: "refactor: date-picker-utils.ts - isDateAutoAdjusted関数を抽出し責任を分離" },
-      ],
-    },
-    {
-      test: "AddTaskModal.tsのデートピッカーテスト: due:/t:入力フィールドのレンダリング、日付選択時のコールバック、初期値なし状態のテスト",
-      implementation: "AddTaskModal.tsにdue:/t:デートピッカー追加: HTML5 <input type=\"date\">を使用、priority-options.tsパターンを踏襲した実装、date-picker-utils.ts活用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: AddTaskModal.ts - due:/t:デートピッカーのテスト追加" },
-        { phase: "green", message: "feat: AddTaskModal.ts - due:/t:デートピッカー追加" },
-        { phase: "refactor", message: "refactor: AddTaskModal.ts - createLabelヘルパー追加でアクセシビリティ向上" },
-      ],
-    },
-    {
-      test: "EditTaskModal.tsのデートピッカーテスト: 既存due:/t:タグの初期値表示、日付変更時のコールバック、タグなし→タグありの変更テスト",
-      implementation: "EditTaskModal.tsにdue:/t:デートピッカー追加: 既存タグのパース処理実装、tag-utils.tsのupdateTag()連携、初期値復元ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: EditTaskModal.ts - due:/t:デートピッカーのテスト追加" },
-        { phase: "green", message: "feat: EditTaskModal.ts - due:/t:デートピッカー追加・初期値復元ロジック実装" },
-        { phase: "refactor", message: "refactor: BaseTaskModal基底クラス抽出でcreateLabel共通化" },
-      ],
-    },
-    {
-      test: "handlers.tsのタグ反映テスト: due:/t:タグの追加/更新/削除、YYYY-MM-DD形式の検証、既存タスクへのタグ追加テスト",
-      implementation: "handlers.tsにdue:/t:タグ反映処理実装: tag-utils.tsのaddTag()/updateTag()活用、デートピッカー値のタスク反映ロジック、保存時の検証処理",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: handlers.ts - due:/t:タグ反映処理のテスト作成" },
-        { phase: "green", message: "feat: handlers.ts/todo.ts - due:/t:タグ反映処理実装" },
-        { phase: "refactor", message: "refactor: todo.ts - updateTagInTodo関数抽出でタグ処理ロジック共通化" },
-        { phase: "green", message: "feat: view.ts統合 - デートピッカーとhandlersの完全統合・TaskUpdates型定義" },
-      ],
-    },
-  ] as Subtask[],
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -260,6 +207,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 34, pbi: "PBI-031", story: "リンククリック可能表示", verification: "passed", notes: "554t(+12t),内部/外部リンク+rec:アイコン表示実装,rendering.test.ts12t追加,TDD適用(5commit:RED1+GREEN2+REFACTOR2),REFACTOR率40%(2/5),LinkHandlerインターフェース抽象化,Phase 7完了" },
   // Phase 8 (Sprint 35-39): フォームUI強化
   { sprint: 35, pbi: "PBI-035", story: "優先度ドロップダウン", verification: "passed", notes: "563t(+9t),TDD適用(7commit:RED3+GREEN3+REFACTOR1),REFACTOR率14%(1/7),priority-options.ts新規作成,AddTaskModal/EditTaskModal/view.ts連携実装" },
+  { sprint: 36, pbi: "PBI-036", story: "カレンダーからdue:/t:日付選択", verification: "passed", notes: "585t(+22t),TDD適用(11commit:RED4+GREEN5+REFACTOR3),REFACTOR率27%(3/11),date-picker-utils.ts/BaseTaskModal.ts新規作成,HTML5 date input実装,Lint修正でCSSクラス化" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

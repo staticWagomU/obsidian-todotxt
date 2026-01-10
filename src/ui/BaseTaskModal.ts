@@ -12,9 +12,9 @@ export abstract class BaseTaskModal extends Modal {
 	 * @param text ラベルテキスト
 	 */
 	protected createLabel(container: HTMLElement, text: string): void {
-		const label = container.createEl("label");
+		const label = container.createEl("label", {
+			cls: "modal-form-label",
+		});
 		label.textContent = text;
-		label.style.display = "block";
-		label.style.marginTop = "10px";
 	}
 }

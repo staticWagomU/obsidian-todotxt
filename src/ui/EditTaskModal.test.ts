@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { EditTaskModal } from "./EditTaskModal";
+import type { App } from "obsidian";
 
 // Mock Obsidian Modal
 vi.mock("obsidian", () => {
@@ -7,8 +8,11 @@ vi.mock("obsidian", () => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function addCreateElMethod(el: HTMLElement): any {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-		(el as any).createEl = (childTag: string) => {
+		(el as any).createEl = (childTag: string, options?: { cls?: string }) => {
 			const childEl = document.createElement(childTag);
+			if (options?.cls) {
+				childEl.className = options.cls;
+			}
 			el.appendChild(childEl);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return addCreateElMethod(childEl);
@@ -39,14 +43,18 @@ vi.mock("obsidian", () => {
 
 describe("EditTaskModal", () => {
 	let modal: EditTaskModal;
-	let mockApp: unknown;
-	let onSaveSpy: ReturnType<typeof vi.fn>;
+	let mockApp: App;
+	let onSaveSpy: (
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string,
+	) => void;
 
 	beforeEach(() => {
-		mockApp = {};
+		mockApp = {} as App;
 		onSaveSpy = vi.fn();
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
-		modal = new EditTaskModal(mockApp as any, "Buy milk", onSaveSpy as any);
+		modal = new EditTaskModal(mockApp, "Buy milk", onSaveSpy);
 	});
 
 	it("モーダルを開くとタスク説明入力フィールドが表示される", () => {
@@ -208,11 +216,10 @@ describe("EditTaskModal", () => {
 	});
 
 	it("既存due:タグが日付入力フィールドに初期値として表示されること", () => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
 		const modalWithDue = new EditTaskModal(
-			mockApp as any,
+			mockApp,
 			"Buy milk",
-			onSaveSpy as any,
+			onSaveSpy,
 			undefined,
 			"2026-01-15",
 			undefined,
@@ -224,11 +231,10 @@ describe("EditTaskModal", () => {
 	});
 
 	it("既存t:タグが日付入力フィールドに初期値として表示されること", () => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
 		const modalWithThreshold = new EditTaskModal(
-			mockApp as any,
+			mockApp,
 			"Buy milk",
-			onSaveSpy as any,
+			onSaveSpy,
 			undefined,
 			undefined,
 			"2026-01-20",

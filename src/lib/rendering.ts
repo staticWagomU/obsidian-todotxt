@@ -2,6 +2,7 @@ import { type Todo } from "./todo";
 import { parseTodoTxt } from "./parser";
 import { getDueDateFromTodo, getDueDateStyle } from "./due";
 import { getThresholdDateStyle } from "./threshold";
+import { filterByPriority } from "./filter";
 
 /**
  * Render task list in contentEl
@@ -14,21 +15,45 @@ export function renderTaskList(
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
 ): void {
+	// Save current filter state before clearing
+	const previousPriorityFilter = contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
+	const previousPriorityValue = previousPriorityFilter?.value || "all";
+
 	contentEl.empty();
 
 	// Add task button
 	renderAddButton(contentEl, onAddTask);
 
+	// Add control bar with priority filter
+	renderControlBar(contentEl, data, previousPriorityValue, onAddTask, onToggle, onEdit, onDelete);
+
 	const ul = contentEl.createEl("ul");
 
 	const todos = parseTodoTxt(data);
+
+	// Apply priority filter
+	let filteredTodos = todos;
+	if (previousPriorityValue !== "all") {
+		if (previousPriorityValue === "none") {
+			filteredTodos = filterByPriority(todos, null);
+		} else {
+			filteredTodos = filterByPriority(todos, previousPriorityValue);
+		}
+	}
+
 	const today = new Date(); // Get current date once for all todos
 
-	for (let index = 0; index < todos.length; index++) {
-		const todo = todos[index];
-		if (!todo) continue;
+	// Build index mapping: filteredTodo -> original index
+	const todoIndexMap = new Map<Todo, number>();
+	for (let i = 0; i < todos.length; i++) {
+		todoIndexMap.set(todos[i]!, i);
+	}
 
-		renderTaskItem(ul, todo, index, today, onToggle, onEdit, onDelete);
+	for (const todo of filteredTodos) {
+		const originalIndex = todoIndexMap.get(todo);
+		if (originalIndex === undefined) continue;
+
+		renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
 	}
 }
 
@@ -41,6 +66,52 @@ function renderAddButton(contentEl: HTMLElement, onAddTask: () => void): void {
 	addButton.textContent = "+";
 	addButton.addEventListener("click", () => {
 		onAddTask();
+	});
+}
+
+/**
+ * Render control bar with filters and sorting options
+ */
+function renderControlBar(
+	contentEl: HTMLElement,
+	data: string,
+	previousPriorityValue: string,
+	onAddTask: () => void,
+	onToggle: (index: number) => Promise<void>,
+	onEdit: (index: number) => void,
+	onDelete: (index: number) => Promise<void>,
+): void {
+	const controlBar = contentEl.createEl("div");
+	controlBar.classList.add("control-bar");
+
+	// Priority filter dropdown
+	const priorityFilter = controlBar.createEl("select");
+	priorityFilter.classList.add("priority-filter");
+
+	// Add options
+	const allOption = priorityFilter.createEl("option");
+	allOption.value = "all";
+	allOption.textContent = "全て";
+
+	// Add A-Z priority options
+	for (let i = 65; i <= 90; i++) {
+		const letter = String.fromCharCode(i);
+		const option = priorityFilter.createEl("option");
+		option.value = letter;
+		option.textContent = letter;
+	}
+
+	// Add "none" option for tasks without priority
+	const noneOption = priorityFilter.createEl("option");
+	noneOption.value = "none";
+	noneOption.textContent = "優先度なし";
+
+	// Set previously selected value
+	priorityFilter.value = previousPriorityValue;
+
+	// Add change event listener to re-render on selection change
+	priorityFilter.addEventListener("change", () => {
+		renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete);
 	});
 }
 

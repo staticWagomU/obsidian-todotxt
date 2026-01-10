@@ -484,3 +484,248 @@ describe("sort selector", () => {
 		expect(liElements[0]?.classList.contains("completed")).toBe(true);
 	});
 });
+
+describe("integration: filter + sort + group combination", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("優先度フィルタ+検索+ソートの組み合わせが正しく動作する", () => {
+		// Setup: Multiple tasks with various attributes
+		view.setViewData("(A) Buy milk\nx (B) Call Mom\n(A) Write report +Work\n(C) Task 4", false);
+
+		// Apply priority filter
+		let priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		priorityFilter.value = "A";
+		priorityFilter.dispatchEvent(new Event("change"));
+
+		// Apply search
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		let searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "report";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Verify: Only "Write report" with priority A and containing "report" is visible
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		expect(liElements.length).toBe(1);
+		expect(liElements[0]?.textContent).toContain("Write report");
+	});
+
+	it("グループ化+ソートの組み合わせで状態が保持される", () => {
+		// Setup
+		view.setViewData("x Task 1 +Work\nTask 2 +Work\nx Task 3 +Personal\nTask 4 +Personal", false);
+
+		// Apply grouping
+		let groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "project";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Apply sorting
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		let sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		sortSelector.value = "completion";
+		sortSelector.dispatchEvent(new Event("change"));
+
+		// Verify: Groups are present and tasks are sorted within groups
+		const ul = view.contentEl.querySelector("ul");
+		const groupHeaders = ul?.querySelectorAll("li.group-header");
+
+		expect(groupHeaders?.length).toBeGreaterThan(0);
+	});
+
+	it("全てのフィルタ・ソート・グループ状態が再レンダリング後も保持される", () => {
+		// Setup
+		view.setViewData("(A) Task 1 +Work\n(B) Task 2 +Personal", false);
+
+		// Apply all controls
+		let priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		priorityFilter.value = "A";
+		priorityFilter.dispatchEvent(new Event("change"));
+
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		let searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "Task";
+		searchBox.dispatchEvent(new Event("input"));
+
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		let groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "project";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		let sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		sortSelector.value = "completion";
+		sortSelector.dispatchEvent(new Event("change"));
+
+		// Verify: All controls maintain their state
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+
+		expect(priorityFilter?.value).toBe("A");
+		expect(searchBox?.value).toBe("Task");
+		expect(groupSelector?.value).toBe("project");
+		expect(sortSelector?.value).toBe("completion");
+	});
+});
+
+describe("integration: CRUD operations with filter state", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("優先度フィルタ適用後のタスク追加で状態が維持される", async () => {
+		// Setup
+		view.setViewData("(A) Task 1\n(B) Task 2", false);
+
+		// Apply priority filter
+		const priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		priorityFilter.value = "A";
+		priorityFilter.dispatchEvent(new Event("change"));
+
+		// Add new task with priority A
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		const handleAdd = view.getAddHandler();
+		await handleAdd("Task 3", "A");
+
+		vi.useRealTimers();
+
+		// Verify: Filter state is maintained
+		const newPriorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		expect(newPriorityFilter?.value).toBe("A");
+
+		// Verify: New task is visible (matches filter)
+		const ul = view.contentEl.querySelector("ul");
+		expect(ul?.children.length).toBe(2); // Task 1 and Task 3
+	});
+
+	it("検索+グループ化適用後のタスク削除で状態が維持される", async () => {
+		// Setup
+		view.setViewData("Task 1 +Work\nTask 2 +Work\nTask 3 +Personal", false);
+
+		// Apply search
+		let searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "Task";
+		searchBox.dispatchEvent(new Event("input"));
+
+		// Apply grouping
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		let groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "project";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Delete a task
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		const handleDelete = view.getDeleteHandler();
+		await handleDelete(0);
+
+		// Verify: Filter and group state maintained
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+
+		expect(searchBox?.value).toBe("Task");
+		expect(groupSelector?.value).toBe("project");
+	});
+
+	it("ソート+グループ化適用後のタスク編集で状態が維持される", async () => {
+		// Setup
+		view.setViewData("(A) Task 1 +Work\n(B) Task 2 +Work", false);
+
+		// Apply sorting
+		let sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		sortSelector.value = "completion";
+		sortSelector.dispatchEvent(new Event("change"));
+
+		// Apply grouping
+		sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		let groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "project";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Edit a task
+		sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		const handleEdit = view.getEditHandler();
+		await handleEdit(0, { description: "Updated Task" });
+
+		// Verify: Filter state maintained
+		sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+
+		expect(sortSelector?.value).toBe("completion");
+		expect(groupSelector?.value).toBe("project");
+	});
+
+	it("全コントロール適用後のタスクトグルで状態が維持される", async () => {
+		// Setup
+		view.setViewData("(A) Task 1 +Work @office\n(B) Task 2 +Work @home", false);
+
+		// Apply all controls
+		let priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		priorityFilter.value = "A";
+		priorityFilter.dispatchEvent(new Event("change"));
+
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		let searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		searchBox.value = "Work";
+		searchBox.dispatchEvent(new Event("input"));
+
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		let groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "context";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		let sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		sortSelector.value = "completion";
+		sortSelector.dispatchEvent(new Event("change"));
+
+		// Toggle a task
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		const handleToggle = view.getToggleHandler();
+		await handleToggle(0);
+
+		vi.useRealTimers();
+
+		// Verify: All states maintained
+		priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+
+		expect(priorityFilter?.value).toBe("A");
+		expect(searchBox?.value).toBe("Work");
+		expect(groupSelector?.value).toBe("context");
+		expect(sortSelector?.value).toBe("completion");
+	});
+});

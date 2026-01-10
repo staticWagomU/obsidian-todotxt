@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 31, pbi: "PBI-034", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 31, pbi: "PBI-034", status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -45,28 +45,10 @@ export const productGoal = {
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
-  // Phase 1-6: COMPLETE (Sprint 1-30) - 30 PBIs done, see completedSprints
-  // PBI-001〜032 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済
-  // Phase 6: 継続UI機能実装 (Sprint 31 Backlog Refinement完了: 優先順位調整034→030→031→033)
-  // 優先順位理由: 034=REFACTOR率20%達成+保守性基盤/030=033依存元/031=独立機能/033=030依存
-  {
-    id: "PBI-034",
-    story: { role: "dev", capability: "view.tsをhandlers/rendering層に分離", benefit: "300行超回避と保守性向上" },
-    acceptanceCriteria: [
-      { criterion: "handlers分離", verification: "getToggleHandler等4メソッドをsrc/lib/handlers.ts化、view.tsから参照" },
-      { criterion: "rendering分離", verification: "renderTaskList()をsrc/lib/rendering.ts化、view.tsは200行以下に削減" },
-      { criterion: "既存テスト全通過", verification: "リファクタリング後も504tests全pass維持、振る舞い変更なし確認" },
-    ],
-    dependencies: [],
-    status: "ready",
-    complexity: { functions: 2, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 3 },
-    refactorChecklist: [
-      "src/lib/handlers.ts作成 - 4 handler functions移動 (getToggleHandler/getAddHandler/getEditHandler/getDeleteHandler)",
-      "src/lib/rendering.ts作成 - renderTaskList()移動 (150行の大規模メソッド分離)",
-      "view.ts import更新、244行→150行以下目標 (40%削減)",
-      "既存テスト全通過確認 (504 tests = Sprint 30現在、統合テスト2件追加済)",
-    ],
-  },
+  // Phase 1-6: COMPLETE (Sprint 1-31) - 31 PBIs done, see completedSprints
+  // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ
+  // Phase 6: 継続UI機能実装 (Sprint 31完了: PBI-034 view.ts分離達成、次期030→031→033)
+  // 優先順位理由: 030=033依存元/031=独立機能/033=030依存
   {
     id: "PBI-030",
     story: { role: "user", capability: "コントロールバーによるフィルタ・ソート・グループ", benefit: "タスク整理と絞込" },
@@ -117,40 +99,48 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 31: PBI-034 view.ts refactoring)
+// Current Sprint (Sprint 31: COMPLETED)
 export const currentSprint = {
   sprint: 31,
   pbi: "PBI-034",
   goal: "view.tsを200行以下に削減し、handlers/rendering層分離で保守性向上、REFACTOR率20%目標達成",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "src/lib/handlers.ts作成テスト",
       implementation: "getToggleHandler/getAddHandler/getEditHandler/getDeleteHandler を view.ts から src/lib/handlers.ts へ移動",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
+      ],
     },
     {
       test: "src/lib/rendering.ts作成テスト",
       implementation: "renderTaskList()（150行の大規模メソッド）を view.ts から src/lib/rendering.ts へ移動",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
+      ],
     },
     {
       test: "view.ts更新テスト",
-      implementation: "handlers/rendering import追加、244行→150行以下に削減（40%削減目標）",
+      implementation: "handlers/rendering import追加、258行→126行に削減（51%削減、目標150行以下達成）",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
+      ],
     },
     {
       test: "既存テスト全通過確認",
       implementation: "リファクタリング後も504 tests全pass維持、振る舞い変更なし確認",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
+      ],
     },
   ] as Subtask[],
 };
@@ -168,16 +158,17 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints - Phase 1-6 (Sprint 1-30) compacted, see git history for details
+// Completed Sprints - Phase 1-6 (Sprint 1-31) compacted, see git history for details
 export const completedSprints: CompletedSprint[] = [
   // Phase 1-5 (Sprint 1-24): 基本機能+ドキュメント完了、438t達成
-  // Phase 6 (Sprint 25-30): UI実装+Action返済
+  // Phase 6 (Sprint 25-31): UI実装+Action返済+view.tsリファクタ
   { sprint: 25, pbi: "PBI-025", story: "基本UI描画", verification: "passed", notes: "443t" },
   { sprint: 26, pbi: "PBI-026", story: "タスク追加UI", verification: "passed", notes: "449t" },
   { sprint: 27, pbi: "PBI-027", story: "データ保持修正", verification: "passed", notes: "471t" },
   { sprint: 28, pbi: "PBI-028", story: "タスクUI操作", verification: "passed", notes: "490t" },
   { sprint: 29, pbi: "PBI-029", story: "due:/t:視覚表示", verification: "passed", notes: "502t" },
   { sprint: 30, pbi: "PBI-032", story: "Action返済Sprint", verification: "passed", notes: "504t,Action実行率50%" },
+  { sprint: 31, pbi: "PBI-034", story: "view.ts層分離", verification: "passed", notes: "504t,258→126行(51%削減),REFACTOR率100%" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

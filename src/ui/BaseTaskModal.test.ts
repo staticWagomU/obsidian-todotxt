@@ -66,6 +66,14 @@ class TestTaskModal extends BaseTaskModal {
 	public testUpdatePreview(container: HTMLElement, todo: Todo): void {
 		this.updatePreview(container, todo);
 	}
+
+	public testCreateToggleButton(container: HTMLElement): void {
+		this.createToggleButton(container);
+	}
+
+	public getIsTextMode(): boolean {
+		return this.isTextMode;
+	}
 }
 
 describe("BaseTaskModal - Preview", () => {
@@ -117,6 +125,51 @@ describe("BaseTaskModal - Preview", () => {
 
 			const pre = container.querySelector("pre.preview-area");
 			expect(pre?.textContent).toBe("(A) 2026-01-11 Test task +project @context due:2026-01-15");
+		});
+	});
+
+	describe("createToggleButton", () => {
+		it("モード切替ボタンが作成される", () => {
+			const container = modal.contentEl;
+
+			modal.testCreateToggleButton(container);
+
+			// ボタンが作成されている
+			const button = container.querySelector("button.mode-toggle-button");
+			expect(button).toBeTruthy();
+			expect(button?.getAttribute("aria-label")).toBe("Toggle input mode");
+		});
+
+		it("初期状態ではフォームモード(isTextMode=false)", () => {
+			expect(modal.getIsTextMode()).toBe(false);
+		});
+
+		it("ボタンのテキストが初期状態では'テキストモード'", () => {
+			const container = modal.contentEl;
+
+			modal.testCreateToggleButton(container);
+
+			const button = container.querySelector("button.mode-toggle-button");
+			expect(button?.textContent).toBe("テキストモード");
+		});
+
+		it("ボタンクリックでモードが切り替わる", () => {
+			const container = modal.contentEl;
+
+			modal.testCreateToggleButton(container);
+
+			const button = container.querySelector("button.mode-toggle-button") as HTMLButtonElement;
+			expect(modal.getIsTextMode()).toBe(false);
+
+			// クリックで切り替わる
+			button.click();
+			expect(modal.getIsTextMode()).toBe(true);
+			expect(button.textContent).toBe("フォームモード");
+
+			// 再度クリックで戻る
+			button.click();
+			expect(modal.getIsTextMode()).toBe(false);
+			expect(button.textContent).toBe("テキストモード");
 		});
 	});
 });

@@ -1500,3 +1500,123 @@ describe("render due date badge with style", () => {
 		vi.useRealTimers();
 	});
 });
+
+describe("render threshold date grayout", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("t:未来日付のタスク行がグレーアウト表示される(not_ready)", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Load task with future threshold date
+		view.setViewData("Buy milk t:2026-01-25", false);
+		view.renderTaskList();
+
+		// Verify: Task li has grayout style
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+
+		expect(li).not.toBeNull();
+		expect(li?.style.opacity).toBe("0.5");
+
+		vi.useRealTimers();
+	});
+
+	it("t:今日または過去日付のタスク行はグレーアウトされない(ready)", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Load task with today's threshold date
+		view.setViewData("Buy milk t:2026-01-20", false);
+		view.renderTaskList();
+
+		// Verify: Task li has no opacity style
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+
+		expect(li).not.toBeNull();
+		expect(li?.style.opacity).toBe("");
+
+		vi.useRealTimers();
+	});
+
+	it("t:タグがないタスク行はグレーアウトされない", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Load task without t: tag
+		view.setViewData("Buy milk", false);
+		view.renderTaskList();
+
+		// Verify: Task li has no opacity style
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+
+		expect(li).not.toBeNull();
+		expect(li?.style.opacity).toBe("");
+
+		vi.useRealTimers();
+	});
+});

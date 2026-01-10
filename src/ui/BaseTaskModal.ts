@@ -94,6 +94,30 @@ export abstract class BaseTaskModal extends Modal {
 	}
 
 	/**
+	 * テキストモード用のtextareaを作成
+	 * @param container 親要素
+	 */
+	protected createTextModeArea(container: HTMLElement): void {
+		const textarea = container.createEl("textarea", {
+			cls: "text-mode-input",
+		});
+		textarea.setAttribute("aria-label", "Todo.txt format input");
+		textarea.value = "";
+	}
+
+	/**
+	 * テキストモードの表示/非表示を更新
+	 * @param container textareaを含む親要素
+	 */
+	protected updateTextModeVisibility(container: HTMLElement): void {
+		const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
+		if (!textarea) {
+			return;
+		}
+		textarea.style.display = this.isTextMode ? "" : "none";
+	}
+
+	/**
 	 * プレビューエリアを作成
 	 * @param container 親要素
 	 */

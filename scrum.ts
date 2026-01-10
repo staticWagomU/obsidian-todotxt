@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 38, pbi: "PBI-038", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 3, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 3, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -156,8 +156,13 @@ export const currentSprint = {
       test: "AddTaskModal/EditTaskModalでcreatePreviewArea呼出（onOpen内）、入力変更時にupdatePreview呼出（input/select change/input→updatePreview）、プレビューがtodo.txt形式に準拠のテスト",
       implementation: "AddTaskModal.ts/EditTaskModal.tsのonOpen内でcreatePreviewArea呼出、input/prioritySelect/dueDateInput/thresholdDateInputにaddEventListener（input/change→updatePreview）追加。updatePreviewはフォーム値からTodoオブジェクト構築→updatePreview呼出。AddTaskModal.test.ts/EditTaskModal.test.tsに各3テスト追加（プレビューエリア表示/入力変更でリアルタイム更新/todo.txt形式準拠）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: AddTaskModalにプレビュー機能のテスト追加" },
+        { phase: "red" as CommitPhase, message: "test: EditTaskModalにプレビュー機能のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: AddTaskModalにプレビュー機能実装" },
+        { phase: "green" as CommitPhase, message: "feat: EditTaskModalにプレビュー機能実装" },
+      ],
     },
     {
       test: "REFACTOR: buildDescriptionFromInputs（description+projects+contexts+due/t:構築）をutils/form-helpers.tsに抽出、BaseTaskModalでCSSクラス統一（.modal-form-preview）とaria-label追加のテスト（既存テスト全通過）",

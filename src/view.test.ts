@@ -1194,4 +1194,76 @@ describe("render task list in view", () => {
 		// Verify: openEditTaskModal was called with correct index
 		expect(openEditTaskModalSpy).toHaveBeenCalledWith(0);
 	});
+
+	it("各タスクに削除ボタンが表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks
+		view.setViewData("Task 0\nTask 1\nTask 2", false);
+		view.renderTaskList();
+
+		// Verify: Each li contains a delete button
+		const ul = container.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		for (const li of liElements) {
+			const deleteButton = li.querySelector("button.delete-task-button");
+			expect(deleteButton).not.toBeNull();
+			expect(deleteButton?.textContent).toBe("削除");
+		}
+	});
+
+	it("削除ボタンにdata-index属性が設定される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks
+		view.setViewData("Task 0\nTask 1\nTask 2", false);
+		view.renderTaskList();
+
+		// Verify: Each delete button has correct data-index attribute
+		const ul = container.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		for (let i = 0; i < liElements.length; i++) {
+			const deleteButton = liElements[i]?.querySelector("button.delete-task-button") as HTMLButtonElement;
+			expect(deleteButton?.dataset.index).toBe(String(i));
+		}
+	});
+
+	it("削除ボタンをクリックするとgetDeleteHandlerが呼ばれタスクが削除される", async () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks
+		view.setViewData("Task 0\nTask 1\nTask 2", false);
+		view.renderTaskList();
+
+		// Click delete button for second task
+		const ul = container.querySelector("ul");
+		const secondLi = ul?.children[1] as HTMLLIElement;
+		const deleteButton = secondLi.querySelector("button.delete-task-button") as HTMLButtonElement;
+
+		deleteButton.click();
+
+		// Wait for async handler
+		await vi.runAllTimersAsync();
+
+		// Verify: Second task is deleted
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("Task 0\nTask 2");
+	});
 });

@@ -4,6 +4,7 @@ import { getDueDateFromTodo, getDueDateStyle } from "./due";
 import { getThresholdDateStyle } from "./threshold";
 import { filterByPriority, filterBySearch } from "./filter";
 import { groupByProject, groupByContext } from "./group";
+import { sortTodos } from "./sort";
 
 /**
  * Filter state for control bar
@@ -12,6 +13,7 @@ interface FilterState {
 	priority: string;
 	search: string;
 	group: string;
+	sort: string;
 }
 
 /**
@@ -72,20 +74,28 @@ function saveFilterState(contentEl: HTMLElement): FilterState {
 	const previousPriorityFilter = contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
 	const previousSearchBox = contentEl.querySelector("input.search-box") as HTMLInputElement | null;
 	const previousGroupSelector = contentEl.querySelector("select.group-selector") as HTMLSelectElement | null;
+	const previousSortSelector = contentEl.querySelector("select.sort-selector") as HTMLSelectElement | null;
 
 	return {
 		priority: previousPriorityFilter?.value || "all",
 		search: previousSearchBox?.value || "",
 		group: previousGroupSelector?.value || "none",
+		sort: previousSortSelector?.value || "default",
 	};
 }
 
 /**
- * Apply all filters to todos
+ * Apply all filters and sorting to todos
  */
 function applyFilters(todos: Todo[], filterState: FilterState): Todo[] {
 	let filtered = applyPriorityFilter(todos, filterState.priority);
 	filtered = filterBySearch(filtered, filterState.search);
+
+	// Apply sorting if enabled
+	if (filterState.sort === "completion") {
+		filtered = sortTodos(filtered);
+	}
+
 	return filtered;
 }
 
@@ -139,6 +149,9 @@ function renderControlBar(
 
 	// Render group selector
 	renderGroupSelector(controlBar, filterState.group, onFilterChange);
+
+	// Render sort selector
+	renderSortSelector(controlBar, filterState.sort, onFilterChange);
 }
 
 /**
@@ -230,6 +243,33 @@ function renderGroupSelector(
 
 	// Add change event listener
 	groupSelector.addEventListener("change", onChange);
+}
+
+/**
+ * Render sort selector
+ */
+function renderSortSelector(
+	container: HTMLElement,
+	currentValue: string,
+	onChange: () => void,
+): void {
+	const sortSelector = container.createEl("select");
+	sortSelector.classList.add("sort-selector");
+
+	// Add options
+	const defaultOption = sortSelector.createEl("option");
+	defaultOption.value = "default";
+	defaultOption.textContent = "デフォルト";
+
+	const completionOption = sortSelector.createEl("option");
+	completionOption.value = "completion";
+	completionOption.textContent = "未完了→完了";
+
+	// Set current value
+	sortSelector.value = currentValue;
+
+	// Add change event listener
+	sortSelector.addEventListener("change", onChange);
 }
 
 /**

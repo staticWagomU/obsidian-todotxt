@@ -407,3 +407,80 @@ describe("group selector", () => {
 		expect(groupHeaders?.length).toBe(0);
 	});
 });
+
+describe("sort selector", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("ソートセレクタが表示される", () => {
+		// Setup
+		view.setViewData("Task 1\nTask 2", false);
+
+		// Verify: Sort selector exists
+		const sortSelector = view.contentEl.querySelector("select.sort-selector");
+		expect(sortSelector).not.toBeNull();
+	});
+
+	it("ソートセレクタに「デフォルト」「未完了→完了」オプションが含まれる", () => {
+		// Setup
+		view.setViewData("Task 1", false);
+
+		// Verify: Selector has expected options
+		const sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		expect(sortSelector).not.toBeNull();
+
+		const options = Array.from(sortSelector.options).map(opt => opt.value);
+		expect(options).toContain("default");
+		expect(options).toContain("completion");
+	});
+
+	it("未完了→完了ソートを選択すると未完了タスクが完了タスクより先に表示される", () => {
+		// Setup: Mix of completed and incomplete tasks
+		view.setViewData("x 2026-01-01 Task 1\nTask 2\nx 2026-01-02 Task 3\nTask 4", false);
+
+		// Execute: Select sort by completion
+		const sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		sortSelector.value = "completion";
+		sortSelector.dispatchEvent(new Event("change"));
+
+		// Verify: Incomplete tasks come first
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		// First two should be incomplete
+		expect(liElements[0]?.classList.contains("completed")).toBe(false);
+		expect(liElements[1]?.classList.contains("completed")).toBe(false);
+		// Last two should be completed
+		expect(liElements[2]?.classList.contains("completed")).toBe(true);
+		expect(liElements[3]?.classList.contains("completed")).toBe(true);
+	});
+
+	it("「デフォルト」を選択するとソートが解除される", () => {
+		// Setup
+		view.setViewData("x Task 1\nTask 2\nx Task 3", false);
+
+		// First, sort by completion
+		let sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		sortSelector.value = "completion";
+		sortSelector.dispatchEvent(new Event("change"));
+
+		// Then select "default"
+		sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		sortSelector.value = "default";
+		sortSelector.dispatchEvent(new Event("change"));
+
+		// Verify: Original order maintained
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		// First task should be completed (original order)
+		expect(liElements[0]?.classList.contains("completed")).toBe(true);
+	});
+});

@@ -35,6 +35,7 @@ interface Retrospective {
 export const quickStatus = {
   sprint: { number: 35, pbi: "TBD", status: "not_started" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 8, status: "planning", sprints: "35-", pbis: "TBD", goal: "Phase 7完了後の次期フェーズ計画" },
 };
 
 // Product Goal
@@ -45,10 +46,13 @@ export const productGoal = {
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
-  // Phase 1-7: Sprint 1-34 完了（34 PBIs done）
+  // Phase 1-7完了: Sprint 1-34（34 PBIs done）
   // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ/コントロールバー/リンククリック可能表示
-  // Phase 7完了 (Sprint 32-34): コントロールバー + リンク表示UI実装
-  // PBI-031 done in Sprint 34: 内部/外部リンククリック可能表示+rec:アイコン表示、554t達成(+12t)、REFACTOR率40%
+  // Phase 7完了 (Sprint 32-34): コントロールバー実装 + UI統合 + リンク表示機能実装
+  //   Sprint 32 PBI-030: コントロールバーロジック実装、533t(+29t)、REFACTOR率50%
+  //   Sprint 33 PBI-033: コントロールバーUI統合、542t(+9t)、REFACTOR率50%、アクセシビリティ向上
+  //   Sprint 34 PBI-031: 内部/外部リンク+rec:アイコン表示、554t(+12t)、REFACTOR率40%、LinkHandler抽象化
+  // Phase 8: TBD（Sprint 35〜）
 ];
 
 // Definition of Ready
@@ -103,24 +107,10 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 34,
-    workedWell: [
-      "Phase 7完了: Sprint 32-34の3スプリントで計画通り完了（コントロールバー + リンク表示UI）",
-      "REFACTOR率40%達成: 目標30%を超過、2件のリファクタリングコミットで構造改善",
-      "テスト目標達成: +12テスト（rendering.test.ts新規作成）、合計554テスト到達",
-      "TDD適用継続: 5コミット（RED 1 + GREEN 2 + REFACTOR 2）で完全なサイクル実施",
-      "LinkHandlerインターフェース抽象化: Obsidian API依存を分離しテスト容易性向上",
-      "rendering.ts統合: 3つのレンダリング関数を適切なモジュールに配置",
-    ],
-    toImprove: [
-      "内部/外部リンクの実際のクリックハンドラ統合は未実装: renderInternalLinks/renderExternalLinks関数は定義済だが、renderTaskItemへの統合は次フェーズ課題",
-      "LinkHandlerインターフェースの実装が未提供: テスト用の抽象化のみで、実際のObsidian API呼び出しは未実装",
-    ],
-    actions: [
-      "Phase 8検討: 全34 PBI完了、新規フェーズ計画が必要",
-      "内部/外部リンククリックハンドラ実装: renderTaskItemでリンク要素を実際にクリック可能にする",
-      "LinkHandler実装提供: Obsidian app.workspace.openLinkTextを呼び出す具体的実装を追加",
-    ] },
+  { sprint: 35,
+    workedWell: [],
+    toImprove: [],
+    actions: [] },
 ];
 
 // Action Management (Sprint 34でSprint 33 Actions 2件達成)

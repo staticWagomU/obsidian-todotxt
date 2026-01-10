@@ -73,36 +73,11 @@ export class AddTaskModal extends BaseTaskModal {
 		// プレビュー更新関数
 		const updatePreviewContent = (): void => {
 			const description = input.value.trim();
-			if (!description) {
-				return;
-			}
-
 			const priority = prioritySelect.value || undefined;
 			const dueDate = dueDateInput.value || undefined;
 			const thresholdDate = thresholdDateInput.value || undefined;
 
-			// Create Todo object for preview
-			const today = new Date().toISOString().split("T")[0];
-			let descriptionWithTags = description;
-			if (dueDate) {
-				descriptionWithTags += ` due:${dueDate}`;
-			}
-			if (thresholdDate) {
-				descriptionWithTags += ` t:${thresholdDate}`;
-			}
-
-			const previewTodo: Todo = {
-				completed: false,
-				priority,
-				creationDate: today,
-				description: descriptionWithTags,
-				projects: [],
-				contexts: [],
-				tags: {},
-				raw: "",
-			};
-
-			this.updatePreview(contentEl, previewTodo);
+			this.updatePreviewFromFormValues(contentEl, description, priority, dueDate, thresholdDate);
 		};
 
 		// Add event listeners for real-time preview

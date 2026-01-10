@@ -97,4 +97,46 @@ export abstract class BaseTaskModal extends Modal {
 		}
 		previewEl.textContent = serializeTodo(todo);
 	}
+
+	/**
+	 * フォーム値からTodoオブジェクトを構築してプレビューを更新
+	 * @param container プレビューエリアを含む親要素
+	 * @param description タスク説明
+	 * @param priority 優先度
+	 * @param dueDate 期限日
+	 * @param thresholdDate 開始日
+	 */
+	protected updatePreviewFromFormValues(
+		container: HTMLElement,
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string,
+	): void {
+		if (!description) {
+			return;
+		}
+
+		const today = new Date().toISOString().split("T")[0];
+		let descriptionWithTags = description;
+		if (dueDate) {
+			descriptionWithTags += ` due:${dueDate}`;
+		}
+		if (thresholdDate) {
+			descriptionWithTags += ` t:${thresholdDate}`;
+		}
+
+		const previewTodo: Todo = {
+			completed: false,
+			priority,
+			creationDate: today,
+			description: descriptionWithTags,
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "",
+		};
+
+		this.updatePreview(container, previewTodo);
+	}
 }

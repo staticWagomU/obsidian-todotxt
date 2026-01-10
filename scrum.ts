@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 32, pbi: "N/A", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 32, pbi: "PBI-030", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
 };
 
 // Product Goal
@@ -99,13 +99,56 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 31完了、次Sprint未開始)
+// Current Sprint (Sprint 32)
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
+  sprint: 32,
+  pbi: "PBI-030",
+  goal: "コントロールバーでフィルタ・ソート・グループ機能を提供し、ユーザーがタスクを効率的に整理・絞込できるようにする",
   status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  subtasks: [
+    {
+      test: "優先度フィルタドロップダウンの選択で該当優先度のタスクのみ表示される",
+      implementation: "優先度フィルタドロップダウンUI実装とフィルタロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "テキスト検索ボックスへの入力でdescriptionに含まれるタスクのみリアルタイム絞込表示される",
+      implementation: "テキスト検索ボックスUI実装とリアルタイム検索ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "グループ化選択でプロジェクト/コンテキスト/優先度別にグループ表示される",
+      implementation: "グループ化セレクタUI実装とグループ表示ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "ソート選択で未完了→完了順、優先度順、テキスト順にソート表示される",
+      implementation: "ソートセレクタUI実装とソートロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "統合テスト: フィルタ+ソート+グループの組み合わせで正しく動作し、データ保持される",
+      implementation: "複数条件組み合わせ動作と状態保持の統合テスト実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "統合テスト: コントロールバー操作後のタスク編集・追加・削除で表示状態が維持される",
+      implementation: "CRUD操作後のフィルタ・ソート・グループ状態維持テスト実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

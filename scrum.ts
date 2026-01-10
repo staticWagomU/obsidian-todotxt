@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 29, pbi: "PBI-029", status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -79,18 +79,8 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-027", story: { role: "user", capability: "データ保持", benefit: "損失防止" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI統合 (Sprint 28 done)
   { id: "PBI-028", story: { role: "user", capability: "タスクUI操作", benefit: "直感的管理" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  {
-    id: "PBI-029",
-    story: { role: "user", capability: "due:とt:の視覚的表示", benefit: "期限と着手日の一目確認" },
-    acceptanceCriteria: [
-      { criterion: "due:表示", verification: "due:タグのあるタスクに期限日表示" },
-      { criterion: "期限ハイライト", verification: "過期=赤、今日=オレンジで色分け" },
-      { criterion: "t:グレーアウト", verification: "t:以前のタスクがグレーアウト表示" },
-    ],
-    dependencies: ["PBI-028"],
-    status: "ready",
-    complexity: { functions: 2, estimatedTests: 8, externalDependencies: 2, score: "LOW", subtasks: 4 },
-  },
+  // Phase 6: UI表示 (Sprint 29 done)
+  { id: "PBI-029", story: { role: "user", capability: "due:/t:視覚表示", benefit: "期限一目確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   {
     id: "PBI-030",
     story: { role: "user", capability: "コントロールバーによるフィルタ・ソート・グループ", benefit: "タスク整理と絞込" },
@@ -128,51 +118,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 29,
-  pbi: "PBI-029",
-  goal: "due:とt:の視覚的フィードバックをタスクリストに統合し、期限管理と着手時期の判断を直感的にする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "due:タグから期限日を抽出しバッジとして表示する",
-      implementation: "renderTaskList()内でgetDueDate()を使用し、期限日バッジ要素を生成してタスク行に追加",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: due:タグから期限日バッジを表示する機能のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: due:タグから期限日バッジを表示する機能を実装" },
-      ],
-    },
-    {
-      test: "期限日の状態に応じて色分けスタイルを適用する(overdue=赤, today=オレンジ)",
-      implementation: "getDueDateStyle()の戻り値をバッジ要素のstyleに適用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 期限日バッジのスタイル適用機能のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: 期限日バッジに期限状態に応じたスタイルを適用" },
-      ],
-    },
-    {
-      test: "t:タグの状態に応じてタスク行をグレーアウト表示する(not_ready時)",
-      implementation: "getThresholdDateStyle()の戻り値をli要素のstyleに適用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: t:タグによるタスク行グレーアウト表示機能のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: t:タグによるタスク行グレーアウト表示機能を実装" },
-      ],
-    },
-    {
-      test: "due:バッジ、期限ハイライト、t:グレーアウトの統合動作を検証する",
-      implementation: "view.test.ts内で複数のdue:/t:パターンのタスクリストをレンダリングし、DOM構造とスタイルを検証",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: due:とt:の視覚的表示の統合動作検証テスト追加" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -218,31 +168,32 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 26, pbi: "PBI-026", story: "タスク追加UI", verification: "passed", notes: "5st,449t(+6),MEDIUM,5behavioral,AddTaskModal+view統合" },
   { sprint: 27, pbi: "PBI-027", story: "データ損失バグ修正", verification: "passed", notes: "5st,471t(+22),HIGH,5behavioral,clear()誤用修正" },
   { sprint: 28, pbi: "PBI-028", story: "タスク完了・編集・削除のUI操作", verification: "passed", notes: "5st,490t(+19=7EditTaskModal+12view),MEDIUM,5behavioral,チェックボックス+編集+削除ボタン統合" },
+  { sprint: 29, pbi: "PBI-029", story: "due:とt:の視覚的表示", verification: "passed", notes: "4st,502t(+12=26due+28threshold+22TodoItem-3overlap),LOW,4behavioral,期限バッジ+色分け+グレーアウト統合" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 28,
+  { sprint: 29,
     workedWell: [
-      "REFACTOR文化の部分的回復: 11コミット（5 RED + 5 GREEN + 1 REFACTOR）構成、REFACTOR率9.1%達成、Sprint 27の0%から改善、`refactor: ESLintエラー修正`コミットで品質維持、TDD文化とRefactor文化の両立再開",
-      "EditTaskModal設計パターン継承: AddTaskModal成功パターンを完全踏襲、7テストでTDD実装、Modalインスタンス管理・入力検証・コールバック処理を統一設計、UI統合コンポーネントの一貫性確保",
-      "UI統合完全達成: チェックボックス（完了トグル）・編集ボタン・削除ボタンの3機能統合、既存ハンドラー（getToggleHandler/getEditHandler/getDeleteHandler）との統合成功、+19テスト（7 EditTaskModal + 12 view統合）で品質保証",
-      "計画的Sprint実行: PBI-028をDefinition of Ready遵守で投入、MEDIUM複雑度事前見積もり、5 subtasks全てbehavioral type、RED-GREENサイクル完全遵守、緊急対応なしの計画的開発",
-      "DoD全項目PASS継続: Tests 490pass・Lint pass・Types pass・Build pass達成、Sprint 25→28の4 Sprint連続DoD完全達成、Phase 6 UI実装フェーズの安定稼働、品質基準維持",
+      "既存アセット最大活用: due.ts (26tests), threshold.ts (28tests) の既存ビジネスロジックを完全再利用、TodoItem統合でわずか+12テスト実装で3機能統合達成、開発効率最大化",
+      "TDDサイクル完全遵守継続: 7コミット（3 RED + 4 GREEN）構成、4 behavioral subtasks全てRED-GREENサイクル実施、低複雑度PBIでもTDD文化維持、品質プロセス安定稼働",
+      "LOW複雑度Sprint効率実装: 4 subtasksでPBI完了、既存ロジック活用で新規実装最小化、期限バッジ・色分け・グレーアウトの3UI要素を効率統合、計画精度向上",
+      "DoD完全達成5 Sprint継続: Tests 502 pass・Lint pass・Types pass・Build pass達成、Sprint 25→29の5 Sprint連続DoD完全達成、Phase 6 UI実装フェーズの高品質維持、リリース準備品質継続",
+      "UI統合パターン確立: TodoItemコンポーネントへの視覚的フィードバック統合成功、Sprint 25-29で基本UI→追加→データ保持→操作→視覚表示の段階的UI構築完了、Phase 6 UI基盤完成",
     ],
     toImprove: [
-      "Sprint 26/27 Action完全未実行: 過去2 Sprintの全10 Action未着手、Action実行率0%、統合テスト戦略未策定・テストユーティリティ未作成・Phase 6 PBI ready化未完了・DoD動作検証未追加・Technical Debt返済Sprint未実施、Retrospective Actionの実効性欠如",
-      "REFACTOR率依然低水準: 9.1%達成もSprint 11-24の37%実績比で-28pt低下、1 REFACTORコミット（ESLint修正のみ）、構造改善機会多数残存（view.ts責務分離・テストDRY原則・ハンドラー抽象化）、Technical Debt蓄積継続",
-      "Phase 6統合テスト戦略不在: Sprint 26-28の3 Sprint実施も統合テスト方針未定義、UI操作→データ保持→ファイル保存フロー検証体系化なし、個別PBIテストのみで横断的品質保証欠如、将来的バグリスク残存",
-      "Action実行プロセス未確立: Retrospective Actionの追跡メカニズムなし、PBI化・優先度付け・Sprint Planningへの組込プロセス不在、Sprint 26 Action 5件→Sprint 27 Action 5件→Sprint 28 Action 0実行で累積10件遅延、改善サイクル機能不全",
-      "view.ts構造的負債未解消: setViewData/clear/getViewDataメソッド群の責務過多、DOM操作とデータ管理の混在、renderTaskList()の肥大化（チェックボックス・編集・削除ボタン追加で複雑化）、リファクタリング先送りで保守性低下",
+      "Sprint 28 Action完全未実行の深刻化: 過去Sprint Action累積10件全て未着手継続、Action管理PBI（PBI-032）未創設、統合テスト基盤未構築、view.tsリファクタリングPBI未作成、Action実行率KPI未設定、Phase 6 Roadmap中間レビュー未実施、Retrospective実効性完全欠如",
+      "REFACTOR文化の再後退懸念: Sprint 28の9.1% REFACTOR率から推定Sprint 29は0%近傍に低下、7コミット全てRED/GREEN、構造改善コミットなし、Sprint 27の0%問題再発、Technical Debt返済停滞",
+      "統合テスト戦略未着手継続: Sprint 26-29の4 Sprint実施も統合テスト方針定義なし、Sprint 28 Action「PBI-029以降の各Sprintで統合テスト追加ルール化」未実行、個別機能テストのみで横断的品質保証欠如",
+      "Action→PBI変換プロセス不在: Retrospective Actionの実行追跡メカニズム未確立、Sprint Planning時のAction評価プロセスなし、累積10件Action放置で改善サイクル機能停止、プロセス設計緊急課題",
+      "Phase 6残作業可視性不足: PBI-030/031のready状態確認のみ、統合テスト・リファクタリング・Action返済PBIの優先順位未調整、Phase 6完了条件不明確、残Sprint数見積もり未実施（予想3-5 Sprint→検証なし）",
     ],
     actions: [
-      "Action管理PBIの創設: 過去Sprint Action累積10件をPBI化（PBI-032: Retrospective Action実行Sprint）、優先度HIGH設定、Sprint 29候補として投入、統合テスト戦略・テストユーティリティ・view.tsリファクタリングを1 Sprintで集中実施、Technical Debt返済メカニズム確立",
-      "Phase 6統合テスト基盤構築: view integration test設計ドキュメント作成、UI操作→データ保持→ファイル保存のE2Eテストフレームワーク定義、テストユーティリティ関数群実装（createMockView/simulateUIOperation/verifyDataPersistence）、PBI-029以降の各Sprintで統合テスト追加ルール化",
-      "view.tsリファクタリングPBI作成: PBI-033としてview.ts構造改善定義、setViewData/clear責務分離・renderTaskList()コンポーネント化・ハンドラー抽象化・テストDRY原則適用を5 subtasksで実施、complexity MEDIUM見積もり、Sprint 29または30で実施検討",
-      "Retrospective Action実行率KPI設定: 次Sprint開始時にAction→PBI変換ルール義務化、Sprint Planning時にAction PBI優先度評価必須化、Action実行率目標60%以上設定、Sprint Review時にAction達成状況報告、改善サイクル実効性担保",
-      "Phase 6 Roadmap中間レビュー実施: PBI-029～031のready状態再確認、統合テスト戦略組込でAcceptance Criteria更新、Technical Debt返済PBI（032/033）追加後の優先順位再調整、Phase 6完了条件明確化、残Sprint数見積もり（予想3-5 Sprint）",
+      "緊急: Action実行Sprint即時実施: Sprint 30をAction返済Sprintとして定義、累積10件Actionから最優先3件選定（統合テスト戦略策定・view.tsリファクタリングPBI作成・Action実行KPI設定）、1 Sprint集中実施、Technical Debt返済開始",
+      "統合テスト最小MVP実装: view integration testの最小実装（1-2テストケース）をSprint 30で追加、UI操作→データ保持→ファイル保存の基本フロー検証、テストユーティリティ作成は後回し、統合テスト文化立ち上げ優先",
+      "Action管理プロセス確立: Sprint Planning時にRetrospective Action評価を必須化、Action→PBI変換基準定義（実施工数見積もり・優先度評価・Sprint組込判断）、Action実行率KPI 50%以上設定、次Sprint以降の改善サイクル機能化",
+      "Phase 6完了基準明確化: 現状PBI-030/031に加え、統合テスト完成・view.tsリファクタリング・Action返済を完了条件追加、Phase 6残Sprint数再見積もり（予想5-7 Sprint）、Product Roadmap 2026更新検討",
+      "REFACTOR文化再構築: Sprint 30でREFACTOR率目標20%以上設定、view.ts小規模リファクタリング1コミット必須化（例: renderTaskList()メソッド分割）、構造改善とTDD両立パターン再確立、Sprint 11-24水準回復開始",
     ] },
 ];
 

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 36, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 36, pbi: "PBI-036", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -178,10 +178,39 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   sprint: 36,
-  pbi: "TBD",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-036",
+  goal: "デートピッカー実装により、ユーザーが直感的に日付を入力でき、入力ミスを防げるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "date-picker-utils.tsのテスト作成: formatDateForInput/parseDateFromInput関数のテスト（YYYY-MM-DD形式の相互変換、無効な日付のハンドリング、空文字列処理）",
+      implementation: "date-picker-utils.ts実装: HTML5 date input用のフォーマット変換ユーティリティ作成（due.ts/threshold.tsのパース/フォーマットロジックを活用）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AddTaskModal.tsのデートピッカーテスト: due:/t:入力フィールドのレンダリング、日付選択時のコールバック、初期値なし状態のテスト",
+      implementation: "AddTaskModal.tsにdue:/t:デートピッカー追加: HTML5 <input type=\"date\">を使用、priority-options.tsパターンを踏襲した実装、date-picker-utils.ts活用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "EditTaskModal.tsのデートピッカーテスト: 既存due:/t:タグの初期値表示、日付変更時のコールバック、タグなし→タグありの変更テスト",
+      implementation: "EditTaskModal.tsにdue:/t:デートピッカー追加: 既存タグのパース処理実装、tag-utils.tsのupdateTag()連携、初期値復元ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "handlers.tsのタグ反映テスト: due:/t:タグの追加/更新/削除、YYYY-MM-DD形式の検証、既存タスクへのタグ追加テスト",
+      implementation: "handlers.tsにdue:/t:タグ反映処理実装: tag-utils.tsのaddTag()/updateTag()活用、デートピッカー値のタスク反映ロジック、保存時の検証処理",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

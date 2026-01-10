@@ -1620,3 +1620,163 @@ describe("render threshold date grayout", () => {
 		vi.useRealTimers();
 	});
 });
+
+describe("integration: due and threshold visual display", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("due:とt:の両方を持つタスクで両方の視覚的フィードバックが適用される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Task with both overdue due: and not_ready t:
+		view.setViewData("Buy milk due:2026-01-15 t:2026-01-25", false);
+		view.renderTaskList();
+
+		// Verify: Both styles are applied
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+		const dueBadge = li?.querySelector("span.due-date") as HTMLSpanElement;
+
+		// Check threshold grayout
+		expect(li?.style.opacity).toBe("0.5");
+
+		// Check due badge with red color
+		expect(dueBadge).not.toBeNull();
+		expect(dueBadge?.textContent).toContain("2026-01-15");
+		expect(dueBadge?.style.color).toBe("#ff4444");
+
+		vi.useRealTimers();
+	});
+
+	it("複数タスクでdue:とt:が異なる状態の視覚的表示が正しく適用される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Multiple tasks with different due: and t: states
+		view.setViewData(
+			"Task 1 due:2026-01-15\n" + // overdue, no threshold
+			"Task 2 t:2026-01-25\n" + // not_ready, no due
+			"Task 3 due:2026-01-20 t:2026-01-18\n" + // today due, ready threshold
+			"Task 4", // no due, no threshold
+			false
+		);
+		view.renderTaskList();
+
+		const ul = container.querySelector("ul");
+
+		// Task 1: overdue due badge, no grayout
+		const li1 = ul?.children[0] as HTMLLIElement;
+		const dueBadge1 = li1?.querySelector("span.due-date") as HTMLSpanElement;
+		expect(li1?.style.opacity).toBe("");
+		expect(dueBadge1?.style.color).toBe("#ff4444");
+
+		// Task 2: no due badge, grayout
+		const li2 = ul?.children[1] as HTMLLIElement;
+		const dueBadge2 = li2?.querySelector("span.due-date");
+		expect(li2?.style.opacity).toBe("0.5");
+		expect(dueBadge2).toBeNull();
+
+		// Task 3: today due badge (orange), no grayout
+		const li3 = ul?.children[2] as HTMLLIElement;
+		const dueBadge3 = li3?.querySelector("span.due-date") as HTMLSpanElement;
+		expect(li3?.style.opacity).toBe("");
+		expect(dueBadge3?.style.color).toBe("#ff9944");
+
+		// Task 4: no due badge, no grayout
+		const li4 = ul?.children[3] as HTMLLIElement;
+		const dueBadge4 = li4?.querySelector("span.due-date");
+		expect(li4?.style.opacity).toBe("");
+		expect(dueBadge4).toBeNull();
+
+		vi.useRealTimers();
+	});
+
+	it("優先度バッジとdue:バッジとt:グレーアウトが共存できる", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Task with priority, due, and threshold
+		view.setViewData("(A) Buy milk due:2026-01-15 t:2026-01-25", false);
+		view.renderTaskList();
+
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+
+		// Check all three features
+		const priorityBadge = li?.querySelector("span.priority") as HTMLSpanElement;
+		const dueBadge = li?.querySelector("span.due-date") as HTMLSpanElement;
+
+		expect(priorityBadge).not.toBeNull();
+		expect(priorityBadge?.textContent).toContain("A");
+
+		expect(dueBadge).not.toBeNull();
+		expect(dueBadge?.textContent).toContain("2026-01-15");
+		expect(dueBadge?.style.color).toBe("#ff4444");
+
+		expect(li?.style.opacity).toBe("0.5");
+
+		vi.useRealTimers();
+	});
+});

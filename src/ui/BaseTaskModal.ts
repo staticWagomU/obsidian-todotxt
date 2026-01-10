@@ -9,6 +9,7 @@ import { extractProjects, extractContexts } from "../lib/suggestions";
 import { renderProjectOptions, renderContextOptions } from "../lib/project-context-utils";
 import type { Todo } from "../lib/todo";
 import { serializeTodo } from "../lib/parser";
+import { buildDescriptionWithTags } from "../utils/form-helpers";
 
 export abstract class BaseTaskModal extends Modal {
 	/**
@@ -118,13 +119,7 @@ export abstract class BaseTaskModal extends Modal {
 		}
 
 		const today = new Date().toISOString().split("T")[0];
-		let descriptionWithTags = description;
-		if (dueDate) {
-			descriptionWithTags += ` due:${dueDate}`;
-		}
-		if (thresholdDate) {
-			descriptionWithTags += ` t:${thresholdDate}`;
-		}
+		const descriptionWithTags = buildDescriptionWithTags(description, dueDate, thresholdDate);
 
 		const previewTodo: Todo = {
 			completed: false,

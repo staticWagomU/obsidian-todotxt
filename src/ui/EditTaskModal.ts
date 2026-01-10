@@ -3,14 +3,22 @@
  */
 
 import { Modal, type App } from "obsidian";
+import { generatePriorityOptions } from "../lib/priority-options";
 
 export class EditTaskModal extends Modal {
 	onSave: (description: string, priority?: string) => void;
 	initialDescription: string;
+	initialPriority?: string;
 
-	constructor(app: App, initialDescription: string, onSave: (description: string, priority?: string) => void) {
+	constructor(
+		app: App,
+		initialDescription: string,
+		onSave: (description: string, priority?: string) => void,
+		initialPriority?: string,
+	) {
 		super(app);
 		this.initialDescription = initialDescription;
+		this.initialPriority = initialPriority;
 		this.onSave = onSave;
 	}
 
@@ -24,6 +32,18 @@ export class EditTaskModal extends Modal {
 		input.placeholder = "タスクを入力...";
 		input.value = this.initialDescription;
 
+		// Priority select
+		const prioritySelect = contentEl.createEl("select");
+		prioritySelect.classList.add("priority-select");
+		const priorityOptions = generatePriorityOptions();
+		for (const option of priorityOptions) {
+			const optionEl = prioritySelect.createEl("option");
+			optionEl.textContent = option.label;
+			optionEl.value = option.value ?? "";
+		}
+		// Set initial priority selection
+		prioritySelect.value = this.initialPriority ?? "";
+
 		// Save button
 		const saveButton = contentEl.createEl("button");
 		saveButton.classList.add("save-task-button");
@@ -31,7 +51,8 @@ export class EditTaskModal extends Modal {
 		saveButton.addEventListener("click", () => {
 			const description = input.value.trim();
 			if (description) {
-				this.onSave(description, undefined);
+				const priority = prioritySelect.value || undefined;
+				this.onSave(description, priority);
 				this.close();
 			}
 		});

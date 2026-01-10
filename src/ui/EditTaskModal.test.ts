@@ -6,7 +6,7 @@ vi.mock("obsidian", () => {
 	// Helper to add Obsidian-like createEl method to elements recursively
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function addCreateElMethod(el: HTMLElement): any {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 		(el as any).createEl = (childTag: string) => {
 			const childEl = document.createElement(childTag);
 			el.appendChild(childEl);
@@ -45,7 +45,7 @@ describe("EditTaskModal", () => {
 	beforeEach(() => {
 		mockApp = {};
 		onSaveSpy = vi.fn();
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
 		modal = new EditTaskModal(mockApp as any, "Buy milk", onSaveSpy as any);
 	});
 

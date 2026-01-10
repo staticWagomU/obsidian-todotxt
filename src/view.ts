@@ -32,9 +32,9 @@ export class TodotxtView extends TextFileView {
 		return this.data;
 	}
 
-	setViewData(data: string, clear: boolean): void {
+	setViewData(data: string, _clear: boolean): void {
 		this.data = data;
-		// Note: 'clear' parameter is for UI optimization, not data clearing
+		// Note: '_clear' parameter is for UI optimization, not data clearing
 		// It tells Obsidian whether to clear the DOM before rendering
 		this.renderTaskList();
 	}
@@ -173,9 +173,9 @@ export class TodotxtView extends TextFileView {
 			checkbox.dataset.index = String(index);
 
 			// Add click handler
-			checkbox.addEventListener("click", async () => {
+			checkbox.addEventListener("click", () => {
 				const toggleHandler = this.getToggleHandler();
-				await toggleHandler(index);
+				void toggleHandler(index);
 			});
 
 			// Add space after checkbox
@@ -208,9 +208,9 @@ export class TodotxtView extends TextFileView {
 			deleteButton.classList.add("delete-task-button");
 			deleteButton.textContent = "削除";
 			deleteButton.dataset.index = String(index);
-			deleteButton.addEventListener("click", async () => {
+			deleteButton.addEventListener("click", () => {
 				const deleteHandler = this.getDeleteHandler();
-				await deleteHandler(index);
+				void deleteHandler(index);
 			});
 
 			if (todo.completed) {

@@ -81,6 +81,20 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-028", story: { role: "user", capability: "タスクUI操作", benefit: "直感的管理" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI表示 (Sprint 29 done)
   { id: "PBI-029", story: { role: "user", capability: "due:/t:視覚表示", benefit: "期限一目確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
+  // Phase 6: Action返済Sprint (最優先 - 累積10件Action未実行の深刻化対応)
+  {
+    id: "PBI-032",
+    story: { role: "dev", capability: "累積Retrospective Action実行による技術的負債返済", benefit: "改善サイクル機能回復" },
+    acceptanceCriteria: [
+      { criterion: "view統合テスト最小MVP", verification: "UI操作→データ保持フローの統合テスト1-2ケース追加、pass確認" },
+      { criterion: "Action管理プロセス文書化", verification: "Sprint Planning時のAction評価手順をscrum.ts等に明記" },
+      { criterion: "Action実行率KPI設定", verification: "50%以上目標をscrum.tsに明記、次Sprint以降追跡可能" },
+    ],
+    dependencies: [],
+    status: "ready",
+    complexity: { functions: 1, estimatedTests: 5, externalDependencies: 1, score: "MEDIUM", subtasks: 5 },
+  },
+  // Phase 6: 継続UI機能実装
   {
     id: "PBI-030",
     story: { role: "user", capability: "コントロールバーによるフィルタ・ソート・グループ", benefit: "タスク整理と絞込" },
@@ -92,6 +106,7 @@ export const productBacklog: ProductBacklogItem[] = [
     ],
     dependencies: ["PBI-028"],
     status: "ready",
+    complexity: { functions: 4, estimatedTests: 15, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
   },
   {
     id: "PBI-031",
@@ -103,6 +118,37 @@ export const productBacklog: ProductBacklogItem[] = [
     ],
     dependencies: ["PBI-028"],
     status: "ready",
+    complexity: { functions: 3, estimatedTests: 12, externalDependencies: 1, score: "MEDIUM", subtasks: 5 },
+  },
+  {
+    id: "PBI-033",
+    story: { role: "user", capability: "コントロールバーUI", benefit: "フィルタ・ソート・グループ操作" },
+    acceptanceCriteria: [
+      { criterion: "フィルタUI", verification: "優先度/完了状態ドロップダウン表示、選択で絞込動作" },
+      { criterion: "検索UI", verification: "テキスト入力ボックス表示、入力でリアルタイム検索" },
+      { criterion: "ソート/グループUI", verification: "ソート順・グループ化切替ボタン表示、クリックで表示変更" },
+    ],
+    dependencies: ["PBI-030"],
+    status: "refining",
+    complexity: { functions: 3, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
+  },
+  {
+    id: "PBI-034",
+    story: { role: "dev", capability: "view.tsをhandlers/rendering層に分離", benefit: "300行超回避と保守性向上" },
+    acceptanceCriteria: [
+      { criterion: "handlers分離", verification: "getToggleHandler等4メソッドをsrc/lib/handlers.ts化、view.tsから参照" },
+      { criterion: "rendering分離", verification: "renderTaskList()をsrc/lib/rendering.ts化、view.tsは200行以下に削減" },
+      { criterion: "既存テスト全通過", verification: "リファクタリング後も502tests全pass維持、振る舞い変更なし確認" },
+    ],
+    dependencies: [],
+    status: "ready",
+    complexity: { functions: 2, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 3 },
+    refactorChecklist: [
+      "src/lib/handlers.ts作成 - 4 handler functions移動",
+      "src/lib/rendering.ts作成 - renderTaskList()移動",
+      "view.ts import更新、244行→150行目標",
+      "既存テスト全通過確認 (502 tests)",
+    ],
   },
 ];
 
@@ -113,6 +159,7 @@ export const definitionOfReady = {
     "User story has role/capability/benefit",
     "At least 3 acceptance criteria with verification",
     "Dependencies resolved or not blocking",
+    "Complexity estimated (functions/estimatedTests/externalDependencies/score/subtasks)",
   ],
 };
 
@@ -196,6 +243,24 @@ export const retrospectives: Retrospective[] = [
       "REFACTOR文化再構築: Sprint 30でREFACTOR率目標20%以上設定、view.ts小規模リファクタリング1コミット必須化（例: renderTaskList()メソッド分割）、構造改善とTDD両立パターン再確立、Sprint 11-24水準回復開始",
     ] },
 ];
+
+// Action Management Process (Sprint 29 Retrospective Action導入)
+export const actionManagement = {
+  kpi: { executionRateTarget: 50, description: "Retrospective Actionの実行率目標（%）" },
+  evaluationProcess: [
+    "Sprint Planning時に前Sprintの全Actionを評価",
+    "各Action実施工数見積もり（0.5-2 Sprints）と優先度評価（High/Medium/Low）",
+    "High優先度Action→即時PBI化、Medium→バックログ追加、Low→次回評価",
+    "Sprint終了時に実行率計算: (実行Action数 / 全Action数) × 100",
+    "実行率50%未満の場合、次SprintでAction返済Sprint検討",
+  ],
+  tracking: {
+    totalActions: 10,
+    executedActions: 0,
+    currentRate: 0,
+    note: "Sprint 30 (PBI-032) でAction返済Sprint実施、統合テスト・プロセス改善・KPI設定の3件実行予定",
+  },
+};
 
 // Agents & Events
 export const agents = { productOwner: "@scrum-team-product-owner", scrumMaster: "@scrum-team-scrum-master", developer: "@scrum-team-developer" };

@@ -176,12 +176,22 @@ function updateTagInTodo(
 }
 
 /**
+ * Updates for editing tasks (including date fields)
+ */
+export interface TaskUpdates {
+	description?: string;
+	priority?: string;
+	dueDate?: string;
+	thresholdDate?: string;
+}
+
+/**
  * Edit task properties with partial updates
  * Preserves metadata (completed, creationDate, completionDate, tags, raw)
  */
 export function editTask(
 	todo: Todo,
-	updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
+	updates: TaskUpdates,
 ): Todo {
 	const result: Todo = { ...todo };
 
@@ -250,7 +260,7 @@ export function editTask(
 export function editAndUpdateTask(
 	content: string,
 	lineIndex: number,
-	updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
+	updates: TaskUpdates,
 ): string {
 	const todos = parseTodoTxt(content);
 

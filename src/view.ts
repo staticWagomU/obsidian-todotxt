@@ -102,8 +102,8 @@ export class TodotxtView extends TextFileView {
 	 */
 	openAddTaskModal(): void {
 		const addHandler = getAddHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
-		const modal = new AddTaskModal(this.app, (description, priority) => {
-			void addHandler(description, priority);
+		const modal = new AddTaskModal(this.app, (description, priority, dueDate, thresholdDate) => {
+			void addHandler(description, priority, dueDate, thresholdDate);
 		});
 		modal.open();
 	}
@@ -118,9 +118,16 @@ export class TodotxtView extends TextFileView {
 		if (!todo) return;
 
 		const editHandler = getEditHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
-		const modal = new EditTaskModal(this.app, todo.description, (description, priority) => {
-			void editHandler(index, { description, priority });
-		}, todo.priority);
+		const modal = new EditTaskModal(
+			this.app,
+			todo.description,
+			(description, priority, dueDate, thresholdDate) => {
+				void editHandler(index, { description, priority, dueDate, thresholdDate });
+			},
+			todo.priority,
+			todo.tags.due,
+			todo.tags.t,
+		);
 		modal.open();
 	}
 }

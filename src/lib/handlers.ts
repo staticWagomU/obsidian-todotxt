@@ -1,5 +1,5 @@
 import { parseTodoTxt, updateTodoInList } from "./parser";
-import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type Todo } from "./todo";
+import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type TaskUpdates } from "./todo";
 
 /**
  * Get toggle handler for task completion status
@@ -74,11 +74,11 @@ export function getEditHandler(
 	setViewData: (data: string, clear: boolean) => void,
 ): (
 	lineIndex: number,
-	updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
+	updates: TaskUpdates,
 ) => Promise<void> {
 	return async (
 		lineIndex: number,
-		updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
+		updates: TaskUpdates,
 	) => {
 		const currentData = getData();
 		const updatedData = editAndUpdateTask(currentData, lineIndex, updates);

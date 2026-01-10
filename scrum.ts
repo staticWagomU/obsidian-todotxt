@@ -48,18 +48,8 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-7: Sprint 1-32 完了（32 PBIs done）
   // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ/コントロールバー
   // Phase 7: UI機能実装継続（Sprint 33〜）
-  {
-    id: "PBI-031",
-    story: { role: "user", capability: "内部/外部リンクのクリック可能表示", benefit: "関連リソースへ素早くアクセス" },
-    acceptanceCriteria: [
-      { criterion: "内部リンク", verification: "[[Note]]がクリック可能、クリックでノート開く" },
-      { criterion: "外部リンク", verification: "http/https URLがクリック可能" },
-      { criterion: "rec:表示", verification: "rec:タグに繰り返しアイコン表示" },
-    ],
-    dependencies: ["PBI-028"],
-    status: "ready",
-    complexity: { functions: 3, estimatedTests: 12, externalDependencies: 1, score: "MEDIUM", subtasks: 5 },
-  },
+  // Sprint 33 Planning優先順位: PBI-033 > PBI-031
+  // 理由: PBI-033はSprint 32ロジック実装済（UI化のみ）、externalDependencies 0、estimatedTests少
   {
     id: "PBI-033",
     story: { role: "user", capability: "コントロールバーUI", benefit: "フィルタ・ソート・グループ操作" },
@@ -70,7 +60,29 @@ export const productBacklog: ProductBacklogItem[] = [
     ],
     dependencies: [],
     status: "ready",
-    complexity: { functions: 3, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
+    complexity: { functions: 3, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM", subtasks: 3 },
+    refactorChecklist: [
+      "REFACTOR率目標30%（Sprint 32 Action 4: 20-50%レンジ）",
+      "UI component抽出とロジック分離",
+      "Filter/Sort/Group状態管理の統一",
+    ],
+  },
+  {
+    id: "PBI-031",
+    story: { role: "user", capability: "内部/外部リンクのクリック可能表示", benefit: "関連リソースへ素早くアクセス" },
+    acceptanceCriteria: [
+      { criterion: "内部リンク", verification: "[[Note]]がクリック可能、クリックでノート開く" },
+      { criterion: "外部リンク", verification: "http/https URLがクリック可能" },
+      { criterion: "rec:表示", verification: "rec:タグに繰り返しアイコン表示" },
+    ],
+    dependencies: ["PBI-028"],
+    status: "ready",
+    complexity: { functions: 3, estimatedTests: 12, externalDependencies: 1, score: "MEDIUM", subtasks: 3 },
+    refactorChecklist: [
+      "REFACTOR率目標30%（Sprint 32 Action 4: 20-50%レンジ）",
+      "Link解析ロジックとRenderingの分離",
+      "Obsidian API呼び出しの抽象化",
+    ],
   },
 ];
 
@@ -145,6 +157,12 @@ export const retrospectives: Retrospective[] = [
       "REFACTOR率20-50%レンジ維持: 目標20%最低ライン、50%を健全上限として、機能実装速度とのバランス調整",
     ] },
 ];
+
+// Sprint 33 Backlog Refinement実施（2026-01-10）
+// - PBI-033, PBI-031: Definition of Ready適合確認済
+// - 優先順位評価: PBI-033優先（Sprint 32ロジック実装済、externalDependencies 0）
+// - Sprint 32 Actions適用: subtask粒度ガイドライン適用（5→3 subtasks）、REFACTOR率目標30%設定
+// - PBI-033/031にrefactorChecklist追加、productBacklogに優先順位決定根拠記録
 
 // Action Management (Sprint 30確立、Sprint 31でAction2達成、Sprint 32でAction4全達成)
 export const actionManagement = {

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 33, pbi: "PBI-033", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 33, pbi: "PBI-033", status: "done" as SprintStatus,
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -102,28 +102,36 @@ export const currentSprint = {
   sprint: 33,
   pbi: "PBI-033",
   goal: "rendering.tsのコントロールバー関数をUI化し、フィルタ・検索・ソート・グループ化機能を視覚的に操作可能にする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "フィルタUI（優先度ドロップダウン）の表示と選択機能をテスト",
       implementation: "renderPriorityFilterDropdown関数のUI表示・選択イベント・フィルタ適用を実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: 優先度フィルタドロップダウンのアクセシビリティテスト追加" },
+      ],
     },
     {
       test: "検索UIとソート/グループUIの表示と操作機能をテスト",
       implementation: "renderSearchBox/renderSortSelector/renderGroupSelector関数のUI表示・イベントハンドリング・表示変更を実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: 検索・グループ・ソートUIのアクセシビリティテスト追加" },
+      ],
     },
     {
       test: "コントロールバーUI関数の責務分離とFilterState統一をテスト",
       implementation: "UI component抽出、Filter/Sort/Group状態管理の統一、重複ロジックの集約を実施",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: FilterState型のエクスポート検証テスト追加" },
+        { phase: "refactor", message: "refactor: FilterState型をエクスポート" },
+        { phase: "refactor", message: "refactor: DEFAULT_FILTER_STATE定数を導入してFilterState管理を統一" },
+      ],
     },
   ] as Subtask[],
 };
@@ -154,6 +162,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 31, pbi: "PBI-034", story: "view.ts層分離", verification: "passed", notes: "504t,view.ts258→126行(51%削減),handlers.ts87行+rendering.ts129行作成,REFACTOR率100%" },
   // Phase 7 (Sprint 32~): UI機能実装継続
   { sprint: 32, pbi: "PBI-030", story: "コントロールバー", verification: "passed", notes: "533t(+29t),TDD完全適用(9commit:RED4+GREEN4+REFACTOR3),REFACTOR率50%,controlbar.test.ts29t追加,FilterState型導入,CRUD後状態維持実装" },
+  { sprint: 33, pbi: "PBI-033", story: "コントロールバーUI", verification: "passed", notes: "542t(+9t),aria-label追加でアクセシビリティ向上,FilterState型&DEFAULT_FILTER_STATE定数エクスポート,TDD適用(4commit:RED3+REFACTOR2),REFACTOR率50%(2/4),controlbar.test.ts38t(+9)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

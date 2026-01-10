@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 36, pbi: "PBI-036", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 36, pbi: "PBI-036", status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -180,35 +180,52 @@ export const currentSprint = {
   sprint: 36,
   pbi: "PBI-036",
   goal: "デートピッカー実装により、ユーザーが直感的に日付を入力でき、入力ミスを防げるようにする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "date-picker-utils.tsのテスト作成: formatDateForInput/parseDateFromInput関数のテスト（YYYY-MM-DD形式の相互変換、無効な日付のハンドリング、空文字列処理）",
       implementation: "date-picker-utils.ts実装: HTML5 date input用のフォーマット変換ユーティリティ作成（due.ts/threshold.tsのパース/フォーマットロジックを活用）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: date-picker-utils.ts - formatDateForInput/parseDateFromInput関数のテスト作成" },
+        { phase: "green", message: "feat: date-picker-utils.ts - HTML5 date input用のフォーマット変換ユーティリティ実装" },
+        { phase: "refactor", message: "refactor: date-picker-utils.ts - isDateAutoAdjusted関数を抽出し責任を分離" },
+      ],
     },
     {
       test: "AddTaskModal.tsのデートピッカーテスト: due:/t:入力フィールドのレンダリング、日付選択時のコールバック、初期値なし状態のテスト",
       implementation: "AddTaskModal.tsにdue:/t:デートピッカー追加: HTML5 <input type=\"date\">を使用、priority-options.tsパターンを踏襲した実装、date-picker-utils.ts活用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: AddTaskModal.ts - due:/t:デートピッカーのテスト追加" },
+        { phase: "green", message: "feat: AddTaskModal.ts - due:/t:デートピッカー追加" },
+        { phase: "refactor", message: "refactor: AddTaskModal.ts - createLabelヘルパー追加でアクセシビリティ向上" },
+      ],
     },
     {
       test: "EditTaskModal.tsのデートピッカーテスト: 既存due:/t:タグの初期値表示、日付変更時のコールバック、タグなし→タグありの変更テスト",
       implementation: "EditTaskModal.tsにdue:/t:デートピッカー追加: 既存タグのパース処理実装、tag-utils.tsのupdateTag()連携、初期値復元ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: EditTaskModal.ts - due:/t:デートピッカーのテスト追加" },
+        { phase: "green", message: "feat: EditTaskModal.ts - due:/t:デートピッカー追加・初期値復元ロジック実装" },
+        { phase: "refactor", message: "refactor: BaseTaskModal基底クラス抽出でcreateLabel共通化" },
+      ],
     },
     {
       test: "handlers.tsのタグ反映テスト: due:/t:タグの追加/更新/削除、YYYY-MM-DD形式の検証、既存タスクへのタグ追加テスト",
       implementation: "handlers.tsにdue:/t:タグ反映処理実装: tag-utils.tsのaddTag()/updateTag()活用、デートピッカー値のタスク反映ロジック、保存時の検証処理",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test: handlers.ts - due:/t:タグ反映処理のテスト作成" },
+        { phase: "green", message: "feat: handlers.ts/todo.ts - due:/t:タグ反映処理実装" },
+        { phase: "refactor", message: "refactor: todo.ts - updateTagInTodo関数抽出でタグ処理ロジック共通化" },
+        { phase: "green", message: "feat: view.ts統合 - デートピッカーとhandlersの完全統合・TaskUpdates型定義" },
+      ],
     },
   ] as Subtask[],
 };

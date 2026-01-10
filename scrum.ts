@@ -158,10 +158,10 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 30確立、Sprint 31でAction1達成)
+// Action Management (Sprint 30確立、Sprint 31でAction2達成)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 10, executed: 6, rate: 60, remaining: 4 }, // Sprint 31: REFACTOR達成で+1
+  tracking: { total: 10, executed: 8, rate: 80, remaining: 2 }, // Sprint 31: REFACTOR率100%+Phase6優先順位で+2
 };
 
 // Agents & Events

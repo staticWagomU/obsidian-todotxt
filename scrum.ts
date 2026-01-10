@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 28, pbi: "PBI-028", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -79,7 +79,7 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 6: Critical Bug Fix (Sprint 27 done)
   { id: "PBI-027", story: { role: "user", capability: "データ保持", benefit: "損失防止" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI統合 (Sprint 28 done)
-  { id: "PBI-028", story: { role: "user", capability: "タスク完了・編集・削除のUI操作", benefit: "直感的タスク管理" }, acceptanceCriteria: [], dependencies: [], status: "done" },
+  { id: "PBI-028", story: { role: "user", capability: "タスクUI操作", benefit: "直感的管理" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   {
     id: "PBI-029",
     story: { role: "user", capability: "due:とt:の視覚的表示", benefit: "期限と着手日の一目確認" },
@@ -128,62 +128,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 28,
-  pbi: "PBI-028",
-  goal: "renderTaskList()にチェックボックス・編集・削除ボタンを実装し、既存ハンドラーと統合して直感的なタスク管理UIを完成させる",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "view.test.tsにチェックボックスレンダリングテスト追加（input[type=\"checkbox\"]存在確認、完了状態でchecked属性検証、data-index属性検証）",
-      implementation: "renderTaskList()にチェックボックス要素追加、todo.completedに基づくchecked状態反映、data-index属性でタスク識別",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: チェックボックスUI表示のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: renderTaskListにチェックボックスUI追加" },
-      ],
-    },
-    {
-      test: "view.test.tsにチェックボックスクリックテスト追加（クリックイベントでgetToggleHandler()呼出確認、タスク完了/未完了トグル検証、複数タスク個別操作検証）",
-      implementation: "チェックボックスonClickイベントにgetToggleHandler()接続、data-index属性から対象タスク特定、非同期ハンドラーで状態更新",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: チェックボックスクリック動作のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: チェックボックスにクリックイベント接続" },
-      ],
-    },
-    {
-      test: "EditTaskModal.test.ts新規作成（モーダル表示、初期値セット、保存ボタン→onSaveコールバック、入力フィールド検証、空入力時保存拒否、モーダルクローズクリーンアップ）",
-      implementation: "ui/EditTaskModal.ts新規作成（AddTaskModal構造参考、既存タスク説明を初期値としてフォーム初期化、保存時description更新）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: EditTaskModalのテスト追加とスタブ実装" },
-        { phase: "green" as CommitPhase, message: "feat: EditTaskModal完全実装" },
-      ],
-    },
-    {
-      test: "view.test.tsに編集ボタンテスト追加（ボタンレンダリング、data-index属性、クリック→openEditTaskModal呼出検証）",
-      implementation: "renderTaskList()に編集ボタン追加、openEditTaskModal()実装でEditTaskModalインスタンス作成・表示、getEditHandler()経由で編集処理",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 編集ボタンUI統合のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: 編集ボタンUI統合とopenEditTaskModal実装" },
-      ],
-    },
-    {
-      test: "view.test.tsに削除ボタンテスト追加（ボタンレンダリング、data-index属性、クリック→getDeleteHandler()呼出・タスク削除検証）",
-      implementation: "renderTaskList()に削除ボタン追加、onClickイベントでgetDeleteHandler()接続、data-index属性から対象タスク特定、非同期で削除処理",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 削除ボタンUI統合のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: 削除ボタンUI統合完了" },
-      ],
-    },
-  ],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [],
 };
 
 // Impediments
@@ -233,27 +182,27 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 27,
+  { sprint: 28,
     workedWell: [
-      "Critical Bug迅速修正完遂: データ損失バグ（PBI-027）をHIGH複雑度として5 subtasks完遂、1 RED + 5 GREENコミット、テスト数449→471（+22）、DoD全項目PASS達成、Phase 6継続の基盤確保",
-      "根本原因の的確な特定: setViewData()内のclear()誤用を正確に特定、this.dataを誤削除する問題を解明、clearパラメータをDOM最適化フラグと再解釈、根本原因ベースの修正実施",
-      "包括的テストカバレッジ追加: +22テストで徹底的データ保持検証、setViewData/getViewData/タスク操作/ファイル再オープンの統合テスト全実装、将来の再発防止基盤確立",
-      "全behavioral subtasksでTDD実践: 5 subtasks全てbehavioral type、RED-GREENサイクル遵守（Subtask 1のみRED、Subtask 2-5はGREEN phase testing）、バグ修正でもTDD原則維持",
-      "Phase 6開発継続可能化: データ損失バグ解消によりPBI-028（タスク完了・編集・削除UI）への進行可能、UI実装フェーズの信頼性確保、ユーザーエクスペリエンス品質保証",
+      "REFACTOR文化の部分的回復: 11コミット（5 RED + 5 GREEN + 1 REFACTOR）構成、REFACTOR率9.1%達成、Sprint 27の0%から改善、`refactor: ESLintエラー修正`コミットで品質維持、TDD文化とRefactor文化の両立再開",
+      "EditTaskModal設計パターン継承: AddTaskModal成功パターンを完全踏襲、7テストでTDD実装、Modalインスタンス管理・入力検証・コールバック処理を統一設計、UI統合コンポーネントの一貫性確保",
+      "UI統合完全達成: チェックボックス（完了トグル）・編集ボタン・削除ボタンの3機能統合、既存ハンドラー（getToggleHandler/getEditHandler/getDeleteHandler）との統合成功、+19テスト（7 EditTaskModal + 12 view統合）で品質保証",
+      "計画的Sprint実行: PBI-028をDefinition of Ready遵守で投入、MEDIUM複雑度事前見積もり、5 subtasks全てbehavioral type、RED-GREENサイクル完全遵守、緊急対応なしの計画的開発",
+      "DoD全項目PASS継続: Tests 490pass・Lint pass・Types pass・Build pass達成、Sprint 25→28の4 Sprint連続DoD完全達成、Phase 6 UI実装フェーズの安定稼働、品質基準維持",
     ],
     toImprove: [
-      "REFACTORフェーズ完全欠如: 6コミット全てRED/GREENフェーズ、Refactor発生率0%（Sprint 25以前は37%達成実績）、Sprint 11-24で構築したRefactor文化の一時的停止、バグ修正優先による構造改善機会損失",
-      "Sprint 26 Action未実行: Action#1（UI操作フィードバック追加）未実施、Action#2（テストユーティリティ関数化）未実施、Action#3（Phase 6 PBI ready化）未実施、Action#4（DoD型チェック自動化）未実施、Action#5（Sprint 27 Planning）のみ実施、Retrospective Action実行率20%",
-      "バグ混入の事前検出失敗: Sprint 26でsetViewData()実装時にclear()誤用混入、開発中のテスト不足（view integration test未実装）、DoD型チェックのみで動作検証不足、バグ予防プロセスの脆弱性露呈",
-      "緊急対応による計画外Sprint発生: PBI-027はBacklog refinement未実施でSprint投入、Definition of Ready未確認、complexity見積もり事後判定（HIGH）、計画的開発プロセスの一時的中断",
-      "Refactorチャンス未活用: view.ts内のsetViewData/clear/getViewDataメソッド群のリファクタリング機会あり、DOM操作とデータ管理の責務分離余地、テストコードのDRY原則適用余地、構造改善の先送り",
+      "Sprint 26/27 Action完全未実行: 過去2 Sprintの全10 Action未着手、Action実行率0%、統合テスト戦略未策定・テストユーティリティ未作成・Phase 6 PBI ready化未完了・DoD動作検証未追加・Technical Debt返済Sprint未実施、Retrospective Actionの実効性欠如",
+      "REFACTOR率依然低水準: 9.1%達成もSprint 11-24の37%実績比で-28pt低下、1 REFACTORコミット（ESLint修正のみ）、構造改善機会多数残存（view.ts責務分離・テストDRY原則・ハンドラー抽象化）、Technical Debt蓄積継続",
+      "Phase 6統合テスト戦略不在: Sprint 26-28の3 Sprint実施も統合テスト方針未定義、UI操作→データ保持→ファイル保存フロー検証体系化なし、個別PBIテストのみで横断的品質保証欠如、将来的バグリスク残存",
+      "Action実行プロセス未確立: Retrospective Actionの追跡メカニズムなし、PBI化・優先度付け・Sprint Planningへの組込プロセス不在、Sprint 26 Action 5件→Sprint 27 Action 5件→Sprint 28 Action 0実行で累積10件遅延、改善サイクル機能不全",
+      "view.ts構造的負債未解消: setViewData/clear/getViewDataメソッド群の責務過多、DOM操作とデータ管理の混在、renderTaskList()の肥大化（チェックボックス・編集・削除ボタン追加で複雑化）、リファクタリング先送りで保守性低下",
     ],
     actions: [
-      "Phase 6統合テスト戦略策定: view integration testカテゴリ定義、UI操作→データ保持→ファイル保存の一連フロー検証、各PBI完了時に統合テスト追加ルール化、バグ混入の事前検出強化",
-      "Critical Bug後のRefactoring Sprint実施: Sprint 28開始前にview.ts構造改善検討、setViewData/clear責務分離Refactoring PBI作成、テストコードDRY原則適用、Technical Debt返済機会確保",
-      "Sprint 26 Action再実行と優先度付け: Action#2（テストユーティリティ）優先実施（統合テスト基盤）、Action#3（Phase 6 PBI ready化）Sprint 28 Planning前完了、Action#1/4は次Sprintで再評価、遅延Action解消計画",
-      "DoD動作検証ステップ追加: DoD checklistに「主要ユースケース手動検証」項目追加、Tests PASSのみでは不十分な動作保証を補完、Critical path検証の明文化、品質保証プロセス強化",
-      "Phase 6 Roadmap再確認とPBI優先順位調整: PBI-028（タスク完了・編集・削除UI）をSprint 28候補確定、PBI-029以降のready状態確認、Technical Debt返済PBI追加検討、Phase 6継続計画明確化",
+      "Action管理PBIの創設: 過去Sprint Action累積10件をPBI化（PBI-032: Retrospective Action実行Sprint）、優先度HIGH設定、Sprint 29候補として投入、統合テスト戦略・テストユーティリティ・view.tsリファクタリングを1 Sprintで集中実施、Technical Debt返済メカニズム確立",
+      "Phase 6統合テスト基盤構築: view integration test設計ドキュメント作成、UI操作→データ保持→ファイル保存のE2Eテストフレームワーク定義、テストユーティリティ関数群実装（createMockView/simulateUIOperation/verifyDataPersistence）、PBI-029以降の各Sprintで統合テスト追加ルール化",
+      "view.tsリファクタリングPBI作成: PBI-033としてview.ts構造改善定義、setViewData/clear責務分離・renderTaskList()コンポーネント化・ハンドラー抽象化・テストDRY原則適用を5 subtasksで実施、complexity MEDIUM見積もり、Sprint 29または30で実施検討",
+      "Retrospective Action実行率KPI設定: 次Sprint開始時にAction→PBI変換ルール義務化、Sprint Planning時にAction PBI優先度評価必須化、Action実行率目標60%以上設定、Sprint Review時にAction達成状況報告、改善サイクル実効性担保",
+      "Phase 6 Roadmap中間レビュー実施: PBI-029～031のready状態再確認、統合テスト戦略組込でAcceptance Criteria更新、Technical Debt返済PBI（032/033）追加後の優先順位再調整、Phase 6完了条件明確化、残Sprint数見積もり（予想3-5 Sprint）",
     ] },
 ];
 

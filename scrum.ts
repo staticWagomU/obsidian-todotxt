@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 30, pbi: "PBI-032", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -184,8 +184,10 @@ export const currentSprint = {
       test: "N/A（文書化タスク）",
       implementation: "Sprint Planning時のAction評価手順をscrum.tsのactionManagementセクションに明記、評価フロー定義",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "green", message: "docs: Action管理プロセス文書化強化 - Sprint Planning評価手順とPBI変換ガイドライン明記" },
+      ],
     },
     {
       test: "N/A（設定タスク）",
@@ -283,9 +285,17 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management Process (Sprint 29 Retrospective Action導入、Sprint 30で文書化強化)
+// Action Management Process (Sprint 29 Retrospective Action導入、Sprint 30で文書化・KPI設定強化)
 export const actionManagement = {
-  kpi: { executionRateTarget: 50, description: "Retrospective Actionの実行率目標（%）" },
+  // KPI設定（Sprint 30で明確化）
+  kpi: {
+    executionRateTarget: 50, // 最低目標: 50%以上（2 Sprint連続未達でAction返済Sprint実施）
+    healthyRateTarget: 70, // 健全目標: 70%以上（持続的改善サイクル稼働）
+    excellentRateTarget: 90, // 卓越目標: 90%以上（Action即時実行文化確立）
+    description: "Retrospective Actionの実行率目標（%）",
+    measurement: "Sprint終了時にtracking.currentRateを計算、次Sprint Planning時に評価",
+    alertThreshold: "実行率50%未満が2 Sprint連続 → 次SprintをAction返済Sprintに設定",
+  },
 
   // Sprint Planning時のAction評価手順（Sprint 30で文書化）
   evaluationProcess: [
@@ -318,6 +328,28 @@ export const actionManagement = {
     currentRate: 30, // 3/10 = 30% (Sprint 30進行中)
     note: "Sprint 30 (PBI-032) でAction返済Sprint実施中、5 subtask中3件がAction由来",
   },
+
+  // Sprint別Action実行率履歴（Sprint 30でKPI追跡開始）
+  sprintHistory: [
+    { sprint: 20, actions: 0, executed: 0, rate: 0, note: "Retrospective定着前" },
+    { sprint: 21, actions: 0, executed: 0, rate: 0, note: "Retrospective定着前" },
+    { sprint: 22, actions: 1, executed: 0, rate: 0, note: "Roadmap定義Sprint、Action実行なし" },
+    { sprint: 23, actions: 2, executed: 0, rate: 0, note: "Action蓄積開始" },
+    { sprint: 24, actions: 2, executed: 0, rate: 0, note: "Action蓄積継続" },
+    { sprint: 25, actions: 1, executed: 0, rate: 0, note: "Action蓄積継続" },
+    { sprint: 26, actions: 1, executed: 0, rate: 0, note: "Action蓄積継続" },
+    { sprint: 27, actions: 1, executed: 0, rate: 0, note: "Action蓄積継続" },
+    { sprint: 28, actions: 1, executed: 0, rate: 0, note: "Action蓄積継続、累積10件到達" },
+    { sprint: 29, actions: 1, executed: 0, rate: 0, note: "Action完全未実行の深刻化、PBI-032作成決定" },
+    { sprint: 30, actions: 5, executed: 3, rate: 60, note: "Action返済Sprint実施中、統合テスト・プロセス・KPI・リファクタPBI・REFACTOR実施" },
+  ],
+
+  // 次Sprint以降の改善目標（Sprint 30設定）
+  improvementGoals: [
+    "Sprint 31以降: 各SprintでAction実行率50%以上維持、累積負債解消継続",
+    "Sprint 32以降: Action実行率70%以上目標、Sprint Planning時の即時Action→PBI変換文化定着",
+    "Sprint 35以降: Action実行率90%以上目標、Action即時実行でRetrospective実効性最大化",
+  ],
 };
 
 // Agents & Events

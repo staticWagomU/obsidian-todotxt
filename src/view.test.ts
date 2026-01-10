@@ -959,4 +959,79 @@ describe("render task list in view", () => {
 		// Verify: openAddTaskModal was called
 		expect(openAddTaskModalSpy).toHaveBeenCalled();
 	});
+
+	it("各タスクにチェックボックスinput要素が表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks and render
+		view.setViewData("Buy milk\n(A) Call Mom\nx 2026-01-08 Completed task", false);
+		view.renderTaskList();
+
+		// Verify: ul element exists with 3 li children
+		const ul = container.querySelector("ul");
+		expect(ul).not.toBeNull();
+		expect(ul?.children.length).toBe(3);
+
+		// Verify: Each li contains a checkbox input
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+		for (const li of liElements) {
+			const checkbox = li.querySelector("input[type='checkbox']");
+			expect(checkbox).not.toBeNull();
+			expect(checkbox?.classList.contains("task-checkbox")).toBe(true);
+		}
+	});
+
+	it("完了タスクのチェックボックスはchecked状態になる", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with completed and incomplete tasks
+		view.setViewData("Buy milk\nx 2026-01-08 Completed task", false);
+		view.renderTaskList();
+
+		// Verify: ul element exists with 2 li children
+		const ul = container.querySelector("ul");
+		expect(ul?.children.length).toBe(2);
+
+		// Verify: First task checkbox is unchecked
+		const firstLi = ul?.children[0] as HTMLLIElement;
+		const firstCheckbox = firstLi.querySelector("input[type='checkbox']") as HTMLInputElement;
+		expect(firstCheckbox?.checked).toBe(false);
+
+		// Verify: Second task checkbox is checked
+		const secondLi = ul?.children[1] as HTMLLIElement;
+		const secondCheckbox = secondLi.querySelector("input[type='checkbox']") as HTMLInputElement;
+		expect(secondCheckbox?.checked).toBe(true);
+	});
+
+	it("チェックボックスにdata-index属性が設定される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks
+		view.setViewData("Task 0\nTask 1\nTask 2", false);
+		view.renderTaskList();
+
+		// Verify: Each checkbox has correct data-index attribute
+		const ul = container.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		for (let i = 0; i < liElements.length; i++) {
+			const checkbox = liElements[i]?.querySelector("input[type='checkbox']") as HTMLInputElement;
+			expect(checkbox?.dataset.index).toBe(String(i));
+		}
+	});
 });

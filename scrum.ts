@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 30, pbi: "PBI-032", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -174,8 +174,11 @@ export const currentSprint = {
       test: "UI操作→データ保持→ファイル保存の統合テストケース作成",
       implementation: "view integration test 1-2ケース実装、UI操作→データ保持フローのpass確認",
       type: "behavioral",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: view統合テスト最小MVP追加 - UI操作→データ保持→ファイル保存フロー検証" },
+        { phase: "green", message: "feat: view統合テスト2ケース実装完了 - UI操作からファイル保存までの完全フロー検証pass" },
+      ],
     },
     {
       test: "N/A（文書化タスク）",
@@ -280,21 +283,40 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management Process (Sprint 29 Retrospective Action導入)
+// Action Management Process (Sprint 29 Retrospective Action導入、Sprint 30で文書化強化)
 export const actionManagement = {
   kpi: { executionRateTarget: 50, description: "Retrospective Actionの実行率目標（%）" },
+
+  // Sprint Planning時のAction評価手順（Sprint 30で文書化）
   evaluationProcess: [
-    "Sprint Planning時に前Sprintの全Actionを評価",
-    "各Action実施工数見積もり（0.5-2 Sprints）と優先度評価（High/Medium/Low）",
-    "High優先度Action→即時PBI化、Medium→バックログ追加、Low→次回評価",
-    "Sprint終了時に実行率計算: (実行Action数 / 全Action数) × 100",
-    "実行率50%未満の場合、次SprintでAction返済Sprint検討",
+    "【Step 1】前Sprint Retrospective Actionリストレビュー: retrospectives配列の最新entryからactions抽出",
+    "【Step 2】各Action実施工数見積もり: 0.5 Sprint（1-2 subtask）/ 1 Sprint（3-5 subtask）/ 2+ Sprint（PBI化推奨）",
+    "【Step 3】優先度評価基準: High（改善サイクル停止・品質低下リスク）/ Medium（効率化・技術的負債）/ Low（将来検討）",
+    "【Step 4】Action→PBI変換判断: High優先度かつ1+ Sprint工数 → 即時PBI化してProduct Backlogに追加",
+    "【Step 5】Mediumは既存PBIへの統合orバックログ追加検討、Lowは次Sprint Planning時に再評価",
+    "【Step 6】Sprint終了時に実行率計算: (実行完了Action数 / 全Action数) × 100、tracking更新",
+    "【Step 7】実行率50%未満が2 Sprint連続の場合、次SprintをAction返済Sprint（専用PBI）として設定",
   ],
+
+  // Action→PBI変換ガイドライン（Sprint 30追加）
+  conversionGuideline: {
+    criteria: "1+ Sprint工数 かつ High/Medium優先度",
+    pbiTemplate: {
+      story: { role: "dev", capability: "[Action内容]", benefit: "[改善効果]" },
+      acceptanceCriteria: "Actionの検証方法を具体的に記述",
+      complexity: "工数見積もりに基づきsubtasks数設定",
+    },
+    examples: [
+      "統合テスト戦略策定 (1.5 Sprint) → PBI-032 Subtask 1として実装",
+      "Action管理プロセス確立 (0.5 Sprint) → PBI-032 Subtask 2として文書化",
+    ],
+  },
+
   tracking: {
-    totalActions: 10,
-    executedActions: 0,
-    currentRate: 0,
-    note: "Sprint 30 (PBI-032) でAction返済Sprint実施、統合テスト・プロセス改善・KPI設定の3件実行予定",
+    totalActions: 10, // Sprint 20-29累積Action数
+    executedActions: 3, // Sprint 30で実行中（統合テスト・プロセス文書化・KPI設定）
+    currentRate: 30, // 3/10 = 30% (Sprint 30進行中)
+    note: "Sprint 30 (PBI-032) でAction返済Sprint実施中、5 subtask中3件がAction由来",
   },
 };
 

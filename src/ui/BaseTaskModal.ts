@@ -5,6 +5,9 @@
 
 import { Modal } from "obsidian";
 import type { SelectOption } from "../lib/project-context-utils";
+import { extractProjects, extractContexts } from "../lib/suggestions";
+import { renderProjectOptions, renderContextOptions } from "../lib/project-context-utils";
+import type { Todo } from "../lib/todo";
 
 export abstract class BaseTaskModal extends Modal {
 	/**
@@ -42,5 +45,30 @@ export abstract class BaseTaskModal extends Modal {
 		}
 
 		return select;
+	}
+
+	/**
+	 * プロジェクト/コンテキスト選択UIを作成
+	 * @param container 親要素
+	 * @param todos 既存タスク配列
+	 * @returns プロジェクト/コンテキストのselect要素を含むオブジェクト
+	 */
+	protected createProjectContextSelects(
+		container: HTMLElement,
+		todos: Todo[],
+	): { projectSelect: HTMLSelectElement; contextSelect: HTMLSelectElement } {
+		// Project multi-select
+		this.createLabel(container, "プロジェクト (+)");
+		const projects = extractProjects(todos);
+		const projectOptions = renderProjectOptions(projects);
+		const projectSelect = this.createMultiSelect(container, projectOptions, "project-select");
+
+		// Context multi-select
+		this.createLabel(container, "コンテキスト (@)");
+		const contexts = extractContexts(todos);
+		const contextOptions = renderContextOptions(contexts);
+		const contextSelect = this.createMultiSelect(container, contextOptions, "context-select");
+
+		return { projectSelect, contextSelect };
 	}
 }

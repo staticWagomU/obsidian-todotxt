@@ -19,7 +19,7 @@ function parseValidDate(dateStr: string): Date | undefined {
 }
 
 /**
- * due:タグからDate型を抽出する
+ * due:タグからDate型を抽出する（旧API - 後方互換性のため維持）
  * @param tags タグ配列
  * @returns Date型、またはundefined
  */
@@ -31,6 +31,19 @@ export function getDueDate(tags: string[]): Date | undefined {
 	if (!dateStr) return undefined;
 
 	return parseValidDate(dateStr);
+}
+
+/**
+ * TodoオブジェクトからDue日付を抽出する
+ * @param todo Todoオブジェクト
+ * @returns Date型、またはnull
+ */
+export function getDueDateFromTodo(todo: { tags: Record<string, string> }): Date | null {
+	const dueDateStr = todo.tags.due;
+	if (!dueDateStr) return null;
+
+	const date = parseValidDate(dueDateStr);
+	return date ?? null;
 }
 
 /**

@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 29, pbi: "PBI-029", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -85,11 +85,12 @@ export const productBacklog: ProductBacklogItem[] = [
     story: { role: "user", capability: "due:とt:の視覚的表示", benefit: "期限と着手日の一目確認" },
     acceptanceCriteria: [
       { criterion: "due:表示", verification: "due:タグのあるタスクに期限日表示" },
-      { criterion: "期限ハイライト", verification: "過期=赤、今日=強調、間近=注意の色分け" },
+      { criterion: "期限ハイライト", verification: "過期=赤、今日=オレンジで色分け" },
       { criterion: "t:グレーアウト", verification: "t:以前のタスクがグレーアウト表示" },
     ],
     dependencies: ["PBI-028"],
     status: "ready",
+    complexity: { functions: 2, estimatedTests: 8, externalDependencies: 2, score: "LOW", subtasks: 4 },
   },
   {
     id: "PBI-030",
@@ -128,11 +129,40 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [],
+  sprint: 29,
+  pbi: "PBI-029",
+  goal: "due:とt:の視覚的フィードバックをタスクリストに統合し、期限管理と着手時期の判断を直感的にする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "due:タグから期限日を抽出しバッジとして表示する",
+      implementation: "renderTaskList()内でgetDueDate()を使用し、期限日バッジ要素を生成してタスク行に追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "期限日の状態に応じて色分けスタイルを適用する(overdue=赤, today=オレンジ)",
+      implementation: "getDueDateStyle()の戻り値をバッジ要素のstyleに適用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "t:タグの状態に応じてタスク行をグレーアウト表示する(not_ready時)",
+      implementation: "getThresholdDateStyle()の戻り値をli要素のstyleに適用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "due:バッジ、期限ハイライト、t:グレーアウトの統合動作を検証する",
+      implementation: "view.test.ts内で複数のdue:/t:パターンのタスクリストをレンダリングし、DOM構造とスタイルを検証",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

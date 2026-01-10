@@ -203,6 +203,16 @@ export class TodotxtView extends TextFileView {
 				this.openEditTaskModal(index);
 			});
 
+			// Add delete button
+			const deleteButton = li.createEl("button");
+			deleteButton.classList.add("delete-task-button");
+			deleteButton.textContent = "削除";
+			deleteButton.dataset.index = String(index);
+			deleteButton.addEventListener("click", async () => {
+				const deleteHandler = this.getDeleteHandler();
+				await deleteHandler(index);
+			});
+
 			if (todo.completed) {
 				li.classList.add("completed");
 			}

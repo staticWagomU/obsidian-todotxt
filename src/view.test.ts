@@ -1252,6 +1252,8 @@ describe("render task list in view", () => {
 		view.setViewData("Task 0\nTask 1\nTask 2", false);
 		view.renderTaskList();
 
+		vi.useFakeTimers();
+
 		// Click delete button for second task
 		const ul = container.querySelector("ul");
 		const secondLi = ul?.children[1] as HTMLLIElement;
@@ -1265,5 +1267,7 @@ describe("render task list in view", () => {
 		// Verify: Second task is deleted
 		const updatedData = view.getViewData();
 		expect(updatedData).toBe("Task 0\nTask 2");
+
+		vi.useRealTimers();
 	});
 });

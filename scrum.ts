@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 28, pbi: "PBI-028", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -139,11 +139,47 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [],
+  sprint: 28,
+  pbi: "PBI-028",
+  goal: "TodoItemにチェックボックス・編集・削除ボタンを実装し、既存ハンドラーと統合して直感的なタスク管理UIを完成させる",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "TodoItem.test.tsxにチェックボックスレンダリングテスト追加（input[type=\"checkbox\"]存在確認、完了状態でchecked属性検証）",
+      implementation: "TodoItem.tsxにチェックボックス要素追加、todo.completedに基づくchecked状態反映",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "TodoItem.test.tsxにチェックボックスクリックテスト追加（クリックイベントでonToggleハンドラー呼出確認、引数todo.id検証）",
+      implementation: "チェックボックスonChangeイベントにonToggleハンドラー接続（TodosList→TodoItemへgetToggleHandler経由で渡す）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "EditTaskModal.test.tsx新規作成（モーダル表示、初期値セット、保存ボタン→onSaveコールバック、キャンセルボタン→onClose、入力フィールド検証）",
+      implementation: "ui/EditTaskModal.tsx新規作成（AddTaskModal構造参考、既存タスク編集用にフォーム初期化）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "TodoItem.test.tsxに編集ボタンテスト追加（ボタンレンダリング、クリック→onEditハンドラー呼出、引数todo検証）、view.test.tsに編集フロー統合テスト追加",
+      implementation: "TodoItem.tsxに編集ボタン追加、onEditハンドラー接続（TodosList→TodoItemへgetEditHandler経由で渡す）、view.tsxでEditTaskModalインポート・統合",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "TodoItem.test.tsxに削除ボタンテスト追加（ボタンレンダリング、クリック→onDeleteハンドラー呼出、引数todo.id検証）、view.test.tsに削除フロー統合テスト追加",
+      implementation: "TodoItem.tsxに削除ボタン追加、onDeleteハンドラー接続（TodosList→TodoItemへgetDeleteHandler経由で渡す）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ],
 };
 
 // Impediments

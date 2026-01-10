@@ -143,8 +143,21 @@ export class TodotxtView extends TextFileView {
 		const ul = this.contentEl.createEl("ul");
 
 		const todos = parseTodoTxt(this.data);
-		for (const todo of todos) {
+		for (let index = 0; index < todos.length; index++) {
+			const todo = todos[index];
+			if (!todo) continue;
+
 			const li = ul.createEl("li");
+
+			// Add checkbox
+			const checkbox = li.createEl("input");
+			checkbox.type = "checkbox";
+			checkbox.classList.add("task-checkbox");
+			checkbox.checked = todo.completed;
+			checkbox.dataset.index = String(index);
+
+			// Add space after checkbox
+			li.appendChild(document.createTextNode(" "));
 
 			// Add priority badge if priority exists
 			if (todo.priority) {

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 30, pbi: "PBI-032", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 31, pbi: "PBI-034", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -117,13 +117,42 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 30 completed, no active sprint)
+// Current Sprint (Sprint 31: PBI-034 view.ts refactoring)
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 31,
+  pbi: "PBI-034",
+  goal: "view.tsを200行以下に削減し、handlers/rendering層分離で保守性向上、REFACTOR率20%目標達成",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "src/lib/handlers.ts作成テスト",
+      implementation: "getToggleHandler/getAddHandler/getEditHandler/getDeleteHandler を view.ts から src/lib/handlers.ts へ移動",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "src/lib/rendering.ts作成テスト",
+      implementation: "renderTaskList()（150行の大規模メソッド）を view.ts から src/lib/rendering.ts へ移動",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "view.ts更新テスト",
+      implementation: "handlers/rendering import追加、244行→150行以下に削減（40%削減目標）",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "既存テスト全通過確認",
+      implementation: "リファクタリング後も504 tests全pass維持、振る舞い変更なし確認",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

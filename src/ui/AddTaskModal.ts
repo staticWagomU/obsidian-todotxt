@@ -30,12 +30,14 @@ export class AddTaskModal extends Modal {
 		const { contentEl } = this;
 
 		// Task description input
+		this.createLabel(contentEl, "タスク");
 		const input = contentEl.createEl("input");
 		input.type = "text";
 		input.classList.add("task-description-input");
 		input.placeholder = "タスクを入力...";
 
 		// Priority select
+		this.createLabel(contentEl, "優先度");
 		const prioritySelect = contentEl.createEl("select");
 		prioritySelect.classList.add("priority-select");
 		const priorityOptions = generatePriorityOptions();
@@ -46,11 +48,13 @@ export class AddTaskModal extends Modal {
 		}
 
 		// Due date input
+		this.createLabel(contentEl, "期限日 (due:)");
 		const dueDateInput = contentEl.createEl("input");
 		dueDateInput.type = "date";
 		dueDateInput.classList.add("due-date-input");
 
 		// Threshold date input
+		this.createLabel(contentEl, "開始日 (t:)");
 		const thresholdDateInput = contentEl.createEl("input");
 		thresholdDateInput.type = "date";
 		thresholdDateInput.classList.add("threshold-date-input");
@@ -69,6 +73,13 @@ export class AddTaskModal extends Modal {
 				this.close();
 			}
 		});
+	}
+
+	private createLabel(container: HTMLElement, text: string): void {
+		const label = container.createEl("label");
+		label.textContent = text;
+		label.style.display = "block";
+		label.style.marginTop = "10px";
 	}
 
 	onClose(): void {

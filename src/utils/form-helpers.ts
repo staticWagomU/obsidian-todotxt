@@ -16,13 +16,89 @@ export function buildDescriptionWithTags(
 	thresholdDate?: string,
 ): string {
 	let result = description;
-	
+
 	if (dueDate) {
 		result += ` due:${dueDate}`;
 	}
 	if (thresholdDate) {
 		result += ` t:${thresholdDate}`;
 	}
-	
+
 	return result;
+}
+
+/**
+ * フォーム値からtodo.txt形式の完全なテキストを構築
+ * @param description タスク説明
+ * @param priority 優先度
+ * @param dueDate 期限日
+ * @param thresholdDate 開始日
+ * @returns todo.txt形式のテキスト
+ */
+export function buildTextFromFormValues(
+	description: string,
+	priority?: string,
+	dueDate?: string,
+	thresholdDate?: string,
+): string {
+	let text = "";
+
+	if (priority) {
+		text += `(${priority}) `;
+	}
+
+	text += description;
+
+	if (dueDate) {
+		text += ` due:${dueDate}`;
+	}
+
+	if (thresholdDate) {
+		text += ` t:${thresholdDate}`;
+	}
+
+	return text;
+}
+
+/**
+ * todo.txt形式のテキストからフォーム値を抽出
+ * @param text todo.txt形式のテキスト
+ * @returns フォーム値
+ */
+export function parseFormValuesFromText(text: string): {
+	description: string;
+	priority?: string;
+	dueDate?: string;
+	thresholdDate?: string;
+} {
+	let remaining = text.trim();
+	let priority: string | undefined;
+	let dueDate: string | undefined;
+	let thresholdDate: string | undefined;
+
+	// Parse priority
+	const priorityMatch = remaining.match(/^\(([A-Z])\)\s/);
+	if (priorityMatch) {
+		priority = priorityMatch[1];
+		remaining = remaining.slice(priorityMatch[0].length);
+	}
+
+	// Parse due: tag
+	const dueMatch = remaining.match(/\bdue:(\d{4}-\d{2}-\d{2})/);
+	if (dueMatch) {
+		dueDate = dueMatch[1];
+		remaining = remaining.replace(dueMatch[0], "");
+	}
+
+	// Parse t: tag
+	const thresholdMatch = remaining.match(/\bt:(\d{4}-\d{2}-\d{2})/);
+	if (thresholdMatch) {
+		thresholdDate = thresholdMatch[1];
+		remaining = remaining.replace(thresholdMatch[0], "");
+	}
+
+	// Clean up description (remove extra spaces)
+	const description = remaining.trim();
+
+	return { description, priority, dueDate, thresholdDate };
 }

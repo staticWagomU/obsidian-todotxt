@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BaseTaskModal } from "./BaseTaskModal";
 import type { App } from "obsidian";
 import type { Todo } from "../lib/todo";
+import { buildTextFromFormValues, parseFormValuesFromText } from "../utils/form-helpers";
 
 // Mock Obsidian Modal with createEl method
 vi.mock("obsidian", () => {
@@ -87,23 +88,6 @@ class TestTaskModal extends BaseTaskModal {
 		this.onToggleMode(container);
 	}
 
-	public testBuildTextFromFormValues(
-		description: string,
-		priority?: string,
-		dueDate?: string,
-		thresholdDate?: string,
-	): string {
-		return this.buildTextFromFormValues(description, priority, dueDate, thresholdDate);
-	}
-
-	public testParseFormValuesFromText(text: string): {
-		description: string;
-		priority?: string;
-		dueDate?: string;
-		thresholdDate?: string;
-	} {
-		return this.parseFormValuesFromText(text);
-	}
 }
 
 describe("BaseTaskModal - Preview", () => {
@@ -252,9 +236,9 @@ describe("BaseTaskModal - Preview", () => {
 		});
 	});
 
-	describe("buildTextFromFormValues", () => {
+	describe("buildTextFromFormValues (utility)", () => {
 		it("フォーム値からtodo.txt形式のテキストを構築", () => {
-			const text = modal.testBuildTextFromFormValues(
+			const text = buildTextFromFormValues(
 				"Test task",
 				"A",
 				"2026-01-15",
@@ -265,7 +249,7 @@ describe("BaseTaskModal - Preview", () => {
 		});
 
 		it("優先度なしの場合", () => {
-			const text = modal.testBuildTextFromFormValues(
+			const text = buildTextFromFormValues(
 				"Test task",
 				undefined,
 				"2026-01-15",
@@ -275,15 +259,15 @@ describe("BaseTaskModal - Preview", () => {
 		});
 
 		it("タグなしの場合", () => {
-			const text = modal.testBuildTextFromFormValues("Test task", "B");
+			const text = buildTextFromFormValues("Test task", "B");
 
 			expect(text).toBe("(B) Test task");
 		});
 	});
 
-	describe("parseFormValuesFromText", () => {
+	describe("parseFormValuesFromText (utility)", () => {
 		it("todo.txt形式のテキストからフォーム値を抽出", () => {
-			const values = modal.testParseFormValuesFromText("(A) Test task due:2026-01-15 t:2026-01-12");
+			const values = parseFormValuesFromText("(A) Test task due:2026-01-15 t:2026-01-12");
 
 			expect(values.description).toBe("Test task");
 			expect(values.priority).toBe("A");
@@ -292,7 +276,7 @@ describe("BaseTaskModal - Preview", () => {
 		});
 
 		it("優先度なしのテキスト", () => {
-			const values = modal.testParseFormValuesFromText("Test task due:2026-01-15");
+			const values = parseFormValuesFromText("Test task due:2026-01-15");
 
 			expect(values.description).toBe("Test task");
 			expect(values.priority).toBeUndefined();
@@ -300,7 +284,7 @@ describe("BaseTaskModal - Preview", () => {
 		});
 
 		it("タグなしのテキスト", () => {
-			const values = modal.testParseFormValuesFromText("(B) Test task");
+			const values = parseFormValuesFromText("(B) Test task");
 
 			expect(values.description).toBe("Test task");
 			expect(values.priority).toBe("B");

@@ -9,7 +9,11 @@ import { extractProjects, extractContexts } from "../lib/suggestions";
 import { renderProjectOptions, renderContextOptions } from "../lib/project-context-utils";
 import type { Todo } from "../lib/todo";
 import { serializeTodo } from "../lib/parser";
-import { buildDescriptionWithTags } from "../utils/form-helpers";
+import {
+	buildDescriptionWithTags,
+	buildTextFromFormValues,
+	parseFormValuesFromText,
+} from "../utils/form-helpers";
 
 export abstract class BaseTaskModal extends Modal {
 	protected isTextMode = false;
@@ -117,81 +121,6 @@ export abstract class BaseTaskModal extends Modal {
 		textarea.style.display = this.isTextMode ? "" : "none";
 	}
 
-	/**
-	 * フォーム値からtodo.txt形式のテキストを構築
-	 * @param description タスク説明
-	 * @param priority 優先度
-	 * @param dueDate 期限日
-	 * @param thresholdDate 開始日
-	 * @returns todo.txt形式のテキスト
-	 */
-	protected buildTextFromFormValues(
-		description: string,
-		priority?: string,
-		dueDate?: string,
-		thresholdDate?: string,
-	): string {
-		let text = "";
-
-		if (priority) {
-			text += `(${priority}) `;
-		}
-
-		text += description;
-
-		if (dueDate) {
-			text += ` due:${dueDate}`;
-		}
-
-		if (thresholdDate) {
-			text += ` t:${thresholdDate}`;
-		}
-
-		return text;
-	}
-
-	/**
-	 * todo.txt形式のテキストからフォーム値を抽出
-	 * @param text todo.txt形式のテキスト
-	 * @returns フォーム値
-	 */
-	protected parseFormValuesFromText(text: string): {
-		description: string;
-		priority?: string;
-		dueDate?: string;
-		thresholdDate?: string;
-	} {
-		let remaining = text.trim();
-		let priority: string | undefined;
-		let dueDate: string | undefined;
-		let thresholdDate: string | undefined;
-
-		// Parse priority
-		const priorityMatch = remaining.match(/^\(([A-Z])\)\s/);
-		if (priorityMatch) {
-			priority = priorityMatch[1];
-			remaining = remaining.slice(priorityMatch[0].length);
-		}
-
-		// Parse due: tag
-		const dueMatch = remaining.match(/\bdue:(\d{4}-\d{2}-\d{2})/);
-		if (dueMatch) {
-			dueDate = dueMatch[1];
-			remaining = remaining.replace(dueMatch[0], "");
-		}
-
-		// Parse t: tag
-		const thresholdMatch = remaining.match(/\bt:(\d{4}-\d{2}-\d{2})/);
-		if (thresholdMatch) {
-			thresholdDate = thresholdMatch[1];
-			remaining = remaining.replace(thresholdMatch[0], "");
-		}
-
-		// Clean up description (remove extra spaces)
-		const description = remaining.trim();
-
-		return { description, priority, dueDate, thresholdDate };
-	}
 
 	/**
 	 * モード切替時の値変換処理
@@ -216,13 +145,13 @@ export abstract class BaseTaskModal extends Modal {
 			const thresholdDate = thresholdDateInput?.value || undefined;
 
 			if (description) {
-				textarea.value = this.buildTextFromFormValues(description, priority, dueDate, thresholdDate);
+				textarea.value = buildTextFromFormValues(description, priority, dueDate, thresholdDate);
 			}
 		} else {
 			// テキスト → フォーム: テキストをフォーム値に変換
 			const text = textarea.value.trim();
 			if (text) {
-				const values = this.parseFormValuesFromText(text);
+				const values = parseFormValuesFromText(text);
 				descInput.value = values.description;
 				prioritySelect.value = values.priority || "";
 				dueDateInput.value = values.dueDate || "";

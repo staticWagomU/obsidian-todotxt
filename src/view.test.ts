@@ -1271,3 +1271,109 @@ describe("render task list in view", () => {
 		vi.useRealTimers();
 	});
 });
+
+describe("render due date badge", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("due:タグを持つタスクに期限日バッジが表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load task with due: tag
+		view.setViewData("Buy milk due:2026-01-15", false);
+		view.renderTaskList();
+
+		// Verify: Due date badge exists
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+		const dueBadge = li?.querySelector("span.due-date");
+
+		expect(dueBadge).not.toBeNull();
+		expect(dueBadge?.textContent).toContain("2026-01-15");
+	});
+
+	it("due:タグがないタスクには期限日バッジが表示されない", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load task without due: tag
+		view.setViewData("Buy milk", false);
+		view.renderTaskList();
+
+		// Verify: No due date badge
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+		const dueBadge = li?.querySelector("span.due-date");
+
+		expect(dueBadge).toBeNull();
+	});
+
+	it("複数タスクのうちdue:タグを持つタスクのみにバッジが表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load multiple tasks, only second has due: tag
+		view.setViewData("Task 1\nTask 2 due:2026-01-20\nTask 3", false);
+		view.renderTaskList();
+
+		// Verify: Only second task has due badge
+		const ul = container.querySelector("ul");
+		const li1 = ul?.children[0] as HTMLLIElement;
+		const li2 = ul?.children[1] as HTMLLIElement;
+		const li3 = ul?.children[2] as HTMLLIElement;
+
+		expect(li1?.querySelector("span.due-date")).toBeNull();
+		expect(li2?.querySelector("span.due-date")).not.toBeNull();
+		expect(li3?.querySelector("span.due-date")).toBeNull();
+	});
+});

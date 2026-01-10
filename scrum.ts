@@ -99,50 +99,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 31: COMPLETED)
+// Current Sprint (Sprint 31完了、次Sprint未開始)
 export const currentSprint = {
-  sprint: 31,
-  pbi: "PBI-034",
-  goal: "view.tsを200行以下に削減し、handlers/rendering層分離で保守性向上、REFACTOR率20%目標達成",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "src/lib/handlers.ts作成テスト",
-      implementation: "getToggleHandler/getAddHandler/getEditHandler/getDeleteHandler を view.ts から src/lib/handlers.ts へ移動",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
-      ],
-    },
-    {
-      test: "src/lib/rendering.ts作成テスト",
-      implementation: "renderTaskList()（150行の大規模メソッド）を view.ts から src/lib/rendering.ts へ移動",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
-      ],
-    },
-    {
-      test: "view.ts更新テスト",
-      implementation: "handlers/rendering import追加、258行→126行に削減（51%削減、目標150行以下達成）",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
-      ],
-    },
-    {
-      test: "既存テスト全通過確認",
-      implementation: "リファクタリング後も504 tests全pass維持、振る舞い変更なし確認",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "refactor", message: "refactor: view.tsをhandlers/rendering層に分離してファイルサイズ51%削減" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -173,35 +136,32 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 30,
+  { sprint: 31,
     workedWell: [
-      "Action返済Sprint成功: 累積10件中5件実行、統合テスト2ケース追加、Action管理プロセス確立、PBI-034作成",
-      "統合テスト文化立ち上げ: view.test.ts統合テスト追加、UI操作→データ保持フロー検証基盤確立",
-      "Action管理プロセス体系化: KPI設定（50%/70%/90%）・evaluationProcess・変換ガイドライン完備",
+      "目標大幅超過達成: view.ts削減51%（258→126行）、目標150行以下を大幅クリア、handlers.ts 87行+rendering.ts 129行分離完了",
+      "REFACTOR率100%達成: 目標20%の5倍、全4 subtaskをrefactor commitで完了、Phase 6で最高率記録",
+      "Clean Architecture実現: handlers層（イベント処理）・rendering層（UI描画）の責務分離、保守性大幅向上",
+      "テスト維持率100%: 504 tests全pass維持、リファクタリングで振る舞い変更なし完全保証",
+      "Phase 6完全達成: 31 PBIs完了、基盤構築6フェーズ構成完了、Phase 7 UI機能実装準備完了",
     ],
     toImprove: [
-      "Action実行率50%は最低基準、健全目標70%未達、残5件累積Action持ち越し",
-      "REFACTOR率16.7%、目標20%に3.3pt不足、TDD+構造改善両立パターン未完成",
-      "統合テスト最小MVP止まり、包括的戦略・共通基盤未構築",
+      "structural型subtask偏重: 全4 subtaskがstructural型、behavioral型0件で新機能なし",
+      "単一commit集約: 4 subtaskを1コミットで完了、TDD Red-Green-Refactorサイクル不適用",
+      "Action消化0件: Sprint 30の残5件Action未消化、累積負債持ち越し継続",
+      "PBI-034優先度判断: 機能実装（030/031/033）より優先したことの機会コスト検証必要",
     ],
     actions: [
-      "Action実行率70%目標: 残5件消化継続、Sprint 32までに累積負債完全解消",
-      "REFACTOR率20%以上継続: 全Sprintで最低1 refactoring subtask必須化",
-      "統合テスト追加ルール: 各UI機能PBIで+1-2ケース必須化",
-      "Phase 6 PBI優先順位調整: Sprint 31 Planningで030/031/033/034実施順序決定",
+      "Phase 7 UI機能実装フォーカス: Sprint 32からPBI-030/031/033順で機能実装優先、REFACTOR率20%維持",
+      "TDD Red-Green-Refactorサイクル適用: behavioral型PBIでcommit分割（Red→Green→Refactor）徹底",
+      "Action管理プロセス再起動: Sprint 30の残5件Action評価、Sprint 32 Planningで優先度付け",
+      "統合テスト拡充継続: PBI-030/031で+2ケース目標、UI操作→データ保持フロー検証強化",
     ] },
 ];
 
-// Action Management (Sprint 30確立)
+// Action Management (Sprint 30確立、Sprint 31でAction1達成)
 export const actionManagement = {
-  kpi: { min: 50, healthy: 70, excellent: 90 }, // Action実行率目標（%）
-  tracking: { total: 10, executed: 5, rate: 50, remaining: 5 }, // Sprint 30完了時点
-  evaluationProcess: "Sprint Planning時にAction評価→High優先度1+Sprint工数→PBI化",
-  sprint31Evaluation: {
-    action1: "REFACTOR率20%継続 - PBI-034優先度1位調整、Sprint 31実施で達成",
-    action2: "統合テスト追加ルール - PBI-030/031複雑度見積もりに反映済、継続適用",
-    action3: "Phase 6優先順位調整 - Refinement完了、順序034→030→031→033決定",
-  },
+  kpi: { min: 50, healthy: 70, excellent: 90 },
+  tracking: { total: 10, executed: 6, rate: 60, remaining: 4 }, // Sprint 31: REFACTOR達成で+1
 };
 
 // Agents & Events

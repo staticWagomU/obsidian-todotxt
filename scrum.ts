@@ -19,7 +19,6 @@ interface ProductBacklogItem {
   complexity?: Complexity; refactorChecklist?: string[];
 }
 interface Commit { phase: CommitPhase; message: string; }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Subtask {
   test: string; implementation: string; type: SubtaskType;
   status: SubtaskStatus; commits: Commit[];
@@ -34,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 29, pbi: "PBI-029", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 29, pbi: "PBI-029", status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -132,7 +131,7 @@ export const currentSprint = {
   sprint: 29,
   pbi: "PBI-029",
   goal: "due:とt:の視覚的フィードバックをタスクリストに統合し、期限管理と着手時期の判断を直感的にする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "due:タグから期限日を抽出しバッジとして表示する",
@@ -158,15 +157,20 @@ export const currentSprint = {
       test: "t:タグの状態に応じてタスク行をグレーアウト表示する(not_ready時)",
       implementation: "getThresholdDateStyle()の戻り値をli要素のstyleに適用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: t:タグによるタスク行グレーアウト表示機能のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: t:タグによるタスク行グレーアウト表示機能を実装" },
+      ],
     },
     {
       test: "due:バッジ、期限ハイライト、t:グレーアウトの統合動作を検証する",
       implementation: "view.test.ts内で複数のdue:/t:パターンのタスクリストをレンダリングし、DOM構造とスタイルを検証",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "test: due:とt:の視覚的表示の統合動作検証テスト追加" },
+      ],
     },
   ] as Subtask[],
 };

@@ -71,16 +71,16 @@ export function renderTaskList(
  * Save current filter state from DOM
  */
 function saveFilterState(contentEl: HTMLElement): FilterState {
-	const previousPriorityFilter = contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
-	const previousSearchBox = contentEl.querySelector("input.search-box") as HTMLInputElement | null;
-	const previousGroupSelector = contentEl.querySelector("select.group-selector") as HTMLSelectElement | null;
-	const previousSortSelector = contentEl.querySelector("select.sort-selector") as HTMLSelectElement | null;
+	const previousPriorityFilter = contentEl.querySelector("select.priority-filter");
+	const previousSearchBox = contentEl.querySelector("input.search-box");
+	const previousGroupSelector = contentEl.querySelector("select.group-selector");
+	const previousSortSelector = contentEl.querySelector("select.sort-selector");
 
 	return {
-		priority: previousPriorityFilter?.value || "all",
-		search: previousSearchBox?.value || "",
-		group: previousGroupSelector?.value || "none",
-		sort: previousSortSelector?.value || "default",
+		priority: (previousPriorityFilter instanceof HTMLSelectElement ? previousPriorityFilter.value : null) || "all",
+		search: (previousSearchBox instanceof HTMLInputElement ? previousSearchBox.value : null) || "",
+		group: (previousGroupSelector instanceof HTMLSelectElement ? previousGroupSelector.value : null) || "none",
+		sort: (previousSortSelector instanceof HTMLSelectElement ? previousSortSelector.value : null) || "default",
 	};
 }
 

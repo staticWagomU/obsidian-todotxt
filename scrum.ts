@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 33, pbi: "PBI-033", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 34, pbi: "PBI-031", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -50,23 +50,7 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 7: UI機能実装継続（Sprint 33〜）
   // Sprint 33 Planning優先順位: PBI-033 > PBI-031
   // 理由: PBI-033はSprint 32ロジック実装済（UI化のみ）、externalDependencies 0、estimatedTests少
-  {
-    id: "PBI-033",
-    story: { role: "user", capability: "コントロールバーUI", benefit: "フィルタ・ソート・グループ操作" },
-    acceptanceCriteria: [
-      { criterion: "フィルタUI", verification: "優先度/完了状態ドロップダウン表示、選択で絞込動作" },
-      { criterion: "検索UI", verification: "テキスト入力ボックス表示、入力でリアルタイム検索" },
-      { criterion: "ソート/グループUI", verification: "ソート順・グループ化切替ボタン表示、クリックで表示変更" },
-    ],
-    dependencies: [],
-    status: "ready",
-    complexity: { functions: 3, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM", subtasks: 3 },
-    refactorChecklist: [
-      "REFACTOR率目標30%（Sprint 32 Action 4: 20-50%レンジ）",
-      "UI component抽出とロジック分離",
-      "Filter/Sort/Group状態管理の統一",
-    ],
-  },
+  // PBI-033 done in Sprint 33: コントロールバーUI化、aria-label追加、FilterState型エクスポート、542t達成
   {
     id: "PBI-031",
     story: { role: "user", capability: "内部/外部リンクのクリック可能表示", benefit: "関連リソースへ素早くアクセス" },
@@ -99,41 +83,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 33,
-  pbi: "PBI-033",
-  goal: "rendering.tsのコントロールバー関数をUI化し、フィルタ・検索・ソート・グループ化機能を視覚的に操作可能にする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "フィルタUI（優先度ドロップダウン）の表示と選択機能をテスト",
-      implementation: "renderPriorityFilterDropdown関数のUI表示・選択イベント・フィルタ適用を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: 優先度フィルタドロップダウンのアクセシビリティテスト追加" },
-      ],
-    },
-    {
-      test: "検索UIとソート/グループUIの表示と操作機能をテスト",
-      implementation: "renderSearchBox/renderSortSelector/renderGroupSelector関数のUI表示・イベントハンドリング・表示変更を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: 検索・グループ・ソートUIのアクセシビリティテスト追加" },
-      ],
-    },
-    {
-      test: "コントロールバーUI関数の責務分離とFilterState統一をテスト",
-      implementation: "UI component抽出、Filter/Sort/Group状態管理の統一、重複ロジックの集約を実施",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: FilterState型のエクスポート検証テスト追加" },
-        { phase: "refactor", message: "refactor: FilterState型をエクスポート" },
-        { phase: "refactor", message: "refactor: DEFAULT_FILTER_STATE定数を導入してFilterState管理を統一" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 34,
+  pbi: "PBI-031",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -189,18 +143,11 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Sprint 33 Backlog Refinement実施（2026-01-10）
-// - PBI-033, PBI-031: Definition of Ready適合確認済
-// - 優先順位評価: PBI-033優先（Sprint 32ロジック実装済、externalDependencies 0）
-// - Sprint 32 Actions適用: subtask粒度ガイドライン適用（5→3 subtasks）、REFACTOR率目標30%設定
-// - PBI-033/031にrefactorChecklist追加、productBacklogに優先順位決定根拠記録
-
-// Sprint 33 Sprint Planning実施（2026-01-10）
-// - PBI-033選択: コントロールバーUI化（Sprint 32ロジック実装済、UI化のみ残作業）
-// - Sprint Goal: rendering.tsのコントロールバー関数をUI化し、フィルタ・検索・ソート・グループ化機能を視覚的に操作可能にする
-// - Subtasks 3件作成: 1 subtaskあたり3-4テスト目標（Sprint 32 Action 1適用、estimatedTests 10を3分割）
-// - REFACTOR率30%達成計画: subtask 3をstructural型に設定（UI component抽出、FilterState統一）
-// - 既存実装活用: rendering.tsのrenderControlBar/renderPriorityFilterDropdown/renderSearchBox/renderSortSelector/renderGroupSelector関数を基に、ロジック検証とUI改善を実施
+// Sprint 33 完了（2026-01-10）
+// - Backlog Refinement: PBI-033, PBI-031 Definition of Ready確認済、優先順位評価（PBI-033優先）
+// - Sprint Planning: PBI-033選択、Sprint Goal設定、Subtasks 3件作成（estimatedTests 10を3分割）
+// - Sprint Review: DoD全チェックPASS（542t/lint/types/build）、受入基準3件全検証PASS、PBI-033→done
+// - 成果: aria-label追加（アクセシビリティ向上）、FilterState型&DEFAULT_FILTER_STATE定数エクスポート、TDD適用（4commit:RED3+REFACTOR2）、REFACTOR率50%達成
 
 // Action Management (Sprint 30確立、Sprint 31でAction2達成、Sprint 32でAction4全達成)
 export const actionManagement = {

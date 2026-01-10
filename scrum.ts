@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 32, pbi: "PBI-030", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 6, impediments: 0 },
+  sprint: { number: 32, pbi: "PBI-030", status: "done" as SprintStatus,
+    subtasksCompleted: 6, subtasksTotal: 6, impediments: 0 },
 };
 
 // Product Goal
@@ -104,7 +104,7 @@ export const currentSprint = {
   sprint: 32,
   pbi: "PBI-030",
   goal: "コントロールバーでフィルタ・ソート・グループ機能を提供し、ユーザーがタスクを効率的に整理・絞込できるようにする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "優先度フィルタドロップダウンの選択で該当優先度のタスクのみ表示される",
@@ -121,36 +121,53 @@ export const currentSprint = {
       test: "テキスト検索ボックスへの入力でdescriptionに含まれるタスクのみリアルタイム絞込表示される",
       implementation: "テキスト検索ボックスUI実装とリアルタイム検索ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: テキスト検索ボックスの統合テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: テキスト検索ボックスUI実装" },
+        { phase: "refactor" as CommitPhase, message: "refactor: フィルタ状態管理をFilterState型で統一" },
+      ],
     },
     {
       test: "グループ化選択でプロジェクト/コンテキスト/優先度別にグループ表示される",
       implementation: "グループ化セレクタUI実装とグループ表示ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: グループ化セレクタの統合テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: グループ化セレクタUI実装" },
+        { phase: "refactor" as CommitPhase, message: "refactor: グループ化ロジックを関数分離" },
+      ],
     },
     {
       test: "ソート選択で未完了→完了順、優先度順、テキスト順にソート表示される",
       implementation: "ソートセレクタUI実装とソートロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: ソートセレクタの統合テスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: ソートセレクタUI実装" },
+      ],
     },
     {
       test: "統合テスト: フィルタ+ソート+グループの組み合わせで正しく動作し、データ保持される",
       implementation: "複数条件組み合わせ動作と状態保持の統合テスト実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 統合テスト追加(フィルタ・ソート・グループ組み合わせ+CRUD後の状態維持)" },
+        { phase: "green" as CommitPhase, message: "fix: Lint型安全性修正(instanceof型ガード使用)" },
+      ],
     },
     {
       test: "統合テスト: コントロールバー操作後のタスク編集・追加・削除で表示状態が維持される",
       implementation: "CRUD操作後のフィルタ・ソート・グループ状態維持テスト実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 統合テスト追加(フィルタ・ソート・グループ組み合わせ+CRUD後の状態維持)" },
+        { phase: "green" as CommitPhase, message: "fix: Lint型安全性修正(instanceof型ガード使用)" },
+      ],
     },
   ] as Subtask[],
 };
@@ -179,6 +196,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 29, pbi: "PBI-029", story: "due:/t:視覚表示", verification: "passed", notes: "502t" },
   { sprint: 30, pbi: "PBI-032", story: "Action返済Sprint", verification: "passed", notes: "504t,Action実行率50%" },
   { sprint: 31, pbi: "PBI-034", story: "view.ts層分離", verification: "passed", notes: "504t,view.ts258→126行(51%削減),handlers.ts87行+rendering.ts129行作成,REFACTOR率100%" },
+  // Phase 7 (Sprint 32~): UI機能実装
+  { sprint: 32, pbi: "PBI-030", story: "コントロールバー", verification: "passed", notes: "533t,フィルタ・ソート・グループ機能実装,TDD Red-Green-Refactor完全適用,controlbar.test.ts 29t追加,rendering.ts拡張" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

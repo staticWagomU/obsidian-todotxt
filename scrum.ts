@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 32, pbi: "PBI-030", status: "done" as SprintStatus,
-    subtasksCompleted: 6, subtasksTotal: 6, impediments: 0 },
+  sprint: { number: 33, pbi: "PBI-033", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -59,7 +59,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "ソート", verification: "未完了→完了、優先度順、テキスト順でソート" },
     ],
     dependencies: ["PBI-028"],
-    status: "ready",
+    status: "done",
     complexity: { functions: 4, estimatedTests: 15, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
   },
   {
@@ -82,8 +82,8 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "検索UI", verification: "テキスト入力ボックス表示、入力でリアルタイム検索" },
       { criterion: "ソート/グループUI", verification: "ソート順・グループ化切替ボタン表示、クリックで表示変更" },
     ],
-    dependencies: ["PBI-030"],
-    status: "refining",
+    dependencies: [],
+    status: "ready",
     complexity: { functions: 3, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
   },
 ];
@@ -196,8 +196,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 29, pbi: "PBI-029", story: "due:/t:視覚表示", verification: "passed", notes: "502t" },
   { sprint: 30, pbi: "PBI-032", story: "Action返済Sprint", verification: "passed", notes: "504t,Action実行率50%" },
   { sprint: 31, pbi: "PBI-034", story: "view.ts層分離", verification: "passed", notes: "504t,view.ts258→126行(51%削減),handlers.ts87行+rendering.ts129行作成,REFACTOR率100%" },
-  // Phase 7 (Sprint 32~): UI機能実装
-  { sprint: 32, pbi: "PBI-030", story: "コントロールバー", verification: "passed", notes: "533t,フィルタ・ソート・グループ機能実装,TDD Red-Green-Refactor完全適用,controlbar.test.ts 29t追加,rendering.ts拡張" },
+  // Phase 7 (Sprint 32~): UI機能実装継続
+  { sprint: 32, pbi: "PBI-030", story: "コントロールバー", verification: "passed", notes: "533t(+29t),TDD完全適用(9commit:RED4+GREEN4+REFACTOR3),REFACTOR率50%,controlbar.test.ts29t追加,FilterState型導入,CRUD後状態維持実装" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

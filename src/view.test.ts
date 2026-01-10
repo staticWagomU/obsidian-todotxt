@@ -1079,6 +1079,8 @@ describe("render task list in view", () => {
 		view.setViewData("x 2026-01-08 Completed task", false);
 		view.renderTaskList();
 
+		vi.useFakeTimers();
+
 		// Click checkbox to uncomplete
 		const checkbox = container.querySelector("input[type='checkbox']") as HTMLInputElement;
 		expect(checkbox.checked).toBe(true);
@@ -1091,6 +1093,8 @@ describe("render task list in view", () => {
 		// Verify: Task is now incomplete
 		const updatedData = view.getViewData();
 		expect(updatedData).toBe("Completed task");
+
+		vi.useRealTimers();
 	});
 
 	it("複数タスクの特定のチェックボックスをクリックするとそのタスクのみトグルされる", async () => {

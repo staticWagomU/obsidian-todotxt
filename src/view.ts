@@ -156,6 +156,12 @@ export class TodotxtView extends TextFileView {
 			checkbox.checked = todo.completed;
 			checkbox.dataset.index = String(index);
 
+			// Add click handler
+			checkbox.addEventListener("click", async () => {
+				const toggleHandler = this.getToggleHandler();
+				await toggleHandler(index);
+			});
+
 			// Add space after checkbox
 			li.appendChild(document.createTextNode(" "));
 

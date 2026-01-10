@@ -78,19 +78,10 @@ export const productBacklog: ProductBacklogItem[] = [
     status: "done",
     complexity: { functions: 4, estimatedTests: 10, externalDependencies: 1, score: "MEDIUM", subtasks: 4 },
   },
-  {
-    id: "PBI-037",
-    story: { role: "ユーザー", capability: "既存のプロジェクト/コンテキストをドロップダウンから選択または新規作成", benefit: "一貫性のあるタグ付けができ、タイポを防げる" },
-    acceptanceCriteria: [
-      { criterion: "既存プロジェクト（+tag）一覧がドロップダウンで表示される", verification: "pnpm vitest run -- AddTaskModal" },
-      { criterion: "既存コンテキスト（@tag）一覧がドロップダウンで表示される", verification: "pnpm vitest run -- AddTaskModal" },
-      { criterion: "新規タグをテキスト入力で作成できる", verification: "pnpm vitest run -- AddTaskModal" },
-      { criterion: "複数のプロジェクト/コンテキストを選択できる", verification: "pnpm vitest run -- AddTaskModal" },
-    ],
-    dependencies: ["PBI-035"],
-    status: "done",
-    complexity: { functions: 5, estimatedTests: 12, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
-  },
+  // Phase 8完了PBI（Sprint 35-37）
+  // { id: "PBI-035", story: "優先度ドロップダウン", status: "done" },
+  // { id: "PBI-036", story: "カレンダーからdue:/t:日付選択", status: "done" },
+  // { id: "PBI-037", story: "プロジェクト/コンテキスト選択", status: "done" },
   {
     id: "PBI-038",
     story: { role: "ユーザー", capability: "フォーム入力中にtodo.txt形式でリアルタイムプレビューを確認", benefit: "保存前に最終形式を確認でき、意図通りの入力ができる" },
@@ -168,42 +159,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (Sprint 37完了、Sprint 38は未開始)
 export const currentSprint = {
-  sprint: 37,
-  pbi: "PBI-037",
-  goal: "プロジェクト/コンテキスト選択UIにより、一貫性のあるタグ付けとタイポ防止を実現する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "project-context-utils.test.tsでヘルパー関数のテスト: renderProjectOptions/renderContextOptions、空配列、ソート済み配列の検証",
-      implementation: "src/lib/project-context-utils.ts新規作成、BaseTaskModalにcreateMultiSelectヘルパーメソッド追加（DRY原則）",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "AddTaskModal.test.tsに選択UIテスト追加: プロジェクト/コンテキスト選択要素表示、複数選択可能、新規タグをテキスト入力で追加",
-      implementation: "AddTaskModal.tsを拡張: プロジェクト/コンテキスト複数選択UI追加（<select multiple>）、todos: Todo[]をコンストラクタで受け取り、BaseTaskModalのcreateMultiSelect使用",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "EditTaskModal.test.tsに選択UIテスト追加: 既存プロジェクト/コンテキストが選択状態で表示、変更後に保存、複数編集可能",
-      implementation: "EditTaskModal.tsを拡張: プロジェクト/コンテキスト複数選択UI追加（既存値を初期選択状態）、todos: Todo[]をコンストラクタで受け取り、BaseTaskModalのcreateMultiSelect使用",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "view.test.tsまたは統合テスト: AddTaskModal/EditTaskModalで選択したプロジェクト/コンテキストが保存/反映、新規/既存タグ混在、タイポ防止検証",
-      implementation: "view.tsを更新: AddTaskModal/EditTaskModalのコンストラクタにtodosを渡す、プロジェクト/コンテキスト選択値を保存時に説明文に統合、CLAUDE.mdにドキュメント追加",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-  ] as Subtask[],
+  sprint: 38,
+  pbi: "PBI-038",
+  goal: "フォーム入力中のtodo.txt形式リアルタイムプレビューで、保存前の確認を実現する",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -234,10 +196,10 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 32, pbi: "PBI-030", story: "コントロールバー", verification: "passed", notes: "533t(+29t),TDD完全適用(9commit:RED4+GREEN4+REFACTOR3),REFACTOR率50%,controlbar.test.ts29t追加,FilterState型導入,CRUD後状態維持実装" },
   { sprint: 33, pbi: "PBI-033", story: "コントロールバーUI", verification: "passed", notes: "542t(+9t),aria-label追加でアクセシビリティ向上,FilterState型&DEFAULT_FILTER_STATE定数エクスポート,TDD適用(4commit:RED3+REFACTOR2),REFACTOR率50%(2/4),controlbar.test.ts38t(+9)" },
   { sprint: 34, pbi: "PBI-031", story: "リンククリック可能表示", verification: "passed", notes: "554t(+12t),内部/外部リンク+rec:アイコン表示実装,rendering.test.ts12t追加,TDD適用(5commit:RED1+GREEN2+REFACTOR2),REFACTOR率40%(2/5),LinkHandlerインターフェース抽象化,Phase 7完了" },
-  // Phase 8 (Sprint 35-39): フォームUI強化
+  // Phase 8 (Sprint 35-37): フォームUI強化
   { sprint: 35, pbi: "PBI-035", story: "優先度ドロップダウン", verification: "passed", notes: "563t(+9t),TDD適用(7commit:RED3+GREEN3+REFACTOR1),REFACTOR率14%(1/7),priority-options.ts新規作成,AddTaskModal/EditTaskModal/view.ts連携実装" },
   { sprint: 36, pbi: "PBI-036", story: "カレンダーからdue:/t:日付選択", verification: "passed", notes: "585t(+22t),TDD適用(13commit:RED4+GREEN5+REFACTOR4),REFACTOR率31%(4/13),date-picker-utils.ts/BaseTaskModal.ts新規作成,HTML5 date input実装,Lint修正でCSSクラス化,BaseTaskModal基底クラス抽出" },
-  { sprint: 37, pbi: "PBI-037", story: "プロジェクト/コンテキスト選択", verification: "passed", notes: "597t(+12t),TDD適用(10commit:RED3+GREEN4+REFACTOR3),REFACTOR率30%(3/10),project-context-utils.ts新規作成,BaseTaskModalにcreateMultiSelect/createProjectContextSelects追加,マルチセレクトUI実装" },
+  { sprint: 37, pbi: "PBI-037", story: "プロジェクト/コンテキスト選択", verification: "passed", notes: "597t(+12t),TDD適用(10commit:RED3+GREEN4+REFACTOR3),REFACTOR率30%(3/10),project-context-utils.ts新規作成,BaseTaskModalにcreateMultiSelect/createProjectContextSelects追加,マルチセレクトUI実装,全AC達成(ドロップダウン表示/新規作成/複数選択)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

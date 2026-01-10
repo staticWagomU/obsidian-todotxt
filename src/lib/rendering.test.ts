@@ -32,6 +32,22 @@ export function renderInternalLinks(description: string): HTMLElement[] {
 	});
 }
 
+/**
+ * Render external links as clickable anchor elements
+ */
+export function renderExternalLinks(description: string): HTMLElement[] {
+	const links = extractExternalLinks(description);
+	return links.map(link => {
+		const el = document.createElement("a");
+		el.classList.add("external-link");
+		el.textContent = link.text;
+		el.href = link.url;
+		el.target = "_blank";
+		el.rel = "noopener noreferrer";
+		return el;
+	});
+}
+
 describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 	describe("内部リンククリック可能表示", () => {
 		it("[[Note]]形式の内部リンクがクリック可能な要素としてレンダリングされる", () => {
@@ -68,6 +84,45 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			expect(linkElements).toHaveLength(1);
 			expect(linkElements[0]?.tagName).toBe("BUTTON");
 			expect(linkElements[0]?.dataset.link).toBe("MyNote");
+		});
+	});
+
+	describe("外部リンククリック可能表示", () => {
+		it("[text](url)形式の外部リンクがクリック可能なアンカー要素としてレンダリングされる", () => {
+			const description = "Task with [GitHub](https://github.com)";
+			const linkElements = renderExternalLinks(description);
+
+			expect(linkElements).toHaveLength(1);
+			expect(linkElements[0]?.textContent).toBe("GitHub");
+			expect(linkElements[0]?.tagName).toBe("A");
+		});
+
+		it("外部リンク要素がtarget=_blank属性を持つ", () => {
+			const description = "Task with [GitHub](https://github.com)";
+			const linkElements = renderExternalLinks(description);
+
+			expect(linkElements).toHaveLength(1);
+			const anchor = linkElements[0] as HTMLAnchorElement;
+			expect(anchor.target).toBe("_blank");
+			expect(anchor.href).toBe("https://github.com/");
+		});
+
+		it("外部リンク要素がrel=noopener noreferrer属性を持つ", () => {
+			const description = "Task with [GitHub](https://github.com)";
+			const linkElements = renderExternalLinks(description);
+
+			expect(linkElements).toHaveLength(1);
+			const anchor = linkElements[0] as HTMLAnchorElement;
+			expect(anchor.rel).toBe("noopener noreferrer");
+		});
+
+		it("複数の外部リンクが全てアンカー要素としてレンダリングされる", () => {
+			const description = "[Link1](https://example.com) and [Link2](https://test.com)";
+			const linkElements = renderExternalLinks(description);
+
+			expect(linkElements).toHaveLength(2);
+			expect(linkElements[0]?.textContent).toBe("Link1");
+			expect(linkElements[1]?.textContent).toBe("Link2");
 		});
 	});
 });

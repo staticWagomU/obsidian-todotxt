@@ -1441,7 +1441,7 @@ describe("render due date badge with style", () => {
 		const dueBadge = li?.querySelector("span.due-date") as HTMLSpanElement;
 
 		expect(dueBadge).not.toBeNull();
-		expect(dueBadge?.style.color).toBe("rgb(255, 68, 68)"); // #ff4444
+		expect(dueBadge?.style.color).toBe("#ff4444");
 
 		vi.useRealTimers();
 	});
@@ -1468,7 +1468,7 @@ describe("render due date badge with style", () => {
 		const dueBadge = li?.querySelector("span.due-date") as HTMLSpanElement;
 
 		expect(dueBadge).not.toBeNull();
-		expect(dueBadge?.style.color).toBe("rgb(255, 153, 68)"); // #ff9944
+		expect(dueBadge?.style.color).toBe("#ff9944");
 
 		vi.useRealTimers();
 	});

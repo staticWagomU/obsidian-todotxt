@@ -35,7 +35,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 29, pbi: "PBI-029", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -138,8 +138,11 @@ export const currentSprint = {
       test: "due:タグから期限日を抽出しバッジとして表示する",
       implementation: "renderTaskList()内でgetDueDate()を使用し、期限日バッジ要素を生成してタスク行に追加",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: due:タグから期限日バッジを表示する機能のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: due:タグから期限日バッジを表示する機能を実装" },
+      ],
     },
     {
       test: "期限日の状態に応じて色分けスタイルを適用する(overdue=赤, today=オレンジ)",

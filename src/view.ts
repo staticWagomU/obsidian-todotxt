@@ -3,7 +3,7 @@ import { parseTodoTxt, updateTodoInList } from "./lib/parser";
 import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type Todo } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
-import { getDueDateFromTodo } from "./lib/due";
+import { getDueDateFromTodo, getDueDateStyle } from "./lib/due";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
@@ -204,6 +204,11 @@ export class TodotxtView extends TextFileView {
 				const dueBadge = li.createEl("span");
 				dueBadge.classList.add("due-date");
 				dueBadge.textContent = dueDate.toISOString().split("T")[0]!;
+
+				// Apply style based on due date status
+				const today = new Date();
+				const style = getDueDateStyle(dueDate, today);
+				Object.assign(dueBadge.style, style);
 			}
 
 			// Add edit button

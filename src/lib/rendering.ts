@@ -5,6 +5,14 @@ import { getThresholdDateStyle } from "./threshold";
 import { filterByPriority, filterBySearch } from "./filter";
 
 /**
+ * Filter state for control bar
+ */
+interface FilterState {
+	priority: string;
+	search: string;
+}
+
+/**
  * Render task list in contentEl
  */
 export function renderTaskList(
@@ -16,10 +24,7 @@ export function renderTaskList(
 	onDelete: (index: number) => Promise<void>,
 ): void {
 	// Save current filter state before clearing
-	const previousPriorityFilter = contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
-	const previousPriorityValue = previousPriorityFilter?.value || "all";
-	const previousSearchBox = contentEl.querySelector("input.search-box") as HTMLInputElement | null;
-	const previousSearchValue = previousSearchBox?.value || "";
+	const filterState = saveFilterState(contentEl);
 
 	contentEl.empty();
 
@@ -27,15 +32,14 @@ export function renderTaskList(
 	renderAddButton(contentEl, onAddTask);
 
 	// Add control bar with priority filter and search box
-	renderControlBar(contentEl, data, previousPriorityValue, previousSearchValue, onAddTask, onToggle, onEdit, onDelete);
+	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete);
 
 	const ul = contentEl.createEl("ul");
 
 	const todos = parseTodoTxt(data);
 
 	// Apply filters
-	let filteredTodos = applyPriorityFilter(todos, previousPriorityValue);
-	filteredTodos = filterBySearch(filteredTodos, previousSearchValue);
+	const filteredTodos = applyFilters(todos, filterState);
 
 	const today = new Date(); // Get current date once for all todos
 
@@ -51,6 +55,28 @@ export function renderTaskList(
 
 		renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
 	}
+}
+
+/**
+ * Save current filter state from DOM
+ */
+function saveFilterState(contentEl: HTMLElement): FilterState {
+	const previousPriorityFilter = contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
+	const previousSearchBox = contentEl.querySelector("input.search-box") as HTMLInputElement | null;
+
+	return {
+		priority: previousPriorityFilter?.value || "all",
+		search: previousSearchBox?.value || "",
+	};
+}
+
+/**
+ * Apply all filters to todos
+ */
+function applyFilters(todos: Todo[], filterState: FilterState): Todo[] {
+	let filtered = applyPriorityFilter(todos, filterState.priority);
+	filtered = filterBySearch(filtered, filterState.search);
+	return filtered;
 }
 
 /**
@@ -84,8 +110,7 @@ function renderAddButton(contentEl: HTMLElement, onAddTask: () => void): void {
 function renderControlBar(
 	contentEl: HTMLElement,
 	data: string,
-	previousPriorityValue: string,
-	previousSearchValue: string,
+	filterState: FilterState,
 	onAddTask: () => void,
 	onToggle: (index: number) => Promise<void>,
 	onEdit: (index: number) => void,
@@ -94,19 +119,13 @@ function renderControlBar(
 	const controlBar = contentEl.createEl("div");
 	controlBar.classList.add("control-bar");
 
+	const onFilterChange = () => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete);
+
 	// Render priority filter dropdown
-	renderPriorityFilterDropdown(
-		controlBar,
-		previousPriorityValue,
-		() => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete)
-	);
+	renderPriorityFilterDropdown(controlBar, filterState.priority, onFilterChange);
 
 	// Render search box
-	renderSearchBox(
-		controlBar,
-		previousSearchValue,
-		() => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete)
-	);
+	renderSearchBox(controlBar, filterState.search, onFilterChange);
 }
 
 /**

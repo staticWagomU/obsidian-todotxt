@@ -164,6 +164,7 @@ function renderPriorityFilterDropdown(
 ): void {
 	const priorityFilter = container.createEl("select");
 	priorityFilter.classList.add("priority-filter");
+	priorityFilter.setAttribute("aria-label", "優先度フィルタ");
 
 	// Add "all" option
 	const allOption = priorityFilter.createEl("option");

@@ -79,6 +79,25 @@ describe("priority filter dropdown", () => {
 		expect(dropdown).not.toBeNull();
 	});
 
+	it("優先度フィルタドロップダウンにaria-labelが設定されている", () => {
+		// Setup
+		view.setViewData("(A) Task 1", false);
+
+		// Verify: aria-label is set for accessibility
+		const dropdown = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		expect(dropdown).not.toBeNull();
+		expect(dropdown.getAttribute("aria-label")).toBe("優先度フィルタ");
+	});
+
+	it("優先度フィルタドロップダウンの初期値は「全て」である", () => {
+		// Setup
+		view.setViewData("(A) Task 1", false);
+
+		// Verify: Default value is "all"
+		const dropdown = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		expect(dropdown.value).toBe("all");
+	});
+
 	it("優先度フィルタドロップダウンに「全て」「A」「B」「C」「優先度なし」オプションが含まれる", () => {
 		// Setup
 		view.setViewData("(A) Task 1\n(B) Task 2\nTask 3", false);

@@ -82,6 +82,28 @@ class TestTaskModal extends BaseTaskModal {
 	public testUpdateTextModeVisibility(container: HTMLElement): void {
 		this.updateTextModeVisibility(container);
 	}
+
+	public testOnToggleMode(container: HTMLElement): void {
+		this.onToggleMode(container);
+	}
+
+	public testBuildTextFromFormValues(
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string,
+	): string {
+		return this.buildTextFromFormValues(description, priority, dueDate, thresholdDate);
+	}
+
+	public testParseFormValuesFromText(text: string): {
+		description: string;
+		priority?: string;
+		dueDate?: string;
+		thresholdDate?: string;
+	} {
+		return this.parseFormValuesFromText(text);
+	}
 }
 
 describe("BaseTaskModal - Preview", () => {
@@ -227,6 +249,137 @@ describe("BaseTaskModal - Preview", () => {
 
 			const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
 			expect(textarea?.style.display).toBe("");
+		});
+	});
+
+	describe("buildTextFromFormValues", () => {
+		it("フォーム値からtodo.txt形式のテキストを構築", () => {
+			const text = modal.testBuildTextFromFormValues(
+				"Test task",
+				"A",
+				"2026-01-15",
+				"2026-01-12",
+			);
+
+			expect(text).toBe("(A) Test task due:2026-01-15 t:2026-01-12");
+		});
+
+		it("優先度なしの場合", () => {
+			const text = modal.testBuildTextFromFormValues(
+				"Test task",
+				undefined,
+				"2026-01-15",
+			);
+
+			expect(text).toBe("Test task due:2026-01-15");
+		});
+
+		it("タグなしの場合", () => {
+			const text = modal.testBuildTextFromFormValues("Test task", "B");
+
+			expect(text).toBe("(B) Test task");
+		});
+	});
+
+	describe("parseFormValuesFromText", () => {
+		it("todo.txt形式のテキストからフォーム値を抽出", () => {
+			const values = modal.testParseFormValuesFromText("(A) Test task due:2026-01-15 t:2026-01-12");
+
+			expect(values.description).toBe("Test task");
+			expect(values.priority).toBe("A");
+			expect(values.dueDate).toBe("2026-01-15");
+			expect(values.thresholdDate).toBe("2026-01-12");
+		});
+
+		it("優先度なしのテキスト", () => {
+			const values = modal.testParseFormValuesFromText("Test task due:2026-01-15");
+
+			expect(values.description).toBe("Test task");
+			expect(values.priority).toBeUndefined();
+			expect(values.dueDate).toBe("2026-01-15");
+		});
+
+		it("タグなしのテキスト", () => {
+			const values = modal.testParseFormValuesFromText("(B) Test task");
+
+			expect(values.description).toBe("Test task");
+			expect(values.priority).toBe("B");
+			expect(values.dueDate).toBeUndefined();
+			expect(values.thresholdDate).toBeUndefined();
+		});
+	});
+
+	describe("onToggleMode", () => {
+		it("フォーム→テキスト切替時にフォーム値をテキストに変換", () => {
+			const container = modal.contentEl;
+
+			// フォーム要素を作成
+			const descInput = container.createEl("input");
+			descInput.classList.add("task-description-input");
+			descInput.value = "Test task";
+
+			const prioritySelect = container.createEl("select");
+			prioritySelect.classList.add("priority-select");
+			const option = prioritySelect.createEl("option");
+			option.value = "A";
+			prioritySelect.value = "A";
+
+			const dueDateInput = container.createEl("input");
+			dueDateInput.classList.add("due-date-input");
+			dueDateInput.value = "2026-01-15";
+
+			// textareaを作成
+			modal.testCreateTextModeArea(container);
+
+			// モード切替
+			modal.testCreateToggleButton(container);
+			const button = container.querySelector("button.mode-toggle-button") as HTMLButtonElement;
+			button.click();
+
+			modal.testOnToggleMode(container);
+
+			const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
+			expect(textarea.value).toBe("(A) Test task due:2026-01-15");
+		});
+
+		it("テキスト→フォーム切替時にテキストをフォーム値に変換", () => {
+			const container = modal.contentEl;
+
+			// フォーム要素を作成
+			const descInput = container.createEl("input");
+			descInput.classList.add("task-description-input");
+
+			const prioritySelect = container.createEl("select");
+			prioritySelect.classList.add("priority-select");
+			const optionA = prioritySelect.createEl("option");
+			optionA.value = "A";
+			const optionB = prioritySelect.createEl("option");
+			optionB.value = "B";
+
+			const dueDateInput = container.createEl("input");
+			dueDateInput.classList.add("due-date-input");
+
+			const thresholdDateInput = container.createEl("input");
+			thresholdDateInput.classList.add("threshold-date-input");
+
+			// textareaを作成してテキストを設定
+			modal.testCreateTextModeArea(container);
+			const textarea = container.querySelector("textarea.text-mode-input") as HTMLTextAreaElement;
+			textarea.value = "(B) New task due:2026-02-01 t:2026-01-20";
+
+			// テキストモードに切り替え
+			modal.testCreateToggleButton(container);
+			const button = container.querySelector("button.mode-toggle-button") as HTMLButtonElement;
+			button.click();
+
+			// フォームモードに戻す
+			button.click();
+			modal.testOnToggleMode(container);
+
+			expect(descInput.value).toBe("New task");
+			expect(prioritySelect.value).toBe("B");
+			expect(dueDateInput.value).toBe("2026-02-01");
+			expect(thresholdDateInput.value).toBe("2026-01-20");
 		});
 	});
 });

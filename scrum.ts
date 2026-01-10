@@ -58,14 +58,22 @@ export const productBacklog: ProductBacklogItem[] = [
     id: "PBI-040",
     story: { role: "ユーザー", capability: "洗練されたミニマルなUIでタスクを管理", benefit: "視覚的に美しく、使っていて心地よい体験が得られる" },
     acceptanceCriteria: [
-      { criterion: "タスクリストに十分な余白（padding/margin）が設定されている", verification: "目視確認: タスク間に16px以上の余白" },
-      { criterion: "チェックボックスがカスタムスタイル（角丸、アニメーション付き）になる", verification: "目視確認: チェック時に滑らかなトランジション" },
-      { criterion: "フォントサイズに明確な階層がある（タイトル/本文/補助テキスト）", verification: "目視確認: 3段階以上のフォントサイズ" },
-      { criterion: "Obsidianのダークモード/ライトモードに適切に対応", verification: "目視確認: 両モードで視認性良好" },
+      { criterion: "タスクリストに十分な余白（padding/margin）が設定されている", verification: "目視: タスク間16px以上の余白、CSSクラス.task-itemにpadding: 12px 16px適用確認" },
+      { criterion: "チェックボックスがカスタムスタイル（角丸、アニメーション付き）になる", verification: "目視: チェック時150msトランジション、CSSにtransition: all 0.15s ease定義確認" },
+      { criterion: "フォントサイズに明確な階層がある（タイトル/本文/補助テキスト）", verification: "目視: 3段階（16px/14px/12px）、CSS変数--font-size-*/line-height適用確認" },
+      { criterion: "Obsidianのダークモード/ライトモードに適切に対応", verification: "目視: 両モード視認性良好、CSS変数--color-*でテーマ対応確認" },
+      { criterion: "CSSクラス名が一貫した命名規則（BEM形式）に従う", verification: "コードレビュー: .block__element--modifier形式、既存パターン踏襲確認" },
+      { criterion: "キーボードフォーカスが視覚的に明確（アウトライン/シャドウ）", verification: "手動: Tabキーナビゲーションで:focus-visibleスタイル確認、アクセシビリティテスト実行" },
     ],
     dependencies: [],
-    status: "draft",
-    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
+    status: "ready",
+    complexity: { functions: 2, estimatedTests: 2, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
+    refactorChecklist: [
+      "CSS変数を一元管理（:root定義）してテーマカスタマイズ容易化",
+      "スタイル定義を論理的にグループ化（Layout/Typography/Color/Animation）",
+      "重複スタイルをユーティリティクラスに抽出（.u-spacing-sm等）",
+      "トランジション設定をCSS変数化（--transition-default等）"
+    ],
   },
   {
     id: "PBI-041",

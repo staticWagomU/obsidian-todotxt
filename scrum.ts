@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 30, pbi: "PBI-032", status: "in_progress" as SprintStatus,
+  sprint: { number: 30, pbi: "PBI-032", status: "done" as SprintStatus,
     subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
 };
 
@@ -81,7 +81,7 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-028", story: { role: "user", capability: "タスクUI操作", benefit: "直感的管理" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: UI表示 (Sprint 29 done)
   { id: "PBI-029", story: { role: "user", capability: "due:/t:視覚表示", benefit: "期限一目確認" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Phase 6: Action返済Sprint (最優先 - 累積10件Action未実行の深刻化対応)
+  // Phase 6: Action返済Sprint (Sprint 30完了)
   {
     id: "PBI-032",
     story: { role: "dev", capability: "累積Retrospective Action実行による技術的負債返済", benefit: "改善サイクル機能回復" },
@@ -91,7 +91,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "Action実行率KPI設定", verification: "50%以上目標をscrum.tsに明記、次Sprint以降追跡可能" },
     ],
     dependencies: [],
-    status: "ready",
+    status: "done",
     complexity: { functions: 1, estimatedTests: 5, externalDependencies: 1, score: "MEDIUM", subtasks: 5 },
   },
   // Phase 6: 継続UI機能実装
@@ -163,60 +163,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (Sprint 30 completed, no active sprint)
 export const currentSprint = {
-  sprint: 30,
-  pbi: "PBI-032",
-  goal: "累積10件のRetrospective Action実行による改善サイクル機能回復と技術的負債返済開始",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "UI操作→データ保持→ファイル保存の統合テストケース作成",
-      implementation: "view integration test 1-2ケース実装、UI操作→データ保持フローのpass確認",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: view統合テスト最小MVP追加 - UI操作→データ保持→ファイル保存フロー検証" },
-        { phase: "green", message: "feat: view統合テスト2ケース実装完了 - UI操作からファイル保存までの完全フロー検証pass" },
-      ],
-    },
-    {
-      test: "N/A（文書化タスク）",
-      implementation: "Sprint Planning時のAction評価手順をscrum.tsのactionManagementセクションに明記、評価フロー定義",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "green", message: "docs: Action管理プロセス文書化強化 - Sprint Planning評価手順とPBI変換ガイドライン明記" },
-      ],
-    },
-    {
-      test: "N/A（設定タスク）",
-      implementation: "Action実行率KPI 50%以上目標をscrum.tsに明記、tracking項目で次Sprint以降追跡可能化",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "green", message: "docs: Action実行率KPI設定完了 - 3段階目標・履歴追跡・改善ロードマップ定義" },
-      ],
-    },
-    {
-      test: "N/A（PBI refinementタスク）",
-      implementation: "view.tsリファクタリングPBI-034のcomplexity・refactorChecklist検証、ready状態確認",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "green", message: "docs: PBI-034 (view.tsリファクタリング) ready状態検証完了" },
-      ],
-    },
-    {
-      test: "N/A（リファクタリングタスク）",
-      implementation: "view.ts小規模リファクタリング1コミット実施（renderTaskList()メソッド分割等）、REFACTOR文化再構築",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "refactor", message: "refactor: renderTaskList()をrenderAddButton/renderTaskItem私有メソッドに分離" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -263,6 +216,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 27, pbi: "PBI-027", story: "データ損失バグ修正", verification: "passed", notes: "5st,471t(+22),HIGH,5behavioral,clear()誤用修正" },
   { sprint: 28, pbi: "PBI-028", story: "タスク完了・編集・削除のUI操作", verification: "passed", notes: "5st,490t(+19=7EditTaskModal+12view),MEDIUM,5behavioral,チェックボックス+編集+削除ボタン統合" },
   { sprint: 29, pbi: "PBI-029", story: "due:とt:の視覚的表示", verification: "passed", notes: "4st,502t(+12=26due+28threshold+22TodoItem-3overlap),LOW,4behavioral,期限バッジ+色分け+グレーアウト統合" },
+  { sprint: 30, pbi: "PBI-032", story: "Action返済Sprint - 技術的負債返済", verification: "passed", notes: "5st,504t(+2=view integration),MEDIUM,1behavioral+4structural,統合テスト+Action管理+KPI+リファクタPBI+REFACTOR,Action実行率60%達成" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
@@ -330,9 +284,9 @@ export const actionManagement = {
 
   tracking: {
     totalActions: 10, // Sprint 20-29累積Action数
-    executedActions: 3, // Sprint 30で実行中（統合テスト・プロセス文書化・KPI設定）
-    currentRate: 30, // 3/10 = 30% (Sprint 30進行中)
-    note: "Sprint 30 (PBI-032) でAction返済Sprint実施中、5 subtask中3件がAction由来",
+    executedActions: 5, // Sprint 30完了（統合テスト・プロセス文書化・KPI設定・リファクタPBI・REFACTOR実施）
+    currentRate: 50, // 5/10 = 50% (Sprint 30完了、最低目標達成)
+    note: "Sprint 30 (PBI-032) でAction返済Sprint完了、5 subtask中5件がAction由来、Action実行率50%達成",
   },
 
   // Sprint別Action実行率履歴（Sprint 30でKPI追跡開始）
@@ -347,7 +301,7 @@ export const actionManagement = {
     { sprint: 27, actions: 1, executed: 0, rate: 0, note: "Action蓄積継続" },
     { sprint: 28, actions: 1, executed: 0, rate: 0, note: "Action蓄積継続、累積10件到達" },
     { sprint: 29, actions: 1, executed: 0, rate: 0, note: "Action完全未実行の深刻化、PBI-032作成決定" },
-    { sprint: 30, actions: 5, executed: 3, rate: 60, note: "Action返済Sprint実施中、統合テスト・プロセス・KPI・リファクタPBI・REFACTOR実施" },
+    { sprint: 30, actions: 5, executed: 5, rate: 100, note: "Action返済Sprint完了、統合テスト・プロセス・KPI・リファクタPBI・REFACTOR全実施、累積実行率50%達成" },
   ],
 
   // 次Sprint以降の改善目標（Sprint 30設定）

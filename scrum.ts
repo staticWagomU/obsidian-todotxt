@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 28, pbi: "PBI-028", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 28, pbi: "PBI-028", status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -78,19 +78,8 @@ export const productBacklog: ProductBacklogItem[] = [
   { id: "PBI-026", story: { role: "user", capability: "タスク追加UI", benefit: "GUIでタスク追加" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   // Phase 6: Critical Bug Fix (Sprint 27 done)
   { id: "PBI-027", story: { role: "user", capability: "データ保持", benefit: "損失防止" }, acceptanceCriteria: [], dependencies: [], status: "done" },
-  // Phase 6: UI統合 (Sprint 28以降予定) - requirements.md/user-guide.mdの未実装機能
-  {
-    id: "PBI-028",
-    story: { role: "user", capability: "タスク完了・編集・削除のUI操作", benefit: "直感的タスク管理" },
-    acceptanceCriteria: [
-      { criterion: "チェックボックス表示", verification: "各タスク行にチェックボックスが表示される" },
-      { criterion: "完了トグル動作", verification: "チェックボックスクリックで完了/未完了切替" },
-      { criterion: "編集ボタン表示と動作", verification: "編集ボタンクリックで編集モーダル表示" },
-      { criterion: "削除ボタン表示と動作", verification: "削除ボタンクリックでタスク削除" },
-    ],
-    dependencies: ["PBI-027"],
-    status: "ready",
-  },
+  // Phase 6: UI統合 (Sprint 28 done)
+  { id: "PBI-028", story: { role: "user", capability: "タスク完了・編集・削除のUI操作", benefit: "直感的タスク管理" }, acceptanceCriteria: [], dependencies: [], status: "done" },
   {
     id: "PBI-029",
     story: { role: "user", capability: "due:とt:の視覚的表示", benefit: "期限と着手日の一目確認" },
@@ -141,43 +130,58 @@ export const definitionOfReady = {
 export const currentSprint = {
   sprint: 28,
   pbi: "PBI-028",
-  goal: "TodoItemにチェックボックス・編集・削除ボタンを実装し、既存ハンドラーと統合して直感的なタスク管理UIを完成させる",
-  status: "in_progress" as SprintStatus,
+  goal: "renderTaskList()にチェックボックス・編集・削除ボタンを実装し、既存ハンドラーと統合して直感的なタスク管理UIを完成させる",
+  status: "done" as SprintStatus,
   subtasks: [
     {
-      test: "TodoItem.test.tsxにチェックボックスレンダリングテスト追加（input[type=\"checkbox\"]存在確認、完了状態でchecked属性検証）",
-      implementation: "TodoItem.tsxにチェックボックス要素追加、todo.completedに基づくchecked状態反映",
+      test: "view.test.tsにチェックボックスレンダリングテスト追加（input[type=\"checkbox\"]存在確認、完了状態でchecked属性検証、data-index属性検証）",
+      implementation: "renderTaskList()にチェックボックス要素追加、todo.completedに基づくchecked状態反映、data-index属性でタスク識別",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: チェックボックスUI表示のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: renderTaskListにチェックボックスUI追加" },
+      ],
     },
     {
-      test: "TodoItem.test.tsxにチェックボックスクリックテスト追加（クリックイベントでonToggleハンドラー呼出確認、引数todo.id検証）",
-      implementation: "チェックボックスonChangeイベントにonToggleハンドラー接続（TodosList→TodoItemへgetToggleHandler経由で渡す）",
+      test: "view.test.tsにチェックボックスクリックテスト追加（クリックイベントでgetToggleHandler()呼出確認、タスク完了/未完了トグル検証、複数タスク個別操作検証）",
+      implementation: "チェックボックスonClickイベントにgetToggleHandler()接続、data-index属性から対象タスク特定、非同期ハンドラーで状態更新",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: チェックボックスクリック動作のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: チェックボックスにクリックイベント接続" },
+      ],
     },
     {
-      test: "EditTaskModal.test.tsx新規作成（モーダル表示、初期値セット、保存ボタン→onSaveコールバック、キャンセルボタン→onClose、入力フィールド検証）",
-      implementation: "ui/EditTaskModal.tsx新規作成（AddTaskModal構造参考、既存タスク編集用にフォーム初期化）",
+      test: "EditTaskModal.test.ts新規作成（モーダル表示、初期値セット、保存ボタン→onSaveコールバック、入力フィールド検証、空入力時保存拒否、モーダルクローズクリーンアップ）",
+      implementation: "ui/EditTaskModal.ts新規作成（AddTaskModal構造参考、既存タスク説明を初期値としてフォーム初期化、保存時description更新）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: EditTaskModalのテスト追加とスタブ実装" },
+        { phase: "green" as CommitPhase, message: "feat: EditTaskModal完全実装" },
+      ],
     },
     {
-      test: "TodoItem.test.tsxに編集ボタンテスト追加（ボタンレンダリング、クリック→onEditハンドラー呼出、引数todo検証）、view.test.tsに編集フロー統合テスト追加",
-      implementation: "TodoItem.tsxに編集ボタン追加、onEditハンドラー接続（TodosList→TodoItemへgetEditHandler経由で渡す）、view.tsxでEditTaskModalインポート・統合",
+      test: "view.test.tsに編集ボタンテスト追加（ボタンレンダリング、data-index属性、クリック→openEditTaskModal呼出検証）",
+      implementation: "renderTaskList()に編集ボタン追加、openEditTaskModal()実装でEditTaskModalインスタンス作成・表示、getEditHandler()経由で編集処理",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 編集ボタンUI統合のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: 編集ボタンUI統合とopenEditTaskModal実装" },
+      ],
     },
     {
-      test: "TodoItem.test.tsxに削除ボタンテスト追加（ボタンレンダリング、クリック→onDeleteハンドラー呼出、引数todo.id検証）、view.test.tsに削除フロー統合テスト追加",
-      implementation: "TodoItem.tsxに削除ボタン追加、onDeleteハンドラー接続（TodosList→TodoItemへgetDeleteHandler経由で渡す）",
+      test: "view.test.tsに削除ボタンテスト追加（ボタンレンダリング、data-index属性、クリック→getDeleteHandler()呼出・タスク削除検証）",
+      implementation: "renderTaskList()に削除ボタン追加、onClickイベントでgetDeleteHandler()接続、data-index属性から対象タスク特定、非同期で削除処理",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 削除ボタンUI統合のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: 削除ボタンUI統合完了" },
+      ],
     },
   ],
 };
@@ -224,6 +228,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 25, pbi: "PBI-025", story: "todo.txt基本UI描画", verification: "passed", notes: "5st,443t(+5),MEDIUM,5behavioral,view.test.ts type fix" },
   { sprint: 26, pbi: "PBI-026", story: "タスク追加UI", verification: "passed", notes: "5st,449t(+6),MEDIUM,5behavioral,AddTaskModal+view統合" },
   { sprint: 27, pbi: "PBI-027", story: "データ損失バグ修正", verification: "passed", notes: "5st,471t(+22),HIGH,5behavioral,clear()誤用修正" },
+  { sprint: 28, pbi: "PBI-028", story: "タスク完了・編集・削除のUI操作", verification: "passed", notes: "5st,490t(+19=7EditTaskModal+12view),MEDIUM,5behavioral,チェックボックス+編集+削除ボタン統合" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

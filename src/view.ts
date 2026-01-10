@@ -2,6 +2,7 @@ import { TextFileView, type TFile, type WorkspaceLeaf } from "obsidian";
 import { parseTodoTxt, updateTodoInList } from "./lib/parser";
 import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type Todo } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
+import { EditTaskModal } from "./ui/EditTaskModal";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
@@ -129,8 +130,16 @@ export class TodotxtView extends TextFileView {
 	/**
 	 * Open edit task modal
 	 */
-	openEditTaskModal(_index: number): void {
-		// To be implemented
+	openEditTaskModal(index: number): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		const editHandler = this.getEditHandler();
+		const modal = new EditTaskModal(this.app, todo.description, (description, priority) => {
+			void editHandler(index, { description, priority });
+		});
+		modal.open();
 	}
 
 	/**
@@ -184,6 +193,15 @@ export class TodotxtView extends TextFileView {
 			}
 
 			li.appendChild(document.createTextNode(todo.description));
+
+			// Add edit button
+			const editButton = li.createEl("button");
+			editButton.classList.add("edit-task-button");
+			editButton.textContent = "編集";
+			editButton.dataset.index = String(index);
+			editButton.addEventListener("click", () => {
+				this.openEditTaskModal(index);
+			});
 
 			if (todo.completed) {
 				li.classList.add("completed");

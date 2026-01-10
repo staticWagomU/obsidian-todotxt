@@ -9,7 +9,7 @@ import { sortTodos } from "./sort";
 /**
  * Filter state for control bar
  */
-interface FilterState {
+export interface FilterState {
 	priority: string;
 	search: string;
 	group: string;

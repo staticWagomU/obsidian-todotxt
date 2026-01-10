@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { WorkspaceLeaf } from "obsidian";
 import { TodotxtView } from "../view";
+import type { FilterState } from "../lib/rendering";
 
 // Mock Obsidian modules
 vi.mock("obsidian", () => {
@@ -57,6 +58,23 @@ vi.mock("obsidian", () => {
 			close(): void {}
 		},
 	};
+});
+
+describe("FilterState type", () => {
+	it("FilterState型がエクスポートされている", () => {
+		// Verify: FilterState type can be imported
+		const state: FilterState = {
+			priority: "all",
+			search: "",
+			group: "none",
+			sort: "default",
+		};
+		expect(state).toBeDefined();
+		expect(state.priority).toBe("all");
+		expect(state.search).toBe("");
+		expect(state.group).toBe("none");
+		expect(state.sort).toBe("default");
+	});
 });
 
 describe("priority filter dropdown", () => {

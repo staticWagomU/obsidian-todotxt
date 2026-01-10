@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 34, pbi: "PBI-031", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
 };
 
 // Product Goal
@@ -87,9 +87,31 @@ export const definitionOfReady = {
 export const currentSprint = {
   sprint: 34,
   pbi: "PBI-031",
-  goal: "",
+  goal: "Phase 7完了: 内部/外部リンクのクリック可能表示とrec:タグアイコン表示により、ユーザーのタスク間ナビゲーションと繰り返しタスク認識を改善する",
   status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  subtasks: [
+    {
+      test: "内部リンククリック可能表示テスト: extractInternalLinks結果をclickableな要素にレンダリング、Obsidian app.workspace.openLinkText呼び出し",
+      implementation: "TodoItem内で内部リンク[[Note]]をボタン化、クリックハンドラでapp.workspace.openLinkText呼び出し、LinkHandlerインターフェース抽象化でテスト容易性確保",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "外部リンククリック可能表示テスト: extractExternalLinks結果をclickableな要素にレンダリング、URL遷移動作確認",
+      implementation: "TodoItem内で外部リンク[text](url)をアンカー化、target=_blank/rel=noopener noreferrer設定、クリック動作検証",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "rec:タグ視覚表示テスト: rec:タグ存在時に繰り返しアイコン表示、parseRecurrenceTagによるパターン検証",
+      implementation: "TodoItem内でrec:タグ検出時にアイコン要素追加、aria-label設定でアクセシビリティ確保、パターン文字列（1d, +1w等）のtooltip表示",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ],
 };
 
 // Impediments

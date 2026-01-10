@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 39, pbi: "PBI-039", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 8, status: "done", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
+  sprint: { number: 40, pbi: "PBI-040", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+  phase: { number: 9, status: "not_started", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
 // Product Goal
@@ -52,18 +52,7 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 36 PBI-036: デートピッカー、585t(+22t)、done
   //   Sprint 37 PBI-037: プロジェクト/コンテキスト選択、597t(+12t)、done
   //   Sprint 38 PBI-038: リアルタイムプレビュー、610t(+13t)、done
-  {
-    id: "PBI-039",
-    story: { role: "上級ユーザー", capability: "構造化フォームと直接テキスト編集モードを切り替え", benefit: "慣れたユーザーは高速にtodo.txt形式で直接入力できる" },
-    acceptanceCriteria: [
-      { criterion: "フォーム/テキストモード切替ボタンが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
-      { criterion: "テキストモードでは生のtodo.txt形式で編集できる", verification: "pnpm vitest run -- AddTaskModal" },
-      { criterion: "モード切替時に入力内容が保持される", verification: "pnpm vitest run -- AddTaskModal" },
-    ],
-    dependencies: ["PBI-038"],
-    status: "done",
-    complexity: { functions: 3, estimatedTests: 12, externalDependencies: 0, score: "LOW", subtasks: 5 },
-  },
+  // Sprint 39 PBI-039: フォーム/テキストモード切替、626t(+16t)、done
   // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
   {
     id: "PBI-040",
@@ -119,60 +108,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 39,
-  pbi: "PBI-039",
-  goal: "上級ユーザーが慣れたtodo.txt形式で高速入力できるよう、フォーム/テキストモード切替機能を実装し、Phase 8フォームUI強化を完遂する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "AddTaskModal/EditTaskModalにモード切替ボタンが表示されること",
-      implementation: "BaseTaskModalにモード状態(isTextMode)とcreateToggleButton()を追加し、フォーム/テキストモード切替UIを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: モード切替ボタンUI表示と状態管理のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: モード切替ボタンのUI表示と状態管理を実装" },
-      ],
-    },
-    {
-      test: "テキストモードでtextareaが表示され、フォーム値と同期すること",
-      implementation: "BaseTaskModalにcreateTextModeArea()を追加し、フォーム値⇔テキスト双方向変換を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: テキストモード時のtextarea表示と値同期のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: テキストモード時のtextarea表示と値同期を実装" },
-      ],
-    },
-    {
-      test: "フォーム→テキスト、テキスト→フォーム切替時に入力内容が保持されること",
-      implementation: "onToggleMode()でフォーム値⇔テキスト変換ロジックを実装し、モード切替時の入力値保持を実現",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: モード切替時の入力値保持ロジックのテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: モード切替時の入力値保持ロジックを実装" },
-      ],
-    },
-    {
-      test: "既存テストが継続して通過すること(変換ロジック抽出後)",
-      implementation: "parseFormValueFromText()とbuildTextFromFormValue()をutils/form-helpersに抽出し、変換ロジックを再利用可能に",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor: フォーム⇔テキスト変換ロジックをutils/form-helpersに抽出" },
-      ],
-    },
-    {
-      test: "既存テストが継続して通過すること(モード管理ロジック整理後)",
-      implementation: "モード状態管理とUI更新ロジックをBaseTaskModalクラス内メソッドに整理し、保守性を向上",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor: BaseTaskModalのコード構造を整理" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 40,
+  pbi: "PBI-040",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -208,7 +148,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 36, pbi: "PBI-036", story: "カレンダーからdue:/t:日付選択", verification: "passed", notes: "585t(+22t),TDD適用(13commit:RED4+GREEN5+REFACTOR4),REFACTOR率31%(4/13),date-picker-utils.ts/BaseTaskModal.ts新規作成,HTML5 date input実装,Lint修正でCSSクラス化,BaseTaskModal基底クラス抽出" },
   { sprint: 37, pbi: "PBI-037", story: "プロジェクト/コンテキスト選択", verification: "passed", notes: "597t(+12t),TDD適用(10commit:RED3+GREEN4+REFACTOR3),REFACTOR率30%(3/10),project-context-utils.ts新規作成,BaseTaskModalにcreateMultiSelect/createProjectContextSelects追加,マルチセレクトUI実装,全AC達成(ドロップダウン表示/新規作成/複数選択)" },
   { sprint: 38, pbi: "PBI-038", story: "リアルタイムプレビュー", verification: "passed", notes: "610t(+13t),TDD適用(10commit:RED2+GREEN2+REFACTOR6),REFACTOR率60%(6/10),utils/form-helpers.ts新規作成,BaseTaskModalにcreatePreviewArea/updatePreview/updatePreviewFromFormValues追加,AddTaskModal/EditTaskModalにプレビュー機能実装,全AC達成(プレビューエリア表示/リアルタイム更新/todo.txt形式準拠)" },
-  { sprint: 39, pbi: "PBI-039", story: "構造化フォーム/テキストモード切替", verification: "passed", notes: "626t(+16t),TDD適用(8commit:RED3+GREEN3+REFACTOR2),REFACTOR率25%(2/8),utils/form-helpersにbuildTextFromFormValues/parseFormValuesFromText追加,BaseTaskModalにcreateToggleButton/createTextModeArea/updateTextModeVisibility/onToggleMode追加,フォーム⇔テキスト双方向変換実装,全AC達成(切替ボタン表示/todo.txt形式直接編集/入力内容保持),Phase 8完遂(Sprint 35-39完了)" },
+  { sprint: 39, pbi: "PBI-039", story: "構造化フォーム/テキストモード切替", verification: "passed", notes: "626t(+16t),TDD適用(8commit:RED3+GREEN3+REFACTOR2),REFACTOR率25%(2/8),utils/form-helpersにbuildTextFromFormValues/parseFormValuesFromText追加,BaseTaskModalにcreateToggleButton/createTextModeArea/updateTextModeVisibility/onToggleMode追加,フォーム⇔テキスト双方向変換実装,全AC達成(切替ボタン表示/todo.txt形式直接編集/入力内容保持),Phase 8完遂(Sprint 35-39完了),Sprint 38 Action実行率80%(4/5件実行:テスト増加数+15t超過達成/Action実行率の明示化/REFACTOR率50%維持未達/form-helpersパターン推進,Phase 8完了記念Sprint延期)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
@@ -259,10 +199,10 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 38完了、新規5件Action追加)
+// Action Management (Sprint 39完了、Sprint 38 Action 4/5件実行、新規Action未追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 46, executed: 25, rate: 54, remaining: 21 }, // Sprint 38完了（Sprint 37 Action 3件実行: REFACTOR率50%目標再設定/Action実行確認の定常化/BaseTaskModal-utils系パターン推進）、新規5件Action追加（テスト増加数+15t再設定/Action実行率の明示化/REFACTOR率50%維持/Phase 8完了記念Sprint実施/form-helpersパターン推進）
+  tracking: { total: 46, executed: 29, rate: 63, remaining: 17 }, // Sprint 39完了（Sprint 38 Action 4件実行: テスト増加数+15t再設定/Action実行率の明示化/form-helpersパターン推進/REFACTOR率50%維持未達、Phase 8完了記念Sprint実施延期）
 };
 
 // Agents & Events

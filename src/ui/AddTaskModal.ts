@@ -5,6 +5,9 @@
 import { type App } from "obsidian";
 import { BaseTaskModal } from "./BaseTaskModal";
 import { generatePriorityOptions } from "../lib/priority-options";
+import { extractProjects, extractContexts } from "../lib/suggestions";
+import { renderProjectOptions, renderContextOptions } from "../lib/project-context-utils";
+import type { Todo } from "../lib/todo";
 
 export class AddTaskModal extends BaseTaskModal {
 	onSave: (
@@ -13,6 +16,7 @@ export class AddTaskModal extends BaseTaskModal {
 		dueDate?: string,
 		thresholdDate?: string,
 	) => void;
+	todos: Todo[];
 
 	constructor(
 		app: App,
@@ -22,9 +26,11 @@ export class AddTaskModal extends BaseTaskModal {
 			dueDate?: string,
 			thresholdDate?: string,
 		) => void,
+		todos: Todo[] = [],
 	) {
 		super(app);
 		this.onSave = onSave;
+		this.todos = todos;
 	}
 
 	onOpen(): void {
@@ -59,6 +65,18 @@ export class AddTaskModal extends BaseTaskModal {
 		const thresholdDateInput = contentEl.createEl("input");
 		thresholdDateInput.type = "date";
 		thresholdDateInput.classList.add("threshold-date-input");
+
+		// Project multi-select
+		this.createLabel(contentEl, "プロジェクト (+)");
+		const projects = extractProjects(this.todos);
+		const projectOptions = renderProjectOptions(projects);
+		this.createMultiSelect(contentEl, projectOptions, "project-select");
+
+		// Context multi-select
+		this.createLabel(contentEl, "コンテキスト (@)");
+		const contexts = extractContexts(this.todos);
+		const contextOptions = renderContextOptions(contexts);
+		this.createMultiSelect(contentEl, contextOptions, "context-select");
 
 		// Save button
 		const saveButton = contentEl.createEl("button");

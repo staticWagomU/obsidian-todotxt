@@ -81,7 +81,7 @@ describe("EditTaskModal", () => {
 		const saveButton = modal.contentEl.querySelector("button.save-task-button");
 		saveButton?.dispatchEvent(new Event("click"));
 
-		expect(onSaveSpy).toHaveBeenCalledWith("Buy bread", undefined);
+		expect(onSaveSpy).toHaveBeenCalledWith("Buy bread", undefined, undefined, undefined);
 	});
 
 	it("空の入力で保存ボタンをクリックしてもonSaveが呼ばれない", () => {
@@ -169,7 +169,7 @@ describe("EditTaskModal", () => {
 		saveButton?.dispatchEvent(new Event("click"));
 
 		// Verify: onSave was called with priority
-		expect(onSaveSpy).toHaveBeenCalledWith("優先度テスト", "A");
+		expect(onSaveSpy).toHaveBeenCalledWith("優先度テスト", "A", undefined, undefined);
 	});
 
 	it("優先度「なし」を選択した場合はundefinedがonSaveに渡されること", () => {
@@ -188,6 +188,69 @@ describe("EditTaskModal", () => {
 		saveButton?.dispatchEvent(new Event("click"));
 
 		// Verify: onSave was called with undefined
-		expect(onSaveSpy).toHaveBeenCalledWith("優先度なしタスク", undefined);
+		expect(onSaveSpy).toHaveBeenCalledWith("優先度なしタスク", undefined, undefined, undefined);
+	});
+
+	it("due:日付入力フィールドが表示されること", () => {
+		modal.onOpen();
+
+		const dueInput = modal.contentEl.querySelector("input.due-date-input");
+		expect(dueInput).not.toBeNull();
+		expect(dueInput?.getAttribute("type")).toBe("date");
+	});
+
+	it("t:日付入力フィールドが表示されること", () => {
+		modal.onOpen();
+
+		const thresholdInput = modal.contentEl.querySelector("input.threshold-date-input");
+		expect(thresholdInput).not.toBeNull();
+		expect(thresholdInput?.getAttribute("type")).toBe("date");
+	});
+
+	it("既存due:タグが日付入力フィールドに初期値として表示されること", () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
+		const modalWithDue = new EditTaskModal(
+			mockApp as any,
+			"Buy milk",
+			onSaveSpy as any,
+			undefined,
+			"2026-01-15",
+			undefined,
+		);
+		modalWithDue.onOpen();
+
+		const dueInput = modalWithDue.contentEl.querySelector("input.due-date-input") as HTMLInputElement;
+		expect(dueInput.value).toBe("2026-01-15");
+	});
+
+	it("既存t:タグが日付入力フィールドに初期値として表示されること", () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
+		const modalWithThreshold = new EditTaskModal(
+			mockApp as any,
+			"Buy milk",
+			onSaveSpy as any,
+			undefined,
+			undefined,
+			"2026-01-20",
+		);
+		modalWithThreshold.onOpen();
+
+		const thresholdInput = modalWithThreshold.contentEl.querySelector("input.threshold-date-input") as HTMLInputElement;
+		expect(thresholdInput.value).toBe("2026-01-20");
+	});
+
+	it("日付を変更した場合onSaveに渡されること", () => {
+		modal.onOpen();
+
+		const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+		input.value = "期限変更テスト";
+
+		const dueInput = modal.contentEl.querySelector("input.due-date-input") as HTMLInputElement;
+		dueInput.value = "2026-02-01";
+
+		const saveButton = modal.contentEl.querySelector("button.save-task-button");
+		saveButton?.dispatchEvent(new Event("click"));
+
+		expect(onSaveSpy).toHaveBeenCalledWith("期限変更テスト", undefined, "2026-02-01", undefined);
 	});
 });

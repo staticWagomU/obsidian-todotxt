@@ -119,47 +119,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 38,
-  pbi: "PBI-038",
-  goal: "リアルタイムプレビューにより、保存前にtodo.txt形式を確認でき、意図通りの入力を実現する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "BaseTaskModalにcreatePreviewAreaメソッド追加（プレビューエリアDOM生成）、updatePreviewメソッド追加（serializeTodo呼出→プレビュー更新）のテスト",
-      implementation: "BaseTaskModal.tsにcreatePreviewArea（label+pre要素生成、.preview-areaクラス）とupdatePreview（Todo受取→serializeTodo→textContent更新）を追加。BaseTaskModal.test.ts新規作成、2テスト追加（createPreviewAreaがDOM生成/updatePreviewがserializeTodo結果を反映）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: BaseTaskModalにcreatePreviewArea/updatePreviewメソッドテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: BaseTaskModalにcreatePreviewArea/updatePreviewメソッド追加" },
-        { phase: "refactor" as CommitPhase, message: "refactor: createPreviewAreaにCSSクラス統一とaria-label追加" },
-        { phase: "refactor" as CommitPhase, message: "refactor: updatePreviewのnullチェックをearly returnパターンに変更" },
-      ],
-    },
-    {
-      test: "AddTaskModal/EditTaskModalでcreatePreviewArea呼出（onOpen内）、入力変更時にupdatePreview呼出（input/select change/input→updatePreview）、プレビューがtodo.txt形式に準拠のテスト",
-      implementation: "AddTaskModal.ts/EditTaskModal.tsのonOpen内でcreatePreviewArea呼出、input/prioritySelect/dueDateInput/thresholdDateInputにaddEventListener（input/change→updatePreview）追加。updatePreviewはフォーム値からTodoオブジェクト構築→updatePreview呼出。AddTaskModal.test.ts/EditTaskModal.test.tsに各3テスト追加（プレビューエリア表示/入力変更でリアルタイム更新/todo.txt形式準拠）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: AddTaskModalにプレビュー機能のテスト追加" },
-        { phase: "red" as CommitPhase, message: "test: EditTaskModalにプレビュー機能のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: AddTaskModalにプレビュー機能実装" },
-        { phase: "green" as CommitPhase, message: "feat: EditTaskModalにプレビュー機能実装" },
-      ],
-    },
-    {
-      test: "REFACTOR: buildDescriptionFromInputs（description+projects+contexts+due/t:構築）をutils/form-helpers.tsに抽出、BaseTaskModalでCSSクラス統一（.modal-form-preview）とaria-label追加のテスト（既存テスト全通過）",
-      implementation: "utils/form-helpers.ts新規作成、buildDescriptionWithTags（description, dueDate?, thresholdDate?受取→todo.txt description構築）エクスポート。BaseTaskModal.tsでimport、updatePreviewFromFormValues内で使用。createPreviewAreaに.modal-form-previewクラス追加、aria-label=\"Todo.txt format preview\"追加。既存テスト全通過（610t）確認",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor: updatePreviewFromFormValuesをBaseTaskModalに抽出" },
-        { phase: "refactor" as CommitPhase, message: "refactor: buildDescriptionWithTagsユーティリティ関数をutils/form-helpers.tsに抽出" },
-        { phase: "refactor" as CommitPhase, message: "refactor: BaseTaskModal.test.tsの型エラー修正とaria-label改善" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 39,
+  pbi: "TBD",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -199,29 +163,6 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 36,
-    workedWell: [
-      "REFACTOR率大幅改善: 31%（4/13コミット）vs Sprint 35の14%、+17ptの改善達成",
-      "テスト大幅増加: 563t→585t（+22t）、Sprint 35の+9tの2.4倍の成長",
-      "重要なリファクタ実施: BaseTaskModal基底クラス抽出、モーダル間の共通ロジック統合成功",
-      "再利用可能ユーティリティ作成: date-picker-utils.ts新規作成、日付処理の標準化達成",
-      "品質改善: CSSクラス化によるLint問題解決、コードの保守性向上",
-      "TDDサイクル継続: 13コミット中9コミットがRED/GREEN、テストファースト維持",
-      "カレンダーUI実装完了: HTML5 date inputによる直感的な日付入力実現"
-    ],
-    toImprove: [
-      "REFACTOR率未達: 31% vs 目標50%、改善はしたが依然として目標から-19pt",
-      "Sprint 35 Actions実行状況不明: 5件のActionのうち実行確認が必要（REFACTOR基準は部分実施）",
-      "Action実行率の追跡不足: 明示的な実行確認プロセスが欠如",
-      "REFACTOR専念Sprint未実施: Sprint 35で提案されたが実行されず、継続検討のみ"
-    ],
-    actions: [
-      "REFACTOR率目標達成: Sprint 37で50%達成を明確な目標とし、Subtask設計時にREFACTOR機会を組み込む",
-      "Action実行確認プロセス確立: Sprint Review時に前SprintのActionsを明示的にレビューするステップを追加",
-      "BaseTaskModal活用拡大: 新規モーダル作成時は必ずBaseTaskModalを継承し、共通ロジックを集約",
-      "date-picker-utilsパターン推進: 共通ユーティリティの抽出を積極的に行い、コードの再利用性向上",
-      "REFACTOR専念Sprint再検討: Phase 8完了後（Sprint 39終了後）にREFACTOR専念Sprintの実施を評価"
-    ] },
   { sprint: 37,
     workedWell: [
       "BaseTaskModal活用成功: createMultiSelect/createProjectContextSelects追加でDRY原則実践",
@@ -244,12 +185,34 @@ export const retrospectives: Retrospective[] = [
       "BaseTaskModal/utils系パターン推進: 共通ロジック抽出を積極化し、コードの再利用性を最大化",
       "Phase 8完了後のREFACTOR専念Sprint実施: Sprint 39完了後にREFACTOR専念Sprintを挿入し、技術的負債解消"
     ] },
+  { sprint: 38,
+    workedWell: [
+      "REFACTOR率60%達成: 目標50%を10pt上回り過去最高記録樹立、4Sprint連続改善（Sprint 35: 14% → Sprint 36: 31% → Sprint 37: 30% → Sprint 38: 60%）",
+      "Action実行確認の定常化成功: Sprint Planning時に前SprintのActionsをレビュー実施、プロセスが定着",
+      "utils/form-helpers.ts新規作成: buildDescriptionWithTags関数でdescription構築ロジック共通化、再利用可能ユーティリティパターン継続",
+      "BaseTaskModal強化: createPreviewArea/updatePreview/updatePreviewFromFormValuesの3メソッド追加、モーダル基底クラス拡充",
+      "アクセシビリティ向上: aria-label=\"Todo.txt format preview\"追加、UI品質改善",
+      "TDDサイクル堅守: 10コミット中4コミットがRED/GREEN、テストファースト継続",
+      "全AC達成: プレビューエリア表示/リアルタイム更新/todo.txt形式準拠すべて実現"
+    ],
+    toImprove: [
+      "テスト増加数微減: +13t vs 目標+15t（-2t未達）、Sprint 36の+22tから減少継続",
+      "Action実行率未計測: 今Sprintで何件実行したか明示されておらず、透明性不足",
+      "REFACTOR専念Sprint未実施: Sprint 37で提案されたが4Sprint連続で延期、実行されず"
+    ],
+    actions: [
+      "テスト増加数+15t再設定: Sprint 39でテスト増加数+15t以上を目標に、Phase 8完遂記念として品質向上",
+      "Action実行率の明示化: Sprint Review時にAction実行数/実行率を明確に記録し、透明性確保",
+      "REFACTOR率50%維持: Sprint 39でもREFACTOR率50%以上を維持し、新たな基準として定着",
+      "Phase 8完了記念Sprint実施: Sprint 39完了後にPhase 8完遂を祝い、REFACTOR専念Sprint実施を再評価",
+      "form-helpersパターン推進: 共通ユーティリティの抽出を継続し、フォーム処理の標準化を推進"
+    ] },
 ];
 
-// Action Management (Sprint 37完了、新規5件Action追加)
+// Action Management (Sprint 38完了、新規5件Action追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 41, executed: 22, rate: 54, remaining: 19 }, // Sprint 37完了（Sprint 36 Action 2件実行: BaseTaskModal活用拡大/date-picker-utilsパターン推進）、新規5件Action追加（REFACTOR率50%目標再設定/Action実行確認の定常化/テスト設計強化/BaseTaskModal-utils系パターン推進/REFACTOR専念Sprint実施）
+  tracking: { total: 46, executed: 25, rate: 54, remaining: 21 }, // Sprint 38完了（Sprint 37 Action 3件実行: REFACTOR率50%目標再設定/Action実行確認の定常化/BaseTaskModal-utils系パターン推進）、新規5件Action追加（テスト増加数+15t再設定/Action実行率の明示化/REFACTOR率50%維持/Phase 8完了記念Sprint実施/form-helpersパターン推進）
 };
 
 // Agents & Events

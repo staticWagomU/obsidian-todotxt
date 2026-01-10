@@ -47,7 +47,26 @@ export const productGoal = {
 export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-6: COMPLETE (Sprint 1-30) - 30 PBIs done, see completedSprints
   // PBI-001〜032 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済
-  // Phase 6: 継続UI機能実装
+  // Phase 6: 継続UI機能実装 (Sprint 31 Backlog Refinement完了: 優先順位調整034→030→031→033)
+  // 優先順位理由: 034=REFACTOR率20%達成+保守性基盤/030=033依存元/031=独立機能/033=030依存
+  {
+    id: "PBI-034",
+    story: { role: "dev", capability: "view.tsをhandlers/rendering層に分離", benefit: "300行超回避と保守性向上" },
+    acceptanceCriteria: [
+      { criterion: "handlers分離", verification: "getToggleHandler等4メソッドをsrc/lib/handlers.ts化、view.tsから参照" },
+      { criterion: "rendering分離", verification: "renderTaskList()をsrc/lib/rendering.ts化、view.tsは200行以下に削減" },
+      { criterion: "既存テスト全通過", verification: "リファクタリング後も504tests全pass維持、振る舞い変更なし確認" },
+    ],
+    dependencies: [],
+    status: "ready",
+    complexity: { functions: 2, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 3 },
+    refactorChecklist: [
+      "src/lib/handlers.ts作成 - 4 handler functions移動 (getToggleHandler/getAddHandler/getEditHandler/getDeleteHandler)",
+      "src/lib/rendering.ts作成 - renderTaskList()移動 (150行の大規模メソッド分離)",
+      "view.ts import更新、244行→150行以下目標 (40%削減)",
+      "既存テスト全通過確認 (504 tests = Sprint 30現在、統合テスト2件追加済)",
+    ],
+  },
   {
     id: "PBI-030",
     story: { role: "user", capability: "コントロールバーによるフィルタ・ソート・グループ", benefit: "タスク整理と絞込" },
@@ -84,24 +103,6 @@ export const productBacklog: ProductBacklogItem[] = [
     dependencies: ["PBI-030"],
     status: "refining",
     complexity: { functions: 3, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
-  },
-  {
-    id: "PBI-034",
-    story: { role: "dev", capability: "view.tsをhandlers/rendering層に分離", benefit: "300行超回避と保守性向上" },
-    acceptanceCriteria: [
-      { criterion: "handlers分離", verification: "getToggleHandler等4メソッドをsrc/lib/handlers.ts化、view.tsから参照" },
-      { criterion: "rendering分離", verification: "renderTaskList()をsrc/lib/rendering.ts化、view.tsは200行以下に削減" },
-      { criterion: "既存テスト全通過", verification: "リファクタリング後も504tests全pass維持、振る舞い変更なし確認" },
-    ],
-    dependencies: [],
-    status: "ready",
-    complexity: { functions: 2, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 3 },
-    refactorChecklist: [
-      "src/lib/handlers.ts作成 - 4 handler functions移動 (getToggleHandler/getAddHandler/getEditHandler/getDeleteHandler)",
-      "src/lib/rendering.ts作成 - renderTaskList()移動 (150行の大規模メソッド分離)",
-      "view.ts import更新、244行→150行以下目標 (40%削減)",
-      "既存テスト全通過確認 (504 tests = Sprint 30現在、統合テスト2件追加済)",
-    ],
   },
 ];
 
@@ -174,8 +175,13 @@ export const retrospectives: Retrospective[] = [
 // Action Management (Sprint 30確立)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 }, // Action実行率目標（%）
-  tracking: { total: 10, executed: 5, rate: 50 }, // Sprint 30完了時点
+  tracking: { total: 10, executed: 5, rate: 50, remaining: 5 }, // Sprint 30完了時点
   evaluationProcess: "Sprint Planning時にAction評価→High優先度1+Sprint工数→PBI化",
+  sprint31Evaluation: {
+    action1: "REFACTOR率20%継続 - PBI-034優先度1位調整、Sprint 31実施で達成",
+    action2: "統合テスト追加ルール - PBI-030/031複雑度見積もりに反映済、継続適用",
+    action3: "Phase 6優先順位調整 - Refinement完了、順序034→030→031→033決定",
+  },
 };
 
 // Agents & Events

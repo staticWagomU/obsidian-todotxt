@@ -1377,3 +1377,126 @@ describe("render due date badge", () => {
 		expect(li3?.querySelector("span.due-date")).toBeNull();
 	});
 });
+
+describe("render due date badge with style", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("期限切れタスク(overdue)の期限日バッジが赤色で表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Load task with overdue date
+		view.setViewData("Buy milk due:2026-01-15", false);
+		view.renderTaskList();
+
+		// Verify: Due date badge has red color
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+		const dueBadge = li?.querySelector("span.due-date") as HTMLSpanElement;
+
+		expect(dueBadge).not.toBeNull();
+		expect(dueBadge?.style.color).toBe("rgb(255, 68, 68)"); // #ff4444
+
+		vi.useRealTimers();
+	});
+
+	it("本日期限タスク(today)の期限日バッジがオレンジ色で表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Load task with today's date
+		view.setViewData("Buy milk due:2026-01-20", false);
+		view.renderTaskList();
+
+		// Verify: Due date badge has orange color
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+		const dueBadge = li?.querySelector("span.due-date") as HTMLSpanElement;
+
+		expect(dueBadge).not.toBeNull();
+		expect(dueBadge?.style.color).toBe("rgb(255, 153, 68)"); // #ff9944
+
+		vi.useRealTimers();
+	});
+
+	it("未来期限タスク(future)の期限日バッジにスタイル適用されない", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock current date to 2026-01-20
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-20"));
+
+		// Execute: Load task with future date
+		view.setViewData("Buy milk due:2026-01-25", false);
+		view.renderTaskList();
+
+		// Verify: Due date badge has no color style
+		const ul = container.querySelector("ul");
+		const li = ul?.children[0] as HTMLLIElement;
+		const dueBadge = li?.querySelector("span.due-date") as HTMLSpanElement;
+
+		expect(dueBadge).not.toBeNull();
+		expect(dueBadge?.style.color).toBe("");
+
+		vi.useRealTimers();
+	});
+});

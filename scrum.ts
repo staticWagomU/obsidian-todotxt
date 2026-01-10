@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 30, pbi: "PBI-032", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -202,15 +202,19 @@ export const currentSprint = {
       test: "N/A（PBI refinementタスク）",
       implementation: "view.tsリファクタリングPBI-034のcomplexity・refactorChecklist検証、ready状態確認",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "green", message: "docs: PBI-034 (view.tsリファクタリング) ready状態検証完了" },
+      ],
     },
     {
       test: "N/A（リファクタリングタスク）",
       implementation: "view.ts小規模リファクタリング1コミット実施（renderTaskList()メソッド分割等）、REFACTOR文化再構築",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "refactor", message: "refactor: renderTaskList()をrenderAddButton/renderTaskItem私有メソッドに分離" },
+      ],
     },
   ] as Subtask[],
 };

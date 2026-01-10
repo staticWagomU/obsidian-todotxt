@@ -12,6 +12,8 @@ import { serializeTodo } from "../lib/parser";
 import { buildDescriptionWithTags } from "../utils/form-helpers";
 
 export abstract class BaseTaskModal extends Modal {
+	protected isTextMode = false;
+
 	/**
 	 * ラベル要素を作成してコンテナに追加
 	 * @param container 親要素
@@ -72,6 +74,23 @@ export abstract class BaseTaskModal extends Modal {
 		const contextSelect = this.createMultiSelect(container, contextOptions, "context-select");
 
 		return { projectSelect, contextSelect };
+	}
+
+	/**
+	 * モード切替ボタンを作成
+	 * @param container 親要素
+	 */
+	protected createToggleButton(container: HTMLElement): void {
+		const button = container.createEl("button", {
+			cls: "mode-toggle-button",
+		});
+		button.setAttribute("aria-label", "Toggle input mode");
+		button.textContent = this.isTextMode ? "フォームモード" : "テキストモード";
+
+		button.addEventListener("click", () => {
+			this.isTextMode = !this.isTextMode;
+			button.textContent = this.isTextMode ? "フォームモード" : "テキストモード";
+		});
 	}
 
 	/**

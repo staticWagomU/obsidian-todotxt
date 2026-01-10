@@ -120,7 +120,7 @@ export class TodotxtView extends TextFileView {
 		const editHandler = getEditHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
 		const modal = new EditTaskModal(this.app, todo.description, (description, priority) => {
 			void editHandler(index, { description, priority });
-		});
+		}, todo.priority);
 		modal.open();
 	}
 }

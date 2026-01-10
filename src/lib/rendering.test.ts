@@ -48,6 +48,27 @@ export function renderExternalLinks(description: string): HTMLElement[] {
 	});
 }
 
+/**
+ * Render recurrence icon if rec: tag exists
+ */
+export function renderRecurrenceIcon(todo: Todo): HTMLElement | null {
+	const recTag = todo.tags.rec;
+	if (!recTag) {
+		return null;
+	}
+
+	// Extract pattern string (remove "rec:" prefix)
+	const pattern = recTag.replace(/^rec:/, "");
+
+	const el = document.createElement("span");
+	el.classList.add("recurrence-icon");
+	el.textContent = "🔁"; // Recurrence icon
+	el.setAttribute("aria-label", `繰り返し: ${pattern}`);
+	el.setAttribute("title", `繰り返し: ${pattern}`);
+
+	return el;
+}
+
 describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 	describe("内部リンククリック可能表示", () => {
 		it("[[Note]]形式の内部リンクがクリック可能な要素としてレンダリングされる", () => {
@@ -123,6 +144,69 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			expect(linkElements).toHaveLength(2);
 			expect(linkElements[0]?.textContent).toBe("Link1");
 			expect(linkElements[1]?.textContent).toBe("Link2");
+		});
+	});
+
+	describe("rec:タグ視覚表示", () => {
+		it("rec:タグが存在する場合に繰り返しアイコン要素が生成される", () => {
+			const todo: Todo = {
+				completed: false,
+				description: "Recurring task",
+				projects: [],
+				contexts: [],
+				tags: { rec: "rec:1d" },
+				raw: "Recurring task rec:1d",
+			};
+
+			const iconElement = renderRecurrenceIcon(todo);
+
+			expect(iconElement).toBeDefined();
+			expect(iconElement?.classList.contains("recurrence-icon")).toBe(true);
+		});
+
+		it("rec:タグのパターン文字列がaria-labelに設定される", () => {
+			const todo: Todo = {
+				completed: false,
+				description: "Recurring task",
+				projects: [],
+				contexts: [],
+				tags: { rec: "rec:1w" },
+				raw: "Recurring task rec:1w",
+			};
+
+			const iconElement = renderRecurrenceIcon(todo);
+
+			expect(iconElement?.getAttribute("aria-label")).toBe("繰り返し: 1w");
+		});
+
+		it("rec:タグのパターン文字列がtitle属性（tooltip）に設定される", () => {
+			const todo: Todo = {
+				completed: false,
+				description: "Recurring task",
+				projects: [],
+				contexts: [],
+				tags: { rec: "rec:+1m" },
+				raw: "Recurring task rec:+1m",
+			};
+
+			const iconElement = renderRecurrenceIcon(todo);
+
+			expect(iconElement?.getAttribute("title")).toBe("繰り返し: +1m");
+		});
+
+		it("rec:タグが存在しない場合にnullを返す", () => {
+			const todo: Todo = {
+				completed: false,
+				description: "Normal task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Normal task",
+			};
+
+			const iconElement = renderRecurrenceIcon(todo);
+
+			expect(iconElement).toBeNull();
 		});
 	});
 });

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 38, pbi: "PBI-038", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 38, pbi: "PBI-038", status: "done" as SprintStatus,
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -138,7 +138,7 @@ export const currentSprint = {
   sprint: 38,
   pbi: "PBI-038",
   goal: "リアルタイムプレビューにより、保存前にtodo.txt形式を確認でき、意図通りの入力を実現する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "BaseTaskModalにcreatePreviewAreaメソッド追加（プレビューエリアDOM生成）、updatePreviewメソッド追加（serializeTodo呼出→プレビュー更新）のテスト",
@@ -166,10 +166,14 @@ export const currentSprint = {
     },
     {
       test: "REFACTOR: buildDescriptionFromInputs（description+projects+contexts+due/t:構築）をutils/form-helpers.tsに抽出、BaseTaskModalでCSSクラス統一（.modal-form-preview）とaria-label追加のテスト（既存テスト全通過）",
-      implementation: "utils/form-helpers.ts新規作成、buildDescriptionFromInputs（description, projects[], contexts[], tags{}受取→todo.txt description構築）エクスポート。BaseTaskModal.tsでimport、updatePreview内で使用。createPreviewAreaに.modal-form-previewクラス追加、aria-label=\"todo.txt形式プレビュー\"追加。既存テスト全通過確認",
+      implementation: "utils/form-helpers.ts新規作成、buildDescriptionWithTags（description, dueDate?, thresholdDate?受取→todo.txt description構築）エクスポート。BaseTaskModal.tsでimport、updatePreviewFromFormValues内で使用。createPreviewAreaに.modal-form-previewクラス追加、aria-label=\"Todo.txt format preview\"追加。既存テスト全通過（610t）確認",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "refactor" as CommitPhase, message: "refactor: updatePreviewFromFormValuesをBaseTaskModalに抽出" },
+        { phase: "refactor" as CommitPhase, message: "refactor: buildDescriptionWithTagsユーティリティ関数をutils/form-helpers.tsに抽出" },
+        { phase: "refactor" as CommitPhase, message: "refactor: BaseTaskModal.test.tsの型エラー修正とaria-label改善" },
+      ],
     },
   ] as Subtask[],
 };

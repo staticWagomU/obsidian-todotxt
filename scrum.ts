@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 30, pbi: "PBI-032", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -138,16 +138,16 @@ export const productBacklog: ProductBacklogItem[] = [
     acceptanceCriteria: [
       { criterion: "handlers分離", verification: "getToggleHandler等4メソッドをsrc/lib/handlers.ts化、view.tsから参照" },
       { criterion: "rendering分離", verification: "renderTaskList()をsrc/lib/rendering.ts化、view.tsは200行以下に削減" },
-      { criterion: "既存テスト全通過", verification: "リファクタリング後も502tests全pass維持、振る舞い変更なし確認" },
+      { criterion: "既存テスト全通過", verification: "リファクタリング後も504tests全pass維持、振る舞い変更なし確認" },
     ],
     dependencies: [],
     status: "ready",
     complexity: { functions: 2, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 3 },
     refactorChecklist: [
-      "src/lib/handlers.ts作成 - 4 handler functions移動",
-      "src/lib/rendering.ts作成 - renderTaskList()移動",
-      "view.ts import更新、244行→150行目標",
-      "既存テスト全通過確認 (502 tests)",
+      "src/lib/handlers.ts作成 - 4 handler functions移動 (getToggleHandler/getAddHandler/getEditHandler/getDeleteHandler)",
+      "src/lib/rendering.ts作成 - renderTaskList()移動 (150行の大規模メソッド分離)",
+      "view.ts import更新、244行→150行以下目標 (40%削減)",
+      "既存テスト全通過確認 (504 tests = Sprint 30現在、統合テスト2件追加済)",
     ],
   },
 ];
@@ -193,8 +193,10 @@ export const currentSprint = {
       test: "N/A（設定タスク）",
       implementation: "Action実行率KPI 50%以上目標をscrum.tsに明記、tracking項目で次Sprint以降追跡可能化",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "green", message: "docs: Action実行率KPI設定完了 - 3段階目標・履歴追跡・改善ロードマップ定義" },
+      ],
     },
     {
       test: "N/A（PBI refinementタスク）",

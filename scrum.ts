@@ -62,7 +62,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "編集時に既存の優先度が選択状態で表示される", verification: "pnpm vitest run -- EditTaskModal" },
     ],
     dependencies: [],
-    status: "ready",
+    status: "done",
     complexity: { functions: 3, estimatedTests: 8, externalDependencies: 0, score: "LOW", subtasks: 3 },
   },
   {
@@ -237,6 +237,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 32, pbi: "PBI-030", story: "コントロールバー", verification: "passed", notes: "533t(+29t),TDD完全適用(9commit:RED4+GREEN4+REFACTOR3),REFACTOR率50%,controlbar.test.ts29t追加,FilterState型導入,CRUD後状態維持実装" },
   { sprint: 33, pbi: "PBI-033", story: "コントロールバーUI", verification: "passed", notes: "542t(+9t),aria-label追加でアクセシビリティ向上,FilterState型&DEFAULT_FILTER_STATE定数エクスポート,TDD適用(4commit:RED3+REFACTOR2),REFACTOR率50%(2/4),controlbar.test.ts38t(+9)" },
   { sprint: 34, pbi: "PBI-031", story: "リンククリック可能表示", verification: "passed", notes: "554t(+12t),内部/外部リンク+rec:アイコン表示実装,rendering.test.ts12t追加,TDD適用(5commit:RED1+GREEN2+REFACTOR2),REFACTOR率40%(2/5),LinkHandlerインターフェース抽象化,Phase 7完了" },
+  // Phase 8 (Sprint 35-39): フォームUI強化
+  { sprint: 35, pbi: "PBI-035", story: "優先度ドロップダウン", verification: "passed", notes: "563t(+9t),TDD適用(7commit:RED3+GREEN3+REFACTOR1),REFACTOR率14%(1/7),priority-options.ts新規作成,AddTaskModal/EditTaskModal/view.ts連携実装" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

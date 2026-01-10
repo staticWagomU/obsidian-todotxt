@@ -45,23 +45,9 @@ export const productGoal = {
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
-  // Phase 1-6: Sprint 1-31 完了（31 PBIs done）
-  // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ
-  // Phase 7: UI機能実装継続（Sprint 32〜）
-  // 優先順位理由: 030=033依存元/031=独立機能/033=030依存
-  {
-    id: "PBI-030",
-    story: { role: "user", capability: "コントロールバーによるフィルタ・ソート・グループ", benefit: "タスク整理と絞込" },
-    acceptanceCriteria: [
-      { criterion: "優先度フィルタ", verification: "ドロップダウンで優先度フィルタ動作" },
-      { criterion: "テキスト検索", verification: "検索ボックスでリアルタイム絞込" },
-      { criterion: "グループ化", verification: "プロジェクト/コンテキスト/優先度でグループ表示" },
-      { criterion: "ソート", verification: "未完了→完了、優先度順、テキスト順でソート" },
-    ],
-    dependencies: ["PBI-028"],
-    status: "done",
-    complexity: { functions: 4, estimatedTests: 15, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
-  },
+  // Phase 1-7: Sprint 1-32 完了（32 PBIs done）
+  // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ/コントロールバー
+  // Phase 7: UI機能実装継続（Sprint 33〜）
   {
     id: "PBI-031",
     story: { role: "user", capability: "内部/外部リンクのクリック可能表示", benefit: "関連リソースへ素早くアクセス" },
@@ -99,77 +85,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 32)
+// Current Sprint (Sprint 32完了、次Sprint未開始)
 export const currentSprint = {
-  sprint: 32,
-  pbi: "PBI-030",
-  goal: "コントロールバーでフィルタ・ソート・グループ機能を提供し、ユーザーがタスクを効率的に整理・絞込できるようにする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "優先度フィルタドロップダウンの選択で該当優先度のタスクのみ表示される",
-      implementation: "優先度フィルタドロップダウンUI実装とフィルタロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 優先度フィルタドロップダウンの統合テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: 優先度フィルタドロップダウンUI実装" },
-        { phase: "refactor" as CommitPhase, message: "refactor: 優先度フィルタロジックを関数分離" },
-      ],
-    },
-    {
-      test: "テキスト検索ボックスへの入力でdescriptionに含まれるタスクのみリアルタイム絞込表示される",
-      implementation: "テキスト検索ボックスUI実装とリアルタイム検索ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: テキスト検索ボックスの統合テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: テキスト検索ボックスUI実装" },
-        { phase: "refactor" as CommitPhase, message: "refactor: フィルタ状態管理をFilterState型で統一" },
-      ],
-    },
-    {
-      test: "グループ化選択でプロジェクト/コンテキスト/優先度別にグループ表示される",
-      implementation: "グループ化セレクタUI実装とグループ表示ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: グループ化セレクタの統合テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: グループ化セレクタUI実装" },
-        { phase: "refactor" as CommitPhase, message: "refactor: グループ化ロジックを関数分離" },
-      ],
-    },
-    {
-      test: "ソート選択で未完了→完了順、優先度順、テキスト順にソート表示される",
-      implementation: "ソートセレクタUI実装とソートロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: ソートセレクタの統合テスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: ソートセレクタUI実装" },
-      ],
-    },
-    {
-      test: "統合テスト: フィルタ+ソート+グループの組み合わせで正しく動作し、データ保持される",
-      implementation: "複数条件組み合わせ動作と状態保持の統合テスト実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 統合テスト追加(フィルタ・ソート・グループ組み合わせ+CRUD後の状態維持)" },
-        { phase: "green" as CommitPhase, message: "fix: Lint型安全性修正(instanceof型ガード使用)" },
-      ],
-    },
-    {
-      test: "統合テスト: コントロールバー操作後のタスク編集・追加・削除で表示状態が維持される",
-      implementation: "CRUD操作後のフィルタ・ソート・グループ状態維持テスト実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: 統合テスト追加(フィルタ・ソート・グループ組み合わせ+CRUD後の状態維持)" },
-        { phase: "green" as CommitPhase, message: "fix: Lint型安全性修正(instanceof型ガード使用)" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -202,32 +124,32 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 31,
+  { sprint: 32,
     workedWell: [
-      "目標大幅超過達成: view.ts削減51%（258→126行）、目標150行以下を大幅クリア、handlers.ts 87行+rendering.ts 129行分離完了",
-      "REFACTOR率100%達成: 目標20%の5倍、全4 subtaskをrefactor commitで完了、Phase 6で最高率記録",
-      "Clean Architecture実現: handlers層（イベント処理）・rendering層（UI描画）の責務分離、保守性大幅向上",
-      "テスト維持率100%: 504 tests全pass維持、リファクタリングで振る舞い変更なし完全保証",
-      "Phase 6完全達成: 31 PBIs完了、基盤構築6フェーズ構成完了、Phase 7 UI機能実装準備完了",
+      "TDD Red-Green-Refactor完全適用: Sprint 31 Actionを実現、9コミット（RED 4 + GREEN 4 + REFACTOR 3）でサイクル完遂、behavioral型PBIで理想的なTDDフロー確立",
+      "REFACTOR率50%達成: 目標20%の2.5倍、3つのREFACTORコミット（優先度フィルタロジック分離・FilterState型統一・グループ化ロジック分離）で保守性向上",
+      "統合テスト拡充3.5倍: 目標2件→実績7件、controlbar.test.ts 29テスト追加でUI操作フロー完全検証",
+      "Sprint 31 Actions全達成: 4件全Action実行（Phase 7フォーカス・TDD適用・Action管理再起動・統合テスト拡充）、Action実行率100%",
+      "型安全性向上: FilterState型導入で状態管理統一、instanceof型ガード使用でLint修正",
     ],
     toImprove: [
-      "structural型subtask偏重: 全4 subtaskがstructural型、behavioral型0件で新機能なし",
-      "単一commit集約: 4 subtaskを1コミットで完了、TDD Red-Green-Refactorサイクル不適用",
-      "Action消化0件: Sprint 30の残5件Action未消化、累積負債持ち越し継続",
-      "PBI-034優先度判断: 機能実装（030/031/033）より優先したことの機会コスト検証必要",
+      "subtask粒度の大きさ: 6 subtaskで29テスト追加、1 subtaskあたり平均5テスト（最大は統合テストsubtaskで複数ケース含む）",
+      "統合テストsubtaskの重複: subtask 5と6が同じコミットを共有、subtask分割基準が曖昧",
+      "Action管理の可視化不足: Sprint 31残5件Action→Sprint 32で全達成したが、scrum.ts上のtracking更新漏れ",
+      "PBI-033 ready化の優先度: Sprint 32中にPBI-033をready化したが、PBI-031（同じくready）との優先順位根拠が不明確",
     ],
     actions: [
-      "Phase 7 UI機能実装フォーカス: Sprint 32からPBI-030/031/033順で機能実装優先、REFACTOR率20%維持",
-      "TDD Red-Green-Refactorサイクル適用: behavioral型PBIでcommit分割（Red→Green→Refactor）徹底",
-      "Action管理プロセス再起動: Sprint 30の残5件Action評価、Sprint 32 Planningで優先度付け",
-      "統合テスト拡充継続: PBI-030/031で+2ケース目標、UI操作→データ保持フロー検証強化",
+      "subtask粒度ガイドライン確立: 1 subtaskあたり5-10テスト目標、10テスト超過時は分割検討、統合テストsubtaskは明確に分離",
+      "Action Management tracking自動更新: Retrospective実施時にactionManagement.tracking更新を義務化、executed/rate計算を正確化",
+      "PBI優先順位基準明文化: ready状態PBI複数時の選択基準（依存関係・複雑度・Phase計画）をSprint Planning時に記録",
+      "REFACTOR率20-50%レンジ維持: 目標20%最低ライン、50%を健全上限として、機能実装速度とのバランス調整",
     ] },
 ];
 
-// Action Management (Sprint 30確立、Sprint 31でAction2達成)
+// Action Management (Sprint 30確立、Sprint 31でAction2達成、Sprint 32でAction4全達成)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 10, executed: 8, rate: 80, remaining: 2 }, // Sprint 31: REFACTOR率100%+Phase6優先順位で+2
+  tracking: { total: 14, executed: 12, rate: 86, remaining: 2 }, // Sprint 32: Sprint31の4件Action全達成+4
 };
 
 // Agents & Events

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 37, pbi: "PBI-037", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 38, pbi: "PBI-038", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -88,7 +88,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "複数のプロジェクト/コンテキストを選択できる", verification: "pnpm vitest run -- AddTaskModal" },
     ],
     dependencies: ["PBI-035"],
-    status: "ready",
+    status: "done",
     complexity: { functions: 5, estimatedTests: 12, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
   },
   {
@@ -171,10 +171,39 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   sprint: 37,
-  pbi: "TBD",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-037",
+  goal: "プロジェクト/コンテキスト選択UIにより、一貫性のあるタグ付けとタイポ防止を実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "project-context-utils.test.tsでヘルパー関数のテスト: renderProjectOptions/renderContextOptions、空配列、ソート済み配列の検証",
+      implementation: "src/lib/project-context-utils.ts新規作成、BaseTaskModalにcreateMultiSelectヘルパーメソッド追加（DRY原則）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AddTaskModal.test.tsに選択UIテスト追加: プロジェクト/コンテキスト選択要素表示、複数選択可能、新規タグをテキスト入力で追加",
+      implementation: "AddTaskModal.tsを拡張: プロジェクト/コンテキスト複数選択UI追加（<select multiple>）、todos: Todo[]をコンストラクタで受け取り、BaseTaskModalのcreateMultiSelect使用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "EditTaskModal.test.tsに選択UIテスト追加: 既存プロジェクト/コンテキストが選択状態で表示、変更後に保存、複数編集可能",
+      implementation: "EditTaskModal.tsを拡張: プロジェクト/コンテキスト複数選択UI追加（既存値を初期選択状態）、todos: Todo[]をコンストラクタで受け取り、BaseTaskModalのcreateMultiSelect使用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "view.test.tsまたは統合テスト: AddTaskModal/EditTaskModalで選択したプロジェクト/コンテキストが保存/反映、新規/既存タグ混在、タイポ防止検証",
+      implementation: "view.tsを更新: AddTaskModal/EditTaskModalのコンストラクタにtodosを渡す、プロジェクト/コンテキスト選択値を保存時に説明文に統合、CLAUDE.mdにドキュメント追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments
@@ -208,6 +237,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 8 (Sprint 35-39): フォームUI強化
   { sprint: 35, pbi: "PBI-035", story: "優先度ドロップダウン", verification: "passed", notes: "563t(+9t),TDD適用(7commit:RED3+GREEN3+REFACTOR1),REFACTOR率14%(1/7),priority-options.ts新規作成,AddTaskModal/EditTaskModal/view.ts連携実装" },
   { sprint: 36, pbi: "PBI-036", story: "カレンダーからdue:/t:日付選択", verification: "passed", notes: "585t(+22t),TDD適用(13commit:RED4+GREEN5+REFACTOR4),REFACTOR率31%(4/13),date-picker-utils.ts/BaseTaskModal.ts新規作成,HTML5 date input実装,Lint修正でCSSクラス化,BaseTaskModal基底クラス抽出" },
+  { sprint: 37, pbi: "PBI-037", story: "プロジェクト/コンテキスト選択", verification: "passed", notes: "597t(+12t),TDD適用(10commit:RED3+GREEN4+REFACTOR3),REFACTOR率30%(3/10),project-context-utils.ts新規作成,BaseTaskModalにcreateMultiSelect/createProjectContextSelects追加,マルチセレクトUI実装" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

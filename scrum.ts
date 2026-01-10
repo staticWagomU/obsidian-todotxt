@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 38, pbi: "PBI-038", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 39, pbi: "PBI-039", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -51,23 +51,7 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 35 PBI-035: 優先度ドロップダウン、563t(+9t)、done
   //   Sprint 36 PBI-036: デートピッカー、585t(+22t)、done
   //   Sprint 37 PBI-037: プロジェクト/コンテキスト選択、597t(+12t)、done
-  {
-    id: "PBI-038",
-    story: { role: "ユーザー", capability: "フォーム入力中にtodo.txt形式でリアルタイムプレビューを確認", benefit: "保存前に最終形式を確認でき、意図通りの入力ができる" },
-    acceptanceCriteria: [
-      { criterion: "フォーム下部にプレビューエリアが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
-      { criterion: "入力変更時にリアルタイムでプレビューが更新される", verification: "pnpm vitest run -- AddTaskModal" },
-      { criterion: "プレビューがtodo.txt形式に準拠している", verification: "pnpm vitest run -- serializer" },
-    ],
-    dependencies: ["PBI-035"],
-    status: "ready",
-    complexity: { functions: 2, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 3 },
-    refactorChecklist: [
-      "BaseTaskModalへのプレビュー共通化",
-      "ユーティリティ関数抽出（buildDescription等）",
-      "CSSクラス統一とアクセシビリティ向上",
-    ],
-  },
+  //   Sprint 38 PBI-038: リアルタイムプレビュー、610t(+13t)、done
   {
     id: "PBI-039",
     story: { role: "上級ユーザー", capability: "構造化フォームと直接テキスト編集モードを切り替え", benefit: "慣れたユーザーは高速にtodo.txt形式で直接入力できる" },
@@ -77,7 +61,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "モード切替時に入力内容が保持される", verification: "pnpm vitest run -- AddTaskModal" },
     ],
     dependencies: ["PBI-038"],
-    status: "draft",
+    status: "ready",
     complexity: { functions: 3, estimatedTests: 8, externalDependencies: 0, score: "LOW", subtasks: 3 },
   },
   // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
@@ -210,6 +194,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 35, pbi: "PBI-035", story: "優先度ドロップダウン", verification: "passed", notes: "563t(+9t),TDD適用(7commit:RED3+GREEN3+REFACTOR1),REFACTOR率14%(1/7),priority-options.ts新規作成,AddTaskModal/EditTaskModal/view.ts連携実装" },
   { sprint: 36, pbi: "PBI-036", story: "カレンダーからdue:/t:日付選択", verification: "passed", notes: "585t(+22t),TDD適用(13commit:RED4+GREEN5+REFACTOR4),REFACTOR率31%(4/13),date-picker-utils.ts/BaseTaskModal.ts新規作成,HTML5 date input実装,Lint修正でCSSクラス化,BaseTaskModal基底クラス抽出" },
   { sprint: 37, pbi: "PBI-037", story: "プロジェクト/コンテキスト選択", verification: "passed", notes: "597t(+12t),TDD適用(10commit:RED3+GREEN4+REFACTOR3),REFACTOR率30%(3/10),project-context-utils.ts新規作成,BaseTaskModalにcreateMultiSelect/createProjectContextSelects追加,マルチセレクトUI実装,全AC達成(ドロップダウン表示/新規作成/複数選択)" },
+  { sprint: 38, pbi: "PBI-038", story: "リアルタイムプレビュー", verification: "passed", notes: "610t(+13t),TDD適用(10commit:RED2+GREEN2+REFACTOR6),REFACTOR率60%(6/10),utils/form-helpers.ts新規作成,BaseTaskModalにcreatePreviewArea/updatePreview/updatePreviewFromFormValues追加,AddTaskModal/EditTaskModalにプレビュー機能実装,全AC達成(プレビューエリア表示/リアルタイム更新/todo.txt形式準拠)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

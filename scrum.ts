@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 40, pbi: "PBI-040", status: "not_started" as SprintStatus,
+  sprint: { number: 40, pbi: "PBI-040", status: "in_progress" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
-  phase: { number: 9, status: "not_started", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
+  phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
 // Product Goal
@@ -118,9 +118,38 @@ export const definitionOfReady = {
 export const currentSprint = {
   sprint: 40,
   pbi: "PBI-040",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  goal: "Apple-likeミニマルデザインの基盤CSS構築により、洗練されたタスク管理UIを実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "CSS変数が:rootに定義され、フォントサイズ階層（16px/14px/12px）とカラー/トランジション変数が設定されている",
+      implementation: ":root定義でカラー（--color-*）・タイポグラフィ（--font-size-*/--line-height-*）・トランジション（--transition-default）変数を追加",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: ".task-itemクラスがpadding: 12px 16pxを持ち、タスク間に16px以上の余白があり、BEM命名規則に従う",
+      implementation: "BEM形式のクラス体系確立（.task-item/.task-item__element/.task-item--modifier）、スペーシングユーティリティ追加、既存クラスのリファクタリング",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: ".task-item__checkboxクラスに角丸・transition: all 0.15s easeが適用され、カスタムスタイルが機能する",
+      implementation: ".task-item__checkboxクラス定義、角丸・トランジション・ホバー効果のカスタムスタイル適用（Obsidian標準スタイル考慮）",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: ":focus-visibleスタイルが定義され、CSS変数でダークモード/ライトモード両方で視認性が確保されている",
+      implementation: ":focus-visibleアウトライン定義（--color-focus使用）、CSS変数のグループ化コメント追加（Layout/Typography/Color/Animation）",
+      type: "behavioral",
+      status: "pending",
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

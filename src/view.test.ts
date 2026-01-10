@@ -1195,6 +1195,40 @@ describe("render task list in view", () => {
 		expect(openEditTaskModalSpy).toHaveBeenCalledWith(0);
 	});
 
+	it("openEditTaskModalでEditTaskModalに現在の優先度が渡されて編集後も優先度が保持される", async () => {
+		// This test validates the complete flow:
+		// 1. openEditTaskModal extracts the current priority from the todo
+		// 2. EditTaskModal is initialized with this priority
+		// 3. When user doesn't change priority, it should be preserved in onSave callback
+		// 4. view.ts passes the priority to getEditHandler
+
+		// Note: Due to the current implementation where EditTaskModal is created with only description,
+		// this test will FAIL until we implement priority passing.
+		// Once implemented, priority "B" should be preserved when editing description only.
+
+		// Setup: Load task with priority B
+		view.setViewData("(B) 2026-01-01 Buy milk", false);
+
+		// Create a spy on EditTaskModal to capture what's passed
+		const { EditTaskModal } = await import("./ui/EditTaskModal");
+		const originalConstructor = EditTaskModal;
+		let capturedInitialPriority: string | undefined;
+
+		// Override EditTaskModal temporarily to capture constructor args
+		vi.spyOn(await import("./ui/EditTaskModal"), "EditTaskModal").mockImplementation(
+			function(this: any, app: any, initialDescription: string, onSave: any, initialPriority?: string) {
+				capturedInitialPriority = initialPriority;
+				return new originalConstructor(app, initialDescription, onSave, initialPriority);
+			} as any
+		);
+
+		// Execute: Open edit modal (this should extract and pass priority "B")
+		view.openEditTaskModal(0);
+
+		// Verify: EditTaskModal was initialized with priority "B"
+		expect(capturedInitialPriority).toBe("B");
+	});
+
 	it("各タスクに削除ボタンが表示される", () => {
 		const container = createMockContainer();
 

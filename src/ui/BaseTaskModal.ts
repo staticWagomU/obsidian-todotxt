@@ -83,7 +83,7 @@ export abstract class BaseTaskModal extends Modal {
 		const previewEl = container.createEl("pre", {
 			cls: "modal-form-preview preview-area",
 		});
-		previewEl.setAttribute("aria-label", "todo.txt形式プレビュー");
+		previewEl.setAttribute("aria-label", "Todo.txt format preview");
 	}
 
 	/**

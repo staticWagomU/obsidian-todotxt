@@ -57,6 +57,15 @@ class TestTaskModal extends BaseTaskModal {
 	onClose(): void {
 		// テスト用に空実装
 	}
+
+	// テスト用にprotectedメソッドをpublicで公開
+	public testCreatePreviewArea(container: HTMLElement): void {
+		this.createPreviewArea(container);
+	}
+
+	public testUpdatePreview(container: HTMLElement, todo: Todo): void {
+		this.updatePreview(container, todo);
+	}
 }
 
 describe("BaseTaskModal - Preview", () => {
@@ -73,7 +82,7 @@ describe("BaseTaskModal - Preview", () => {
 			// contentElを使用（createElメソッドを持つ）
 			const container = modal.contentEl;
 
-			modal.createPreviewArea(container);
+			modal.testCreatePreviewArea(container);
 
 			// ラベルが作成されている
 			const label = container.querySelector("label");
@@ -104,7 +113,7 @@ describe("BaseTaskModal - Preview", () => {
 				raw: "",
 			};
 
-			modal.updatePreview(container, todo);
+			modal.testUpdatePreview(container, todo);
 
 			const pre = container.querySelector("pre.preview-area");
 			expect(pre?.textContent).toBe("(A) 2026-01-11 Test task +project @context due:2026-01-15");

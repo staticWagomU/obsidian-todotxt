@@ -163,4 +163,64 @@ describe("AddTaskModal", () => {
 		// Verify: onSave was called with undefined
 		expect(mockOnSave).toHaveBeenCalledWith("優先度なしタスク", undefined);
 	});
+
+	it("due:日付入力フィールドが表示されること", () => {
+		const modal = new AddTaskModal(mockApp, mockOnSave);
+		modal.onOpen();
+
+		// Verify: due date input exists
+		const dueInput = modal.contentEl.querySelector("input.due-date-input");
+		expect(dueInput).not.toBeNull();
+		expect(dueInput?.getAttribute("type")).toBe("date");
+	});
+
+	it("t:日付入力フィールドが表示されること", () => {
+		const modal = new AddTaskModal(mockApp, mockOnSave);
+		modal.onOpen();
+
+		// Verify: threshold date input exists
+		const thresholdInput = modal.contentEl.querySelector("input.threshold-date-input");
+		expect(thresholdInput).not.toBeNull();
+		expect(thresholdInput?.getAttribute("type")).toBe("date");
+	});
+
+	it("due:日付を選択した場合onSaveに渡されること", () => {
+		const modal = new AddTaskModal(mockApp, mockOnSave);
+		modal.onOpen();
+
+		// Enter task description
+		const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+		input.value = "期限付きタスク";
+
+		// Select due date
+		const dueInput = modal.contentEl.querySelector("input.due-date-input") as HTMLInputElement;
+		dueInput.value = "2026-01-15";
+
+		// Click save button
+		const saveButton = modal.contentEl.querySelector("button.save-task-button");
+		saveButton?.dispatchEvent(new Event("click"));
+
+		// Verify: onSave was called with due date
+		expect(mockOnSave).toHaveBeenCalledWith("期限付きタスク", undefined, "2026-01-15", undefined);
+	});
+
+	it("t:日付を選択した場合onSaveに渡されること", () => {
+		const modal = new AddTaskModal(mockApp, mockOnSave);
+		modal.onOpen();
+
+		// Enter task description
+		const input = modal.contentEl.querySelector("input.task-description-input") as HTMLInputElement;
+		input.value = "しきい値付きタスク";
+
+		// Select threshold date
+		const thresholdInput = modal.contentEl.querySelector("input.threshold-date-input") as HTMLInputElement;
+		thresholdInput.value = "2026-01-20";
+
+		// Click save button
+		const saveButton = modal.contentEl.querySelector("button.save-task-button");
+		saveButton?.dispatchEvent(new Event("click"));
+
+		// Verify: onSave was called with threshold date
+		expect(mockOnSave).toHaveBeenCalledWith("しきい値付きタスク", undefined, undefined, "2026-01-20");
+	});
 });

@@ -102,9 +102,14 @@ export class TodotxtView extends TextFileView {
 	 */
 	openAddTaskModal(): void {
 		const addHandler = getAddHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
-		const modal = new AddTaskModal(this.app, (description, priority, dueDate, thresholdDate) => {
-			void addHandler(description, priority, dueDate, thresholdDate);
-		});
+		const todos = parseTodoTxt(this.data);
+		const modal = new AddTaskModal(
+			this.app,
+			(description, priority, dueDate, thresholdDate) => {
+				void addHandler(description, priority, dueDate, thresholdDate);
+			},
+			todos,
+		);
 		modal.open();
 	}
 
@@ -127,6 +132,7 @@ export class TodotxtView extends TextFileView {
 			todo.priority,
 			todo.tags.due,
 			todo.tags.t,
+			todos,
 		);
 		modal.open();
 	}

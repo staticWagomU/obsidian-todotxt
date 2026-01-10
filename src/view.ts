@@ -127,6 +127,13 @@ export class TodotxtView extends TextFileView {
 	}
 
 	/**
+	 * Open edit task modal
+	 */
+	openEditTaskModal(_index: number): void {
+		// To be implemented
+	}
+
+	/**
 	 * Render task list in contentEl
 	 */
 	renderTaskList(): void {

@@ -1126,4 +1126,72 @@ describe("render task list in view", () => {
 
 		vi.useRealTimers();
 	});
+
+	it("各タスクに編集ボタンが表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks
+		view.setViewData("Task 0\nTask 1\nTask 2", false);
+		view.renderTaskList();
+
+		// Verify: Each li contains an edit button
+		const ul = container.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		for (const li of liElements) {
+			const editButton = li.querySelector("button.edit-task-button");
+			expect(editButton).not.toBeNull();
+			expect(editButton?.textContent).toBe("編集");
+		}
+	});
+
+	it("編集ボタンにdata-index属性が設定される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks
+		view.setViewData("Task 0\nTask 1\nTask 2", false);
+		view.renderTaskList();
+
+		// Verify: Each edit button has correct data-index attribute
+		const ul = container.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+
+		for (let i = 0; i < liElements.length; i++) {
+			const editButton = liElements[i]?.querySelector("button.edit-task-button") as HTMLButtonElement;
+			expect(editButton?.dataset.index).toBe(String(i));
+		}
+	});
+
+	it("編集ボタンをクリックするとopenEditTaskModalが呼ばれる", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Mock openEditTaskModal method
+		const openEditTaskModalSpy = vi.spyOn(view, "openEditTaskModal").mockImplementation(() => {});
+
+		// Execute: Load file with task
+		view.setViewData("Buy milk", false);
+		view.renderTaskList();
+
+		// Click edit button
+		const editButton = container.querySelector("button.edit-task-button") as HTMLButtonElement;
+		editButton.click();
+
+		// Verify: openEditTaskModal was called with correct index
+		expect(openEditTaskModalSpy).toHaveBeenCalledWith(0);
+	});
 });

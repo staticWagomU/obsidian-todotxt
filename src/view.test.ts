@@ -1034,4 +1034,92 @@ describe("render task list in view", () => {
 			expect(checkbox?.dataset.index).toBe(String(i));
 		}
 	});
+
+	it("チェックボックスをクリックするとgetToggleHandlerが呼ばれタスクが完了になる", async () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with incomplete task
+		view.setViewData("Buy milk", false);
+		view.renderTaskList();
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		// Click checkbox
+		const checkbox = container.querySelector("input[type='checkbox']") as HTMLInputElement;
+		expect(checkbox).not.toBeNull();
+		expect(checkbox.checked).toBe(false);
+
+		checkbox.click();
+
+		// Wait for async handler to complete
+		await vi.runAllTimersAsync();
+
+		// Verify: Task is now completed in data
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("x 2026-01-10 Buy milk");
+
+		vi.useRealTimers();
+	});
+
+	it("完了タスクのチェックボックスをクリックすると未完了に戻る", async () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with completed task
+		view.setViewData("x 2026-01-08 Completed task", false);
+		view.renderTaskList();
+
+		// Click checkbox to uncomplete
+		const checkbox = container.querySelector("input[type='checkbox']") as HTMLInputElement;
+		expect(checkbox.checked).toBe(true);
+
+		checkbox.click();
+
+		// Wait for async handler
+		await vi.runAllTimersAsync();
+
+		// Verify: Task is now incomplete
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("Completed task");
+	});
+
+	it("複数タスクの特定のチェックボックスをクリックするとそのタスクのみトグルされる", async () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load file with multiple tasks
+		view.setViewData("Task 0\nTask 1\nTask 2", false);
+		view.renderTaskList();
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		// Click second task's checkbox
+		const ul = container.querySelector("ul");
+		const secondLi = ul?.children[1] as HTMLLIElement;
+		const checkbox = secondLi.querySelector("input[type='checkbox']") as HTMLInputElement;
+
+		checkbox.click();
+		await vi.runAllTimersAsync();
+
+		// Verify: Only second task is completed
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("Task 0\nx 2026-01-10 Task 1\nTask 2");
+
+		vi.useRealTimers();
+	});
 });

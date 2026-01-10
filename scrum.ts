@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 35, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 8, status: "planning", sprints: "35-", pbis: "TBD", goal: "Phase 7完了後の次期フェーズ計画" },
+  sprint: { number: 35, pbi: "PBI-035", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  phase: { number: 8, status: "ready", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
 // Product Goal
@@ -52,7 +52,69 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 32 PBI-030: コントロールバーロジック実装、533t(+29t)、REFACTOR率50%
   //   Sprint 33 PBI-033: コントロールバーUI統合、542t(+9t)、REFACTOR率50%、アクセシビリティ向上
   //   Sprint 34 PBI-031: 内部/外部リンク+rec:アイコン表示、554t(+12t)、REFACTOR率40%、LinkHandler抽象化
-  // Phase 8: TBD（Sprint 35〜）
+  // Phase 8: フォームUI強化（Sprint 35〜39）
+  {
+    id: "PBI-035",
+    story: { role: "ユーザー", capability: "タスク追加/編集時に優先度をドロップダウンから選択", benefit: "手入力の手間なく正確な優先度設定ができる" },
+    acceptanceCriteria: [
+      { criterion: "優先度ドロップダウン（なし/A-Z）が表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
+      { criterion: "選択した優先度がtodo.txt形式で保存される", verification: "pnpm vitest run -- handlers" },
+      { criterion: "編集時に既存の優先度が選択状態で表示される", verification: "pnpm vitest run -- EditTaskModal" },
+    ],
+    dependencies: [],
+    status: "ready",
+    complexity: { functions: 3, estimatedTests: 8, externalDependencies: 0, score: "LOW", subtasks: 3 },
+  },
+  {
+    id: "PBI-036",
+    story: { role: "ユーザー", capability: "タスク追加/編集時にカレンダーから期限日・開始日を選択", benefit: "日付入力が直感的で入力ミスを防げる" },
+    acceptanceCriteria: [
+      { criterion: "due:用デートピッカーが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
+      { criterion: "t:（しきい値日）用デートピッカーが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
+      { criterion: "選択した日付がYYYY-MM-DD形式でタグに反映される", verification: "pnpm vitest run -- handlers" },
+      { criterion: "編集時に既存の日付がピッカーに表示される", verification: "pnpm vitest run -- EditTaskModal" },
+    ],
+    dependencies: ["PBI-035"],
+    status: "draft",
+    complexity: { functions: 4, estimatedTests: 10, externalDependencies: 1, score: "MEDIUM", subtasks: 4 },
+  },
+  {
+    id: "PBI-037",
+    story: { role: "ユーザー", capability: "既存のプロジェクト/コンテキストをドロップダウンから選択または新規作成", benefit: "一貫性のあるタグ付けができ、タイポを防げる" },
+    acceptanceCriteria: [
+      { criterion: "既存プロジェクト（+tag）一覧がドロップダウンで表示される", verification: "pnpm vitest run -- AddTaskModal" },
+      { criterion: "既存コンテキスト（@tag）一覧がドロップダウンで表示される", verification: "pnpm vitest run -- AddTaskModal" },
+      { criterion: "新規タグをテキスト入力で作成できる", verification: "pnpm vitest run -- AddTaskModal" },
+      { criterion: "複数のプロジェクト/コンテキストを選択できる", verification: "pnpm vitest run -- AddTaskModal" },
+    ],
+    dependencies: ["PBI-035"],
+    status: "draft",
+    complexity: { functions: 5, estimatedTests: 12, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
+  },
+  {
+    id: "PBI-038",
+    story: { role: "ユーザー", capability: "フォーム入力中にtodo.txt形式でリアルタイムプレビューを確認", benefit: "保存前に最終形式を確認でき、意図通りの入力ができる" },
+    acceptanceCriteria: [
+      { criterion: "フォーム下部にプレビューエリアが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
+      { criterion: "入力変更時にリアルタイムでプレビューが更新される", verification: "pnpm vitest run -- AddTaskModal" },
+      { criterion: "プレビューがtodo.txt形式に準拠している", verification: "pnpm vitest run -- serializer" },
+    ],
+    dependencies: ["PBI-035"],
+    status: "draft",
+    complexity: { functions: 2, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 3 },
+  },
+  {
+    id: "PBI-039",
+    story: { role: "上級ユーザー", capability: "構造化フォームと直接テキスト編集モードを切り替え", benefit: "慣れたユーザーは高速にtodo.txt形式で直接入力できる" },
+    acceptanceCriteria: [
+      { criterion: "フォーム/テキストモード切替ボタンが表示される", verification: "pnpm vitest run -- AddTaskModal EditTaskModal" },
+      { criterion: "テキストモードでは生のtodo.txt形式で編集できる", verification: "pnpm vitest run -- AddTaskModal" },
+      { criterion: "モード切替時に入力内容が保持される", verification: "pnpm vitest run -- AddTaskModal" },
+    ],
+    dependencies: ["PBI-038"],
+    status: "draft",
+    complexity: { functions: 3, estimatedTests: 8, externalDependencies: 0, score: "LOW", subtasks: 3 },
+  },
 ];
 
 // Definition of Ready

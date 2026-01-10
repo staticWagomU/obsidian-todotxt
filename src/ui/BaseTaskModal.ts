@@ -92,8 +92,9 @@ export abstract class BaseTaskModal extends Modal {
 	 */
 	protected updatePreview(container: HTMLElement, todo: Todo): void {
 		const previewEl = container.querySelector("pre.preview-area");
-		if (previewEl) {
-			previewEl.textContent = serializeTodo(todo);
+		if (!previewEl) {
+			return;
 		}
+		previewEl.textContent = serializeTodo(todo);
 	}
 }

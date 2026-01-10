@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 35, pbi: "PBI-035", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 36, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -170,43 +170,11 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 35,
-  pbi: "PBI-035",
-  goal: "優先度ドロップダウン実装により、ユーザーが手入力なしで正確な優先度設定ができるようにする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "AddTaskModal: 優先度ドロップダウン（なし/A-Z）が表示され、選択した優先度がonSaveに渡される",
-      implementation: "AddTaskModal.tsに優先度selectフィールドを追加、generatePriorityOptions()使用、選択値をonSaveに渡す",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: AddTaskModal優先度ドロップダウンテスト追加" },
-        { phase: "green", message: "feat: AddTaskModal優先度ドロップダウン実装" },
-      ],
-    },
-    {
-      test: "EditTaskModal: 優先度ドロップダウン（なし/A-Z）が表示され、既存の優先度が選択状態で表示され、選択した優先度がonSaveに渡される",
-      implementation: "EditTaskModal.tsに優先度selectフィールドを追加、generatePriorityOptions()使用、initialPriorityパラメータ追加、選択値をonSaveに渡す",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: EditTaskModal優先度ドロップダウンテスト追加" },
-        { phase: "green", message: "feat: EditTaskModal優先度ドロップダウン実装" },
-      ],
-    },
-    {
-      test: "view.ts: EditTaskModalに現在の優先度を渡し、選択した優先度がgetEditHandlerに渡される",
-      implementation: "view.tsのEditTaskModal呼び出し箇所で現在の優先度を抽出してinitialPriorityとして渡し、onSaveコールバックでpriorityをgetEditHandlerに渡す",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test: view.ts優先度連携テスト追加" },
-        { phase: "green", message: "feat: view.ts優先度連携実装" },
-        { phase: "refactor", message: "refactor: view.test.ts優先度テスト簡素化" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 36,
+  pbi: "TBD",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -243,33 +211,33 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 34,
+  { sprint: 35,
     workedWell: [
-      "Phase 7完了: Sprint 32-34で計画通りUI機能実装完遂、+50テスト達成（504t→554t）",
-      "全34 PBI完了: Product Backlog初期計画全て完遂",
-      "LinkHandler抽象化: Obsidian API依存を抽象化、テスタビリティ向上",
-      "Sprint 33 Actions完全達成: 2件のAction全て実行（実行率100%）",
-      "高いAction実行率維持: 86%（18/21）、Excellent基準（90%）に近接",
-      "TDD継続: 5コミット中3コミットがRED/GREEN、テストファースト維持"
+      "Phase 8初回Sprint完了: 優先度ドロップダウン実装、全AC達成",
+      "TDDサイクル遵守: 7コミット中6コミットがRED/GREEN、テストファースト維持",
+      "既存コード活用: priority-options.ts新規作成、再利用可能な設計",
+      "テスト増加: 554t→563t（+9t）、品質向上継続",
+      "3コンポーネント連携: AddTaskModal/EditTaskModal/view.tsの統合成功"
     ],
     toImprove: [
-      "REFACTOR率低下: Sprint 34は40%、Sprint 32-33の50%から10%低下",
-      "Phase 8未計画: Phase 7完了したが次フェーズの方向性未定義",
-      "Action実行率低下: 69%（18/26）、Sprint 34で新規Action追加により低下"
+      "REFACTOR率大幅低下: 14%（1/7コミット）vs 目標50%、Phase 7水準（40-50%）から大幅悪化",
+      "Sprint 34 Actions実行率低迷: 20%（1/5）、目標50%を大幅に下回る",
+      "累積Action実行率悪化: 69%→実質更に低下、Excellent基準（90%）から遠のく",
+      "REFACTORコミット不足: 1コミットのみ、技術的負債蓄積リスク"
     ],
     actions: [
-      "Phase 8計画策定: Product Owner/Scrum Masterと協議し、次期フェーズの方向性を定義",
-      "残Action優先順位付け: 8件の残Actionから次Sprint実行分を特定",
-      "REFACTOR率目標再確認: 50%目標を維持するか、柔軟に調整するか検討",
-      "プロダクト品質評価: 554テスト、26ファイル構成の品質・保守性を評価",
-      "ドキュメント更新: Phase 7完了、全34 PBI完了をCLAUDE.mdに反映"
+      "REFACTOR専念Sprint検討: Sprint 36-37間でREFACTOR専念Sprintを挿入し、REFACTOR率を目標50%に回復",
+      "Actions優先実行: Sprint 36で残8件のActionから最優先3件を実行（実行率60%以上目標）",
+      "REFACTOR基準明確化: 各Subtaskで最低1REFACTORコミットを義務付けるルール導入",
+      "品質評価実施: Sprint 36 Planning前に563テストのカバレッジ・保守性を評価",
+      "ドキュメント即時更新: Sprint完了時にCLAUDE.md/README.mdを即座に更新するフロー確立"
     ] },
 ];
 
-// Action Management (Sprint 34完了、Sprint 35 Actions 5件追加)
+// Action Management (Sprint 35完了、新規5件Action追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 26, executed: 18, rate: 69, remaining: 8 }, // Sprint 34完了、新規5件Action追加（Phase 8計画/残Action優先順位付け/REFACTOR率目標再確認/品質評価/ドキュメント更新）
+  tracking: { total: 31, executed: 19, rate: 61, remaining: 12 }, // Sprint 35完了（Sprint 34 Action 1件実行: Phase 8計画策定）、新規5件Action追加（REFACTOR専念Sprint検討/Actions優先実行/REFACTOR基準明確化/品質評価実施/ドキュメント即時更新）
 };
 
 // Agents & Events

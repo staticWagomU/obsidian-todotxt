@@ -62,7 +62,7 @@ export const productBacklog: ProductBacklogItem[] = [
     ],
     dependencies: ["PBI-038"],
     status: "ready",
-    complexity: { functions: 3, estimatedTests: 8, externalDependencies: 0, score: "LOW", subtasks: 3 },
+    complexity: { functions: 3, estimatedTests: 12, externalDependencies: 0, score: "LOW", subtasks: 3 },
   },
   // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
   {

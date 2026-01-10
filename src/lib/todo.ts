@@ -140,6 +140,42 @@ export function createAndAppendTask(
 }
 
 /**
+ * Update tag in description and tags object
+ * @param description Current description
+ * @param tags Current tags object
+ * @param tagName Tag name (e.g., "due", "t")
+ * @param value Tag value or undefined to remove
+ * @returns Updated {description, tags}
+ */
+function updateTagInTodo(
+	description: string,
+	tags: Record<string, string>,
+	tagName: string,
+	value: string | undefined,
+): { description: string; tags: Record<string, string> } {
+	// Remove existing tag from description
+	const cleanedDescription = description.replace(
+		new RegExp(`\\s*${tagName}:\\S+`, "g"),
+		"",
+	);
+
+	if (value) {
+		// Add new tag value
+		return {
+			description: `${cleanedDescription} ${tagName}:${value}`,
+			tags: { ...tags, [tagName]: value },
+		};
+	}
+	// Remove tag
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { [tagName]: _removed, ...restTags } = tags;
+	return {
+		description: cleanedDescription,
+		tags: restTags,
+	};
+}
+
+/**
  * Edit task properties with partial updates
  * Preserves metadata (completed, creationDate, completionDate, tags, raw)
  */
@@ -182,38 +218,26 @@ export function editTask(
 
 	// Handle dueDate update (update or remove due: tag)
 	if ("dueDate" in updates) {
-		const newTags = { ...result.tags };
-		// Remove existing due: from description
-		result.description = result.description.replace(/\s*due:\S+/g, "");
-
-		if (updates.dueDate) {
-			newTags.due = updates.dueDate;
-			result.description += ` due:${updates.dueDate}`;
-		} else {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { due: _due, ...restTags } = newTags;
-			result.tags = restTags;
-			return result;
-		}
-		result.tags = newTags;
+		const updated = updateTagInTodo(
+			result.description,
+			result.tags,
+			"due",
+			updates.dueDate,
+		);
+		result.description = updated.description;
+		result.tags = updated.tags;
 	}
 
 	// Handle thresholdDate update (update or remove t: tag)
 	if ("thresholdDate" in updates) {
-		const newTags = { ...result.tags };
-		// Remove existing t: from description
-		result.description = result.description.replace(/\s*t:\S+/g, "");
-
-		if (updates.thresholdDate) {
-			newTags.t = updates.thresholdDate;
-			result.description += ` t:${updates.thresholdDate}`;
-		} else {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { t: _t, ...restTags } = newTags;
-			result.tags = restTags;
-			return result;
-		}
-		result.tags = newTags;
+		const updated = updateTagInTodo(
+			result.description,
+			result.tags,
+			"t",
+			updates.thresholdDate,
+		);
+		result.description = updated.description;
+		result.tags = updated.tags;
 	}
 
 	return result;

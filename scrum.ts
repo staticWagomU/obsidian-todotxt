@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 0, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 30, pbi: "PBI-032", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
 };
 
 // Product Goal
@@ -165,11 +165,47 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 30,
+  pbi: "PBI-032",
+  goal: "累積10件のRetrospective Action実行による改善サイクル機能回復と技術的負債返済開始",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "UI操作→データ保持→ファイル保存の統合テストケース作成",
+      implementation: "view integration test 1-2ケース実装、UI操作→データ保持フローのpass確認",
+      type: "behavioral",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "N/A（文書化タスク）",
+      implementation: "Sprint Planning時のAction評価手順をscrum.tsのactionManagementセクションに明記、評価フロー定義",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "N/A（設定タスク）",
+      implementation: "Action実行率KPI 50%以上目標をscrum.tsに明記、tracking項目で次Sprint以降追跡可能化",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "N/A（PBI refinementタスク）",
+      implementation: "view.tsリファクタリングPBI-034のcomplexity・refactorChecklist検証、ready状態確認",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+    {
+      test: "N/A（リファクタリングタスク）",
+      implementation: "view.ts小規模リファクタリング1コミット実施（renderTaskList()メソッド分割等）、REFACTOR文化再構築",
+      type: "structural",
+      status: "pending",
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

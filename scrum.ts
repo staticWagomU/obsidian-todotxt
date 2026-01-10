@@ -60,8 +60,13 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "プレビューがtodo.txt形式に準拠している", verification: "pnpm vitest run -- serializer" },
     ],
     dependencies: ["PBI-035"],
-    status: "draft",
+    status: "ready",
     complexity: { functions: 2, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 3 },
+    refactorChecklist: [
+      "BaseTaskModalへのプレビュー共通化",
+      "ユーティリティ関数抽出（buildDescription等）",
+      "CSSクラス統一とアクセシビリティ向上",
+    ],
   },
   {
     id: "PBI-039",

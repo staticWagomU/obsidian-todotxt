@@ -233,6 +233,37 @@ function renderGroupSelector(
 }
 
 /**
+ * Group todos by the specified method
+ */
+function groupTodos(todos: Todo[], groupBy: string): Map<string, Todo[]> | null {
+	if (groupBy === "project") {
+		return groupByProject(todos);
+	} else if (groupBy === "context") {
+		return groupByContext(todos);
+	} else if (groupBy === "priority") {
+		return groupByPriority(todos);
+	}
+	return null;
+}
+
+/**
+ * Group todos by priority
+ */
+function groupByPriority(todos: Todo[]): Map<string, Todo[]> {
+	const grouped = new Map<string, Todo[]>();
+	for (const todo of todos) {
+		const key = todo.priority || "未分類";
+		const group = grouped.get(key);
+		if (group === undefined) {
+			grouped.set(key, [todo]);
+		} else {
+			group.push(todo);
+		}
+	}
+	return grouped;
+}
+
+/**
  * Render grouped tasks
  */
 function renderGroupedTasks(
@@ -245,25 +276,9 @@ function renderGroupedTasks(
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
 ): void {
-	let grouped: Map<string, Todo[]>;
+	const grouped = groupTodos(todos, groupBy);
 
-	if (groupBy === "project") {
-		grouped = groupByProject(todos);
-	} else if (groupBy === "context") {
-		grouped = groupByContext(todos);
-	} else if (groupBy === "priority") {
-		// Group by priority
-		grouped = new Map<string, Todo[]>();
-		for (const todo of todos) {
-			const key = todo.priority || "未分類";
-			const group = grouped.get(key);
-			if (group === undefined) {
-				grouped.set(key, [todo]);
-			} else {
-				group.push(todo);
-			}
-		}
-	} else {
+	if (grouped === null) {
 		// Fallback to no grouping
 		for (const todo of todos) {
 			const originalIndex = todoIndexMap.get(todo);

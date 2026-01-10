@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 31, pbi: "PBI-034", status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 32, pbi: "N/A", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
 };
 
 // Product Goal
@@ -45,9 +45,9 @@ export const productGoal = {
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
-  // Phase 1-6: COMPLETE (Sprint 1-31) - 31 PBIs done, see completedSprints
+  // Phase 1-6: Sprint 1-31 完了（31 PBIs done）
   // PBI-001〜034 done: 専用ビュー/パース/CRUD/ソート/フィルタ/グループ/日付表示/リンク/rec:/pri:/設定/フォーム/UI統合/ドキュメント/Action返済/view.tsリファクタ
-  // Phase 6: 継続UI機能実装 (Sprint 31完了: PBI-034 view.ts分離達成、次期030→031→033)
+  // Phase 7: UI機能実装継続（Sprint 32〜）
   // 優先順位理由: 030=033依存元/031=独立機能/033=030依存
   {
     id: "PBI-030",
@@ -161,14 +161,14 @@ export const definitionOfDone = {
 // Completed Sprints - Phase 1-6 (Sprint 1-31) compacted, see git history for details
 export const completedSprints: CompletedSprint[] = [
   // Phase 1-5 (Sprint 1-24): 基本機能+ドキュメント完了、438t達成
-  // Phase 6 (Sprint 25-31): UI実装+Action返済+view.tsリファクタ
+  // Phase 6 (Sprint 25-31): UI実装+Action返済+view.tsリファクタ完了
   { sprint: 25, pbi: "PBI-025", story: "基本UI描画", verification: "passed", notes: "443t" },
   { sprint: 26, pbi: "PBI-026", story: "タスク追加UI", verification: "passed", notes: "449t" },
   { sprint: 27, pbi: "PBI-027", story: "データ保持修正", verification: "passed", notes: "471t" },
   { sprint: 28, pbi: "PBI-028", story: "タスクUI操作", verification: "passed", notes: "490t" },
   { sprint: 29, pbi: "PBI-029", story: "due:/t:視覚表示", verification: "passed", notes: "502t" },
   { sprint: 30, pbi: "PBI-032", story: "Action返済Sprint", verification: "passed", notes: "504t,Action実行率50%" },
-  { sprint: 31, pbi: "PBI-034", story: "view.ts層分離", verification: "passed", notes: "504t,258→126行(51%削減),REFACTOR率100%" },
+  { sprint: 31, pbi: "PBI-034", story: "view.ts層分離", verification: "passed", notes: "504t,view.ts258→126行(51%削減),handlers.ts87行+rendering.ts129行作成,REFACTOR率100%" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

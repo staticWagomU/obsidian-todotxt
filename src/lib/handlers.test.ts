@@ -48,7 +48,7 @@ describe("handlers", () => {
 			const setViewData = (data: string) => { savedData = data; };
 
 			const editHandler = getEditHandler(getData, setViewData);
-			await editHandler(0, { description: "Buy milk", dueDate: "2026-02-01", thresholdDate: undefined });
+			await editHandler(0, { dueDate: "2026-02-01" });
 
 			expect(savedData).toContain("Buy milk");
 			expect(savedData).toContain("due:2026-02-01");
@@ -60,7 +60,7 @@ describe("handlers", () => {
 			const setViewData = (data: string) => { savedData = data; };
 
 			const editHandler = getEditHandler(getData, setViewData);
-			await editHandler(0, { description: "Buy milk", thresholdDate: "2026-01-20", dueDate: undefined });
+			await editHandler(0, { thresholdDate: "2026-01-20" });
 
 			expect(savedData).toContain("Buy milk");
 			expect(savedData).toContain("t:2026-01-20");

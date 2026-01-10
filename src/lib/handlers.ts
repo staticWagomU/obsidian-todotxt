@@ -41,10 +41,26 @@ export function getToggleHandler(
 export function getAddHandler(
 	getData: () => string,
 	setViewData: (data: string, clear: boolean) => void,
-): (description: string, priority?: string) => Promise<void> {
-	return async (description: string, priority?: string) => {
+): (
+	description: string,
+	priority?: string,
+	dueDate?: string,
+	thresholdDate?: string,
+) => Promise<void> {
+	return async (
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string,
+	) => {
 		const currentData = getData();
-		const updatedData = createAndAppendTask(currentData, description, priority);
+		const updatedData = createAndAppendTask(
+			currentData,
+			description,
+			priority,
+			dueDate,
+			thresholdDate,
+		);
 
 		setViewData(updatedData, false);
 	};
@@ -58,11 +74,11 @@ export function getEditHandler(
 	setViewData: (data: string, clear: boolean) => void,
 ): (
 	lineIndex: number,
-	updates: Partial<Pick<Todo, "description" | "priority">>,
+	updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
 ) => Promise<void> {
 	return async (
 		lineIndex: number,
-		updates: Partial<Pick<Todo, "description" | "priority">>,
+		updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
 	) => {
 		const currentData = getData();
 		const updatedData = editAndUpdateTask(currentData, lineIndex, updates);

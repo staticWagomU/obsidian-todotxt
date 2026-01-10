@@ -74,7 +74,12 @@ export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTas
  * Automatically sets creationDate to today
  * Extracts projects and contexts from the description
  */
-export function createTask(description: string, priority?: string): Todo {
+export function createTask(
+	description: string,
+	priority?: string,
+	dueDate?: string,
+	thresholdDate?: string,
+): Todo {
 	const today = new Date().toISOString().split("T")[0];
 
 	// Extract projects (+project)
@@ -95,14 +100,26 @@ export function createTask(description: string, priority?: string): Todo {
 		}
 	}
 
+	// Build tags object with due: and t: if provided
+	const tags: Record<string, string> = {};
+	let enhancedDescription = description;
+	if (dueDate) {
+		tags.due = dueDate;
+		enhancedDescription += ` due:${dueDate}`;
+	}
+	if (thresholdDate) {
+		tags.t = thresholdDate;
+		enhancedDescription += ` t:${thresholdDate}`;
+	}
+
 	return {
 		completed: false,
 		priority,
 		creationDate: today,
-		description,
+		description: enhancedDescription,
 		projects,
 		contexts,
-		tags: {},
+		tags,
 		raw: "",
 	};
 }
@@ -111,8 +128,14 @@ export function createTask(description: string, priority?: string): Todo {
  * Create a new task and append it to the file content
  * Combines createTask and appendTaskToFile
  */
-export function createAndAppendTask(content: string, description: string, priority?: string): string {
-	const newTask = createTask(description, priority);
+export function createAndAppendTask(
+	content: string,
+	description: string,
+	priority?: string,
+	dueDate?: string,
+	thresholdDate?: string,
+): string {
+	const newTask = createTask(description, priority, dueDate, thresholdDate);
 	return appendTaskToFile(content, newTask);
 }
 
@@ -120,7 +143,10 @@ export function createAndAppendTask(content: string, description: string, priori
  * Edit task properties with partial updates
  * Preserves metadata (completed, creationDate, completionDate, tags, raw)
  */
-export function editTask(todo: Todo, updates: Partial<Pick<Todo, "description" | "priority">>): Todo {
+export function editTask(
+	todo: Todo,
+	updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
+): Todo {
 	const result: Todo = { ...todo };
 
 	// Handle description update (including empty string)
@@ -154,6 +180,42 @@ export function editTask(todo: Todo, updates: Partial<Pick<Todo, "description" |
 		result.priority = updates.priority;
 	}
 
+	// Handle dueDate update (update or remove due: tag)
+	if ("dueDate" in updates) {
+		const newTags = { ...result.tags };
+		// Remove existing due: from description
+		result.description = result.description.replace(/\s*due:\S+/g, "");
+
+		if (updates.dueDate) {
+			newTags.due = updates.dueDate;
+			result.description += ` due:${updates.dueDate}`;
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { due: _due, ...restTags } = newTags;
+			result.tags = restTags;
+			return result;
+		}
+		result.tags = newTags;
+	}
+
+	// Handle thresholdDate update (update or remove t: tag)
+	if ("thresholdDate" in updates) {
+		const newTags = { ...result.tags };
+		// Remove existing t: from description
+		result.description = result.description.replace(/\s*t:\S+/g, "");
+
+		if (updates.thresholdDate) {
+			newTags.t = updates.thresholdDate;
+			result.description += ` t:${updates.thresholdDate}`;
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { t: _t, ...restTags } = newTags;
+			result.tags = restTags;
+			return result;
+		}
+		result.tags = newTags;
+	}
+
 	return result;
 }
 
@@ -164,7 +226,7 @@ export function editTask(todo: Todo, updates: Partial<Pick<Todo, "description" |
 export function editAndUpdateTask(
 	content: string,
 	lineIndex: number,
-	updates: Partial<Pick<Todo, "description" | "priority">>,
+	updates: Partial<Pick<Todo, "description" | "priority" | "dueDate" | "thresholdDate">>,
 ): string {
 	const todos = parseTodoTxt(content);
 

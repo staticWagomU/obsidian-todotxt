@@ -70,7 +70,8 @@ describe("BaseTaskModal - Preview", () => {
 
 	describe("createPreviewArea", () => {
 		it("プレビューエリアのDOM要素を生成する", () => {
-			const container = document.createElement("div");
+			// contentElを使用（createElメソッドを持つ）
+			const container = modal.contentEl;
 
 			modal.createPreviewArea(container);
 

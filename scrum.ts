@@ -136,10 +136,32 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   sprint: 38,
-  pbi: "TBD",
-  goal: "TBD",
+  pbi: "PBI-038",
+  goal: "リアルタイムプレビューにより、保存前にtodo.txt形式を確認でき、意図通りの入力を実現する",
   status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  subtasks: [
+    {
+      test: "BaseTaskModalにcreatePreviewAreaメソッド追加（プレビューエリアDOM生成）、updatePreviewメソッド追加（serializeTodo呼出→プレビュー更新）のテスト",
+      implementation: "BaseTaskModal.tsにcreatePreviewArea（label+pre要素生成、.preview-areaクラス）とupdatePreview（Todo受取→serializeTodo→textContent更新）を追加。BaseTaskModal.test.ts新規作成、2テスト追加（createPreviewAreaがDOM生成/updatePreviewがserializeTodo結果を反映）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AddTaskModal/EditTaskModalでcreatePreviewArea呼出（onOpen内）、入力変更時にupdatePreview呼出（input/select change/input→updatePreview）、プレビューがtodo.txt形式に準拠のテスト",
+      implementation: "AddTaskModal.ts/EditTaskModal.tsのonOpen内でcreatePreviewArea呼出、input/prioritySelect/dueDateInput/thresholdDateInputにaddEventListener（input/change→updatePreview）追加。updatePreviewはフォーム値からTodoオブジェクト構築→updatePreview呼出。AddTaskModal.test.ts/EditTaskModal.test.tsに各3テスト追加（プレビューエリア表示/入力変更でリアルタイム更新/todo.txt形式準拠）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "REFACTOR: buildDescriptionFromInputs（description+projects+contexts+due/t:構築）をutils/form-helpers.tsに抽出、BaseTaskModalでCSSクラス統一（.modal-form-preview）とaria-label追加のテスト（既存テスト全通過）",
+      implementation: "utils/form-helpers.ts新規作成、buildDescriptionFromInputs（description, projects[], contexts[], tags{}受取→todo.txt description構築）エクスポート。BaseTaskModal.tsでimport、updatePreview内で使用。createPreviewAreaに.modal-form-previewクラス追加、aria-label=\"todo.txt形式プレビュー\"追加。既存テスト全通過確認",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

@@ -8,6 +8,7 @@ import type { SelectOption } from "../lib/project-context-utils";
 import { extractProjects, extractContexts } from "../lib/suggestions";
 import { renderProjectOptions, renderContextOptions } from "../lib/project-context-utils";
 import type { Todo } from "../lib/todo";
+import { serializeTodo } from "../lib/parser";
 
 export abstract class BaseTaskModal extends Modal {
 	/**
@@ -70,5 +71,27 @@ export abstract class BaseTaskModal extends Modal {
 		const contextSelect = this.createMultiSelect(container, contextOptions, "context-select");
 
 		return { projectSelect, contextSelect };
+	}
+
+	/**
+	 * プレビューエリアを作成
+	 * @param container 親要素
+	 */
+	protected createPreviewArea(container: HTMLElement): void {
+		this.createLabel(container, "プレビュー");
+		const previewEl = container.createEl("pre");
+		previewEl.classList.add("preview-area");
+	}
+
+	/**
+	 * プレビューエリアを更新
+	 * @param container プレビューエリアを含む親要素
+	 * @param todo プレビュー対象のTodoオブジェクト
+	 */
+	protected updatePreview(container: HTMLElement, todo: Todo): void {
+		const previewEl = container.querySelector("pre.preview-area");
+		if (previewEl) {
+			previewEl.textContent = serializeTodo(todo);
+		}
 	}
 }

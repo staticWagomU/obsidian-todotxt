@@ -1780,3 +1780,145 @@ describe("integration: due and threshold visual display", () => {
 		vi.useRealTimers();
 	});
 });
+
+describe("integration: UI operation to file save flow", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("チェックボックスクリック→データ更新→再レンダリング→UIに反映される完全フロー", async () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Setup: Initial file load
+		view.setViewData("(A) Task 1\n(B) Task 2\n(C) Task 3", false);
+		view.renderTaskList();
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		// Step 1: UI operation - Click checkbox on second task
+		const ul = container.querySelector("ul");
+		const secondLi = ul?.children[1] as HTMLLIElement;
+		const checkbox = secondLi.querySelector("input[type='checkbox']") as HTMLInputElement;
+
+		expect(checkbox.checked).toBe(false);
+		checkbox.click();
+
+		// Wait for async handler
+		await vi.runAllTimersAsync();
+
+		// Step 2: Verify data updated in memory (priority is removed on completion)
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(A) Task 1\nx 2026-01-10 Task 2\n(C) Task 3");
+
+		// Step 3: Simulate file save by Obsidian (getViewData would be saved to disk)
+		const dataToSave = view.getViewData();
+		expect(dataToSave).toContain("x 2026-01-10");
+
+		// Step 4: Simulate file reopen (Obsidian calls setViewData with saved content)
+		view.setViewData(dataToSave, true);
+		view.renderTaskList();
+
+		// Step 5: Verify UI reflects the saved data
+		const ulAfterReopen = container.querySelector("ul");
+		const secondLiAfterReopen = ulAfterReopen?.children[1] as HTMLLIElement;
+		const checkboxAfterReopen = secondLiAfterReopen.querySelector("input[type='checkbox']") as HTMLInputElement;
+
+		expect(checkboxAfterReopen.checked).toBe(true);
+		expect(secondLiAfterReopen.classList.contains("completed")).toBe(true);
+
+		vi.useRealTimers();
+	});
+
+	it("追加ボタン→モーダル→タスク追加→データ保存→再オープン完全フロー", async () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Setup: Initial file load with existing tasks
+		view.setViewData("(A) 2026-01-01 Existing task", false);
+		view.renderTaskList();
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-10"));
+
+		// Step 1: Simulate modal-triggered add operation
+		const handleAdd = view.getAddHandler();
+		await handleAdd("New task from UI", "B");
+
+		// Step 2: Verify data updated in memory
+		const updatedData = view.getViewData();
+		expect(updatedData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task from UI");
+
+		// Step 3: Trigger re-render
+		view.renderTaskList();
+
+		// Step 4: Verify UI shows new task
+		const ul = container.querySelector("ul");
+		expect(ul?.children.length).toBe(2);
+
+		const secondLi = ul?.children[1] as HTMLLIElement;
+		expect(secondLi.textContent).toContain("New task from UI");
+
+		const priorityBadge = secondLi.querySelector("span.priority");
+		expect(priorityBadge?.textContent).toContain("B");
+
+		// Step 5: Simulate file save and reopen
+		const dataToSave = view.getViewData();
+		view.setViewData(dataToSave, true);
+		view.renderTaskList();
+
+		// Step 6: Verify saved data persists after reopen
+		const ulAfterReopen = container.querySelector("ul");
+		expect(ulAfterReopen?.children.length).toBe(2);
+
+		const finalData = view.getViewData();
+		expect(finalData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task from UI");
+
+		vi.useRealTimers();
+	});
+});

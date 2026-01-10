@@ -115,6 +115,46 @@ export const productBacklog: ProductBacklogItem[] = [
     status: "draft",
     complexity: { functions: 3, estimatedTests: 8, externalDependencies: 0, score: "LOW", subtasks: 3 },
   },
+  // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
+  {
+    id: "PBI-040",
+    story: { role: "ユーザー", capability: "洗練されたミニマルなUIでタスクを管理", benefit: "視覚的に美しく、使っていて心地よい体験が得られる" },
+    acceptanceCriteria: [
+      { criterion: "タスクリストに十分な余白（padding/margin）が設定されている", verification: "目視確認: タスク間に16px以上の余白" },
+      { criterion: "チェックボックスがカスタムスタイル（角丸、アニメーション付き）になる", verification: "目視確認: チェック時に滑らかなトランジション" },
+      { criterion: "フォントサイズに明確な階層がある（タイトル/本文/補助テキスト）", verification: "目視確認: 3段階以上のフォントサイズ" },
+      { criterion: "Obsidianのダークモード/ライトモードに適切に対応", verification: "目視確認: 両モードで視認性良好" },
+    ],
+    dependencies: [],
+    status: "draft",
+    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
+  },
+  {
+    id: "PBI-041",
+    story: { role: "ユーザー", capability: "ホバーやフォーカス時に滑らかなフィードバックを得る", benefit: "操作に対する応答性が感じられ、直感的に使える" },
+    acceptanceCriteria: [
+      { criterion: "タスク行ホバー時に背景色がフェードイン", verification: "目視確認: 150-200msのtransition" },
+      { criterion: "ボタンホバー時にスケール/シャドウ変化", verification: "目視確認: 微細なtransform効果" },
+      { criterion: "フォーカス時にアウトラインまたはシャドウでハイライト", verification: "目視確認: キーボードナビゲーションで確認" },
+      { criterion: "完了トグル時にチェックマークがアニメーション", verification: "目視確認: スムーズな出現アニメーション" },
+    ],
+    dependencies: ["PBI-040"],
+    status: "draft",
+    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 },
+  },
+  {
+    id: "PBI-042",
+    story: { role: "ユーザー", capability: "モーダルが洗練されたデザインで表示される", benefit: "タスク入力時も一貫した美しい体験が得られる" },
+    acceptanceCriteria: [
+      { criterion: "モーダルに適切な角丸（border-radius: 12-16px）が設定されている", verification: "目視確認: 角丸の統一" },
+      { criterion: "モーダル背景にブラー効果（backdrop-filter）が適用される", verification: "目視確認: 背景がぼかされる" },
+      { criterion: "入力フィールドがフラットデザイン（ボーダーレスまたは細いボーダー）", verification: "目視確認: ミニマルな入力欄" },
+      { criterion: "保存ボタンがプライマリカラーで目立つデザイン", verification: "目視確認: アクセントカラー適用" },
+    ],
+    dependencies: ["PBI-040"],
+    status: "draft",
+    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 },
+  },
 ];
 
 // Definition of Ready

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 39, pbi: "PBI-039", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 39, pbi: "PBI-039", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -120,10 +120,46 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   sprint: 39,
-  pbi: "TBD",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-039",
+  goal: "上級ユーザーが慣れたtodo.txt形式で高速入力できるよう、フォーム/テキストモード切替機能を実装し、Phase 8フォームUI強化を完遂する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "AddTaskModal/EditTaskModalにモード切替ボタンが表示されること",
+      implementation: "BaseTaskModalにモード状態(isTextMode)とcreateToggleButton()を追加し、フォーム/テキストモード切替UIを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "テキストモードでtextareaが表示され、フォーム値と同期すること",
+      implementation: "BaseTaskModalにcreateTextModeArea()を追加し、フォーム値⇔テキスト双方向変換を実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "フォーム→テキスト、テキスト→フォーム切替時に入力内容が保持されること",
+      implementation: "onToggleMode()でフォーム値⇔テキスト変換ロジックを実装し、モード切替時の入力値保持を実現",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "既存テストが継続して通過すること(変換ロジック抽出後)",
+      implementation: "parseFormValueFromText()とbuildTextFromFormValue()をutils/form-helpersに抽出し、変換ロジックを再利用可能に",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "既存テストが継続して通過すること(モード管理ロジック整理後)",
+      implementation: "モード状態管理とUI更新ロジックをBaseTaskModalクラス内メソッドに整理し、保守性を向上",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

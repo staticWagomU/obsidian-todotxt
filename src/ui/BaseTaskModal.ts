@@ -18,6 +18,10 @@ import {
 export abstract class BaseTaskModal extends Modal {
 	protected isTextMode = false;
 
+	// ========================================
+	// 基本UI要素の作成
+	// ========================================
+
 	/**
 	 * ラベル要素を作成してコンテナに追加
 	 * @param container 親要素
@@ -80,6 +84,10 @@ export abstract class BaseTaskModal extends Modal {
 		return { projectSelect, contextSelect };
 	}
 
+	// ========================================
+	// モード切替機能
+	// ========================================
+
 	/**
 	 * モード切替ボタンを作成
 	 * @param container 親要素
@@ -121,7 +129,6 @@ export abstract class BaseTaskModal extends Modal {
 		textarea.style.display = this.isTextMode ? "" : "none";
 	}
 
-
 	/**
 	 * モード切替時の値変換処理
 	 * @param container フォーム要素とtextareaを含む親要素
@@ -161,6 +168,10 @@ export abstract class BaseTaskModal extends Modal {
 			}
 		}
 	}
+
+	// ========================================
+	// プレビュー機能
+	// ========================================
 
 	/**
 	 * プレビューエリアを作成

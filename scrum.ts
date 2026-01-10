@@ -35,7 +35,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 29, pbi: "PBI-029", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
 };
 
 // Product Goal
@@ -148,8 +148,11 @@ export const currentSprint = {
       test: "期限日の状態に応じて色分けスタイルを適用する(overdue=赤, today=オレンジ)",
       implementation: "getDueDateStyle()の戻り値をバッジ要素のstyleに適用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: 期限日バッジのスタイル適用機能のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: 期限日バッジに期限状態に応じたスタイルを適用" },
+      ],
     },
     {
       test: "t:タグの状態に応じてタスク行をグレーアウト表示する(not_ready時)",

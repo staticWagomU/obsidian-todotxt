@@ -4,6 +4,7 @@ import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemo
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
 import { getDueDateFromTodo, getDueDateStyle } from "./lib/due";
+import { getThresholdDateStyle } from "./lib/threshold";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
@@ -160,11 +161,17 @@ export class TodotxtView extends TextFileView {
 		const ul = this.contentEl.createEl("ul");
 
 		const todos = parseTodoTxt(this.data);
+		const today = new Date(); // Get current date once for all todos
+
 		for (let index = 0; index < todos.length; index++) {
 			const todo = todos[index];
 			if (!todo) continue;
 
 			const li = ul.createEl("li");
+
+			// Apply threshold date grayout style if t: tag exists
+			const thresholdStyle = getThresholdDateStyle(todo, today);
+			Object.assign(li.style, thresholdStyle);
 
 			// Add checkbox
 			const checkbox = li.createEl("input");
@@ -206,9 +213,8 @@ export class TodotxtView extends TextFileView {
 				dueBadge.textContent = dueDate.toISOString().split("T")[0]!;
 
 				// Apply style based on due date status
-				const today = new Date();
-				const style = getDueDateStyle(dueDate, today);
-				Object.assign(dueBadge.style, style);
+				const dueDateStyle = getDueDateStyle(dueDate, today);
+				Object.assign(dueBadge.style, dueDateStyle);
 			}
 
 			// Add edit button

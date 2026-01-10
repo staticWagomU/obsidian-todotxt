@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 35, pbi: "PBI-035", status: "not_started" as SprintStatus,
+  sprint: { number: 35, pbi: "PBI-035", status: "in_progress" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
-  phase: { number: 8, status: "ready", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
+  phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
 // Product Goal
@@ -171,10 +171,32 @@ export const definitionOfReady = {
 // Current Sprint
 export const currentSprint = {
   sprint: 35,
-  pbi: "TBD",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [],
+  pbi: "PBI-035",
+  goal: "優先度ドロップダウン実装により、ユーザーが手入力なしで正確な優先度設定ができるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "AddTaskModal: 優先度ドロップダウン（なし/A-Z）が表示され、選択した優先度がonSaveに渡される",
+      implementation: "AddTaskModal.tsに優先度selectフィールドを追加、generatePriorityOptions()使用、選択値をonSaveに渡す",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "EditTaskModal: 優先度ドロップダウン（なし/A-Z）が表示され、既存の優先度が選択状態で表示され、選択した優先度がonSaveに渡される",
+      implementation: "EditTaskModal.tsに優先度selectフィールドを追加、generatePriorityOptions()使用、initialPriorityパラメータ追加、選択値をonSaveに渡す",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "view.ts: EditTaskModalに現在の優先度を渡し、選択した優先度がgetEditHandlerに渡される",
+      implementation: "view.tsのEditTaskModal呼び出し箇所で現在の優先度を抽出してinitialPriorityとして渡し、onSaveコールバックでpriorityをgetEditHandlerに渡す",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

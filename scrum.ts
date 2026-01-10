@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 38, pbi: "PBI-038", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 38, pbi: "PBI-038", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 1, subtasksTotal: 3, impediments: 0 },
   phase: { number: 8, status: "in_progress", sprints: "35-39", pbis: "PBI-035〜039", goal: "フォームUI強化（構造化入力/デートピッカー/コンボボックス/プレビュー）" },
 };
 
@@ -138,14 +138,19 @@ export const currentSprint = {
   sprint: 38,
   pbi: "PBI-038",
   goal: "リアルタイムプレビューにより、保存前にtodo.txt形式を確認でき、意図通りの入力を実現する",
-  status: "not_started" as SprintStatus,
+  status: "in_progress" as SprintStatus,
   subtasks: [
     {
       test: "BaseTaskModalにcreatePreviewAreaメソッド追加（プレビューエリアDOM生成）、updatePreviewメソッド追加（serializeTodo呼出→プレビュー更新）のテスト",
       implementation: "BaseTaskModal.tsにcreatePreviewArea（label+pre要素生成、.preview-areaクラス）とupdatePreview（Todo受取→serializeTodo→textContent更新）を追加。BaseTaskModal.test.ts新規作成、2テスト追加（createPreviewAreaがDOM生成/updatePreviewがserializeTodo結果を反映）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: BaseTaskModalにcreatePreviewArea/updatePreviewメソッドテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: BaseTaskModalにcreatePreviewArea/updatePreviewメソッド追加" },
+        { phase: "refactor" as CommitPhase, message: "refactor: createPreviewAreaにCSSクラス統一とaria-label追加" },
+        { phase: "refactor" as CommitPhase, message: "refactor: updatePreviewのnullチェックをearly returnパターンに変更" },
+      ],
     },
     {
       test: "AddTaskModal/EditTaskModalでcreatePreviewArea呼出（onOpen内）、入力変更時にupdatePreview呼出（input/select change/input→updatePreview）、プレビューがtodo.txt形式に準拠のテスト",

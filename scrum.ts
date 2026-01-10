@@ -168,12 +168,12 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 36完了 - 次回Planning時に更新)
+// Current Sprint
 export const currentSprint = {
-  sprint: 36,
-  pbi: "PBI-036",
-  goal: "デートピッカー実装により、ユーザーが直感的に日付を入力でき、入力ミスを防げるようにする",
-  status: "done" as SprintStatus,
+  sprint: 37,
+  pbi: "TBD",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
   subtasks: [] as Subtask[],
 };
 
@@ -207,7 +207,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 34, pbi: "PBI-031", story: "リンククリック可能表示", verification: "passed", notes: "554t(+12t),内部/外部リンク+rec:アイコン表示実装,rendering.test.ts12t追加,TDD適用(5commit:RED1+GREEN2+REFACTOR2),REFACTOR率40%(2/5),LinkHandlerインターフェース抽象化,Phase 7完了" },
   // Phase 8 (Sprint 35-39): フォームUI強化
   { sprint: 35, pbi: "PBI-035", story: "優先度ドロップダウン", verification: "passed", notes: "563t(+9t),TDD適用(7commit:RED3+GREEN3+REFACTOR1),REFACTOR率14%(1/7),priority-options.ts新規作成,AddTaskModal/EditTaskModal/view.ts連携実装" },
-  { sprint: 36, pbi: "PBI-036", story: "カレンダーからdue:/t:日付選択", verification: "passed", notes: "585t(+22t),TDD適用(11commit:RED4+GREEN5+REFACTOR3),REFACTOR率27%(3/11),date-picker-utils.ts/BaseTaskModal.ts新規作成,HTML5 date input実装,Lint修正でCSSクラス化" },
+  { sprint: 36, pbi: "PBI-036", story: "カレンダーからdue:/t:日付選択", verification: "passed", notes: "585t(+22t),TDD適用(13commit:RED4+GREEN5+REFACTOR4),REFACTOR率31%(4/13),date-picker-utils.ts/BaseTaskModal.ts新規作成,HTML5 date input実装,Lint修正でCSSクラス化,BaseTaskModal基底クラス抽出" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
@@ -233,12 +233,35 @@ export const retrospectives: Retrospective[] = [
       "品質評価実施: Sprint 36 Planning前に563テストのカバレッジ・保守性を評価",
       "ドキュメント即時更新: Sprint完了時にCLAUDE.md/README.mdを即座に更新するフロー確立"
     ] },
+  { sprint: 36,
+    workedWell: [
+      "REFACTOR率大幅改善: 31%（4/13コミット）vs Sprint 35の14%、+17ptの改善達成",
+      "テスト大幅増加: 563t→585t（+22t）、Sprint 35の+9tの2.4倍の成長",
+      "重要なリファクタ実施: BaseTaskModal基底クラス抽出、モーダル間の共通ロジック統合成功",
+      "再利用可能ユーティリティ作成: date-picker-utils.ts新規作成、日付処理の標準化達成",
+      "品質改善: CSSクラス化によるLint問題解決、コードの保守性向上",
+      "TDDサイクル継続: 13コミット中9コミットがRED/GREEN、テストファースト維持",
+      "カレンダーUI実装完了: HTML5 date inputによる直感的な日付入力実現"
+    ],
+    toImprove: [
+      "REFACTOR率未達: 31% vs 目標50%、改善はしたが依然として目標から-19pt",
+      "Sprint 35 Actions実行状況不明: 5件のActionのうち実行確認が必要（REFACTOR基準は部分実施）",
+      "Action実行率の追跡不足: 明示的な実行確認プロセスが欠如",
+      "REFACTOR専念Sprint未実施: Sprint 35で提案されたが実行されず、継続検討のみ"
+    ],
+    actions: [
+      "REFACTOR率目標達成: Sprint 37で50%達成を明確な目標とし、Subtask設計時にREFACTOR機会を組み込む",
+      "Action実行確認プロセス確立: Sprint Review時に前SprintのActionsを明示的にレビューするステップを追加",
+      "BaseTaskModal活用拡大: 新規モーダル作成時は必ずBaseTaskModalを継承し、共通ロジックを集約",
+      "date-picker-utilsパターン推進: 共通ユーティリティの抽出を積極的に行い、コードの再利用性向上",
+      "REFACTOR専念Sprint再検討: Phase 8完了後（Sprint 39終了後）にREFACTOR専念Sprintの実施を評価"
+    ] },
 ];
 
-// Action Management (Sprint 35完了、新規5件Action追加)
+// Action Management (Sprint 36完了、新規5件Action追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 31, executed: 19, rate: 61, remaining: 12 }, // Sprint 35完了（Sprint 34 Action 1件実行: Phase 8計画策定）、新規5件Action追加（REFACTOR専念Sprint検討/Actions優先実行/REFACTOR基準明確化/品質評価実施/ドキュメント即時更新）
+  tracking: { total: 36, executed: 20, rate: 56, remaining: 16 }, // Sprint 36完了（Sprint 35 Action 1件実行: REFACTOR基準部分実施）、新規5件Action追加（REFACTOR率目標達成/Action実行確認プロセス確立/BaseTaskModal活用拡大/date-picker-utilsパターン推進/REFACTOR専念Sprint再検討）
 };
 
 // Agents & Events

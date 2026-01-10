@@ -301,3 +301,109 @@ describe("text search box", () => {
 		expect(liElements[0]?.textContent).toContain("MILK");
 	});
 });
+
+describe("group selector", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+	});
+
+	it("グループ化セレクタが表示される", () => {
+		// Setup
+		view.setViewData("Task 1 +Work\nTask 2 @home", false);
+
+		// Verify: Group selector exists
+		const groupSelector = view.contentEl.querySelector("select.group-selector");
+		expect(groupSelector).not.toBeNull();
+	});
+
+	it("グループ化セレクタに「なし」「プロジェクト」「コンテキスト」「優先度」オプションが含まれる", () => {
+		// Setup
+		view.setViewData("Task 1", false);
+
+		// Verify: Selector has expected options
+		const groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		expect(groupSelector).not.toBeNull();
+
+		const options = Array.from(groupSelector.options).map(opt => opt.value);
+		expect(options).toContain("none");
+		expect(options).toContain("project");
+		expect(options).toContain("context");
+		expect(options).toContain("priority");
+	});
+
+	it("プロジェクト別グループ化を選択するとプロジェクトごとにグループ表示される", () => {
+		// Setup
+		view.setViewData("Task 1 +Work\nTask 2 +Personal\nTask 3 +Work", false);
+
+		// Execute: Select group by project
+		const groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "project";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Verify: Tasks are grouped by project
+		const ul = view.contentEl.querySelector("ul");
+		const groupHeaders = ul?.querySelectorAll("li.group-header");
+
+		expect(groupHeaders?.length).toBeGreaterThan(0);
+		// Verify group structure exists
+		expect(ul?.textContent).toContain("Work");
+		expect(ul?.textContent).toContain("Personal");
+	});
+
+	it("コンテキスト別グループ化を選択するとコンテキストごとにグループ表示される", () => {
+		// Setup
+		view.setViewData("Task 1 @home\nTask 2 @office\nTask 3 @home", false);
+
+		// Execute: Select group by context
+		const groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "context";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Verify: Tasks are grouped by context
+		const ul = view.contentEl.querySelector("ul");
+		expect(ul?.textContent).toContain("home");
+		expect(ul?.textContent).toContain("office");
+	});
+
+	it("優先度別グループ化を選択すると優先度ごとにグループ表示される", () => {
+		// Setup
+		view.setViewData("(A) Task 1\n(B) Task 2\n(A) Task 3\nTask 4", false);
+
+		// Execute: Select group by priority
+		const groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "priority";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Verify: Tasks are grouped by priority
+		const ul = view.contentEl.querySelector("ul");
+		const groupHeaders = ul?.querySelectorAll("li.group-header");
+
+		expect(groupHeaders?.length).toBeGreaterThan(0);
+	});
+
+	it("「なし」を選択するとグループ化が解除される", () => {
+		// Setup
+		view.setViewData("Task 1 +Work\nTask 2 +Personal", false);
+
+		// First, group by project
+		let groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "project";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Then select "none"
+		groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		groupSelector.value = "none";
+		groupSelector.dispatchEvent(new Event("change"));
+
+		// Verify: No group headers
+		const ul = view.contentEl.querySelector("ul");
+		const groupHeaders = ul?.querySelectorAll("li.group-header");
+		expect(groupHeaders?.length).toBe(0);
+	});
+});

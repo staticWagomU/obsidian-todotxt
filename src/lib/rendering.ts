@@ -3,6 +3,7 @@ import { parseTodoTxt } from "./parser";
 import { getDueDateFromTodo, getDueDateStyle } from "./due";
 import { getThresholdDateStyle } from "./threshold";
 import { filterByPriority, filterBySearch } from "./filter";
+import { groupByProject, groupByContext } from "./group";
 
 /**
  * Filter state for control bar
@@ -10,6 +11,7 @@ import { filterByPriority, filterBySearch } from "./filter";
 interface FilterState {
 	priority: string;
 	search: string;
+	group: string;
 }
 
 /**
@@ -49,11 +51,17 @@ export function renderTaskList(
 		todoIndexMap.set(todos[i]!, i);
 	}
 
-	for (const todo of filteredTodos) {
-		const originalIndex = todoIndexMap.get(todo);
-		if (originalIndex === undefined) continue;
+	// Render tasks with grouping if enabled
+	if (filterState.group !== "none") {
+		renderGroupedTasks(ul, filteredTodos, filterState.group, todoIndexMap, today, onToggle, onEdit, onDelete);
+	} else {
+		// Render tasks without grouping
+		for (const todo of filteredTodos) {
+			const originalIndex = todoIndexMap.get(todo);
+			if (originalIndex === undefined) continue;
 
-		renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
+		}
 	}
 }
 
@@ -63,10 +71,12 @@ export function renderTaskList(
 function saveFilterState(contentEl: HTMLElement): FilterState {
 	const previousPriorityFilter = contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
 	const previousSearchBox = contentEl.querySelector("input.search-box") as HTMLInputElement | null;
+	const previousGroupSelector = contentEl.querySelector("select.group-selector") as HTMLSelectElement | null;
 
 	return {
 		priority: previousPriorityFilter?.value || "all",
 		search: previousSearchBox?.value || "",
+		group: previousGroupSelector?.value || "none",
 	};
 }
 
@@ -126,6 +136,9 @@ function renderControlBar(
 
 	// Render search box
 	renderSearchBox(controlBar, filterState.search, onFilterChange);
+
+	// Render group selector
+	renderGroupSelector(controlBar, filterState.group, onFilterChange);
 }
 
 /**
@@ -182,6 +195,98 @@ function renderSearchBox(
 
 	// Add input event listener
 	searchBox.addEventListener("input", onInput);
+}
+
+/**
+ * Render group selector
+ */
+function renderGroupSelector(
+	container: HTMLElement,
+	currentValue: string,
+	onChange: () => void,
+): void {
+	const groupSelector = container.createEl("select");
+	groupSelector.classList.add("group-selector");
+
+	// Add options
+	const noneOption = groupSelector.createEl("option");
+	noneOption.value = "none";
+	noneOption.textContent = "なし";
+
+	const projectOption = groupSelector.createEl("option");
+	projectOption.value = "project";
+	projectOption.textContent = "プロジェクト";
+
+	const contextOption = groupSelector.createEl("option");
+	contextOption.value = "context";
+	contextOption.textContent = "コンテキスト";
+
+	const priorityOption = groupSelector.createEl("option");
+	priorityOption.value = "priority";
+	priorityOption.textContent = "優先度";
+
+	// Set current value
+	groupSelector.value = currentValue;
+
+	// Add change event listener
+	groupSelector.addEventListener("change", onChange);
+}
+
+/**
+ * Render grouped tasks
+ */
+function renderGroupedTasks(
+	ul: HTMLUListElement,
+	todos: Todo[],
+	groupBy: string,
+	todoIndexMap: Map<Todo, number>,
+	today: Date,
+	onToggle: (index: number) => Promise<void>,
+	onEdit: (index: number) => void,
+	onDelete: (index: number) => Promise<void>,
+): void {
+	let grouped: Map<string, Todo[]>;
+
+	if (groupBy === "project") {
+		grouped = groupByProject(todos);
+	} else if (groupBy === "context") {
+		grouped = groupByContext(todos);
+	} else if (groupBy === "priority") {
+		// Group by priority
+		grouped = new Map<string, Todo[]>();
+		for (const todo of todos) {
+			const key = todo.priority || "未分類";
+			const group = grouped.get(key);
+			if (group === undefined) {
+				grouped.set(key, [todo]);
+			} else {
+				group.push(todo);
+			}
+		}
+	} else {
+		// Fallback to no grouping
+		for (const todo of todos) {
+			const originalIndex = todoIndexMap.get(todo);
+			if (originalIndex === undefined) continue;
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
+		}
+		return;
+	}
+
+	// Render each group
+	for (const [groupName, groupTodos] of grouped) {
+		// Render group header
+		const groupHeader = ul.createEl("li");
+		groupHeader.classList.add("group-header");
+		groupHeader.textContent = groupName;
+
+		// Render todos in this group
+		for (const todo of groupTodos) {
+			const originalIndex = todoIndexMap.get(todo);
+			if (originalIndex === undefined) continue;
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
+		}
+	}
 }
 
 /**

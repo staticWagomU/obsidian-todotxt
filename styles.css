@@ -212,13 +212,21 @@
 /* ============================================
  * Checkbox - Custom Style & Animation
  * ============================================
- * RED PHASE - 検証基準:
+ * RED PHASE - 検証基準（Sprint 40実装済み）:
  * - .task-item__checkboxクラス定義
  * - border-radius適用（角丸）
  * - transition: all 0.15s ease適用
  * - ホバー効果とチェック時アニメーション
  * - Obsidian標準スタイルとの調和
  * 検証方法: クラス定義とアニメーション動作の確認
+ *
+ * RED PHASE - Subtask 4: チェックマーク完了アニメーション
+ * 追加検証基準:
+ * - @keyframesでチェックマーク出現アニメーション定義
+ * - スケール変化（0.5 → 1）とフェードイン（opacity 0 → 1）
+ * - アニメーション時間200-300ms
+ * - ease-out または bounce効果で自然な出現
+ * 検証方法: チェックボックスクリック時、チェックマークが滑らかに出現
  */
 
 /* Checkbox - BEM Element with CSS Variables */

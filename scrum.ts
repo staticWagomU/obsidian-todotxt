@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 42, pbi: "PBI-042", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 42, pbi: "PBI-042", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -82,13 +82,42 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 42準備)
+// Current Sprint (Sprint 42開始)
 export const currentSprint = {
   sprint: 42,
-  pbi: "TBD",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-042",
+  goal: "Phase 9 UIデザイン刷新の完遂 - モーダルダイアログを洗練されたApple-likeデザインに仕上げる",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "モーダルのborder-radiusが12-16pxの範囲で設定されている",
+      implementation: "CSS変数--modal-border-radiusを定義し、.modalクラスに適用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "モーダル背景にbackdrop-filter: blur()が適用されている",
+      implementation: "CSS変数--modal-backdrop-blurを定義し、.modal-backdropクラスに適用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "入力フィールドのボーダーが細い（1px以下）またはボーダーレスである",
+      implementation: "CSS変数--input-border-widthを定義し、.modal inputセレクタに適用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "保存ボタンがプライマリカラー（--color-accent）で目立つデザインになっている",
+      implementation: ".modal .btn-primaryクラスにアクセントカラーとホバーエフェクトを適用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

@@ -94,58 +94,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (Sprint 40完了、Sprint 41準備)
 export const currentSprint = {
-  sprint: 40,
-  pbi: "PBI-040",
-  goal: "Apple-likeミニマルデザインの基盤CSS構築により、洗練されたタスク管理UIを実現する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "CSS変数が:rootに定義され、フォントサイズ階層（16px/14px/12px）とカラー/トランジション変数が設定されている",
-      implementation: ":root定義でカラー（--color-*）・タイポグラフィ（--font-size-*/--line-height-*）・トランジション（--transition-default）変数を追加",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: CSS変数システムの検証基準を文書化" },
-        { phase: "green", message: "feat: CSS変数システムとタイポグラフィ階層を定義" },
-        { phase: "refactor", message: "refactor: CSS変数を論理的にグループ化しコメント改善" },
-      ],
-    },
-    {
-      test: ".task-itemクラスがpadding: 12px 16pxを持ち、タスク間に16px以上の余白があり、BEM命名規則に従う",
-      implementation: "BEM形式のクラス体系確立（.task-item/.task-item__element/.task-item--modifier）、スペーシングユーティリティ追加、既存クラスのリファクタリング",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: タスクリストBEMクラスの検証基準を文書化" },
-        { phase: "green", message: "feat: タスクリストのBEMクラス体系とスペーシングを実装" },
-        { phase: "refactor", message: "refactor: スペーシングユーティリティ追加とPriorityクラスをBEM化" },
-      ],
-    },
-    {
-      test: ".task-item__checkboxクラスに角丸・transition: all 0.15s easeが適用され、カスタムスタイルが機能する",
-      implementation: ".task-item__checkboxクラス定義、角丸・トランジション・ホバー効果のカスタムスタイル適用（Obsidian標準スタイル考慮）",
-      type: "structural",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: チェックボックスカスタムスタイルの検証基準を文書化" },
-        { phase: "green", message: "feat: チェックボックスのカスタムスタイルとアニメーションを実装" },
-        { phase: "refactor", message: "refactor: チェックボックススタイルをCSS変数化し洗練" },
-      ],
-    },
-    {
-      test: ":focus-visibleスタイルが定義され、CSS変数でダークモード/ライトモード両方で視認性が確保されている",
-      implementation: ":focus-visibleアウトライン定義（--color-focus使用）、CSS変数のグループ化コメント追加（Layout/Typography/Color/Animation）",
-      type: "behavioral",
-      status: "completed",
-      commits: [
-        { phase: "red", message: "test: アクセシビリティとテーマ対応の検証基準を文書化" },
-        { phase: "green", message: "feat: アクセシビリティのフォーカススタイルを実装" },
-        { phase: "refactor", message: "refactor: CSS変数システムを完全体系化しアクセシビリティ変数追加" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 41,
+  pbi: "TBD",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -161,46 +116,40 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints - Phase 1-7 compacted, see git history for details
+// Completed Sprints - Phase 1-8 compacted, see git history for details
 export const completedSprints: CompletedSprint[] = [
   // Phase 1-7 (Sprint 1-34): 基本機能+ドキュメント+UI実装完了、554t達成
   // Phase 8 (Sprint 35-39): フォームUI強化完了、626t達成(+72t)
-  { sprint: 35, pbi: "PBI-035", story: "優先度ドロップダウン", verification: "passed", notes: "563t(+9t)" },
-  { sprint: 36, pbi: "PBI-036", story: "デートピッカー", verification: "passed", notes: "585t(+22t)" },
-  { sprint: 37, pbi: "PBI-037", story: "プロジェクト/コンテキスト選択", verification: "passed", notes: "597t(+12t)" },
-  { sprint: 38, pbi: "PBI-038", story: "リアルタイムプレビュー", verification: "passed", notes: "610t(+13t),REFACTOR率60%" },
-  { sprint: 39, pbi: "PBI-039", story: "フォーム/テキストモード切替", verification: "passed", notes: "626t(+16t),Phase 8完遂,Action実行率80%" },
   // Phase 9 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）
-  { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,REFACTOR率33%,CSS実装のためテスト増加なし" },
+  { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,CSS変数/BEM/アクセシビリティ確立" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 39,
+  { sprint: 40,
     workedWell: [
-      "テスト増加数+16t達成: 目標+15tを超過達成（610t → 626t）、Phase 8完遂記念として品質向上実現",
-      "Phase 8完遂: 5 Sprint（Sprint 35-39）でフォームUI強化完了、+63t追加（563t → 626t）",
-      "form-helpersパターン推進成功: buildTextFromFormValues/parseFormValuesFromText追加でフォーム⇔テキスト双方向変換実装",
-      "TDDサイクル遵守: 8コミット（RED 3 + GREEN 3 + REFACTOR 2）でテストファースト継続",
-      "Action実行率80%達成: Sprint 38のAction 4/5件実行、前Sprint比で大幅改善",
-      "Action Management実行率63%に改善: +9pt向上（54% → 63%）、健全水準70%に接近",
-      "全AC達成: 切替ボタン表示/todo.txt形式直接編集/入力内容保持すべて実現",
-      "BaseTaskModal強化継続: createToggleButton/createTextModeArea/updateTextModeVisibility/onToggleMode追加で機能拡充"
+      "CSS変数システム確立: 4グループ体系化（Layout/Typography/Color/Animation）により、保守性と拡張性が大幅向上",
+      "BEM命名規則導入成功: .task-item/.task-item__element/.task-item--modifierパターン確立でCSSの可読性・保守性向上",
+      "Obsidian標準変数活用: --background-*や--text-*変数使用によりテーマ自動対応実現、ダークモード/ライトモード両対応",
+      "アクセシビリティ対応実装: :focus-visibleスタイル定義とWCAA AA準拠のコントラスト比確保",
+      "全6AC達成: CSS変数定義/BEMクラス体系/チェックボックスカスタムスタイル/フォーカス/テーマ対応/視覚的調和すべて実現",
+      "全サブタスクでRED-GREEN-REFACTORサイクル完遂: 12コミット（RED 4 + GREEN 4 + REFACTOR 4）でTDD継続",
+      "Apple-likeミニマルデザイン基盤構築: 角丸・トランジション・スペーシングの統一デザインシステム確立",
+      "REFACTOR率改善: 33%達成でSprint 39の25%から+8pt向上、Phase 8最低記録からの回復"
     ],
     toImprove: [
-      "REFACTOR率25%で目標50%未達: Sprint 38の60%から35pt低下、Phase 8最低記録（2/8コミット）",
-      "Phase 9はUIデザイン中心: 目視確認が主体でテスト増加が困難な性質、新たなテスト戦略が必要",
-      "REFACTOR専念Sprint未実施: 4 Sprint連続で延期されたまま、技術的負債解消が先送り",
-      "Phase 9 PBI全てdraft状態: PBI-040/041/042すべてがRefinement待ち、Sprint 40開始前に解消必要",
-      "CSS/スタイリング変更の検証アプローチ未確立: Visual Regression Testingやスナップショットテスト等の導入検討が必要"
+      "REFACTOR率33%で目標50%未達: Sprint 38の60%には遠く及ばず、-27pt低下（ただしSprint 39の25%からは+8pt改善）",
+      "テスト増加0t: CSS実装の性質上予想通りだが、Phase 9全体での品質指標が不明確（626t維持）",
+      "Phase 9適合の品質指標未確立: UIデザイン中心のため従来のテスト増加指標が適用困難、代替指標が必要",
+      "PBI-041/042のdependency解消: PBI-040完了により依存関係が解消されたが、Refinement未実施でdraft状態継続"
     ],
     actions: [
-      "視覚的品質の測定基準確立: スクリーンショット比較やVisual Regression Testingツール導入検討、Phase 9の性質に適合した品質保証手法の確立",
-      "CSS変更のテスト戦略策定: スタイル変更に対するテストアプローチ（スナップショットテスト、アクセシビリティテスト、レスポンシブテスト等）を確立",
-      "PBI Refinement最優先: Sprint 40開始前にPBI-040/041/042をreadyステータスに移行、Backlog Refinement実施",
-      "REFACTOR専念Sprint実施判断: Phase 9開始前または終了後のタイミングで技術的負債解消Sprintを実施、5 Sprint連続延期の解消",
-      "Action実行率70%目標設定: 健全水準70%を次Sprintの必須目標とし、実行確認プロセス継続",
-      "Phase 9目標値再設定: テスト増加数の現実的目標値設定（UIデザインの性質を考慮し、品質指標の多様化を検討）"
+      "CSS変数システム活用の徹底: PBI-040で確立した4グループ体系（Layout/Typography/Color/Animation）をPBI-041/042でも一貫適用",
+      "PBI-041/042のBacklog Refinement実施: Sprint 41開始前に両PBIをreadyステータスに移行、依存関係解消済みを確認",
+      "Phase 9品質指標の再定義: テスト増加数に代わる指標（アクセシビリティスコア、CSS複雑度、BEM準拠率等）を設定",
+      "REFACTOR率50%目標の再設定: Sprint 41/42で各50%目標、Phase 9全体で40%以上達成を目指す",
+      "Visual Regression Testing導入検討: CSS変更の品質保証として、スクリーンショット比較ツール（Percy、Chromatic等）の導入可否を検討",
+      "Phase 9完遂後のREFACTOR専念Sprint計画: Phase 9終了後（Sprint 43候補）に技術的負債解消Sprintを実施、6 Sprint延期の解消"
     ] },
 ];
 

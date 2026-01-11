@@ -70,16 +70,13 @@
 	padding: 12px 16px;
 	margin-bottom: 16px;
 	border-radius: 6px;
-	transition: var(--transition-default);
+	transition: background-color 0.15s ease;
 }
 
-/* RED PHASE - Subtask 1: タスク行ホバーアニメーション
- * 検証基準:
- * - :hoverで背景色がvar(--color-hover)に変化
- * - transition: background-color 0.15s easeで滑らかな遷移
- * 検証方法: タスク行にマウスホバー時、150-200msでフェードイン
- */
-/* TODO: .task-item:hover { background-color: var(--color-hover); } */
+/* Hover Animation - Smooth background transition */
+.task-item:hover {
+	background-color: var(--color-hover);
+}
 
 .task-item:last-child {
 	margin-bottom: 0;

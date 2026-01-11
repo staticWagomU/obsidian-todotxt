@@ -58,12 +58,11 @@
 
 	/* Component Dimensions */
 	--checkbox-size: 18px;
-	--border-radius-sm: 4px;   /* チェックボックス・小要素 */
-	--border-radius-md: 6px;   /* タスクアイテム */
-	--border-radius-lg: 12px;  /* モーダル・カード */
 
-	/* Modal Specific */
-	--modal-border-radius: 12px;  /* Apple-like角丸 */
+	/* Border Radius - 3-tier hierarchy */
+	--border-radius-sm: 4px;   /* チェックボックス・小要素 */
+	--border-radius-md: 6px;   /* タスクアイテム・カード */
+	--border-radius-lg: 12px;  /* モーダル・大型コンテナ */
 
 	/* Focus & Accessibility */
 	--focus-outline-width: 2px;
@@ -372,7 +371,7 @@ textarea:focus-visible {
 
 /* Modal Container - Apple-like rounded corners */
 .modal {
-	border-radius: var(--modal-border-radius);
+	border-radius: var(--border-radius-lg);
 }
 
 /* ============================================

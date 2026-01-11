@@ -473,6 +473,23 @@ textarea:focus-visible {
 	transform: scale(0.98);
 }
 
+/* Secondary button - subtle design for cancel action */
+.modal button:not(.mod-cta) {
+	background-color: transparent;
+	color: var(--text-muted);
+	border: var(--input-border-width) solid var(--color-border);
+	padding: var(--input-padding);
+	border-radius: var(--border-radius-sm);
+	transition: var(--transition-interactive);
+}
+
+/* Secondary button hover */
+.modal button:not(.mod-cta):hover {
+	background-color: var(--color-hover);
+	border-color: var(--color-focus);
+	color: var(--color-text);
+}
+
 /* ============================================
  * Button Hover Effects - Interactive Feedback
  * ============================================ */

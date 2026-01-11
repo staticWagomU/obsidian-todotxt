@@ -12,6 +12,25 @@
  * 検証方法: CSS変数が定義され、後続スタイルで適用されていることを確認
  */
 
+:root {
+	/* Typography */
+	--font-size-large: 16px;
+	--font-size-medium: 14px;
+	--font-size-small: 12px;
+	--line-height-large: 1.5;
+	--line-height-medium: 1.4;
+	--line-height-small: 1.3;
+
+	/* Colors - Light mode defaults */
+	--color-background: var(--background-primary);
+	--color-text: var(--text-normal);
+	--color-border: var(--background-modifier-border);
+	--color-focus: var(--interactive-accent);
+
+	/* Transitions */
+	--transition-default: all 0.15s ease;
+}
+
 /* Completed tasks - strikethrough */
 .completed {
 	text-decoration: line-through;

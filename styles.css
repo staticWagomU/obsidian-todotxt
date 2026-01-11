@@ -64,6 +64,9 @@
 	--border-radius-md: 6px;   /* タスクアイテム・カード */
 	--border-radius-lg: 12px;  /* モーダル・大型コンテナ */
 
+	/* Modal Effects */
+	--modal-backdrop-blur: 8px;  /* Apple-like背景ぼかし */
+
 	/* Focus & Accessibility */
 	--focus-outline-width: 2px;
 	--focus-outline-offset: 2px;
@@ -384,6 +387,12 @@ textarea:focus-visible {
  * - 背景がぼかされモーダルにフォーカスが集まる
  * 検証方法: モーダル表示時、背景コンテンツがぼかされる
  */
+
+/* Modal backdrop with blur effect - Apple-like focus */
+.modal-container {
+	backdrop-filter: blur(var(--modal-backdrop-blur));
+	-webkit-backdrop-filter: blur(var(--modal-backdrop-blur)); /* Safari support */
+}
 
 /* ============================================
  * Button Hover Effects - Interactive Feedback

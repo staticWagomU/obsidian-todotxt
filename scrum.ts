@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 41, pbi: "PBI-041", status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 42, pbi: "PBI-042", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -55,19 +55,7 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 39 PBI-039: フォーム/テキストモード切替、626t(+16t)、done
   // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
   //   Sprint 40 PBI-040: ミニマルUIデザイン基盤、626t、done
-  {
-    id: "PBI-041",
-    story: { role: "ユーザー", capability: "ホバーやフォーカス時に滑らかなフィードバックを得る", benefit: "操作に対する応答性が感じられ、直感的に使える" },
-    acceptanceCriteria: [
-      { criterion: "タスク行ホバー時に背景色がフェードイン", verification: "目視確認: 150-200msのtransition" },
-      { criterion: "ボタンホバー時にスケール/シャドウ変化", verification: "目視確認: 微細なtransform効果" },
-      { criterion: "フォーカス時にアウトラインまたはシャドウでハイライト", verification: "目視確認: キーボードナビゲーションで確認" },
-      { criterion: "完了トグル時にチェックマークがアニメーション", verification: "目視確認: スムーズな出現アニメーション" },
-    ],
-    dependencies: ["PBI-040"],
-    status: "done",
-    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 },
-  },
+  //   Sprint 41 PBI-041: 滑らかなインタラクション、626t、done
   {
     id: "PBI-042",
     story: { role: "ユーザー", capability: "モーダルが洗練されたデザインで表示される", benefit: "タスク入力時も一貫した美しい体験が得られる" },
@@ -94,58 +82,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 41完了)
+// Current Sprint (Sprint 42準備)
 export const currentSprint = {
-  sprint: 41,
-  pbi: "PBI-041",
-  goal: "タスク操作時の滑らかなフィードバック体験を実現し、直感的なインタラクションを提供する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "タスク行ホバー時に背景色が150-200msでフェードイン",
-      implementation: "task-itemにtransition: background-color 0.15s easeを定義、:hoverで背景色変化",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: タスク行ホバーアニメーション - 背景色フェードイン仕様定義" },
-        { phase: "green" as CommitPhase, message: "feat: タスク行ホバーアニメーション実装 - 背景色150msフェードイン" },
-        { phase: "refactor" as CommitPhase, message: "refactor: transition変数を特定プロパティ用に最適化" },
-      ],
-    },
-    {
-      test: "ボタンホバー時にスケール/シャドウが微細に変化",
-      implementation: "ボタンクラスにtransition: transform 0.15s, box-shadow 0.15s定義、:hoverでtransform: scale(1.05)適用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: ボタンホバーエフェクト - スケール/シャドウ変化仕様定義" },
-        { phase: "green" as CommitPhase, message: "feat: ボタンホバーエフェクト実装 - スケール1.05/シャドウ効果" },
-        { phase: "refactor" as CommitPhase, message: "refactor: ボタンスタイルを統合transition変数で簡潔化" },
-      ],
-    },
-    {
-      test: "フォーカス時にアウトラインまたはシャドウでハイライト表示（キーボードナビゲーション対応）",
-      implementation: ":focus-visibleでoutline/box-shadowを定義、既存のアクセシビリティ変数を活用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: フォーカスハイライト強化 - 滑らかなアニメーション仕様定義" },
-        { phase: "green" as CommitPhase, message: "feat: フォーカスハイライト強化 - 滑らかなアニメーション追加" },
-        { phase: "refactor" as CommitPhase, message: "refactor: フォーカス可能要素のセレクタを明示的に指定" },
-      ],
-    },
-    {
-      test: "完了トグル時にチェックマークがスムーズに出現するアニメーション",
-      implementation: "チェックボックスに@keyframes定義、transition/transformでスケール+フェード効果を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: チェックマーク完了アニメーション - スケール/フェード効果仕様定義" },
-        { phase: "green" as CommitPhase, message: "feat: チェックマーク完了アニメーション実装 - スケール/フェード効果" },
-        { phase: "refactor" as CommitPhase, message: "refactor: アニメーション時間をCSS変数で管理" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 42,
+  pbi: "TBD",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments

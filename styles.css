@@ -403,6 +403,17 @@ textarea:focus-visible {
 }
 
 /* ============================================
+ * Modal Input Fields - Flat Design
+ * ============================================
+ * RED PHASE - Subtask 3: フラットデザイン入力フィールド
+ * 検証基準:
+ * - .modal input/.modal textareaにborder-width 1px以下またはボーダーレス
+ * - CSS変数--input-border-width定義（0または1px）
+ * - ミニマルで洗練されたフォーム外観
+ * 検証方法: モーダル内の入力フィールドが細いボーダーまたはボーダーレス
+ */
+
+/* ============================================
  * Button Hover Effects - Interactive Feedback
  * ============================================ */
 

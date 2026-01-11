@@ -43,7 +43,37 @@
  * 検証方法: クラス定義とスペーシング値の確認
  */
 
-/* Completed tasks - strikethrough */
+/* Task Item - BEM Block */
+.task-item {
+	padding: 12px 16px;
+	margin-bottom: 16px;
+	border-radius: 6px;
+	transition: var(--transition-default);
+}
+
+.task-item:last-child {
+	margin-bottom: 0;
+}
+
+/* Task Item Elements - BEM */
+.task-item__text {
+	font-size: var(--font-size-medium);
+	line-height: var(--line-height-medium);
+}
+
+.task-item__meta {
+	font-size: var(--font-size-small);
+	line-height: var(--line-height-small);
+	opacity: 0.7;
+}
+
+/* Task Item Modifiers - BEM */
+.task-item--completed {
+	text-decoration: line-through;
+	opacity: 0.6;
+}
+
+/* Legacy class support - to be migrated */
 .completed {
 	text-decoration: line-through;
 	opacity: 0.6;

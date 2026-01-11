@@ -357,6 +357,17 @@ textarea:focus-visible {
 }
 
 /* ============================================
+ * Modal - Refined Design System
+ * ============================================
+ * RED PHASE - Subtask 1: モーダル角丸デザイン
+ * 検証基準:
+ * - .modalクラスにborder-radiusが12-16pxで設定される
+ * - CSS変数--modal-border-radius定義（12px）
+ * - 角丸がApple-likeで統一感がある
+ * 検証方法: モーダル表示時、角が滑らかに丸まっている
+ */
+
+/* ============================================
  * Button Hover Effects - Interactive Feedback
  * ============================================ */
 

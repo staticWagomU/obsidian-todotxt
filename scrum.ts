@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 42, pbi: "PBI-042", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -115,8 +115,12 @@ export const currentSprint = {
       test: "入力フィールドのボーダーが細い（1px以下）またはボーダーレスである",
       implementation: "CSS変数--input-border-widthを定義し、.modal inputセレクタに適用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(modal): フラットデザイン入力フィールドの検証基準を文書化" },
+        { phase: "green" as CommitPhase, message: "feat(modal): フラットデザイン入力フィールドを実装" },
+        { phase: "refactor" as CommitPhase, message: "refactor(modal): 入力フィールドスタイルを改善し一貫性向上" },
+      ],
     },
     {
       test: "保存ボタンがプライマリカラー（--color-accent）で目立つデザインになっている",

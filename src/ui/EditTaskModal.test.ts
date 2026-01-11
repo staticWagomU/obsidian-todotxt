@@ -260,7 +260,7 @@ describe("EditTaskModal", () => {
 		expect(onSaveSpy).toHaveBeenCalledWith("期限変更テスト", undefined, "2026-02-01", undefined);
 	});
 
-	it("既存プロジェクト一覧がマルチセレクトで表示されること", () => {
+	it("既存プロジェクト一覧がチップUIで表示されること", () => {
 		const mockTodos = [
 			{
 				completed: false,
@@ -291,20 +291,20 @@ describe("EditTaskModal", () => {
 		);
 		modalWithTodos.onOpen();
 
-		// Verify: Project multi-select exists
-		const projectSelect = modalWithTodos.contentEl.querySelector("select.project-select") as HTMLSelectElement;
-		expect(projectSelect).not.toBeNull();
-		expect(projectSelect.multiple).toBe(true);
+		// Verify: Project chip input container exists
+		const tagChips = modalWithTodos.contentEl.querySelectorAll(".tag-chips");
+		expect(tagChips.length).toBeGreaterThanOrEqual(1);
 
-		// Verify: Options are sorted and unique
-		const options = Array.from(projectSelect.querySelectorAll("option"));
-		expect(options.length).toBe(3);
-		expect(options[0]?.textContent).toBe("+project1");
-		expect(options[1]?.textContent).toBe("+project2");
-		expect(options[2]?.textContent).toBe("+project3");
+		// Verify: Project suggestions exist
+		const projectSuggestions = modalWithTodos.contentEl.querySelector(".tag-suggestions");
+		expect(projectSuggestions).not.toBeNull();
+
+		// Verify: Inline input for adding new projects
+		const projectInput = modalWithTodos.contentEl.querySelector(".tag-input--inline");
+		expect(projectInput).not.toBeNull();
 	});
 
-	it("既存コンテキスト一覧がマルチセレクトで表示されること", () => {
+	it("既存コンテキスト一覧がチップUIで表示されること", () => {
 		const mockTodos = [
 			{
 				completed: false,
@@ -335,20 +335,16 @@ describe("EditTaskModal", () => {
 		);
 		modalWithTodos.onOpen();
 
-		// Verify: Context multi-select exists
-		const contextSelect = modalWithTodos.contentEl.querySelector("select.context-select") as HTMLSelectElement;
-		expect(contextSelect).not.toBeNull();
-		expect(contextSelect.multiple).toBe(true);
+		// Verify: Context chip input container exists (2つ目がコンテキスト用)
+		const tagChips = modalWithTodos.contentEl.querySelectorAll(".tag-chips");
+		expect(tagChips.length).toBe(2); // プロジェクトとコンテキストの2つ
 
-		// Verify: Options are sorted and unique
-		const options = Array.from(contextSelect.querySelectorAll("option"));
-		expect(options.length).toBe(3);
-		expect(options[0]?.textContent).toBe("@email");
-		expect(options[1]?.textContent).toBe("@home");
-		expect(options[2]?.textContent).toBe("@work");
+		// Verify: Context suggestions exist
+		const contextSuggestions = modalWithTodos.contentEl.querySelectorAll(".tag-suggestions");
+		expect(contextSuggestions.length).toBe(2);
 	});
 
-	it("プロジェクト/コンテキストが存在しない場合、空のマルチセレクトが表示されること", () => {
+	it("プロジェクト/コンテキストが存在しない場合、空のチップUIが表示されること", () => {
 		const mockTodos = [
 			{
 				completed: false,
@@ -371,17 +367,13 @@ describe("EditTaskModal", () => {
 		);
 		modalWithTodos.onOpen();
 
-		// Verify: Empty project select
-		const projectSelect = modalWithTodos.contentEl.querySelector("select.project-select") as HTMLSelectElement;
-		expect(projectSelect).not.toBeNull();
-		const projectOptions = Array.from(projectSelect.querySelectorAll("option"));
-		expect(projectOptions.length).toBe(0);
+		// Verify: Chip containers exist even without suggestions
+		const tagChips = modalWithTodos.contentEl.querySelectorAll(".tag-chips");
+		expect(tagChips.length).toBe(2); // プロジェクトとコンテキストの2つ
 
-		// Verify: Empty context select
-		const contextSelect = modalWithTodos.contentEl.querySelector("select.context-select") as HTMLSelectElement;
-		expect(contextSelect).not.toBeNull();
-		const contextOptions = Array.from(contextSelect.querySelectorAll("option"));
-		expect(contextOptions.length).toBe(0);
+		// Verify: No pre-selected chips
+		const selectedChips = modalWithTodos.contentEl.querySelectorAll(".tag-chip");
+		expect(selectedChips.length).toBe(0);
 	});
 
 	describe("プレビュー機能", () => {

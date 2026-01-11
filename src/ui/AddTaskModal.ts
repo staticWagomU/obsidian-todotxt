@@ -74,20 +74,33 @@ export class AddTaskModal extends BaseTaskModal {
 		thresholdDateInput.type = "date";
 		thresholdDateInput.classList.add("threshold-date-input");
 
-		// === Tags Row: プロジェクト + コンテキスト ===
-		this.createProjectContextSelectsRow(contentEl, this.todos);
+		// === Tags Row: プロジェクト + コンテキスト (チップUI) ===
+		const { projectChipInput, contextChipInput } = this.createProjectContextChipsRow(
+			contentEl,
+			this.todos,
+			undefined,
+			undefined,
+			() => updatePreviewContent(),
+		);
 
 		// Preview area
 		this.createPreviewArea(contentEl);
 
 		// プレビュー更新関数
 		const updatePreviewContent = (): void => {
-			const description = input.value.trim();
+			const baseDescription = input.value.trim();
+			const projects = projectChipInput.getValues();
+			const contexts = contextChipInput.getValues();
+			const fullDescription = this.buildDescriptionWithProjectsContexts(
+				baseDescription,
+				projects,
+				contexts,
+			);
 			const priority = prioritySelect.value || undefined;
 			const dueDate = dueDateInput.value || undefined;
 			const thresholdDate = thresholdDateInput.value || undefined;
 
-			this.updatePreviewFromFormValues(contentEl, description, priority, dueDate, thresholdDate);
+			this.updatePreviewFromFormValues(contentEl, fullDescription, priority, dueDate, thresholdDate);
 		};
 
 		// Add event listeners for real-time preview
@@ -101,12 +114,19 @@ export class AddTaskModal extends BaseTaskModal {
 		saveButton.classList.add("save-task-button");
 		saveButton.textContent = "保存";
 		saveButton.addEventListener("click", () => {
-			const description = input.value.trim();
-			if (description) {
+			const baseDescription = input.value.trim();
+			if (baseDescription) {
+				const projects = projectChipInput.getValues();
+				const contexts = contextChipInput.getValues();
+				const fullDescription = this.buildDescriptionWithProjectsContexts(
+					baseDescription,
+					projects,
+					contexts,
+				);
 				const priority = prioritySelect.value || undefined;
 				const dueDate = dueDateInput.value || undefined;
 				const thresholdDate = thresholdDateInput.value || undefined;
-				this.onSave(description, priority, dueDate, thresholdDate);
+				this.onSave(fullDescription, priority, dueDate, thresholdDate);
 				this.close();
 			}
 		});
@@ -115,5 +135,29 @@ export class AddTaskModal extends BaseTaskModal {
 	onClose(): void {
 		const { contentEl } = this;
 		contentEl.empty();
+	}
+
+	/**
+	 * プロジェクト/コンテキストを description に追加
+	 * @param baseDescription 基本の説明文
+	 * @param projects プロジェクト配列
+	 * @param contexts コンテキスト配列
+	 * @returns 完全な説明文
+	 */
+	private buildDescriptionWithProjectsContexts(
+		baseDescription: string,
+		projects: string[],
+		contexts: string[],
+	): string {
+		let result = baseDescription;
+
+		for (const project of projects) {
+			result += ` +${project}`;
+		}
+		for (const context of contexts) {
+			result += ` @${context}`;
+		}
+
+		return result;
 	}
 }

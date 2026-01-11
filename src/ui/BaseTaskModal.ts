@@ -14,6 +14,7 @@ import {
 	buildTextFromFormValues,
 	parseFormValuesFromText,
 } from "../utils/form-helpers";
+import { TagChipInput } from "./TagChipInput";
 
 export abstract class BaseTaskModal extends Modal {
 	protected isTextMode = false;
@@ -85,7 +86,8 @@ export abstract class BaseTaskModal extends Modal {
 	}
 
 	/**
-	 * プロジェクト/コンテキスト選択UIを横並びで作成
+	 * プロジェクト/コンテキスト選択UIを横並びで作成（マルチセレクト版）
+	 * @deprecated チップUI版の createProjectContextChipsRow を使用してください
 	 * @param container 親要素
 	 * @param todos 既存タスク配列
 	 * @returns プロジェクト/コンテキストのselect要素を含むオブジェクト
@@ -111,6 +113,52 @@ export abstract class BaseTaskModal extends Modal {
 		const contextSelect = this.createMultiSelect(contextField, contextOptions, "context-select");
 
 		return { projectSelect, contextSelect };
+	}
+
+	/**
+	 * プロジェクト/コンテキスト選択UIを横並びで作成（チップUI版）
+	 * Gmail風のタグ選択インターフェースを提供
+	 * @param container 親要素
+	 * @param todos 既存タスク配列（候補抽出用）
+	 * @param initialProjects 初期選択プロジェクト
+	 * @param initialContexts 初期選択コンテキスト
+	 * @param onChange 値変更時のコールバック
+	 * @returns プロジェクト/コンテキストのTagChipInputを含むオブジェクト
+	 */
+	protected createProjectContextChipsRow(
+		container: HTMLElement,
+		todos: Todo[],
+		initialProjects?: string[],
+		initialContexts?: string[],
+		onChange?: () => void,
+	): { projectChipInput: TagChipInput; contextChipInput: TagChipInput } {
+		const tagsRow = container.createEl("div", { cls: "modal-tags-row" });
+
+		// Project field
+		const projectField = tagsRow.createEl("div", { cls: "modal-tag-field" });
+		projectField.createEl("label", { text: "プロジェクト (+)" });
+		const projects = extractProjects(todos);
+		const projectChipInput = new TagChipInput(projectField, {
+			type: "project",
+			prefix: "+",
+			suggestions: projects,
+			initialValues: initialProjects,
+			onChange,
+		});
+
+		// Context field
+		const contextField = tagsRow.createEl("div", { cls: "modal-tag-field" });
+		contextField.createEl("label", { text: "コンテキスト (@)" });
+		const contexts = extractContexts(todos);
+		const contextChipInput = new TagChipInput(contextField, {
+			type: "context",
+			prefix: "@",
+			suggestions: contexts,
+			initialValues: initialContexts,
+			onChange,
+		});
+
+		return { projectChipInput, contextChipInput };
 	}
 
 	// ========================================

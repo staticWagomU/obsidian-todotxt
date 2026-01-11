@@ -1039,3 +1039,250 @@ button:active {
 	width: 100%;
 	box-sizing: border-box;
 }
+
+/* ============================================
+ * Tag Chips UI - Gmail-like Tag Selection
+ * ============================================
+ * チップ/タグ形式のプロジェクト・コンテキスト選択UI
+ * モバイル対応のタッチフレンドリーなデザイン
+ */
+
+/* チップコンテナ - Flexboxでチップを横並び */
+.tag-chips {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	padding: var(--spacing-sm);
+	min-height: 44px; /* モバイルタッチ対応 */
+	border: var(--input-border-width) solid var(--color-border);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-background);
+	cursor: text;
+	transition: var(--transition-default);
+}
+
+.tag-chips:hover {
+	border-color: var(--color-focus);
+}
+
+.tag-chips:focus-within {
+	border-color: var(--color-focus);
+	box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.1);
+}
+
+/* 個別チップ - ピル形状 */
+.tag-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 10px;
+	min-height: 28px; /* タッチしやすいサイズ */
+	border-radius: 16px;
+	font-size: var(--font-size-small);
+	font-weight: 500;
+	transition: var(--transition-default);
+	cursor: default;
+	user-select: none;
+}
+
+/* プロジェクトチップ (緑系) */
+.tag-chip--project {
+	background: linear-gradient(135deg, #d4edda, #c3e6cb);
+	color: #155724;
+}
+
+/* コンテキストチップ (青系) */
+.tag-chip--context {
+	background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+	color: #0c5460;
+}
+
+/* チップホバー効果 */
+.tag-chip:hover {
+	filter: brightness(0.95);
+}
+
+/* 削除ボタン - タッチフレンドリー */
+.tag-chip__remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	min-width: 20px; /* 縮まないように */
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.15);
+	color: inherit;
+	font-size: 12px;
+	line-height: 1;
+	cursor: pointer;
+	transition: var(--transition-fast);
+}
+
+.tag-chip__remove:hover {
+	background: rgba(0, 0, 0, 0.3);
+}
+
+/* インライン入力欄 */
+.tag-input--inline {
+	flex: 1;
+	min-width: 100px;
+	padding: 6px 4px;
+	border: none;
+	background: transparent;
+	font-size: var(--font-size-small);
+	outline: none;
+	color: var(--color-text);
+}
+
+.tag-input--inline::placeholder {
+	color: var(--text-muted);
+}
+
+/* 候補ドロップダウン */
+.tag-suggestions {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	max-height: 200px;
+	overflow-y: auto;
+	margin: 0;
+	margin-top: 4px;
+	padding: var(--spacing-xs);
+	list-style: none;
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-sm);
+	background: var(--color-background);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tag-suggestions[hidden] {
+	display: none;
+}
+
+/* 候補アイテム - モバイルタップ対応 */
+.tag-suggestion {
+	padding: 12px 16px;
+	min-height: 44px; /* タッチターゲット */
+	border-radius: var(--border-radius-sm);
+	font-size: var(--font-size-small);
+	cursor: pointer;
+	transition: var(--transition-fast);
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.tag-suggestion:hover,
+.tag-suggestion--highlighted {
+	background: var(--color-hover);
+}
+
+/* タグフィールドの相対位置（ドロップダウン用） */
+.modal-tag-field {
+	position: relative;
+}
+
+/* ============================================
+ * Tag Chips - Dark Mode Support
+ * ============================================ */
+
+.theme-dark .tag-chip--project {
+	background: linear-gradient(135deg, #2d5a3d, #3d7a4d);
+	color: #b8e6cf;
+}
+
+.theme-dark .tag-chip--context {
+	background: linear-gradient(135deg, #2d4a5a, #3d6a7a);
+	color: #b8d8ea;
+}
+
+.theme-dark .tag-chip__remove {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.theme-dark .tag-chip__remove:hover {
+	background: rgba(255, 255, 255, 0.35);
+}
+
+.theme-dark .tag-suggestions {
+	background: var(--background-primary);
+	border-color: rgba(255, 255, 255, 0.1);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+ * Tag Chips - Mobile Responsive
+ * ============================================ */
+
+@media (max-width: 768px) {
+	/* モバイルで縦並びレイアウト */
+	.modal-tags-row {
+		flex-direction: column;
+		gap: var(--spacing-lg);
+	}
+
+	/* チップコンテナを大きく */
+	.tag-chips {
+		min-height: 48px;
+		padding: var(--spacing-md);
+	}
+
+	/* チップを大きく */
+	.tag-chip {
+		padding: 8px 12px;
+		min-height: 32px;
+		font-size: 14px;
+	}
+
+	/* 削除ボタンを大きく */
+	.tag-chip__remove {
+		width: 24px;
+		height: 24px;
+		min-width: 24px;
+		font-size: 14px;
+	}
+
+	/* 候補リストを画面の半分まで */
+	.tag-suggestions {
+		max-height: 50vh;
+	}
+
+	/* 候補アイテムを大きく */
+	.tag-suggestion {
+		padding: 14px 16px;
+		min-height: 48px;
+		font-size: 15px;
+	}
+}
+
+/* ============================================
+ * Tag Chips - Accessibility
+ * ============================================ */
+
+/* フォーカス表示 */
+.tag-chip:focus-visible {
+	outline: var(--focus-outline-width) solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+.tag-suggestion:focus-visible {
+	outline: var(--focus-outline-width) solid var(--color-focus);
+	outline-offset: -2px;
+}
+
+/* Reduced motion対応 */
+@media (prefers-reduced-motion: reduce) {
+	.tag-chip,
+	.tag-chip__remove,
+	.tag-chips,
+	.tag-suggestions,
+	.tag-suggestion {
+		transition: none;
+	}
+}

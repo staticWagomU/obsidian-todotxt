@@ -46,6 +46,12 @@ export class EditTaskModal extends BaseTaskModal {
 	onOpen(): void {
 		const { contentEl } = this;
 
+		// 初期値からプロジェクト/コンテキストを抽出
+		const initialProjects = this.extractProjectsFromDescription(this.initialDescription);
+		const initialContexts = this.extractContextsFromDescription(this.initialDescription);
+		// 説明文からプロジェクト/コンテキストを除去した純粋なテキスト
+		const pureDescription = this.removeProjectsContextsFromDescription(this.initialDescription);
+
 		// === Header Row: タスク + 優先度 ===
 		const headerRow = contentEl.createEl("div", { cls: "modal-header-row" });
 
@@ -56,7 +62,7 @@ export class EditTaskModal extends BaseTaskModal {
 		input.type = "text";
 		input.classList.add("task-description-input");
 		input.placeholder = "タスクを入力...";
-		input.value = this.initialDescription;
+		input.value = pureDescription;
 
 		// Priority field
 		const priorityField = headerRow.createEl("div", { cls: "modal-priority-field" });
@@ -90,20 +96,33 @@ export class EditTaskModal extends BaseTaskModal {
 		thresholdDateInput.classList.add("threshold-date-input");
 		thresholdDateInput.value = this.initialThresholdDate ?? "";
 
-		// === Tags Row: プロジェクト + コンテキスト ===
-		this.createProjectContextSelectsRow(contentEl, this.todos);
+		// === Tags Row: プロジェクト + コンテキスト (チップUI) ===
+		const { projectChipInput, contextChipInput } = this.createProjectContextChipsRow(
+			contentEl,
+			this.todos,
+			initialProjects,
+			initialContexts,
+			() => updatePreviewContent(),
+		);
 
 		// Preview area
 		this.createPreviewArea(contentEl);
 
 		// プレビュー更新関数
 		const updatePreviewContent = (): void => {
-			const description = input.value.trim();
+			const baseDescription = input.value.trim();
+			const projects = projectChipInput.getValues();
+			const contexts = contextChipInput.getValues();
+			const fullDescription = this.buildDescriptionWithProjectsContexts(
+				baseDescription,
+				projects,
+				contexts,
+			);
 			const priority = prioritySelect.value || undefined;
 			const dueDate = dueDateInput.value || undefined;
 			const thresholdDate = thresholdDateInput.value || undefined;
 
-			this.updatePreviewFromFormValues(contentEl, description, priority, dueDate, thresholdDate);
+			this.updatePreviewFromFormValues(contentEl, fullDescription, priority, dueDate, thresholdDate);
 		};
 
 		// Add event listeners for real-time preview
@@ -120,12 +139,19 @@ export class EditTaskModal extends BaseTaskModal {
 		saveButton.classList.add("save-task-button");
 		saveButton.textContent = "保存";
 		saveButton.addEventListener("click", () => {
-			const description = input.value.trim();
-			if (description) {
+			const baseDescription = input.value.trim();
+			if (baseDescription) {
+				const projects = projectChipInput.getValues();
+				const contexts = contextChipInput.getValues();
+				const fullDescription = this.buildDescriptionWithProjectsContexts(
+					baseDescription,
+					projects,
+					contexts,
+				);
 				const priority = prioritySelect.value || undefined;
 				const dueDate = dueDateInput.value || undefined;
 				const thresholdDate = thresholdDateInput.value || undefined;
-				this.onSave(description, priority, dueDate, thresholdDate);
+				this.onSave(fullDescription, priority, dueDate, thresholdDate);
 				this.close();
 			}
 		});
@@ -134,5 +160,65 @@ export class EditTaskModal extends BaseTaskModal {
 	onClose(): void {
 		const { contentEl } = this;
 		contentEl.empty();
+	}
+
+	// ========================================
+	// プロジェクト/コンテキスト抽出・構築ヘルパー
+	// ========================================
+
+	/**
+	 * description からプロジェクトを抽出
+	 * @param description タスク説明文
+	 * @returns プロジェクト名の配列（プレフィックスなし）
+	 */
+	private extractProjectsFromDescription(description: string): string[] {
+		const matches = description.matchAll(/\+(\S+)/g);
+		return Array.from(matches, (m) => m[1] ?? "").filter(Boolean);
+	}
+
+	/**
+	 * description からコンテキストを抽出
+	 * @param description タスク説明文
+	 * @returns コンテキスト名の配列（プレフィックスなし）
+	 */
+	private extractContextsFromDescription(description: string): string[] {
+		const matches = description.matchAll(/@(\S+)/g);
+		return Array.from(matches, (m) => m[1] ?? "").filter(Boolean);
+	}
+
+	/**
+	 * description からプロジェクト/コンテキストを除去
+	 * @param description タスク説明文
+	 * @returns プロジェクト/コンテキストを除去した説明文
+	 */
+	private removeProjectsContextsFromDescription(description: string): string {
+		return description
+			.replace(/\s*\+\S+/g, "")
+			.replace(/\s*@\S+/g, "")
+			.trim();
+	}
+
+	/**
+	 * プロジェクト/コンテキストを description に追加
+	 * @param baseDescription 基本の説明文
+	 * @param projects プロジェクト配列
+	 * @param contexts コンテキスト配列
+	 * @returns 完全な説明文
+	 */
+	private buildDescriptionWithProjectsContexts(
+		baseDescription: string,
+		projects: string[],
+		contexts: string[],
+	): string {
+		let result = baseDescription;
+
+		for (const project of projects) {
+			result += ` +${project}`;
+		}
+		for (const context of contexts) {
+			result += ` @${context}`;
+		}
+
+		return result;
 	}
 }

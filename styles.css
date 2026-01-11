@@ -40,6 +40,7 @@
 	--transition-transform: transform 0.15s ease;
 	--transition-shadow: box-shadow 0.15s ease;
 	--transition-interactive: transform 0.15s ease, box-shadow 0.15s ease;
+	--transition-focus: outline 0.15s ease, box-shadow 0.15s ease;
 
 	/* ==================== Layout ==================== */
 	/* Spacing Scale - 4px基準の8の倍数システム */
@@ -277,24 +278,39 @@
  */
 
 /* Focus Styles - Keyboard Navigation (WCAG AA準拠) */
+/* Base transition for all interactive elements */
+*:focus,
+button,
+input,
+select,
+textarea,
+.task-item,
+.task-item__checkbox {
+	transition: var(--transition-focus);
+}
+
+/* Universal focus style */
 *:focus-visible {
 	outline: var(--focus-outline-width) solid var(--color-focus);
 	outline-offset: var(--focus-outline-offset);
 	border-radius: var(--border-radius-sm);
 }
 
+/* Task item focus - enhanced visibility */
 .task-item:focus-visible {
 	outline: var(--focus-outline-width) solid var(--color-focus);
 	outline-offset: var(--focus-outline-offset);
 	box-shadow: 0 0 0 4px rgba(var(--interactive-accent-rgb), 0.1);
 }
 
+/* Checkbox focus - stronger highlight */
 .task-item__checkbox:focus-visible {
 	outline: var(--focus-outline-width) solid var(--color-focus);
 	outline-offset: var(--focus-outline-offset);
 	box-shadow: 0 0 0 4px rgba(var(--interactive-accent-rgb), 0.2);
 }
 
+/* Form elements focus */
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,

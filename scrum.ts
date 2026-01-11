@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 40, pbi: "PBI-040", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 40, pbi: "PBI-040", status: "done" as SprintStatus,
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -158,8 +158,12 @@ export const currentSprint = {
       test: ":focus-visibleスタイルが定義され、CSS変数でダークモード/ライトモード両方で視認性が確保されている",
       implementation: ":focus-visibleアウトライン定義（--color-focus使用）、CSS変数のグループ化コメント追加（Layout/Typography/Color/Animation）",
       type: "behavioral",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: アクセシビリティとテーマ対応の検証基準を文書化" },
+        { phase: "green", message: "feat: アクセシビリティのフォーカススタイルを実装" },
+        { phase: "refactor", message: "refactor: CSS変数システムを完全体系化しアクセシビリティ変数追加" },
+      ],
     },
   ] as Subtask[],
 };

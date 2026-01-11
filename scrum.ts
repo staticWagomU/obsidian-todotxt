@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 40, pbi: "PBI-040", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -136,8 +136,12 @@ export const currentSprint = {
       test: ".task-itemクラスがpadding: 12px 16pxを持ち、タスク間に16px以上の余白があり、BEM命名規則に従う",
       implementation: "BEM形式のクラス体系確立（.task-item/.task-item__element/.task-item--modifier）、スペーシングユーティリティ追加、既存クラスのリファクタリング",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: タスクリストBEMクラスの検証基準を文書化" },
+        { phase: "green", message: "feat: タスクリストのBEMクラス体系とスペーシングを実装" },
+        { phase: "refactor", message: "refactor: スペーシングユーティリティ追加とPriorityクラスをBEM化" },
+      ],
     },
     {
       test: ".task-item__checkboxクラスに角丸・transition: all 0.15s easeが適用され、カスタムスタイルが機能する",

@@ -450,6 +450,29 @@ textarea:focus-visible {
  * 検証方法: モーダル内の保存ボタンがアクセントカラーで表示される
  */
 
+/* Primary button - accent color for save action */
+.modal .mod-cta {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border: none;
+	padding: var(--input-padding);
+	border-radius: var(--border-radius-sm);
+	font-weight: 500;
+	transition: var(--transition-interactive);
+}
+
+/* Enhanced hover effect for primary button */
+.modal .mod-cta:hover {
+	background-color: var(--interactive-accent-hover);
+	transform: scale(1.05);
+	box-shadow: 0 2px 8px rgba(var(--interactive-accent-rgb), 0.3);
+}
+
+/* Active state feedback */
+.modal .mod-cta:active {
+	transform: scale(0.98);
+}
+
 /* ============================================
  * Button Hover Effects - Interactive Feedback
  * ============================================ */

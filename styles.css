@@ -35,6 +35,11 @@
 	--transition-default: all 0.15s ease;  /* 標準アニメーション */
 	--transition-slow: all 0.3s ease;      /* ゆったりアニメーション */
 
+	/* Specific property transitions for performance */
+	--transition-bg: background-color 0.15s ease;
+	--transition-transform: transform 0.15s ease;
+	--transition-shadow: box-shadow 0.15s ease;
+
 	/* ==================== Layout ==================== */
 	/* Spacing Scale - 4px基準の8の倍数システム */
 	--spacing-xs: 4px;
@@ -70,7 +75,7 @@
 	padding: 12px 16px;
 	margin-bottom: 16px;
 	border-radius: 6px;
-	transition: background-color 0.15s ease;
+	transition: var(--transition-bg);
 }
 
 /* Hover Animation - Smooth background transition */

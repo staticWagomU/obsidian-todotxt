@@ -46,17 +46,22 @@ export class EditTaskModal extends BaseTaskModal {
 	onOpen(): void {
 		const { contentEl } = this;
 
-		// Task description input
-		this.createLabel(contentEl, "タスク");
-		const input = contentEl.createEl("input");
+		// === Header Row: タスク + 優先度 ===
+		const headerRow = contentEl.createEl("div", { cls: "modal-header-row" });
+
+		// Task description field
+		const taskField = headerRow.createEl("div", { cls: "modal-task-field" });
+		taskField.createEl("label", { text: "タスク" });
+		const input = taskField.createEl("input");
 		input.type = "text";
 		input.classList.add("task-description-input");
 		input.placeholder = "タスクを入力...";
 		input.value = this.initialDescription;
 
-		// Priority select
-		this.createLabel(contentEl, "優先度");
-		const prioritySelect = contentEl.createEl("select");
+		// Priority field
+		const priorityField = headerRow.createEl("div", { cls: "modal-priority-field" });
+		priorityField.createEl("label", { text: "優先度" });
+		const prioritySelect = priorityField.createEl("select");
 		prioritySelect.classList.add("priority-select");
 		const priorityOptions = generatePriorityOptions();
 		for (const option of priorityOptions) {
@@ -64,25 +69,29 @@ export class EditTaskModal extends BaseTaskModal {
 			optionEl.textContent = option.label;
 			optionEl.value = option.value ?? "";
 		}
-		// Set initial priority selection
 		prioritySelect.value = this.initialPriority ?? "";
 
-		// Due date input
-		this.createLabel(contentEl, "期限日 (due:)");
-		const dueDateInput = contentEl.createEl("input");
+		// === Date Row: 期限日 + 開始日 ===
+		const dateRow = contentEl.createEl("div", { cls: "modal-date-row" });
+
+		// Due date field
+		const dueDateField = dateRow.createEl("div", { cls: "modal-date-field" });
+		dueDateField.createEl("label", { text: "期限日 (due:)" });
+		const dueDateInput = dueDateField.createEl("input");
 		dueDateInput.type = "date";
 		dueDateInput.classList.add("due-date-input");
 		dueDateInput.value = this.initialDueDate ?? "";
 
-		// Threshold date input
-		this.createLabel(contentEl, "開始日 (t:)");
-		const thresholdDateInput = contentEl.createEl("input");
+		// Threshold date field
+		const thresholdField = dateRow.createEl("div", { cls: "modal-date-field" });
+		thresholdField.createEl("label", { text: "開始日 (t:)" });
+		const thresholdDateInput = thresholdField.createEl("input");
 		thresholdDateInput.type = "date";
 		thresholdDateInput.classList.add("threshold-date-input");
 		thresholdDateInput.value = this.initialThresholdDate ?? "";
 
-		// Project/Context multi-select
-		this.createProjectContextSelects(contentEl, this.todos);
+		// === Tags Row: プロジェクト + コンテキスト ===
+		this.createProjectContextSelectsRow(contentEl, this.todos);
 
 		// Preview area
 		this.createPreviewArea(contentEl);

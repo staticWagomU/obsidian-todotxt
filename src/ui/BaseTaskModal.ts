@@ -84,6 +84,35 @@ export abstract class BaseTaskModal extends Modal {
 		return { projectSelect, contextSelect };
 	}
 
+	/**
+	 * プロジェクト/コンテキスト選択UIを横並びで作成
+	 * @param container 親要素
+	 * @param todos 既存タスク配列
+	 * @returns プロジェクト/コンテキストのselect要素を含むオブジェクト
+	 */
+	protected createProjectContextSelectsRow(
+		container: HTMLElement,
+		todos: Todo[],
+	): { projectSelect: HTMLSelectElement; contextSelect: HTMLSelectElement } {
+		const tagsRow = container.createEl("div", { cls: "modal-tags-row" });
+
+		// Project field
+		const projectField = tagsRow.createEl("div", { cls: "modal-tag-field" });
+		projectField.createEl("label", { text: "プロジェクト (+)" });
+		const projects = extractProjects(todos);
+		const projectOptions = renderProjectOptions(projects);
+		const projectSelect = this.createMultiSelect(projectField, projectOptions, "project-select");
+
+		// Context field
+		const contextField = tagsRow.createEl("div", { cls: "modal-tag-field" });
+		contextField.createEl("label", { text: "コンテキスト (@)" });
+		const contexts = extractContexts(todos);
+		const contextOptions = renderContextOptions(contexts);
+		const contextSelect = this.createMultiSelect(contextField, contextOptions, "context-select");
+
+		return { projectSelect, contextSelect };
+	}
+
 	// ========================================
 	// モード切替機能
 	// ========================================

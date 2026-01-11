@@ -500,12 +500,6 @@ button {
 	cursor: pointer;
 }
 
-/* Hover state - subtle scale and shadow */
-button:hover {
-	transform: scale(1.05);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
 /* Active state - pressed feedback */
 button:active {
 	transform: scale(0.98);
@@ -547,7 +541,7 @@ button:active {
 	-webkit-appearance: none;
 	padding: var(--spacing-sm) var(--spacing-lg);
 	padding-right: 32px;
-	border: none;
+	border: 1px solid var(--background-modifier-border);
 	border-radius: var(--border-radius-md);
 	background: var(--background-primary);
 	color: var(--text-normal);
@@ -555,7 +549,6 @@ button:active {
 	font-weight: 500;
 	cursor: pointer;
 	transition: var(--transition-default);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 	background-repeat: no-repeat;
 	background-position: right 10px center;
@@ -563,12 +556,12 @@ button:active {
 
 .control-bar select:hover {
 	background-color: var(--background-modifier-hover);
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+	border-color: var(--interactive-accent);
 }
 
 .control-bar select:focus {
 	outline: none;
-	box-shadow: 0 0 0 2px var(--interactive-accent);
+	border-color: var(--interactive-accent);
 }
 
 /* Apple-style search box */
@@ -576,13 +569,12 @@ button:active {
 	flex: 1;
 	min-width: 180px;
 	padding: var(--spacing-sm) var(--spacing-lg);
-	border: none;
+	border: 1px solid var(--background-modifier-border);
 	border-radius: 20px;
 	background: var(--background-primary);
 	color: var(--text-normal);
 	font-size: var(--font-size-small);
 	transition: var(--transition-default);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .control-bar .search-box::placeholder {
@@ -590,12 +582,12 @@ button:active {
 }
 
 .control-bar .search-box:hover {
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+	border-color: var(--interactive-accent);
 }
 
 .control-bar .search-box:focus {
 	outline: none;
-	box-shadow: 0 0 0 2px var(--interactive-accent);
+	border-color: var(--interactive-accent);
 }
 
 /* ============================================
@@ -634,7 +626,7 @@ button:active {
 /* ============================================
  * Apple-style Task Card
  * ============================================
- * カード型デザインで各タスクを明確に分離
+ * フラットデザインで各タスクを明確に分離（シャドウ控えめ）
  */
 .todotxt-view ul > li:not(.group-header) {
 	display: flex;
@@ -644,14 +636,14 @@ button:active {
 	margin-bottom: var(--spacing-sm);
 	background: var(--background-primary);
 	border-radius: var(--border-radius-md);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	border: 1px solid var(--background-modifier-border);
 	transition: var(--transition-default);
 	position: relative;
 }
 
 .todotxt-view ul > li:not(.group-header):hover {
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	transform: translateY(-1px);
+	background: var(--background-modifier-hover);
+	border-color: var(--interactive-accent);
 }
 
 /* Hide action buttons by default, show on hover */
@@ -801,23 +793,35 @@ button:active {
 }
 
 /* ============================================
- * Apple-style Action Buttons
- * ============================================ */
+ * Apple-style Action Buttons - Icon Style
+ * ============================================
+ * ミニマルなアイコンボタン（ホバー時に色変化）
+ */
 .edit-task-button,
 .delete-task-button {
-	padding: 6px 12px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	padding: 6px 10px;
 	border: none;
 	border-radius: var(--border-radius-sm);
 	font-size: var(--font-size-small);
 	font-weight: 500;
 	cursor: pointer;
 	transition: var(--transition-default);
+	background: transparent;
+	color: var(--text-muted);
+}
+
+/* 編集ボタン: ペンアイコンスタイル */
+.edit-task-button {
 	margin-left: auto;
 }
 
-.edit-task-button {
-	background: var(--background-secondary);
-	color: var(--text-muted);
+.edit-task-button::before {
+	content: "✎";
+	font-size: 12px;
 }
 
 .edit-task-button:hover {
@@ -827,14 +831,16 @@ button:active {
 	box-shadow: none;
 }
 
-.delete-task-button {
-	background: transparent;
-	color: var(--text-muted);
+/* 削除ボタン: ゴミ箱アイコンスタイル */
+.delete-task-button::before {
+	content: "✕";
+	font-size: 11px;
+	font-weight: bold;
 }
 
 .delete-task-button:hover {
-	background: #ffe3e3;
-	color: #c92a2a;
+	background: rgba(220, 53, 69, 0.1);
+	color: #dc3545;
 	transform: none;
 	box-shadow: none;
 }
@@ -891,15 +897,145 @@ button:active {
 .theme-dark .control-bar select,
 .theme-dark .control-bar .search-box {
 	background: rgba(255, 255, 255, 0.08);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	border-color: rgba(255, 255, 255, 0.1);
 }
 
 .theme-dark .todotxt-view ul > li:not(.group-header) {
 	background: rgba(255, 255, 255, 0.03);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+	border-color: rgba(255, 255, 255, 0.08);
 }
 
 .theme-dark .todotxt-view ul > li:not(.group-header):hover {
 	background: rgba(255, 255, 255, 0.06);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================
+ * Modal Layout - Improved Form Design
+ * ============================================
+ * 横並びレイアウトとテキスト見切れ対応
+ */
+
+/* モーダルの最小幅を確保 */
+.modal {
+	min-width: 400px;
+	max-width: 560px;
+}
+
+/* タスク説明入力フィールド - 幅100%で見切れ防止 */
+.modal .task-description-input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* 日付フィールドの横並び配置 */
+.modal-date-row {
+	display: flex;
+	gap: var(--spacing-lg);
+	margin-top: var(--spacing-md);
+}
+
+.modal-date-row .modal-date-field {
+	flex: 1;
+	min-width: 0;
+}
+
+.modal-date-row .modal-date-field label {
+	display: block;
+	margin-bottom: var(--spacing-xs);
+	font-size: var(--font-size-small);
+	color: var(--text-muted);
+}
+
+.modal-date-row .modal-date-field input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* プロジェクト/コンテキストの横並び配置 */
+.modal-tags-row {
+	display: flex;
+	gap: var(--spacing-lg);
+	margin-top: var(--spacing-md);
+}
+
+.modal-tags-row .modal-tag-field {
+	flex: 1;
+	min-width: 0;
+}
+
+.modal-tags-row .modal-tag-field label {
+	display: block;
+	margin-bottom: var(--spacing-xs);
+	font-size: var(--font-size-small);
+	color: var(--text-muted);
+}
+
+/* マルチセレクトの高さを制限して見切れ防止 */
+.modal-tags-row .modal-tag-field select {
+	width: 100%;
+	box-sizing: border-box;
+	max-height: 120px;
+	overflow-y: auto;
+}
+
+/* プレビューエリア - テキスト折り返し */
+.modal .preview-area {
+	background: var(--background-secondary);
+	padding: var(--spacing-md);
+	border-radius: var(--border-radius-sm);
+	margin-top: var(--spacing-md);
+	white-space: pre-wrap;
+	word-break: break-all;
+	font-family: var(--font-monospace);
+	font-size: var(--font-size-small);
+	max-height: 100px;
+	overflow-y: auto;
+}
+
+/* 保存ボタンのスタイル強化 */
+.modal .save-task-button {
+	margin-top: var(--spacing-lg);
+	padding: var(--spacing-sm) var(--spacing-xl);
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border: none;
+	border-radius: var(--border-radius-sm);
+	font-weight: 500;
+	cursor: pointer;
+	transition: var(--transition-default);
+}
+
+.modal .save-task-button:hover {
+	filter: brightness(1.1);
+}
+
+/* 優先度選択を上部に横並び */
+.modal-header-row {
+	display: flex;
+	gap: var(--spacing-md);
+	align-items: flex-end;
+	margin-bottom: var(--spacing-md);
+}
+
+.modal-header-row .modal-task-field {
+	flex: 1;
+	min-width: 0;
+}
+
+.modal-header-row .modal-priority-field {
+	flex-shrink: 0;
+	width: 80px;
+}
+
+.modal-header-row label {
+	display: block;
+	margin-bottom: var(--spacing-xs);
+	font-size: var(--font-size-small);
+	color: var(--text-muted);
+}
+
+.modal-header-row input,
+.modal-header-row select {
+	width: 100%;
+	box-sizing: border-box;
 }

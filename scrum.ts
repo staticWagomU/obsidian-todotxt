@@ -172,37 +172,37 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  { sprint: 40,
+  { sprint: 41,
     workedWell: [
-      "CSS変数システム確立: 4グループ体系化（Layout/Typography/Color/Animation）により、保守性と拡張性が大幅向上",
-      "BEM命名規則導入成功: .task-item/.task-item__element/.task-item--modifierパターン確立でCSSの可読性・保守性向上",
-      "Obsidian標準変数活用: --background-*や--text-*変数使用によりテーマ自動対応実現、ダークモード/ライトモード両対応",
-      "アクセシビリティ対応実装: :focus-visibleスタイル定義とWCAA AA準拠のコントラスト比確保",
-      "全6AC達成: CSS変数定義/BEMクラス体系/チェックボックスカスタムスタイル/フォーカス/テーマ対応/視覚的調和すべて実現",
-      "全サブタスクでRED-GREEN-REFACTORサイクル完遂: 12コミット（RED 4 + GREEN 4 + REFACTOR 4）でTDD継続",
-      "Apple-likeミニマルデザイン基盤構築: 角丸・トランジション・スペーシングの統一デザインシステム確立",
-      "REFACTOR率改善: 33%達成でSprint 39の25%から+8pt向上、Phase 8最低記録からの回復"
+      "全サブタスクでRED-GREEN-REFACTORサイクル完遂: 4サブタスク×3コミット=12コミットで一貫したTDDサイクル維持",
+      "CSS変数システムの一貫活用: Sprint 40で確立したシステムを継続適用し、animation-specific変数を追加拡張",
+      "アニメーション実装の体系化: transition時間をCSS変数で管理する仕組みを構築、保守性向上",
+      "アクセシビリティ対応の継続: :focus-visibleセレクタを明示的に指定し、キーボードナビゲーション対応を強化",
+      "全4AC達成: ホバー/ボタン/フォーカス/チェックマークすべてのアニメーション要件を満たした",
+      "DoD全項目合格: Tests/Lint/Types/Buildすべて通過、品質基準維持",
+      "Phase 9進捗順調: 3 Sprintのうち2 Sprint完了（PBI-040, 041）、最終Sprint 42への準備万端"
     ],
     toImprove: [
-      "REFACTOR率33%で目標50%未達: Sprint 38の60%には遠く及ばず、-27pt低下（ただしSprint 39の25%からは+8pt改善）",
-      "テスト増加0t: CSS実装の性質上予想通りだが、Phase 9全体での品質指標が不明確（626t維持）",
-      "Phase 9適合の品質指標未確立: UIデザイン中心のため従来のテスト増加指標が適用困難、代替指標が必要",
-      "PBI-041/042のdependency解消: PBI-040完了により依存関係が解消されたが、Refinement未実施でdraft状態継続"
+      "REFACTOR率33%で目標50%未達: Sprint 40の33%と同率、目標の-17pt低下継続",
+      "Phase 9品質指標の未確立: CSS実装中心のため、従来のテスト増加数指標が適用できず626t維持のまま",
+      "Sprint 40 Action実行状況の未追跡: Action 6件のうち実行状況が不明確（PBI-041/042 Refinement未確認）",
+      "REFACTORの質的評価不足: コミット数は記録されているが、リファクタリングの影響範囲や効果が定量化されていない",
+      "Phase 9完了後の技術的負債計画未着手: Sprint 40で延期した「REFACTOR専念Sprint」の具体計画が未策定"
     ],
     actions: [
-      "CSS変数システム活用の徹底: PBI-040で確立した4グループ体系（Layout/Typography/Color/Animation）をPBI-041/042でも一貫適用",
-      "PBI-041/042のBacklog Refinement実施: Sprint 41開始前に両PBIをreadyステータスに移行、依存関係解消済みを確認",
-      "Phase 9品質指標の再定義: テスト増加数に代わる指標（アクセシビリティスコア、CSS複雑度、BEM準拠率等）を設定",
-      "REFACTOR率50%目標の再設定: Sprint 41/42で各50%目標、Phase 9全体で40%以上達成を目指す",
-      "Visual Regression Testing導入検討: CSS変更の品質保証として、スクリーンショット比較ツール（Percy、Chromatic等）の導入可否を検討",
-      "Phase 9完遂後のREFACTOR専念Sprint計画: Phase 9終了後（Sprint 43候補）に技術的負債解消Sprintを実施、6 Sprint延期の解消"
+      "Sprint 42でREFACTOR率50%達成: 4サブタスク想定なら12コミットのうち6コミットをREFACTORに配分",
+      "Sprint 40 Action実行状況の確認と記録: actionManagement trackingを更新し、executed/rate/remainingを再計算",
+      "Phase 9完了記念Sprintの計画策定: Sprint 43候補として技術的負債解消Sprintを計画、対象範囲をリストアップ",
+      "REFACTORの影響範囲記録: 各REFACTORコミットで変更した変数/セレクタ数などを記録し、質的評価の基盤を構築",
+      "Phase 9品質指標の最終評価: Sprint 42完了時にアクセシビリティスコア、CSS複雑度、BEM準拠率を測定",
+      "PBI-042のBacklog Refinement完了: Sprint 42 Planning前にPBI-042をreadyステータスに移行確認"
     ] },
 ];
 
-// Action Management (Sprint 39完了、Sprint 38 Action 4/5件実行、新規Action未追加)
+// Action Management (Sprint 41完了、Sprint 40 Action 1/6件実行、Sprint 41 Action 6件追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 46, executed: 29, rate: 63, remaining: 17 }, // Sprint 39完了（Sprint 38 Action 4件実行: テスト増加数+15t再設定/Action実行率の明示化/form-helpersパターン推進/REFACTOR率50%維持未達、Phase 8完了記念Sprint実施延期）
+  tracking: { total: 52, executed: 30, rate: 58, remaining: 22 }, // Sprint 41完了（Sprint 40 Action 1件実行: CSS変数システム活用徹底、5件未実行: PBI-041/042 Refinement/Phase 9品質指標再定義/REFACTOR率50%未達/Visual Regression Testing導入検討/REFACTOR専念Sprint計画未策定）
 };
 
 // Agents & Events

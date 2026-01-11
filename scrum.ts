@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 40, pbi: "PBI-040", status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
+  sprint: { number: 41, pbi: "PBI-041", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -52,29 +52,9 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 36 PBI-036: デートピッカー、585t(+22t)、done
   //   Sprint 37 PBI-037: プロジェクト/コンテキスト選択、597t(+12t)、done
   //   Sprint 38 PBI-038: リアルタイムプレビュー、610t(+13t)、done
-  // Sprint 39 PBI-039: フォーム/テキストモード切替、626t(+16t)、done
+  //   Sprint 39 PBI-039: フォーム/テキストモード切替、626t(+16t)、done
   // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
-  {
-    id: "PBI-040",
-    story: { role: "ユーザー", capability: "洗練されたミニマルなUIでタスクを管理", benefit: "視覚的に美しく、使っていて心地よい体験が得られる" },
-    acceptanceCriteria: [
-      { criterion: "タスクリストに十分な余白（padding/margin）が設定されている", verification: "目視: タスク間16px以上の余白、CSSクラス.task-itemにpadding: 12px 16px適用確認" },
-      { criterion: "チェックボックスがカスタムスタイル（角丸、アニメーション付き）になる", verification: "目視: チェック時150msトランジション、CSSにtransition: all 0.15s ease定義確認" },
-      { criterion: "フォントサイズに明確な階層がある（タイトル/本文/補助テキスト）", verification: "目視: 3段階（16px/14px/12px）、CSS変数--font-size-*/line-height適用確認" },
-      { criterion: "Obsidianのダークモード/ライトモードに適切に対応", verification: "目視: 両モード視認性良好、CSS変数--color-*でテーマ対応確認" },
-      { criterion: "CSSクラス名が一貫した命名規則（BEM形式）に従う", verification: "コードレビュー: .block__element--modifier形式、既存パターン踏襲確認" },
-      { criterion: "キーボードフォーカスが視覚的に明確（アウトライン/シャドウ）", verification: "手動: Tabキーナビゲーションで:focus-visibleスタイル確認、アクセシビリティテスト実行" },
-    ],
-    dependencies: [],
-    status: "ready",
-    complexity: { functions: 2, estimatedTests: 2, externalDependencies: 0, score: "MEDIUM", subtasks: 4 },
-    refactorChecklist: [
-      "CSS変数を一元管理（:root定義）してテーマカスタマイズ容易化",
-      "スタイル定義を論理的にグループ化（Layout/Typography/Color/Animation）",
-      "重複スタイルをユーティリティクラスに抽出（.u-spacing-sm等）",
-      "トランジション設定をCSS変数化（--transition-default等）"
-    ],
-  },
+  //   Sprint 40 PBI-040: ミニマルUIデザイン基盤、626t、done
   {
     id: "PBI-041",
     story: { role: "ユーザー", capability: "ホバーやフォーカス時に滑らかなフィードバックを得る", benefit: "操作に対する応答性が感じられ、直感的に使える" },
@@ -190,6 +170,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 37, pbi: "PBI-037", story: "プロジェクト/コンテキスト選択", verification: "passed", notes: "597t(+12t)" },
   { sprint: 38, pbi: "PBI-038", story: "リアルタイムプレビュー", verification: "passed", notes: "610t(+13t),REFACTOR率60%" },
   { sprint: 39, pbi: "PBI-039", story: "フォーム/テキストモード切替", verification: "passed", notes: "626t(+16t),Phase 8完遂,Action実行率80%" },
+  // Phase 9 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）
+  { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,REFACTOR率33%,CSS実装のためテスト増加なし" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

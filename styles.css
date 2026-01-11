@@ -420,14 +420,14 @@ textarea:focus-visible {
 .modal input[type="date"],
 .modal textarea,
 .modal select {
-	border-width: var(--input-border-width);
-	border-color: var(--color-border);
-	border-style: solid;
+	border: var(--input-border-width) solid var(--color-border);
 	padding: var(--input-padding);
 	border-radius: var(--border-radius-sm);
 	background-color: var(--color-background);
 	color: var(--color-text);
 	transition: var(--transition-default);
+	font-size: var(--font-size-medium);
+	line-height: var(--line-height-medium);
 }
 
 /* Subtle hover effect */
@@ -436,6 +436,7 @@ textarea:focus-visible {
 .modal textarea:hover,
 .modal select:hover {
 	border-color: var(--color-focus);
+	background-color: var(--color-hover);
 }
 
 /* ============================================

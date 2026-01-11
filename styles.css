@@ -375,6 +375,17 @@ textarea:focus-visible {
 }
 
 /* ============================================
+ * Modal Backdrop - Blur Effect
+ * ============================================
+ * RED PHASE - Subtask 2: モーダル背景ブラー効果
+ * 検証基準:
+ * - .modal-containerまたは.modal::backdropにbackdrop-filter: blur()適用
+ * - CSS変数--modal-backdrop-blur定義（8-12px推奨）
+ * - 背景がぼかされモーダルにフォーカスが集まる
+ * 検証方法: モーダル表示時、背景コンテンツがぼかされる
+ */
+
+/* ============================================
  * Button Hover Effects - Interactive Feedback
  * ============================================ */
 

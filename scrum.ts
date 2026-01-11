@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 41, pbi: "PBI-041", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -138,8 +138,12 @@ export const currentSprint = {
       test: "完了トグル時にチェックマークがスムーズに出現するアニメーション",
       implementation: "チェックボックスに@keyframes定義、transition/transformでスケール+フェード効果を実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: チェックマーク完了アニメーション - スケール/フェード効果仕様定義" },
+        { phase: "green" as CommitPhase, message: "feat: チェックマーク完了アニメーション実装 - スケール/フェード効果" },
+        { phase: "refactor" as CommitPhase, message: "refactor: アニメーション時間をCSS変数で管理" },
+      ],
     },
   ] as Subtask[],
 };

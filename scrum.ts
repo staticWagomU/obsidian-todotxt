@@ -94,12 +94,12 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 41開始)
+// Current Sprint (Sprint 41完了)
 export const currentSprint = {
   sprint: 41,
   pbi: "PBI-041",
   goal: "タスク操作時の滑らかなフィードバック体験を実現し、直感的なインタラクションを提供する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "タスク行ホバー時に背景色が150-200msでフェードイン",
@@ -167,6 +167,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 8 (Sprint 35-39): フォームUI強化完了、626t達成(+72t)
   // Phase 9 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）
   { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,CSS変数/BEM/アクセシビリティ確立" },
+  { sprint: 41, pbi: "PBI-041", story: "滑らかなインタラクションフィードバック", verification: "passed", notes: "626t,ホバー/フォーカス/アニメーション実装" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 42, pbi: "PBI-042", status: "done" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
-  phase: { number: 9, status: "done", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
+  sprint: { number: 43, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 9, status: "done", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）完遂" },
 };
 
 // Product Goal
@@ -47,16 +47,17 @@ export const productGoal = {
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-7完了: Sprint 1-34（34 PBIs done）
-  // Phase 8進行中 (Sprint 35-39): フォームUI強化
+  // Phase 8完了 (Sprint 35-39): フォームUI強化、626t達成(+72t)
   //   Sprint 35 PBI-035: 優先度ドロップダウン、563t(+9t)、done
   //   Sprint 36 PBI-036: デートピッカー、585t(+22t)、done
   //   Sprint 37 PBI-037: プロジェクト/コンテキスト選択、597t(+12t)、done
   //   Sprint 38 PBI-038: リアルタイムプレビュー、610t(+13t)、done
   //   Sprint 39 PBI-039: フォーム/テキストモード切替、626t(+16t)、done
-  // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
+  // Phase 9完了 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）、626t維持
   //   Sprint 40 PBI-040: ミニマルUIデザイン基盤、626t、done
   //   Sprint 41 PBI-041: 滑らかなインタラクション、626t、done
-  // PBI-042 done (Sprint 42): モーダル洗練デザイン、626t維持、Phase 9完遂
+  //   Sprint 42 PBI-042: モーダル洗練デザイン、626t、done、REFACTOR率50%達成
+  // Phase 10: 次のPhaseを計画中
 ];
 
 // Definition of Ready
@@ -70,58 +71,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 42開始)
+// Current Sprint (Sprint 43準備中)
 export const currentSprint = {
-  sprint: 42,
-  pbi: "PBI-042",
-  goal: "Phase 9 UIデザイン刷新の完遂 - モーダルダイアログを洗練されたApple-likeデザインに仕上げる",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "モーダルのborder-radiusが12-16pxの範囲で設定されている",
-      implementation: "CSS変数--modal-border-radiusを定義し、.modalクラスに適用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(modal): モーダル角丸デザインの検証基準を文書化" },
-        { phase: "green" as CommitPhase, message: "feat(modal): モーダル角丸デザインを実装" },
-        { phase: "refactor" as CommitPhase, message: "refactor(modal): CSS変数構造を改善しborder-radius体系を統一" },
-      ],
-    },
-    {
-      test: "モーダル背景にbackdrop-filter: blur()が適用されている",
-      implementation: "CSS変数--modal-backdrop-blurを定義し、.modal-backdropクラスに適用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(modal): モーダル背景ブラー効果の検証基準を文書化" },
-        { phase: "green" as CommitPhase, message: "feat(modal): モーダル背景ブラー効果を実装" },
-        { phase: "refactor" as CommitPhase, message: "refactor(modal): アクセシビリティ配慮を追加しブラー効果を改善" },
-      ],
-    },
-    {
-      test: "入力フィールドのボーダーが細い（1px以下）またはボーダーレスである",
-      implementation: "CSS変数--input-border-widthを定義し、.modal inputセレクタに適用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(modal): フラットデザイン入力フィールドの検証基準を文書化" },
-        { phase: "green" as CommitPhase, message: "feat(modal): フラットデザイン入力フィールドを実装" },
-        { phase: "refactor" as CommitPhase, message: "refactor(modal): 入力フィールドスタイルを改善し一貫性向上" },
-      ],
-    },
-    {
-      test: "保存ボタンがプライマリカラー（--color-accent）で目立つデザインになっている",
-      implementation: ".modal .btn-primaryクラスにアクセントカラーとホバーエフェクトを適用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(modal): プライマリカラー保存ボタンの検証基準を文書化" },
-        { phase: "green" as CommitPhase, message: "feat(modal): プライマリカラー保存ボタンを実装" },
-        { phase: "refactor" as CommitPhase, message: "refactor(modal): セカンダリボタンを追加しボタンデザイン体系完成" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 43,
+  pbi: "TBD",
+  goal: "TBD - Phase 10の方向性を検討中",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -141,7 +97,7 @@ export const definitionOfDone = {
 export const completedSprints: CompletedSprint[] = [
   // Phase 1-7 (Sprint 1-34): 基本機能+ドキュメント+UI実装完了、554t達成
   // Phase 8 (Sprint 35-39): フォームUI強化完了、626t達成(+72t)
-  // Phase 9 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）
+  // Phase 9 (Sprint 40-42): UIデザイン刷新完了（Apple-likeモダンデザイン）、626t維持
   { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,CSS変数/BEM/アクセシビリティ確立" },
   { sprint: 41, pbi: "PBI-041", story: "滑らかなインタラクションフィードバック", verification: "passed", notes: "626t,ホバー/フォーカス/チェックマークアニメーション完遂" },
   { sprint: 42, pbi: "PBI-042", story: "モーダル洗練デザイン", verification: "passed", notes: "626t,角丸/ブラー/入力/ボタン完成,REFACTOR率50%達成,Phase 9完遂" },

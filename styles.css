@@ -60,7 +60,10 @@
 	--checkbox-size: 18px;
 	--border-radius-sm: 4px;   /* チェックボックス・小要素 */
 	--border-radius-md: 6px;   /* タスクアイテム */
-	--border-radius-lg: 12px;  /* モーダル（将来用） */
+	--border-radius-lg: 12px;  /* モーダル・カード */
+
+	/* Modal Specific */
+	--modal-border-radius: 12px;  /* Apple-like角丸 */
 
 	/* Focus & Accessibility */
 	--focus-outline-width: 2px;
@@ -366,6 +369,11 @@ textarea:focus-visible {
  * - 角丸がApple-likeで統一感がある
  * 検証方法: モーダル表示時、角が滑らかに丸まっている
  */
+
+/* Modal Container - Apple-like rounded corners */
+.modal {
+	border-radius: var(--modal-border-radius);
+}
 
 /* ============================================
  * Button Hover Effects - Interactive Feedback

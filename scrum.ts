@@ -66,7 +66,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "保存ボタンがプライマリカラーで目立つデザイン", verification: "目視確認: アクセントカラー適用" },
     ],
     dependencies: ["PBI-040"],
-    status: "draft",
+    status: "ready",
     complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 },
   },
 ];

@@ -2,6 +2,16 @@
  * Obsidian Todo.txt Plugin Styles
  */
 
+/* RED PHASE - CSS変数の検証基準
+ * 期待される:root定義:
+ * - カラー変数: --color-* (background, text, border, focus等)
+ * - タイポグラフィ変数: --font-size-* (3階層: 16px/14px/12px)
+ * - ラインハイト変数: --line-height-* (各フォントサイズに対応)
+ * - トランジション変数: --transition-default (150ms)
+ * - Obsidianのダークモード/ライトモード両対応
+ * 検証方法: CSS変数が定義され、後続スタイルで適用されていることを確認
+ */
+
 /* Completed tasks - strikethrough */
 .completed {
 	text-decoration: line-through;

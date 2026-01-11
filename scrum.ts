@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 41, pbi: "PBI-041", status: "in_progress" as SprintStatus,
+  sprint: { number: 41, pbi: "PBI-041", status: "done" as SprintStatus,
     subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
@@ -65,7 +65,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "完了トグル時にチェックマークがアニメーション", verification: "目視確認: スムーズな出現アニメーション" },
     ],
     dependencies: ["PBI-040"],
-    status: "ready",
+    status: "done",
     complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 },
   },
   {
@@ -167,7 +167,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 8 (Sprint 35-39): フォームUI強化完了、626t達成(+72t)
   // Phase 9 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）
   { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,CSS変数/BEM/アクセシビリティ確立" },
-  { sprint: 41, pbi: "PBI-041", story: "滑らかなインタラクションフィードバック", verification: "passed", notes: "626t,ホバー/フォーカス/アニメーション実装" },
+  { sprint: 41, pbi: "PBI-041", story: "滑らかなインタラクションフィードバック", verification: "passed", notes: "626t,ホバー/フォーカス/チェックマークアニメーション完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

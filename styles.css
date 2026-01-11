@@ -510,3 +510,396 @@ button:hover {
 button:active {
 	transform: scale(0.98);
 }
+
+/* ============================================
+ * Apple-style Task List Container
+ * ============================================ */
+.todotxt-view {
+	padding: var(--spacing-xl);
+	max-width: 100%;
+}
+
+.todotxt-view ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* ============================================
+ * Apple-style Control Bar
+ * ============================================
+ * セグメントコントロール風のモダンなフィルターバー
+ */
+.control-bar {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	padding: var(--spacing-md) var(--spacing-lg);
+	margin-bottom: var(--spacing-xl);
+	background: var(--background-secondary);
+	border-radius: var(--border-radius-lg);
+	flex-wrap: wrap;
+}
+
+/* Apple-style segmented control for dropdowns */
+.control-bar select {
+	appearance: none;
+	-webkit-appearance: none;
+	padding: var(--spacing-sm) var(--spacing-lg);
+	padding-right: 32px;
+	border: none;
+	border-radius: var(--border-radius-md);
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: var(--font-size-small);
+	font-weight: 500;
+	cursor: pointer;
+	transition: var(--transition-default);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+}
+
+.control-bar select:hover {
+	background-color: var(--background-modifier-hover);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.control-bar select:focus {
+	outline: none;
+	box-shadow: 0 0 0 2px var(--interactive-accent);
+}
+
+/* Apple-style search box */
+.control-bar .search-box {
+	flex: 1;
+	min-width: 180px;
+	padding: var(--spacing-sm) var(--spacing-lg);
+	border: none;
+	border-radius: 20px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: var(--font-size-small);
+	transition: var(--transition-default);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.control-bar .search-box::placeholder {
+	color: var(--text-muted);
+}
+
+.control-bar .search-box:hover {
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.control-bar .search-box:focus {
+	outline: none;
+	box-shadow: 0 0 0 2px var(--interactive-accent);
+}
+
+/* ============================================
+ * Apple-style Floating Action Button
+ * ============================================ */
+.add-task-button {
+	position: fixed;
+	bottom: 24px;
+	right: 24px;
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	font-size: 28px;
+	font-weight: 300;
+	border: none;
+	cursor: pointer;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	transition: var(--transition-default);
+	z-index: 100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.add-task-button:hover {
+	transform: scale(1.1);
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+.add-task-button:active {
+	transform: scale(0.95);
+}
+
+/* ============================================
+ * Apple-style Task Card
+ * ============================================
+ * カード型デザインで各タスクを明確に分離
+ */
+.todotxt-view ul > li:not(.group-header) {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	padding: var(--spacing-lg);
+	margin-bottom: var(--spacing-sm);
+	background: var(--background-primary);
+	border-radius: var(--border-radius-md);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	transition: var(--transition-default);
+	position: relative;
+}
+
+.todotxt-view ul > li:not(.group-header):hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	transform: translateY(-1px);
+}
+
+/* Hide action buttons by default, show on hover */
+.todotxt-view ul > li:not(.group-header) .edit-task-button,
+.todotxt-view ul > li:not(.group-header) .delete-task-button {
+	opacity: 0;
+	transition: var(--transition-default);
+}
+
+.todotxt-view ul > li:not(.group-header):hover .edit-task-button,
+.todotxt-view ul > li:not(.group-header):hover .delete-task-button {
+	opacity: 1;
+}
+
+/* ============================================
+ * Apple-style Checkbox
+ * ============================================ */
+.task-checkbox {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 22px;
+	height: 22px;
+	border: 2px solid var(--text-muted);
+	border-radius: 50%;
+	cursor: pointer;
+	transition: var(--transition-default);
+	flex-shrink: 0;
+	position: relative;
+}
+
+.task-checkbox:hover {
+	border-color: var(--interactive-accent);
+	background: rgba(var(--interactive-accent-rgb), 0.1);
+}
+
+.task-checkbox:checked {
+	background: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+}
+
+.task-checkbox:checked::after {
+	content: '✓';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: var(--text-on-accent);
+	font-size: 13px;
+	font-weight: bold;
+	animation: checkmarkAppear 0.2s ease-out;
+}
+
+/* ============================================
+ * Apple-style Priority Badge
+ * ============================================
+ * 円形のミニマルな優先度インジケーター
+ */
+.priority {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	font-size: 11px;
+	font-weight: 600;
+	flex-shrink: 0;
+	margin-right: var(--spacing-sm);
+}
+
+.priority-A {
+	background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+	color: white;
+	box-shadow: 0 2px 8px rgba(238, 90, 90, 0.3);
+}
+
+.priority-B {
+	background: linear-gradient(135deg, #ffa94d, #ff922b);
+	color: white;
+	box-shadow: 0 2px 8px rgba(255, 146, 43, 0.3);
+}
+
+.priority-C {
+	background: linear-gradient(135deg, #ffe066, #fcc419);
+	color: #333;
+	box-shadow: 0 2px 8px rgba(252, 196, 25, 0.3);
+}
+
+.priority-D, .priority-E, .priority-F, .priority-G, .priority-H,
+.priority-I, .priority-J, .priority-K, .priority-L, .priority-M,
+.priority-N, .priority-O, .priority-P, .priority-Q, .priority-R,
+.priority-S, .priority-T, .priority-U, .priority-V, .priority-W,
+.priority-X, .priority-Y, .priority-Z {
+	background: linear-gradient(135deg, #74c0fc, #4dabf7);
+	color: white;
+	box-shadow: 0 2px 8px rgba(77, 171, 247, 0.3);
+}
+
+/* ============================================
+ * Apple-style Group Header
+ * ============================================ */
+.group-header {
+	font-size: var(--font-size-large);
+	font-weight: 600;
+	color: var(--text-normal);
+	padding: var(--spacing-lg) var(--spacing-sm);
+	margin-top: var(--spacing-xl);
+	margin-bottom: var(--spacing-sm);
+	border-bottom: 2px solid var(--interactive-accent);
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.group-header:first-child {
+	margin-top: 0;
+}
+
+/* ============================================
+ * Apple-style Date & Tag Badges
+ * ============================================
+ * ピルシェイプのエレガントなバッジ
+ */
+.due-date {
+	display: inline-flex;
+	align-items: center;
+	padding: 2px 10px;
+	border-radius: 12px;
+	font-size: var(--font-size-small);
+	font-weight: 500;
+	background: var(--background-secondary);
+	color: var(--text-muted);
+	margin-left: var(--spacing-sm);
+}
+
+/* Overdue style */
+.due-date[style*="color: red"],
+.due-date[style*="background-color: #"] {
+	background: linear-gradient(135deg, #ffe3e3, #ffc9c9) !important;
+	color: #c92a2a !important;
+}
+
+/* Recurrence icon styling */
+.recurrence-icon {
+	font-size: 14px;
+	margin-left: var(--spacing-xs);
+	opacity: 0.7;
+}
+
+/* ============================================
+ * Apple-style Action Buttons
+ * ============================================ */
+.edit-task-button,
+.delete-task-button {
+	padding: 6px 12px;
+	border: none;
+	border-radius: var(--border-radius-sm);
+	font-size: var(--font-size-small);
+	font-weight: 500;
+	cursor: pointer;
+	transition: var(--transition-default);
+	margin-left: auto;
+}
+
+.edit-task-button {
+	background: var(--background-secondary);
+	color: var(--text-muted);
+}
+
+.edit-task-button:hover {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	transform: none;
+	box-shadow: none;
+}
+
+.delete-task-button {
+	background: transparent;
+	color: var(--text-muted);
+}
+
+.delete-task-button:hover {
+	background: #ffe3e3;
+	color: #c92a2a;
+	transform: none;
+	box-shadow: none;
+}
+
+/* ============================================
+ * Completed Task Style
+ * ============================================ */
+.todotxt-view ul > li.completed {
+	opacity: 0.5;
+}
+
+.todotxt-view ul > li.completed:hover {
+	opacity: 0.7;
+}
+
+/* ============================================
+ * Internal/External Link Styles
+ * ============================================ */
+.internal-link {
+	background: var(--background-secondary);
+	color: var(--interactive-accent);
+	border: none;
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-size: var(--font-size-small);
+	cursor: pointer;
+	transition: var(--transition-default);
+}
+
+.internal-link:hover {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	transform: none;
+	box-shadow: none;
+}
+
+.external-link {
+	color: var(--interactive-accent);
+	text-decoration: none;
+	transition: var(--transition-default);
+}
+
+.external-link:hover {
+	text-decoration: underline;
+}
+
+/* ============================================
+ * Dark Mode Refinements
+ * ============================================ */
+.theme-dark .control-bar {
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.theme-dark .control-bar select,
+.theme-dark .control-bar .search-box {
+	background: rgba(255, 255, 255, 0.08);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.theme-dark .todotxt-view ul > li:not(.group-header) {
+	background: rgba(255, 255, 255, 0.03);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.theme-dark .todotxt-view ul > li:not(.group-header):hover {
+	background: rgba(255, 255, 255, 0.06);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}

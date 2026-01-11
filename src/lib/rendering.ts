@@ -103,6 +103,9 @@ export function renderTaskList(
 
 	contentEl.empty();
 
+	// Add todotxt-view class for styling
+	contentEl.classList.add("todotxt-view");
+
 	// Add task button
 	renderAddButton(contentEl, onAddTask);
 

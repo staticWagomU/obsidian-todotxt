@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 41, pbi: "PBI-041", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -105,8 +105,12 @@ export const currentSprint = {
       test: "タスク行ホバー時に背景色が150-200msでフェードイン",
       implementation: "task-itemにtransition: background-color 0.15s easeを定義、:hoverで背景色変化",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: タスク行ホバーアニメーション - 背景色フェードイン仕様定義" },
+        { phase: "green" as CommitPhase, message: "feat: タスク行ホバーアニメーション実装 - 背景色150msフェードイン" },
+        { phase: "refactor" as CommitPhase, message: "refactor: transition変数を特定プロパティ用に最適化" },
+      ],
     },
     {
       test: "ボタンホバー時にスケール/シャドウが微細に変化",

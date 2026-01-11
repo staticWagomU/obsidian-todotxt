@@ -2,32 +2,33 @@
  * Obsidian Todo.txt Plugin Styles
  */
 
-/* RED PHASE - CSS変数の検証基準
- * 期待される:root定義:
- * - カラー変数: --color-* (background, text, border, focus等)
- * - タイポグラフィ変数: --font-size-* (3階層: 16px/14px/12px)
- * - ラインハイト変数: --line-height-* (各フォントサイズに対応)
- * - トランジション変数: --transition-default (150ms)
- * - Obsidianのダークモード/ライトモード両対応
- * 検証方法: CSS変数が定義され、後続スタイルで適用されていることを確認
+/* ============================================
+ * CSS Variables - Design System
+ * ============================================
+ * Obsidian標準変数を参照してテーマ自動対応
+ * グループ: Typography / Colors / Transitions
  */
 
 :root {
-	/* Typography */
-	--font-size-large: 16px;
-	--font-size-medium: 14px;
-	--font-size-small: 12px;
+	/* ==================== Typography ==================== */
+	/* 3-tier hierarchy for visual hierarchy */
+	--font-size-large: 16px;   /* タイトル・見出し */
+	--font-size-medium: 14px;  /* 本文 */
+	--font-size-small: 12px;   /* 補助テキスト */
+
 	--line-height-large: 1.5;
 	--line-height-medium: 1.4;
 	--line-height-small: 1.3;
 
-	/* Colors - Light mode defaults */
+	/* ==================== Colors ==================== */
+	/* Obsidian標準変数を参照 - ダーク/ライトモード自動対応 */
 	--color-background: var(--background-primary);
 	--color-text: var(--text-normal);
 	--color-border: var(--background-modifier-border);
 	--color-focus: var(--interactive-accent);
 
-	/* Transitions */
+	/* ==================== Transitions ==================== */
+	/* 150ms = Apple-like smooth interaction */
 	--transition-default: all 0.15s ease;
 }
 

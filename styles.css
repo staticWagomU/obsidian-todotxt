@@ -278,12 +278,13 @@
  */
 
 /* Focus Styles - Keyboard Navigation (WCAG AA準拠) */
-/* Base transition for all interactive elements */
-*:focus,
+/* Base transition for all focusable elements */
 button,
 input,
 select,
 textarea,
+a,
+[tabindex]:not([tabindex="-1"]),
 .task-item,
 .task-item__checkbox {
 	transition: var(--transition-focus);

@@ -5,8 +5,9 @@
 /* ============================================
  * CSS Variables - Design System
  * ============================================
+ * Apple-likeミニマルデザインのための統一変数システム
  * Obsidian標準変数を参照してテーマ自動対応
- * グループ: Typography / Colors / Transitions
+ * グループ化: Typography / Colors / Animation / Layout
  */
 
 :root {
@@ -26,25 +27,31 @@
 	--color-text: var(--text-normal);
 	--color-border: var(--background-modifier-border);
 	--color-focus: var(--interactive-accent);
+	--color-hover: var(--background-modifier-hover);
 
-	/* ==================== Transitions ==================== */
-	/* 150ms = Apple-like smooth interaction */
-	--transition-default: all 0.15s ease;
-	--transition-fast: all 0.1s ease;
-	--transition-slow: all 0.3s ease;
+	/* ==================== Animation ==================== */
+	/* Apple-like smooth transitions - 150ms基準 */
+	--transition-fast: all 0.1s ease;      /* 瞬時フィードバック */
+	--transition-default: all 0.15s ease;  /* 標準アニメーション */
+	--transition-slow: all 0.3s ease;      /* ゆったりアニメーション */
 
-	/* ==================== Spacing ==================== */
+	/* ==================== Layout ==================== */
+	/* Spacing Scale - 4px基準の8の倍数システム */
 	--spacing-xs: 4px;
 	--spacing-sm: 8px;
 	--spacing-md: 12px;
 	--spacing-lg: 16px;
 	--spacing-xl: 24px;
 
-	/* ==================== Layout ==================== */
+	/* Component Dimensions */
 	--checkbox-size: 18px;
-	--border-radius-sm: 4px;
-	--border-radius-md: 6px;
-	--border-radius-lg: 12px;
+	--border-radius-sm: 4px;   /* チェックボックス・小要素 */
+	--border-radius-md: 6px;   /* タスクアイテム */
+	--border-radius-lg: 12px;  /* モーダル（将来用） */
+
+	/* Focus & Accessibility */
+	--focus-outline-width: 2px;
+	--focus-outline-offset: 2px;
 }
 
 /* ============================================
@@ -251,22 +258,22 @@
  * 検証方法: Tabキーナビゲーション、両モードでの視認性確認
  */
 
-/* Focus Styles - Keyboard Navigation */
+/* Focus Styles - Keyboard Navigation (WCAG AA準拠) */
 *:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 2px;
+	outline: var(--focus-outline-width) solid var(--color-focus);
+	outline-offset: var(--focus-outline-offset);
 	border-radius: var(--border-radius-sm);
 }
 
 .task-item:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 2px;
+	outline: var(--focus-outline-width) solid var(--color-focus);
+	outline-offset: var(--focus-outline-offset);
 	box-shadow: 0 0 0 4px rgba(var(--interactive-accent-rgb), 0.1);
 }
 
 .task-item__checkbox:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 2px;
+	outline: var(--focus-outline-width) solid var(--color-focus);
+	outline-offset: var(--focus-outline-offset);
 	box-shadow: 0 0 0 4px rgba(var(--interactive-accent-rgb), 0.2);
 }
 
@@ -274,8 +281,8 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 2px;
+	outline: var(--focus-outline-width) solid var(--color-focus);
+	outline-offset: var(--focus-outline-offset);
 }
 
 /* Modal form label */

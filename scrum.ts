@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 40, pbi: "PBI-040", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -147,8 +147,12 @@ export const currentSprint = {
       test: ".task-item__checkboxクラスに角丸・transition: all 0.15s easeが適用され、カスタムスタイルが機能する",
       implementation: ".task-item__checkboxクラス定義、角丸・トランジション・ホバー効果のカスタムスタイル適用（Obsidian標準スタイル考慮）",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: チェックボックスカスタムスタイルの検証基準を文書化" },
+        { phase: "green", message: "feat: チェックボックスのカスタムスタイルとアニメーションを実装" },
+        { phase: "refactor", message: "refactor: チェックボックススタイルをCSS変数化し洗練" },
+      ],
     },
     {
       test: ":focus-visibleスタイルが定義され、CSS変数でダークモード/ライトモード両方で視認性が確保されている",

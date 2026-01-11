@@ -187,14 +187,15 @@ export class EditTaskModal extends BaseTaskModal {
 	}
 
 	/**
-	 * description からプロジェクト/コンテキストを除去
+	 * description からプロジェクト/コンテキスト/タグを除去
 	 * @param description タスク説明文
-	 * @returns プロジェクト/コンテキストを除去した説明文
+	 * @returns プロジェクト/コンテキスト/タグを除去した説明文
 	 */
 	private removeProjectsContextsFromDescription(description: string): string {
 		return description
-			.replace(/\s*\+\S+/g, "")
-			.replace(/\s*@\S+/g, "")
+			.replace(/\s*\+\S+/g, "") // プロジェクト
+			.replace(/\s*@\S+/g, "")  // コンテキスト
+			.replace(/\s*\S+:\S+/g, "") // タグ (key:value形式)
 			.trim();
 	}
 

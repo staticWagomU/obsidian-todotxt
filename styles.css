@@ -251,6 +251,33 @@
  * 検証方法: Tabキーナビゲーション、両モードでの視認性確認
  */
 
+/* Focus Styles - Keyboard Navigation */
+*:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+	border-radius: var(--border-radius-sm);
+}
+
+.task-item:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px rgba(var(--interactive-accent-rgb), 0.1);
+}
+
+.task-item__checkbox:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px rgba(var(--interactive-accent-rgb), 0.2);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
 /* Modal form label */
 .modal-form-label {
 	display: block;

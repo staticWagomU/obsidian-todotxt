@@ -66,6 +66,8 @@
 
 	/* Modal Effects */
 	--modal-backdrop-blur: 8px;  /* Apple-like背景ぼかし */
+	--input-border-width: 1px;   /* ミニマル入力フィールド */
+	--input-padding: 8px 12px;   /* 快適な入力領域 */
 
 	/* Focus & Accessibility */
 	--focus-outline-width: 2px;
@@ -412,6 +414,29 @@ textarea:focus-visible {
  * - ミニマルで洗練されたフォーム外観
  * 検証方法: モーダル内の入力フィールドが細いボーダーまたはボーダーレス
  */
+
+/* Modal input fields - flat minimal design */
+.modal input[type="text"],
+.modal input[type="date"],
+.modal textarea,
+.modal select {
+	border-width: var(--input-border-width);
+	border-color: var(--color-border);
+	border-style: solid;
+	padding: var(--input-padding);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-background);
+	color: var(--color-text);
+	transition: var(--transition-default);
+}
+
+/* Subtle hover effect */
+.modal input[type="text"]:hover,
+.modal input[type="date"]:hover,
+.modal textarea:hover,
+.modal select:hover {
+	border-color: var(--color-focus);
+}
 
 /* ============================================
  * Button Hover Effects - Interactive Feedback

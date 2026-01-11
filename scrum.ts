@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 41, pbi: "PBI-041", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -116,8 +116,12 @@ export const currentSprint = {
       test: "ボタンホバー時にスケール/シャドウが微細に変化",
       implementation: "ボタンクラスにtransition: transform 0.15s, box-shadow 0.15s定義、:hoverでtransform: scale(1.05)適用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: ボタンホバーエフェクト - スケール/シャドウ変化仕様定義" },
+        { phase: "green" as CommitPhase, message: "feat: ボタンホバーエフェクト実装 - スケール1.05/シャドウ効果" },
+        { phase: "refactor" as CommitPhase, message: "refactor: ボタンスタイルを統合transition変数で簡潔化" },
+      ],
     },
     {
       test: "フォーカス時にアウトラインまたはシャドウでハイライト表示（キーボードナビゲーション対応）",

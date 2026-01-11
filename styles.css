@@ -79,7 +79,24 @@
 	opacity: 0.6;
 }
 
-/* Priority badges */
+/* ============================================
+ * Spacing Utilities
+ * ============================================ */
+.u-spacing-sm {
+	margin-bottom: 8px;
+}
+
+.u-spacing-md {
+	margin-bottom: 16px;
+}
+
+.u-spacing-lg {
+	margin-bottom: 24px;
+}
+
+/* ============================================
+ * Priority Badge - BEM Pattern
+ * ============================================ */
 .priority {
 	font-weight: bold;
 	margin-right: 0.5em;
@@ -87,25 +104,53 @@
 	border-radius: 3px;
 }
 
-/* Priority A - Red (Highest) */
-.priority-A {
+/* Priority Level Modifiers - Refactored to BEM pattern */
+.priority--A {
 	color: #fff;
 	background-color: #e53935;
 }
 
-/* Priority B - Orange */
-.priority-B {
+.priority--B {
 	color: #fff;
 	background-color: #fb8c00;
 }
 
-/* Priority C - Yellow */
-.priority-C {
+.priority--C {
 	color: #000;
 	background-color: #ffeb3b;
 }
 
-/* Priority D and below - Blue */
+.priority--D,
+.priority--E,
+.priority--F,
+.priority--G,
+.priority--H,
+.priority--I,
+.priority--J,
+.priority--K,
+.priority--L,
+.priority--M,
+.priority--N,
+.priority--O,
+.priority--P,
+.priority--Q,
+.priority--R,
+.priority--S,
+.priority--T,
+.priority--U,
+.priority--V,
+.priority--W,
+.priority--X,
+.priority--Y,
+.priority--Z {
+	color: #fff;
+	background-color: #1e88e5;
+}
+
+/* Legacy support - to be migrated to BEM */
+.priority-A { color: #fff; background-color: #e53935; }
+.priority-B { color: #fff; background-color: #fb8c00; }
+.priority-C { color: #000; background-color: #ffeb3b; }
 .priority-D,
 .priority-E,
 .priority-F,
@@ -128,10 +173,7 @@
 .priority-W,
 .priority-X,
 .priority-Y,
-.priority-Z {
-	color: #fff;
-	background-color: #1e88e5;
-}
+.priority-Z { color: #fff; background-color: #1e88e5; }
 
 /* Modal form label */
 .modal-form-label {

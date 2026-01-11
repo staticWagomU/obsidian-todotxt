@@ -65,7 +65,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "完了トグル時にチェックマークがアニメーション", verification: "目視確認: スムーズな出現アニメーション" },
     ],
     dependencies: ["PBI-040"],
-    status: "draft",
+    status: "ready",
     complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 },
   },
   {

@@ -39,6 +39,7 @@
 	--transition-bg: background-color 0.15s ease;
 	--transition-transform: transform 0.15s ease;
 	--transition-shadow: box-shadow 0.15s ease;
+	--transition-interactive: transform 0.15s ease, box-shadow 0.15s ease;
 
 	/* ==================== Layout ==================== */
 	/* Spacing Scale - 4px基準の8の倍数システム */
@@ -302,37 +303,22 @@ textarea:focus-visible {
 }
 
 /* ============================================
- * Button Hover Effects
+ * Button Hover Effects - Interactive Feedback
  * ============================================ */
 
 /* Base button transitions for smooth interactions */
-button,
-.add-task-button,
-.edit-task-button,
-.delete-task-button,
-.save-task-button,
-.mode-toggle-button {
-	transition: var(--transition-transform), var(--transition-shadow);
+button {
+	transition: var(--transition-interactive);
 	cursor: pointer;
 }
 
 /* Hover state - subtle scale and shadow */
-button:hover,
-.add-task-button:hover,
-.edit-task-button:hover,
-.delete-task-button:hover,
-.save-task-button:hover,
-.mode-toggle-button:hover {
+button:hover {
 	transform: scale(1.05);
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Active state - pressed feedback */
-button:active,
-.add-task-button:active,
-.edit-task-button:active,
-.delete-task-button:active,
-.save-task-button:active,
-.mode-toggle-button:active {
+button:active {
 	transform: scale(0.98);
 }

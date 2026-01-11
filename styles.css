@@ -30,6 +30,21 @@
 	/* ==================== Transitions ==================== */
 	/* 150ms = Apple-like smooth interaction */
 	--transition-default: all 0.15s ease;
+	--transition-fast: all 0.1s ease;
+	--transition-slow: all 0.3s ease;
+
+	/* ==================== Spacing ==================== */
+	--spacing-xs: 4px;
+	--spacing-sm: 8px;
+	--spacing-md: 12px;
+	--spacing-lg: 16px;
+	--spacing-xl: 24px;
+
+	/* ==================== Layout ==================== */
+	--checkbox-size: 18px;
+	--border-radius-sm: 4px;
+	--border-radius-md: 6px;
+	--border-radius-lg: 12px;
 }
 
 /* ============================================
@@ -187,22 +202,24 @@
  * 検証方法: クラス定義とアニメーション動作の確認
  */
 
-/* Checkbox - BEM Element */
+/* Checkbox - BEM Element with CSS Variables */
 .task-item__checkbox {
 	appearance: none;
-	width: 18px;
-	height: 18px;
+	width: var(--checkbox-size);
+	height: var(--checkbox-size);
 	border: 2px solid var(--color-border);
-	border-radius: 4px;
-	margin-right: 12px;
+	border-radius: var(--border-radius-sm);
+	margin-right: var(--spacing-md);
 	cursor: pointer;
 	transition: var(--transition-default);
 	flex-shrink: 0;
+	position: relative;
 }
 
 .task-item__checkbox:hover {
 	border-color: var(--color-focus);
 	transform: scale(1.05);
+	box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.1);
 }
 
 .task-item__checkbox:checked {
@@ -212,11 +229,14 @@
 
 .task-item__checkbox:checked::after {
 	content: '✓';
-	display: block;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	color: white;
 	font-size: 14px;
-	text-align: center;
-	line-height: 14px;
+	font-weight: bold;
+	line-height: 1;
 }
 
 /* Modal form label */

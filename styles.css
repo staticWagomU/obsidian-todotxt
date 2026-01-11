@@ -42,6 +42,12 @@
 	--transition-interactive: transform 0.15s ease, box-shadow 0.15s ease;
 	--transition-focus: outline 0.15s ease, box-shadow 0.15s ease;
 
+	/* Animation durations */
+	--duration-fast: 0.1s;
+	--duration-default: 0.15s;
+	--duration-slow: 0.3s;
+	--duration-checkmark: 0.2s;
+
 	/* ==================== Layout ==================== */
 	/* Spacing Scale - 4px基準の8の倍数システム */
 	--spacing-xs: 4px;
@@ -264,7 +270,7 @@
 	font-size: 14px;
 	font-weight: bold;
 	line-height: 1;
-	animation: checkmarkAppear 0.2s ease-out;
+	animation: checkmarkAppear var(--duration-checkmark) ease-out;
 }
 
 /* Checkmark appearance animation */

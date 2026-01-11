@@ -303,15 +303,36 @@ textarea:focus-visible {
 
 /* ============================================
  * Button Hover Effects
- * ============================================
- * RED PHASE - Subtask 2: ボタンホバーエフェクト
- * 検証基準:
- * - ボタンにtransition: transform 0.15s, box-shadow 0.15s定義
- * - :hoverでtransform: scale(1.05)適用
- * - :hoverでbox-shadowが微細に変化
- * - アクティブ/押下時の視覚的フィードバック
- * 検証方法: ボタンにマウスホバー時、微細なスケールアップとシャドウ効果確認
- */
-/* TODO: button { transition: var(--transition-transform), var(--transition-shadow); } */
-/* TODO: button:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.15); } */
-/* TODO: button:active { transform: scale(0.98); } */
+ * ============================================ */
+
+/* Base button transitions for smooth interactions */
+button,
+.add-task-button,
+.edit-task-button,
+.delete-task-button,
+.save-task-button,
+.mode-toggle-button {
+	transition: var(--transition-transform), var(--transition-shadow);
+	cursor: pointer;
+}
+
+/* Hover state - subtle scale and shadow */
+button:hover,
+.add-task-button:hover,
+.edit-task-button:hover,
+.delete-task-button:hover,
+.save-task-button:hover,
+.mode-toggle-button:hover {
+	transform: scale(1.05);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Active state - pressed feedback */
+button:active,
+.add-task-button:active,
+.edit-task-button:active,
+.delete-task-button:active,
+.save-task-button:active,
+.mode-toggle-button:active {
+	transform: scale(0.98);
+}

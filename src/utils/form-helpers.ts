@@ -5,6 +5,7 @@
 
 /**
  * フォーム入力値からtodo.txt形式のdescriptionを構築
+ * 既存のdue:/t:タグがdescriptionに含まれている場合は、フォームの値で上書きする
  * @param description 基本のタスク説明
  * @param dueDate 期限日 (due:タグ)
  * @param thresholdDate 開始日 (t:タグ)
@@ -15,7 +16,11 @@ export function buildDescriptionWithTags(
 	dueDate?: string,
 	thresholdDate?: string,
 ): string {
-	let result = description;
+	// 既存のdue:/t:タグを削除してからフォームの値を追加
+	let result = description
+		.replace(/\s*\bdue:\d{4}-\d{2}-\d{2}/g, "")
+		.replace(/\s*\bt:\d{4}-\d{2}-\d{2}/g, "")
+		.trim();
 
 	if (dueDate) {
 		result += ` due:${dueDate}`;
@@ -29,6 +34,7 @@ export function buildDescriptionWithTags(
 
 /**
  * フォーム値からtodo.txt形式の完全なテキストを構築
+ * 既存のdue:/t:タグがdescriptionに含まれている場合は、フォームの値で上書きする
  * @param description タスク説明
  * @param priority 優先度
  * @param dueDate 期限日
@@ -47,7 +53,13 @@ export function buildTextFromFormValues(
 		text += `(${priority}) `;
 	}
 
-	text += description;
+	// 既存のdue:/t:タグを削除してからフォームの値を追加
+	const cleanedDescription = description
+		.replace(/\s*\bdue:\d{4}-\d{2}-\d{2}/g, "")
+		.replace(/\s*\bt:\d{4}-\d{2}-\d{2}/g, "")
+		.trim();
+
+	text += cleanedDescription;
 
 	if (dueDate) {
 		text += ` due:${dueDate}`;

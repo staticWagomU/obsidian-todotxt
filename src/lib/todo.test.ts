@@ -140,11 +140,11 @@ describe("create task with description only", () => {
 	it("説明文のみで新規タスクを作成できる", () => {
 		const result = createTask("Buy milk");
 
-		expect(result.description).toBe("Buy milk");
+		expect(result.description).toBe("Buy milk t:2026-01-08");
 		expect(result.completed).toBe(false);
 		expect(result.projects).toEqual([]);
 		expect(result.contexts).toEqual([]);
-		expect(result.tags).toEqual({});
+		expect(result.tags).toEqual({ t: "2026-01-08" });
 	});
 
 	it("作成日付が自動的に今日の日付になる", () => {
@@ -167,35 +167,39 @@ describe("create task with optional fields", () => {
 	it("優先度を指定して作成できる", () => {
 		const result = createTask("Buy milk", "A");
 
-		expect(result.description).toBe("Buy milk");
+		expect(result.description).toBe("Buy milk t:2026-01-08");
 		expect(result.priority).toBe("A");
 		expect(result.creationDate).toBe("2026-01-08");
+		expect(result.tags).toEqual({ t: "2026-01-08" });
 	});
 
 	it("プロジェクトを指定して作成できる", () => {
 		const result = createTask("Buy milk +GroceryShopping");
 
-		expect(result.description).toBe("Buy milk +GroceryShopping");
+		expect(result.description).toBe("Buy milk +GroceryShopping t:2026-01-08");
 		expect(result.projects).toEqual(["GroceryShopping"]);
 		expect(result.creationDate).toBe("2026-01-08");
+		expect(result.tags).toEqual({ t: "2026-01-08" });
 	});
 
 	it("コンテキストを指定して作成できる", () => {
 		const result = createTask("Buy milk @store");
 
-		expect(result.description).toBe("Buy milk @store");
+		expect(result.description).toBe("Buy milk @store t:2026-01-08");
 		expect(result.contexts).toEqual(["store"]);
 		expect(result.creationDate).toBe("2026-01-08");
+		expect(result.tags).toEqual({ t: "2026-01-08" });
 	});
 
 	it("優先度・プロジェクト・コンテキストをすべて指定して作成できる", () => {
 		const result = createTask("Buy milk +GroceryShopping @store", "B");
 
-		expect(result.description).toBe("Buy milk +GroceryShopping @store");
+		expect(result.description).toBe("Buy milk +GroceryShopping @store t:2026-01-08");
 		expect(result.priority).toBe("B");
 		expect(result.projects).toEqual(["GroceryShopping"]);
 		expect(result.contexts).toEqual(["store"]);
 		expect(result.creationDate).toBe("2026-01-08");
+		expect(result.tags).toEqual({ t: "2026-01-08" });
 	});
 });
 
@@ -213,42 +217,42 @@ describe("create and append task", () => {
 		const content = "";
 		const result = createAndAppendTask(content, "Buy milk");
 
-		expect(result).toBe("2026-01-08 Buy milk");
+		expect(result).toBe("2026-01-08 Buy milk t:2026-01-08");
 	});
 
 	it("既存ファイルに説明文のみのタスクを追加", () => {
 		const content = "(A) 2026-01-01 Call Mom";
 		const result = createAndAppendTask(content, "Buy milk");
 
-		expect(result).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk");
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk t:2026-01-08");
 	});
 
 	it("優先度付きタスクを追加", () => {
 		const content = "(A) 2026-01-01 Call Mom";
 		const result = createAndAppendTask(content, "Buy groceries", "B");
 
-		expect(result).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-08 Buy groceries");
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-08 Buy groceries t:2026-01-08");
 	});
 
 	it("プロジェクト付きタスクを追加", () => {
 		const content = "";
 		const result = createAndAppendTask(content, "Buy milk +GroceryShopping");
 
-		expect(result).toBe("2026-01-08 Buy milk +GroceryShopping");
+		expect(result).toBe("2026-01-08 Buy milk +GroceryShopping t:2026-01-08");
 	});
 
 	it("コンテキスト付きタスクを追加", () => {
 		const content = "";
 		const result = createAndAppendTask(content, "Call Mom @phone");
 
-		expect(result).toBe("2026-01-08 Call Mom @phone");
+		expect(result).toBe("2026-01-08 Call Mom @phone t:2026-01-08");
 	});
 
 	it("優先度・プロジェクト・コンテキストをすべて含むタスクを追加", () => {
 		const content = "(A) 2026-01-01 Call Mom";
 		const result = createAndAppendTask(content, "Write report +Work @office", "C");
 
-		expect(result).toBe("(A) 2026-01-01 Call Mom\n(C) 2026-01-08 Write report +Work @office");
+		expect(result).toBe("(A) 2026-01-01 Call Mom\n(C) 2026-01-08 Write report +Work @office t:2026-01-08");
 	});
 });
 

@@ -80,7 +80,7 @@ export function createTask(
 	dueDate?: string,
 	thresholdDate?: string,
 ): Todo {
-	const today = new Date().toISOString().split("T")[0];
+	const today = new Date().toISOString().split("T")[0]!;
 
 	// Extract projects (+project)
 	const projects: string[] = [];
@@ -107,10 +107,10 @@ export function createTask(
 		tags.due = dueDate;
 		enhancedDescription += ` due:${dueDate}`;
 	}
-	if (thresholdDate) {
-		tags.t = thresholdDate;
-		enhancedDescription += ` t:${thresholdDate}`;
-	}
+	// t: タグ（開始日/しきい値日）: 指定がなければ本日の日付を自動設定
+	const effectiveThresholdDate = thresholdDate ?? today;
+	tags.t = effectiveThresholdDate;
+	enhancedDescription += ` t:${effectiveThresholdDate}`;
 
 	return {
 		completed: false,

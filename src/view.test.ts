@@ -178,7 +178,7 @@ describe("update view after task creation", () => {
 		await handleAdd("Buy milk");
 
 		const updatedData = view.getViewData();
-		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk");
+		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n2026-01-08 Buy milk t:2026-01-08");
 
 		vi.useRealTimers();
 	});
@@ -193,7 +193,7 @@ describe("update view after task creation", () => {
 		await handleAdd("First task");
 
 		const updatedData = view.getViewData();
-		expect(updatedData).toBe("2026-01-08 First task");
+		expect(updatedData).toBe("2026-01-08 First task t:2026-01-08");
 
 		vi.useRealTimers();
 	});
@@ -209,7 +209,7 @@ describe("update view after task creation", () => {
 		await handleAdd("Buy groceries", "B");
 
 		const updatedData = view.getViewData();
-		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-08 Buy groceries");
+		expect(updatedData).toBe("(A) 2026-01-01 Call Mom\n(B) 2026-01-08 Buy groceries t:2026-01-08");
 
 		vi.useRealTimers();
 	});
@@ -224,7 +224,7 @@ describe("update view after task creation", () => {
 		await handleAdd("Write report +Work @office", "C");
 
 		const updatedData = view.getViewData();
-		expect(updatedData).toBe("(C) 2026-01-08 Write report +Work @office");
+		expect(updatedData).toBe("(C) 2026-01-08 Write report +Work @office t:2026-01-08");
 
 		vi.useRealTimers();
 	});
@@ -544,7 +544,7 @@ describe("data persistence after task operations", () => {
 		await handleAdd("New task", "B");
 
 		const savedData = view.getViewData();
-		expect(savedData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task");
+		expect(savedData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task t:2026-01-10");
 
 		vi.useRealTimers();
 	});
@@ -1915,7 +1915,7 @@ describe("integration: UI operation to file save flow", () => {
 
 		// Step 2: Verify data updated in memory
 		const updatedData = view.getViewData();
-		expect(updatedData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task from UI");
+		expect(updatedData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task from UI t:2026-01-10");
 
 		// Step 3: Trigger re-render
 		view.renderTaskList();
@@ -1940,7 +1940,7 @@ describe("integration: UI operation to file save flow", () => {
 		expect(ulAfterReopen?.children.length).toBe(2);
 
 		const finalData = view.getViewData();
-		expect(finalData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task from UI");
+		expect(finalData).toBe("(A) 2026-01-01 Existing task\n(B) 2026-01-10 New task from UI t:2026-01-10");
 
 		vi.useRealTimers();
 	});

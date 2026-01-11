@@ -187,6 +187,38 @@
  * 検証方法: クラス定義とアニメーション動作の確認
  */
 
+/* Checkbox - BEM Element */
+.task-item__checkbox {
+	appearance: none;
+	width: 18px;
+	height: 18px;
+	border: 2px solid var(--color-border);
+	border-radius: 4px;
+	margin-right: 12px;
+	cursor: pointer;
+	transition: var(--transition-default);
+	flex-shrink: 0;
+}
+
+.task-item__checkbox:hover {
+	border-color: var(--color-focus);
+	transform: scale(1.05);
+}
+
+.task-item__checkbox:checked {
+	background-color: var(--color-focus);
+	border-color: var(--color-focus);
+}
+
+.task-item__checkbox:checked::after {
+	content: '✓';
+	display: block;
+	color: white;
+	font-size: 14px;
+	text-align: center;
+	line-height: 14px;
+}
+
 /* Modal form label */
 .modal-form-label {
 	display: block;

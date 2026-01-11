@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 41, pbi: "PBI-041", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 41, pbi: "PBI-041", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -94,13 +94,42 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 40完了、Sprint 41準備)
+// Current Sprint (Sprint 41開始)
 export const currentSprint = {
   sprint: 41,
-  pbi: "TBD",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-041",
+  goal: "タスク操作時の滑らかなフィードバック体験を実現し、直感的なインタラクションを提供する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "タスク行ホバー時に背景色が150-200msでフェードイン",
+      implementation: "task-itemにtransition: background-color 0.15s easeを定義、:hoverで背景色変化",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "ボタンホバー時にスケール/シャドウが微細に変化",
+      implementation: "ボタンクラスにtransition: transform 0.15s, box-shadow 0.15s定義、:hoverでtransform: scale(1.05)適用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "フォーカス時にアウトラインまたはシャドウでハイライト表示（キーボードナビゲーション対応）",
+      implementation: ":focus-visibleでoutline/box-shadowを定義、既存のアクセシビリティ変数を活用",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "完了トグル時にチェックマークがスムーズに出現するアニメーション",
+      implementation: "チェックボックスに@keyframes定義、transition/transformでスケール+フェード効果を実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

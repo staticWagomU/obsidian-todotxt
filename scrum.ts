@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 40, pbi: "PBI-040", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -125,8 +125,12 @@ export const currentSprint = {
       test: "CSS変数が:rootに定義され、フォントサイズ階層（16px/14px/12px）とカラー/トランジション変数が設定されている",
       implementation: ":root定義でカラー（--color-*）・タイポグラフィ（--font-size-*/--line-height-*）・トランジション（--transition-default）変数を追加",
       type: "structural",
-      status: "pending",
-      commits: [],
+      status: "completed",
+      commits: [
+        { phase: "red", message: "test: CSS変数システムの検証基準を文書化" },
+        { phase: "green", message: "feat: CSS変数システムとタイポグラフィ階層を定義" },
+        { phase: "refactor", message: "refactor: CSS変数を論理的にグループ化しコメント改善" },
+      ],
     },
     {
       test: ".task-itemクラスがpadding: 12px 16pxを持ち、タスク間に16px以上の余白があり、BEM命名規則に従う",

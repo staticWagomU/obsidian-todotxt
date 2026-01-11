@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 42, pbi: "PBI-042", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -126,8 +126,12 @@ export const currentSprint = {
       test: "保存ボタンがプライマリカラー（--color-accent）で目立つデザインになっている",
       implementation: ".modal .btn-primaryクラスにアクセントカラーとホバーエフェクトを適用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(modal): プライマリカラー保存ボタンの検証基準を文書化" },
+        { phase: "green" as CommitPhase, message: "feat(modal): プライマリカラー保存ボタンを実装" },
+        { phase: "refactor" as CommitPhase, message: "refactor(modal): セカンダリボタンを追加しボタンデザイン体系完成" },
+      ],
     },
   ] as Subtask[],
 };

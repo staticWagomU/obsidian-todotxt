@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 42, pbi: "PBI-042", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -104,8 +104,12 @@ export const currentSprint = {
       test: "モーダル背景にbackdrop-filter: blur()が適用されている",
       implementation: "CSS変数--modal-backdrop-blurを定義し、.modal-backdropクラスに適用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(modal): モーダル背景ブラー効果の検証基準を文書化" },
+        { phase: "green" as CommitPhase, message: "feat(modal): モーダル背景ブラー効果を実装" },
+        { phase: "refactor" as CommitPhase, message: "refactor(modal): アクセシビリティ配慮を追加しブラー効果を改善" },
+      ],
     },
     {
       test: "入力フィールドのボーダーが細い（1px以下）またはボーダーレスである",

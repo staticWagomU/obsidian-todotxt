@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 41, pbi: "PBI-041", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 4, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 4, impediments: 0 },
   phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
@@ -127,8 +127,12 @@ export const currentSprint = {
       test: "フォーカス時にアウトラインまたはシャドウでハイライト表示（キーボードナビゲーション対応）",
       implementation: ":focus-visibleでoutline/box-shadowを定義、既存のアクセシビリティ変数を活用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: フォーカスハイライト強化 - 滑らかなアニメーション仕様定義" },
+        { phase: "green" as CommitPhase, message: "feat: フォーカスハイライト強化 - 滑らかなアニメーション追加" },
+        { phase: "refactor" as CommitPhase, message: "refactor: フォーカス可能要素のセレクタを明示的に指定" },
+      ],
     },
     {
       test: "完了トグル時にチェックマークがスムーズに出現するアニメーション",

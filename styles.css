@@ -175,6 +175,18 @@
 .priority-Y,
 .priority-Z { color: #fff; background-color: #1e88e5; }
 
+/* ============================================
+ * Checkbox - Custom Style & Animation
+ * ============================================
+ * RED PHASE - 検証基準:
+ * - .task-item__checkboxクラス定義
+ * - border-radius適用（角丸）
+ * - transition: all 0.15s ease適用
+ * - ホバー効果とチェック時アニメーション
+ * - Obsidian標準スタイルとの調和
+ * 検証方法: クラス定義とアニメーション動作の確認
+ */
+
 /* Modal form label */
 .modal-form-label {
 	display: block;

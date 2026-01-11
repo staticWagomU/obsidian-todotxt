@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 42, pbi: "PBI-042", status: "in_progress" as SprintStatus,
+  sprint: { number: 42, pbi: "PBI-042", status: "done" as SprintStatus,
     subtasksCompleted: 4, subtasksTotal: 4, impediments: 0 },
-  phase: { number: 9, status: "in_progress", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
+  phase: { number: 9, status: "done", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）" },
 };
 
 // Product Goal
@@ -56,19 +56,7 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 9: UIデザイン刷新（Apple-likeモダンデザイン）
   //   Sprint 40 PBI-040: ミニマルUIデザイン基盤、626t、done
   //   Sprint 41 PBI-041: 滑らかなインタラクション、626t、done
-  {
-    id: "PBI-042",
-    story: { role: "ユーザー", capability: "モーダルが洗練されたデザインで表示される", benefit: "タスク入力時も一貫した美しい体験が得られる" },
-    acceptanceCriteria: [
-      { criterion: "モーダルに適切な角丸（border-radius: 12-16px）が設定されている", verification: "目視確認: 角丸の統一" },
-      { criterion: "モーダル背景にブラー効果（backdrop-filter）が適用される", verification: "目視確認: 背景がぼかされる" },
-      { criterion: "入力フィールドがフラットデザイン（ボーダーレスまたは細いボーダー）", verification: "目視確認: ミニマルな入力欄" },
-      { criterion: "保存ボタンがプライマリカラーで目立つデザイン", verification: "目視確認: アクセントカラー適用" },
-    ],
-    dependencies: ["PBI-040"],
-    status: "ready",
-    complexity: { functions: 0, estimatedTests: 0, externalDependencies: 0, score: "LOW", subtasks: 4 },
-  },
+  // PBI-042 done (Sprint 42): モーダル洗練デザイン、626t維持、Phase 9完遂
 ];
 
 // Definition of Ready
@@ -156,6 +144,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 9 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）
   { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,CSS変数/BEM/アクセシビリティ確立" },
   { sprint: 41, pbi: "PBI-041", story: "滑らかなインタラクションフィードバック", verification: "passed", notes: "626t,ホバー/フォーカス/チェックマークアニメーション完遂" },
+  { sprint: 42, pbi: "PBI-042", story: "モーダル洗練デザイン", verification: "passed", notes: "626t,角丸/ブラー/入力/ボタン完成,REFACTOR率50%達成,Phase 9完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

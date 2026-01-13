@@ -34,9 +34,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 43, pbi: "PBI-043", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
-  phase: { number: 10, status: "in_progress", sprints: "43-", pbis: "PBI-043〜", goal: "パーサー堅牢化（unified-test-cases.md準拠で品質向上）" },
+  sprint: { number: 44, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 10, status: "done", sprints: "43", pbis: "PBI-043", goal: "パーサー堅牢化完了（unified-test-cases.md準拠、740t達成、+114t）" },
 };
 
 // Product Goal
@@ -75,7 +75,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "実用的な複合パターン8件をテストでカバー", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'practical'" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: { functions: 2, estimatedTests: 82, externalDependencies: 0, score: "HIGH", subtasks: 6 },
     refactorChecklist: ["パーサー関数の責務分離", "正規表現の最適化", "エラーメッセージの改善"],
     implementationPolicies: {
@@ -101,56 +101,13 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 43: パーサー堅牢化)
+// Current Sprint (No active sprint)
 export const currentSprint = {
-  sprint: 43,
-  pbi: "PBI-043",
-  goal: "unified-test-cases.mdに基づく82件のエッジケーステストを追加し、パーサー堅牢化を完了する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "P-01〜P-11: (a)小文字/(1)数字/(AA)複数文字/()空/( A)スペース内包/(A)NoSpace/途中優先度/(Á)アクセント付きが無効、A/M/Z大文字が有効",
-      implementation: "parseTodoLine優先度パース正規表現を検証し、必要に応じて修正",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "D-01〜D-14: スラッシュ形式/ゼロパディングなし/短縮年/無効月日/途中日付/ISO形式T付きが無効、YYYY-MM-DD形式/うるう年/境界日付が有効",
-      implementation: "日付正規表現とバリデーションロジックを検証・修正",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "PR-01〜PR-10, CX-01〜CX-07: 前空白なし/末尾+/@/スペース直後/メールアドレス誤認識が無効、Unicode/複合文字/連続が有効",
-      implementation: "プロジェクト/コンテキスト抽出正規表現を検証・修正（前空白必須対応）",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "T-01〜T-12: キーなし/スペース入りが無効、URL/時刻(コロン複数)/日本語キーが有効（実装ポリシー準拠）",
-      implementation: "タグ抽出ロジックを検証・修正（valueの複数コロン対応）",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "X-01〜X-08 完了マーク: 大文字X/スペースなし/途中xが無効。S-01〜S-12 空白/特殊: 複数スペース保持/トリム/Unicode絵文字対応",
-      implementation: "完了マークと空白処理ロジックを検証・修正",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "R-01〜R-08: 全要素組み合わせ（優先度+日付+プロジェクト+コンテキスト+タグ）の実用シナリオ",
-      implementation: "統合パースロジックを検証し、全要素の正確な組み合わせ処理を確認",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
 
 // Impediments
@@ -166,18 +123,44 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints - Phase 1-8 compacted, see git history for details
+// Completed Sprints - Phase 1-9 compacted, see git history for details
 export const completedSprints: CompletedSprint[] = [
   // Phase 1-7 (Sprint 1-34): 基本機能+ドキュメント+UI実装完了、554t達成
   // Phase 8 (Sprint 35-39): フォームUI強化完了、626t達成(+72t)
   // Phase 9 (Sprint 40-42): UIデザイン刷新完了（Apple-likeモダンデザイン）、626t維持
-  { sprint: 40, pbi: "PBI-040", story: "ミニマルUIデザイン基盤", verification: "passed", notes: "626t,CSS変数/BEM/アクセシビリティ確立" },
-  { sprint: 41, pbi: "PBI-041", story: "滑らかなインタラクションフィードバック", verification: "passed", notes: "626t,ホバー/フォーカス/チェックマークアニメーション完遂" },
-  { sprint: 42, pbi: "PBI-042", story: "モーダル洗練デザイン", verification: "passed", notes: "626t,角丸/ブラー/入力/ボタン完成,REFACTOR率50%達成,Phase 9完遂" },
+  // Phase 10 (Sprint 43): パーサー堅牢化完了（unified-test-cases.md準拠）、740t達成(+114t)
+  { sprint: 43, pbi: "PBI-043", story: "パーサー堅牢化（エッジケース対応）", verification: "passed", notes: "740t(+114t),70エッジケーステスト追加,プロジェクト/コンテキスト前スペース必須化,タグ最初コロン分割対応,Phase 10完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
+  { sprint: 43,
+    workedWell: [
+      "TDD厳守により高品質テスト追加: 全6 subtask、70エッジケーステストを追加し、626t→740t(+114t、18%増)達成",
+      "RED-GREEN-REFACTORサイクル徹底: Subtask 3/4でTDD本来の失敗→修正フローを実践、プロジェクト/コンテキスト前スペース必須化・タグ最初コロン分割の2件の実装修正を実現",
+      "unified-test-cases.md完全準拠: 82件見積もりに対し70件実装（基本パターンは既存テストでカバー済み）、公式仕様ベースの包括的テストカバレッジを確立",
+      "実装ポリシーの明文化と遵守: scrum.ts implementationPoliciesに7項目定義、テストコメントで参照し一貫性を保持",
+      "DoD完全クリア: Tests 740t全パス、Lint/Types/Build全項目合格、品質基準維持",
+      "コミット粒度の適正化: 各subtaskでRED/GREENフェーズをコミット単位で分離、git履歴の可読性向上",
+      "Phase 10完遂: パーサー堅牢化の当初目標を1 Sprintで達成、エッジケース対応基盤確立"
+    ],
+    toImprove: [
+      "Subtask 1/2でRED失敗せず: 既存実装が優先度/日付エッジケースを既に正しく処理しており、TDD本来の失敗駆動開発にならなかった",
+      "テスト数の見積もり乖離: 82件見積もりに対し実際は70件実装、既存テストとの重複分析が不十分だった",
+      "REFACTORフェーズの不実施: 全6 subtaskでREFACTOR不要と判断、既存コード改善機会を逃した可能性",
+      "テスト記述の冗長性: 140テストで1241行（平均8.9行/テスト）、expect文の重複が多く可読性低下",
+      "エッジケース分類の粒度不統一: 優先度11件・日付14件と細分化した一方、空白/特殊文字を20件でまとめ、テスト意図が不明瞭",
+      "実装ポリシーのテスト反映不足: 'フォーマットチェックのみ'ポリシーをD-09〜D-11で明記したが、他テストでは言及なし",
+      "Sprint 42 Action未消化: Phase 9品質指標再定義/Visual Regression Testing導入検討/REFACTOR専念Sprint計画策定が未実行のまま次Sprintへ"
+    ],
+    actions: [
+      "テスト記述テンプレート導入: describe/it/expect構造を標準化し、冗長性削減と可読性向上",
+      "既存テストとの差分分析プロセス確立: 新規テスト計画時に既存カバレッジを可視化、見積もり精度向上",
+      "REFACTORチェックリスト策定: GREEN後に必ず「関数分離/命名改善/重複削除」を評価、機会損失防止",
+      "実装ポリシーの全テスト反映: 各エッジケーステストにポリシー参照コメント追加、一貫性可視化",
+      "Phase 11方向性の決定: 技術的負債解消Sprint/新機能実装/パフォーマンス最適化の3候補から優先度決定",
+      "Sprint 42 Action残件の優先順位付け: 5件未消化Actionをbacklogに転記、優先度評価後にSprint計画"
+    ] },
   { sprint: 42,
     workedWell: [
       "REFACTOR率50%達成（Sprint 41目標実現）: 12コミット中6コミット（角丸/ブラー/入力/ボタン各サブタスクで1-2REFACTORコミット配分）",

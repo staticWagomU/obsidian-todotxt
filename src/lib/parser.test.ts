@@ -1160,3 +1160,81 @@ describe("whitespace and special characters", () => {
 		expect(result.description).toBe("CRLF line");
 	});
 });
+
+describe("practical combined patterns", () => {
+	it("R-01: 全要素組み合わせ - 優先度+作成日+プロジェクト+コンテキスト+タグ", () => {
+		const result = parseTodoLine("(A) 2024-01-13 Submit expense report +Work @computer due:2024-01-20");
+		expect(result.completed).toBe(false);
+		expect(result.priority).toBe("A");
+		expect(result.creationDate).toBe("2024-01-13");
+		expect(result.projects).toEqual(["Work"]);
+		expect(result.contexts).toEqual(["computer"]);
+		expect(result.tags).toEqual({ due: "2024-01-20" });
+		expect(result.description).toBe("Submit expense report +Work @computer due:2024-01-20");
+	});
+
+	it("R-02: 優先度+プロジェクト+コンテキスト+複数タグ", () => {
+		const result = parseTodoLine("(B) Prepare slides +VimConf @focus est:2h owner:hayashi");
+		expect(result.priority).toBe("B");
+		expect(result.projects).toEqual(["VimConf"]);
+		expect(result.contexts).toEqual(["focus"]);
+		expect(result.tags).toEqual({ est: "2h", owner: "hayashi" });
+		expect(result.description).toBe("Prepare slides +VimConf @focus est:2h owner:hayashi");
+	});
+
+	it("R-03: 完了+両日付+プロジェクト+コンテキスト+タグ", () => {
+		const result = parseTodoLine("x 2024-01-10 2024-01-02 Fix prod incident +Ops @oncall ticket:INC1234");
+		expect(result.completed).toBe(true);
+		expect(result.completionDate).toBe("2024-01-10");
+		expect(result.creationDate).toBe("2024-01-02");
+		expect(result.projects).toEqual(["Ops"]);
+		expect(result.contexts).toEqual(["oncall"]);
+		expect(result.tags).toEqual({ ticket: "INC1234" });
+		expect(result.description).toBe("Fix prod incident +Ops @oncall ticket:INC1234");
+	});
+
+	it("R-04: 作成日+プロジェクト+コンテキスト+タグ", () => {
+		const result = parseTodoLine("2024-01-05 Weekly review +Personal @home recur:weekly");
+		expect(result.creationDate).toBe("2024-01-05");
+		expect(result.projects).toEqual(["Personal"]);
+		expect(result.contexts).toEqual(["home"]);
+		expect(result.tags).toEqual({ recur: "weekly" });
+		expect(result.description).toBe("Weekly review +Personal @home recur:weekly");
+	});
+
+	it("R-05: 優先度+作成日+プロジェクト+コンテキスト+アンダースコア含むタグ", () => {
+		const result = parseTodoLine("(C) 2024-01-03 Call Mom +Family @phone note:Remember_to_ask_about_trip");
+		expect(result.priority).toBe("C");
+		expect(result.creationDate).toBe("2024-01-03");
+		expect(result.projects).toEqual(["Family"]);
+		expect(result.contexts).toEqual(["phone"]);
+		expect(result.tags).toEqual({ note: "Remember_to_ask_about_trip" });
+		expect(result.description).toBe("Call Mom +Family @phone note:Remember_to_ask_about_trip");
+	});
+
+	it("R-06: 完了+両日付+プロジェクト+コンテキスト+数値タグ", () => {
+		const result = parseTodoLine("x 2024-01-18 2024-01-10 Bug fix complete +webapp @dev issue:123");
+		expect(result.completed).toBe(true);
+		expect(result.completionDate).toBe("2024-01-18");
+		expect(result.creationDate).toBe("2024-01-10");
+		expect(result.projects).toEqual(["webapp"]);
+		expect(result.contexts).toEqual(["dev"]);
+		expect(result.tags).toEqual({ issue: "123" });
+		expect(result.description).toBe("Bug fix complete +webapp @dev issue:123");
+	});
+
+	it("R-07: 複数プロジェクト+複数コンテキスト", () => {
+		const result = parseTodoLine("Shopping list +home +errands @weekend");
+		expect(result.projects).toEqual(["home", "errands"]);
+		expect(result.contexts).toEqual(["weekend"]);
+		expect(result.description).toBe("Shopping list +home +errands @weekend");
+	});
+
+	it("R-08: プロジェクト+複数コンテキスト+日付タグ", () => {
+		const result = parseTodoLine("Call John about +ProjectX @phone @waiting due:2024-02-01");
+		expect(result.projects).toEqual(["ProjectX"]);
+		expect(result.contexts).toEqual(["phone", "waiting"]);
+		expect(result.tags).toEqual({ due: "2024-02-01" });
+		expect(result.description).toBe("Call John about +ProjectX @phone @waiting due:2024-02-01");
+	});
+});

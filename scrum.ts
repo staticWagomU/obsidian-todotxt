@@ -79,6 +79,22 @@ export const productBacklog: ProductBacklogItem[] = [
     refactorChecklist: ["パーサー関数の責務分離", "正規表現の最適化", "エラーメッセージの改善"],
     // Implementation Policies (7 items): 完了優先度=保持, 日付=フォーマットのみ, Unicode=許可, 空白=トリム, コメント=非対応, タグコロン=最初分割, エラー=パース継続
   },
+  {
+    id: "PBI-044",
+    story: {
+      role: "Obsidianユーザー",
+      capability: "設定からtodo.txtとして扱うファイルパスを指定できる",
+      benefit: "意図しないファイルがtodo.txtビューで開かれることを防ぎ、明示的に管理対象を制御できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "設定画面でファイルパス（複数可）を入力できるUIが存在する", verification: "pnpm build && 手動確認: 設定タブにファイルパス入力欄が表示される" },
+      { criterion: "指定されたパスのファイルのみがtodo.txtビューで開かれる", verification: "pnpm vitest run -- -t 'file path setting'" },
+      { criterion: "パスが未指定の場合は従来通り.txt/.todotxt拡張子で判定する", verification: "pnpm vitest run -- -t 'default extension'" },
+      { criterion: "存在しないパスを指定した場合にエラーにならない", verification: "pnpm vitest run -- -t 'invalid path'" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
 ];
 
 // Definition of Ready

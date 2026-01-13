@@ -968,3 +968,78 @@ describe("project context edge cases", () => {
 		expect(result.description).toBe("@@double Double at");
 	});
 });
+
+describe("tag edge cases", () => {
+	it("T-01: due:2024-12-31 日付値のタグ", () => {
+		const result = parseTodoLine("Task due:2024-12-31");
+		expect(result.tags).toEqual({ due: "2024-12-31" });
+		expect(result.description).toBe("Task due:2024-12-31");
+	});
+
+	it("T-02: pri:A 単一文字値のタグ", () => {
+		const result = parseTodoLine("Task pri:A");
+		expect(result.tags).toEqual({ pri: "A" });
+		expect(result.description).toBe("Task pri:A");
+	});
+
+	it("T-03: a:b 最短のタグ", () => {
+		const result = parseTodoLine("Task a:b");
+		expect(result.tags).toEqual({ a: "b" });
+		expect(result.description).toBe("Task a:b");
+	});
+
+	it("T-04: key:value_with-special 複合文字値のタグ", () => {
+		const result = parseTodoLine("Task key:value_with-special");
+		expect(result.tags).toEqual({ key: "value_with-special" });
+		expect(result.description).toBe("Task key:value_with-special");
+	});
+
+	it("T-05: key: 空値のタグ（実装依存: 抽出しない）", () => {
+		const result = parseTodoLine("Task key:");
+		expect(result.tags).toEqual({});
+		expect(result.description).toBe("Task key:");
+	});
+
+	it("T-06: :value キーなしは無効", () => {
+		const result = parseTodoLine("Task :value");
+		expect(result.tags).toEqual({});
+		expect(result.description).toBe("Task :value");
+	});
+
+	it("T-07: key:val:ue 複数コロン（実装ポリシー: 最初のコロンで分割）", () => {
+		const result = parseTodoLine("Task key:val:ue");
+		expect(result.tags).toEqual({ key: "val:ue" });
+		expect(result.description).toBe("Task key:val:ue");
+	});
+
+	it("T-08: http://example.com URL（実装ポリシー: http://の部分が抽出される）", () => {
+		const result = parseTodoLine("Task http://example.com");
+		// http: が1つのタグとして認識される
+		expect(result.tags.http).toBeDefined();
+		expect(result.description).toBe("Task http://example.com");
+	});
+
+	it("T-09: time:10:30 時刻値（実装ポリシー: 最初のコロンで分割）", () => {
+		const result = parseTodoLine("Task time:10:30");
+		expect(result.tags).toEqual({ time: "10:30" });
+		expect(result.description).toBe("Task time:10:30");
+	});
+
+	it("T-10: key1:val1 key2:val2 複数タグ", () => {
+		const result = parseTodoLine("Task key1:val1 key2:val2");
+		expect(result.tags).toEqual({ key1: "val1", key2: "val2" });
+		expect(result.description).toBe("Task key1:val1 key2:val2");
+	});
+
+	it("T-11: key :value スペース入りは無効", () => {
+		const result = parseTodoLine("Task key :value");
+		expect(result.tags).toEqual({});
+		expect(result.description).toBe("Task key :value");
+	});
+
+	it("T-12: キー:値 日本語タグ（実装ポリシー: Unicode許可）", () => {
+		const result = parseTodoLine("Task キー:値");
+		expect(result.tags).toEqual({ "キー": "値" });
+		expect(result.description).toBe("Task キー:値");
+	});
+});

@@ -192,7 +192,7 @@ export function parseTodoLine(line: string): Todo {
 
 	// Parse tags (key:value format)
 	const tags: Record<string, string> = {};
-	const tagMatches = trimmed.matchAll(/(\S+):(\S+)/g);
+	const tagMatches = trimmed.matchAll(/(\S+?):(\S+)/g);
 	for (const match of tagMatches) {
 		// Skip if it's a project or context (already parsed)
 		if (match[1] && match[2] && !match[0].startsWith("+") && !match[0].startsWith("@")) {

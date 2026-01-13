@@ -9,6 +9,20 @@ import { extractInternalLinks } from "./internallink";
 import { extractExternalLinks } from "./externallink";
 
 /**
+ * Remove projects (+project), contexts (@context), and date tags (due:, t:) from description
+ * Since they will be shown as badges separately
+ */
+export function removeProjectsAndContextsFromDescription(description: string): string {
+	return description
+		.replace(/(?:^|\s)\+\S+/g, "")      // +project
+		.replace(/(?:^|\s)@\S+/g, "")       // @context
+		.replace(/(?:^|\s)due:\S+/g, "")    // due:YYYY-MM-DD
+		.replace(/(?:^|\s)t:\S+/g, "")      // t:YYYY-MM-DD
+		.replace(/\s+/g, " ")
+		.trim();
+}
+
+/**
  * LinkHandler interface for abstracting Obsidian API
  * Allows testing without Obsidian app dependency
  */
@@ -424,6 +438,7 @@ function renderGroupedTasks(
 
 /**
  * Render single task item
+ * モバイル対応のため、要素をグループ化して縦に配置可能な構造にする
  */
 function renderTaskItem(
 	ul: HTMLUListElement,
@@ -440,8 +455,12 @@ function renderTaskItem(
 	const thresholdStyle = getThresholdDateStyle(todo, today);
 	Object.assign(li.style, thresholdStyle);
 
+	// メインコンテンツ行: チェックボックス + 優先度 + 説明
+	const mainRow = li.createEl("div");
+	mainRow.classList.add("task-main-row");
+
 	// Add checkbox
-	const checkbox = li.createEl("input");
+	const checkbox = mainRow.createEl("input");
 	checkbox.type = "checkbox";
 	checkbox.classList.add("task-checkbox");
 	checkbox.checked = todo.completed;
@@ -452,46 +471,65 @@ function renderTaskItem(
 		void onToggle(index);
 	});
 
-	// Add space after checkbox
-	li.appendChild(document.createTextNode(" "));
-
 	// Add priority badge if priority exists
 	if (todo.priority) {
-		const badge = li.createEl("span");
+		const badge = mainRow.createEl("span");
 		badge.classList.add("priority");
 		badge.classList.add(`priority-${todo.priority}`);
 		badge.textContent = todo.priority;
-
-		// Add space after badge
-		li.appendChild(document.createTextNode(" "));
 	}
 
-	li.appendChild(document.createTextNode(todo.description));
+	// Render description without projects/contexts (they will be shown as badges)
+	const cleanDescription = removeProjectsAndContextsFromDescription(todo.description);
+	const descSpan = mainRow.createEl("span");
+	descSpan.classList.add("task-description");
+	descSpan.textContent = cleanDescription;
 
-	// Add recurrence icon if rec: tag exists
-	const recIcon = renderRecurrenceIcon(todo);
-	if (recIcon) {
-		li.appendChild(document.createTextNode(" "));
-		li.appendChild(recIcon);
+	// タグ行: プロジェクト + コンテキスト + 繰り返し + 日付
+	const hasMetaInfo = todo.projects.length > 0 || todo.contexts.length > 0 || todo.tags.rec || getDueDateFromTodo(todo);
+	if (hasMetaInfo) {
+		const tagsRow = li.createEl("div");
+		tagsRow.classList.add("task-item-tags");
+
+		// Add project badges
+		for (const project of todo.projects) {
+			const badge = tagsRow.createEl("span");
+			badge.classList.add("tag-chip", "tag-chip--project");
+			badge.textContent = `+${project}`;
+		}
+
+		// Add context badges
+		for (const context of todo.contexts) {
+			const badge = tagsRow.createEl("span");
+			badge.classList.add("tag-chip", "tag-chip--context");
+			badge.textContent = `@${context}`;
+		}
+
+		// Add recurrence icon if rec: tag exists
+		const recIcon = renderRecurrenceIcon(todo);
+		if (recIcon) {
+			tagsRow.appendChild(recIcon);
+		}
+
+		// Add due date badge if due: tag exists
+		const dueDate = getDueDateFromTodo(todo);
+		if (dueDate) {
+			const dueBadge = tagsRow.createEl("span");
+			dueBadge.classList.add("due-date");
+			dueBadge.textContent = `🔥 ${dueDate.toISOString().split("T")[0]!}`;
+
+			// Apply style based on due date status
+			const dueDateStyle = getDueDateStyle(dueDate, today);
+			Object.assign(dueBadge.style, dueDateStyle);
+		}
 	}
 
-	// Add due date badge if due: tag exists
-	const dueDate = getDueDateFromTodo(todo);
-	if (dueDate) {
-		// Add space before badge
-		li.appendChild(document.createTextNode(" "));
-
-		const dueBadge = li.createEl("span");
-		dueBadge.classList.add("due-date");
-		dueBadge.textContent = dueDate.toISOString().split("T")[0]!;
-
-		// Apply style based on due date status
-		const dueDateStyle = getDueDateStyle(dueDate, today);
-		Object.assign(dueBadge.style, dueDateStyle);
-	}
+	// アクションボタン行
+	const actionsRow = li.createEl("div");
+	actionsRow.classList.add("task-actions-row");
 
 	// Add edit button
-	const editButton = li.createEl("button");
+	const editButton = actionsRow.createEl("button");
 	editButton.classList.add("edit-task-button");
 	editButton.textContent = "編集";
 	editButton.dataset.index = String(index);
@@ -500,7 +538,7 @@ function renderTaskItem(
 	});
 
 	// Add delete button
-	const deleteButton = li.createEl("button");
+	const deleteButton = actionsRow.createEl("button");
 	deleteButton.classList.add("delete-task-button");
 	deleteButton.textContent = "削除";
 	deleteButton.dataset.index = String(index);

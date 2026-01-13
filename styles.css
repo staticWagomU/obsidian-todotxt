@@ -1307,3 +1307,402 @@ button:active {
 		transition: none;
 	}
 }
+
+/* ============================================
+ * Mobile Responsive - Enhanced Support
+ * ============================================
+ * 横幅の狭いモバイルデバイス向けの最適化
+ * ブレークポイント: 768px (タブレット), 480px (スマホ)
+ */
+
+/* --------------------------------------------
+ * Tablet Breakpoint (max-width: 768px)
+ * -------------------------------------------- */
+@media (max-width: 768px) {
+	/* コンテナのパディング調整 */
+	.todotxt-view {
+		padding: var(--spacing-lg);
+	}
+
+	/* コントロールバー - グリッドレイアウト */
+	.control-bar {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--spacing-sm);
+		padding: var(--spacing-md);
+	}
+
+	/* 検索ボックスを全幅に（最上部） */
+	.control-bar .search-box {
+		grid-column: 1 / -1;
+		width: 100%;
+		min-width: unset;
+		order: -1;
+	}
+
+	/* セレクトボックスを2列グリッドに */
+	.control-bar select {
+		width: 100%;
+		min-width: unset;
+	}
+
+	/* FABの位置調整（指が届きやすい位置） */
+	.add-task-button {
+		bottom: 20px;
+		right: 20px;
+		width: 52px;
+		height: 52px;
+		font-size: 26px;
+	}
+
+	/* タスクアイテム - パディング調整 */
+	.todotxt-view ul > li:not(.group-header) {
+		padding: var(--spacing-md);
+		flex-wrap: wrap;
+	}
+
+	/* モバイルでは操作ボタンを常時表示 */
+	.todotxt-view ul > li:not(.group-header) .edit-task-button,
+	.todotxt-view ul > li:not(.group-header) .delete-task-button {
+		opacity: 1;
+	}
+
+	/* モーダルの幅調整 */
+	.modal {
+		min-width: unset;
+		max-width: calc(100vw - 32px);
+		width: calc(100vw - 32px);
+		margin: 16px;
+	}
+
+	/* 日付行を縦積みに */
+	.modal-date-row {
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	/* ヘッダー行を縦積みに */
+	.modal-header-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.modal-header-row .modal-priority-field {
+		width: 100%;
+	}
+}
+
+/* --------------------------------------------
+ * Small Phone Breakpoint (max-width: 480px)
+ * -------------------------------------------- */
+@media (max-width: 480px) {
+	/* さらに小さいパディング */
+	.todotxt-view {
+		padding: var(--spacing-md);
+	}
+
+	/* コントロールバー - すべて縦積み */
+	.control-bar {
+		padding: var(--spacing-sm);
+	}
+
+	.control-bar select {
+		width: 100%;
+		min-width: unset;
+		padding: var(--spacing-md) var(--spacing-lg);
+		padding-right: 36px;
+		font-size: var(--font-size-medium);
+		min-height: 44px; /* タッチターゲット */
+	}
+
+	.control-bar .search-box {
+		padding: var(--spacing-md) var(--spacing-lg);
+		font-size: var(--font-size-medium);
+		min-height: 44px;
+	}
+
+	/* FABをさらに調整 */
+	.add-task-button {
+		bottom: 16px;
+		right: 16px;
+		width: 56px;
+		height: 56px;
+		font-size: 28px;
+		/* 影を強めてタップ領域を明確に */
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	}
+
+	/* タスクアイテム - コンパクト化 */
+	.todotxt-view ul > li:not(.group-header) {
+		padding: var(--spacing-sm) var(--spacing-md);
+		gap: var(--spacing-sm);
+	}
+
+	/* チェックボックスを大きく（タッチしやすく） */
+	.task-checkbox {
+		width: 28px;
+		height: 28px;
+	}
+
+	.task-checkbox:checked::after {
+		font-size: 16px;
+	}
+
+	/* 優先度バッジ調整 */
+	.priority {
+		width: 22px;
+		height: 22px;
+		font-size: 10px;
+	}
+
+	/* 操作ボタンを大きく */
+	.edit-task-button,
+	.delete-task-button {
+		padding: 10px 14px;
+		font-size: var(--font-size-medium);
+		min-height: 44px;
+	}
+
+	.edit-task-button::before,
+	.delete-task-button::before {
+		font-size: 16px;
+	}
+
+	/* グループヘッダー調整 */
+	.group-header {
+		padding: var(--spacing-md) var(--spacing-sm);
+		font-size: var(--font-size-medium);
+	}
+
+	/* モーダルのフルスクリーン風表示 */
+	.modal {
+		max-width: 100vw;
+		width: 100vw;
+		margin: 0;
+		border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+		max-height: 90vh;
+		overflow-y: auto;
+	}
+
+	/* モーダル入力フィールドを大きく */
+	.modal input[type="text"],
+	.modal input[type="date"],
+	.modal textarea,
+	.modal select {
+		padding: var(--spacing-md);
+		font-size: var(--font-size-medium);
+		min-height: 44px;
+	}
+
+	/* 保存ボタンを全幅に */
+	.modal .save-task-button {
+		width: 100%;
+		padding: var(--spacing-md);
+		font-size: var(--font-size-medium);
+		min-height: 48px;
+	}
+
+	/* 日付バッジを小さく */
+	.due-date {
+		font-size: 11px;
+		padding: 2px 8px;
+	}
+
+	/* タグチップを少し小さく */
+	.tag-chip {
+		padding: 6px 10px;
+		font-size: 13px;
+	}
+}
+
+
+/* ============================================
+ * Task Item Structure (Mobile-First)
+ * ============================================
+ * タスクアイテムの構造:
+ * - .task-main-row: チェックボックス + 優先度 + 説明
+ * - .task-item-tags: プロジェクト + コンテキスト + 日付
+ * - .task-actions-row: 編集・削除ボタン
+ */
+
+/* メイン行: 横並び */
+.task-main-row {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	flex: 1;
+	min-width: 0; /* テキスト省略を可能に */
+}
+
+/* タスク説明テキスト */
+.task-description {
+	flex: 1;
+	min-width: 0;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+/* タグチップコンテナ（タスクアイテム内） */
+.task-item-tags {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+	margin-left: var(--spacing-sm);
+}
+
+/* アクションボタン行 - デスクトップではインライン */
+.task-actions-row {
+	display: inline-flex;
+	gap: var(--spacing-xs);
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+/* デスクトップ: フラットな1行レイアウト */
+@media (min-width: 769px) {
+	.todotxt-view ul > li:not(.group-header) {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: var(--spacing-sm);
+	}
+
+	.task-actions-row {
+		opacity: 0;
+		transition: var(--transition-default);
+	}
+
+	.todotxt-view ul > li:not(.group-header):hover .task-actions-row {
+		opacity: 1;
+	}
+}
+
+/* モバイル: 縦積みレイアウト */
+@media (max-width: 768px) {
+	.task-item-tags {
+		display: flex;
+		flex-wrap: wrap;
+		margin-left: 0;
+		margin-top: var(--spacing-sm);
+		padding-left: calc(28px + var(--spacing-sm)); /* チェックボックス分インデント */
+	}
+
+	/* タグチップをモバイル用に調整 */
+	.todotxt-view ul > li:not(.group-header) .tag-chip {
+		padding: 4px 10px;
+		font-size: 12px;
+		min-height: 26px;
+	}
+
+	/* 日付バッジをモバイル用に調整 */
+	.todotxt-view ul > li:not(.group-header) .due-date {
+		padding: 4px 10px;
+		font-size: 12px;
+	}
+
+	/* アクションボタン行をモバイルで常に表示 */
+	.task-actions-row {
+		display: flex;
+		justify-content: flex-end;
+		margin-left: 0;
+		margin-top: var(--spacing-sm);
+		padding-top: var(--spacing-sm);
+		border-top: 1px solid var(--background-modifier-border);
+	}
+}
+
+/* --------------------------------------------
+ * Safe Area Support (iPhone X以降のノッチ対応)
+ * -------------------------------------------- */
+@supports (padding: max(0px)) {
+	@media (max-width: 768px) {
+		.todotxt-view {
+			padding-left: max(var(--spacing-lg), env(safe-area-inset-left));
+			padding-right: max(var(--spacing-lg), env(safe-area-inset-right));
+			padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
+		}
+
+		.add-task-button {
+			right: max(20px, calc(env(safe-area-inset-right) + 16px));
+			bottom: max(20px, calc(env(safe-area-inset-bottom) + 16px));
+		}
+	}
+}
+
+/* --------------------------------------------
+ * Landscape Orientation - Mobile
+ * -------------------------------------------- */
+@media (max-width: 768px) and (orientation: landscape) {
+	/* 横向きでは高さを節約 */
+	.control-bar {
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding: var(--spacing-sm) var(--spacing-md);
+	}
+
+	.control-bar select {
+		flex: 1;
+		min-width: 120px;
+	}
+
+	.control-bar .search-box {
+		flex: 2;
+		order: 0;
+	}
+
+	/* タスクアイテムをコンパクトに */
+	.todotxt-view ul > li:not(.group-header) {
+		padding: var(--spacing-sm) var(--spacing-md);
+	}
+
+	/* モーダルの高さを制限 */
+	.modal {
+		max-height: 80vh;
+	}
+}
+
+/* --------------------------------------------
+ * Touch Device Optimizations
+ * -------------------------------------------- */
+@media (hover: none) and (pointer: coarse) {
+	/* タッチデバイスでは常に操作ボタンを表示 */
+	.todotxt-view ul > li:not(.group-header) .edit-task-button,
+	.todotxt-view ul > li:not(.group-header) .delete-task-button {
+		opacity: 1;
+	}
+
+	/* ホバー効果の代わりにアクティブ状態を強調 */
+	.task-checkbox:active {
+		transform: scale(0.95);
+		background: rgba(var(--interactive-accent-rgb), 0.15);
+	}
+
+	.todotxt-view ul > li:not(.group-header):active {
+		background: var(--background-modifier-hover);
+	}
+
+	/* ボタンのアクティブ状態 */
+	.edit-task-button:active,
+	.delete-task-button:active {
+		transform: scale(0.95);
+	}
+
+	/* より大きなタップ領域 */
+	.task-checkbox {
+		min-width: 44px;
+		min-height: 44px;
+		/* 視覚的サイズは変えずにタップ領域を拡大 */
+		position: relative;
+	}
+
+	.task-checkbox::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 44px;
+		height: 44px;
+	}
+}

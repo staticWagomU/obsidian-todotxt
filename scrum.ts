@@ -95,6 +95,23 @@ export const productBacklog: ProductBacklogItem[] = [
     dependencies: [],
     status: "draft" as PBIStatus,
   },
+  {
+    id: "PBI-045",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "完了したタスクをdone.txtファイルにアーカイブできる",
+      benefit: "メインのtodo.txtファイルをスリムに保ちつつ、完了履歴を保持できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "UIに「アーカイブ」ボタンが存在し、クリックで完了タスクをdone.txtに移動する", verification: "pnpm build && 手動確認: アーカイブボタンが機能する" },
+      { criterion: "done.txtはtodo.txtと同じディレクトリに作成される", verification: "pnpm vitest run -- -t 'archive same directory'" },
+      { criterion: "アーカイブ後、元ファイルから完了タスクが削除される", verification: "pnpm vitest run -- -t 'archive removes completed'" },
+      { criterion: "done.txtが既に存在する場合は末尾に追記される", verification: "pnpm vitest run -- -t 'archive append'" },
+      { criterion: "完了タスクがない場合はアーカイブボタンが無効化される", verification: "pnpm vitest run -- -t 'archive disabled'" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
 ];
 
 // Definition of Ready

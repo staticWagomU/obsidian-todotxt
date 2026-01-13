@@ -13,10 +13,11 @@ type CommitPhase = "red" | "green" | "refactor";
 interface AcceptanceCriterion { criterion: string; verification: string; }
 interface UserStory { role: string; capability: string; benefit: string; }
 interface Complexity { functions: number; estimatedTests: number; externalDependencies: number; score: "LOW" | "MEDIUM" | "HIGH"; subtasks: number; }
+interface ImplementationPolicy { policy: string; rationale: string; }
 interface ProductBacklogItem {
   id: string; story: UserStory; acceptanceCriteria: AcceptanceCriterion[];
   dependencies: string[]; status: PBIStatus;
-  complexity?: Complexity; refactorChecklist?: string[];
+  complexity?: Complexity; refactorChecklist?: string[]; implementationPolicies?: Record<string, ImplementationPolicy>;
 }
 interface Commit { phase: CommitPhase; message: string; }
 interface Subtask {
@@ -74,9 +75,18 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "実用的な複合パターン8件をテストでカバー", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'practical'" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
     complexity: { functions: 2, estimatedTests: 82, externalDependencies: 0, score: "HIGH", subtasks: 6 },
     refactorChecklist: ["パーサー関数の責務分離", "正規表現の最適化", "エラーメッセージの改善"],
+    implementationPolicies: {
+      "完了タスクの優先度": { policy: "保持する", rationale: "既存実装(L140-143)は完了フラグに関係なくpriorityをパースしている。公式仕様では削除推奨だが、互換性のため保持" },
+      "日付のバリデーション": { policy: "フォーマットチェックのみ", rationale: "YYYY-MM-DD正規表現による形式検証のみ実施。2024-02-30等の無効日付は本文扱い（パース時エラーとしない）" },
+      "Unicode対応": { policy: "許可する", rationale: "\\S+パターンで非空白文字全体を受け入れる実装(L178,L186)により、日本語・絵文字などUnicodeをプロジェクト/コンテキスト/タグ名に許可" },
+      "先頭・末尾の空白": { policy: "トリムする", rationale: "L131でtrim()実施。ただしdescription途中の複数スペースは保持" },
+      "コメント行": { policy: "対応しない", rationale: "todo.txt公式仕様に記載なし。現在の実装にコメント行処理が存在せず、`#`で始まる行は通常タスクとして扱う" },
+      "タグのvalueにコロン": { policy: "最初のコロンで分割", rationale: "正規表現/(\S+):(\S+)/gにより、key:val:ue → key='val:ue'として2番目のキャプチャグループに残りを含む。時刻値(10:30)やURL(http://...)に対応" },
+      "エラーハンドリング": { policy: "無効な行もパース", rationale: "現在の実装は例外スローせず、どんな行もTodoオブジェクトとして返す。空行はparseTodoTxtレベル(L12-14)でスキップ" },
+    },
   },
 ];
 

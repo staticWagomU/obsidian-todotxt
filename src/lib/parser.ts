@@ -174,16 +174,16 @@ export function parseTodoLine(line: string): Todo {
 	const projects: string[] = [];
 	const contexts: string[] = [];
 
-	// +project (+ followed by non-whitespace)
-	const projectMatches = trimmed.matchAll(/\+(\S+)/g);
+	// +project (+ followed by non-whitespace, with space or start-of-line before)
+	const projectMatches = trimmed.matchAll(/(?:^|\s)\+(\S+)/g);
 	for (const match of projectMatches) {
 		if (match[1]) {
 			projects.push(match[1]);
 		}
 	}
 
-	// @context (@ followed by non-whitespace)
-	const contextMatches = trimmed.matchAll(/@(\S+)/g);
+	// @context (@ followed by non-whitespace, with space or start-of-line before)
+	const contextMatches = trimmed.matchAll(/(?:^|\s)@(\S+)/g);
 	for (const match of contextMatches) {
 		if (match[1]) {
 			contexts.push(match[1]);

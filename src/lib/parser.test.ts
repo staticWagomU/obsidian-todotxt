@@ -862,3 +862,109 @@ describe("date edge cases", () => {
 		expect(result.description).toBe("Only completion");
 	});
 });
+
+describe("project context edge cases", () => {
+	// Project edge cases (PR-01 to PR-10)
+	it("PR-01: +a 最短のプロジェクト名", () => {
+		const result = parseTodoLine("+a Minimal");
+		expect(result.projects).toEqual(["a"]);
+		expect(result.description).toBe("+a Minimal");
+	});
+
+	it("PR-02: +Project_Name-123 複合文字を含むプロジェクト", () => {
+		const result = parseTodoLine("+Project_Name-123 Complex");
+		expect(result.projects).toEqual(["Project_Name-123"]);
+		expect(result.description).toBe("+Project_Name-123 Complex");
+	});
+
+	it("PR-03: +日本語 Unicodeプロジェクト名（実装ポリシー: 許可）", () => {
+		const result = parseTodoLine("+日本語 Japanese");
+		expect(result.projects).toEqual(["日本語"]);
+		expect(result.description).toBe("+日本語 Japanese");
+	});
+
+	it("PR-04: +UPPERCASE 大文字プロジェクト", () => {
+		const result = parseTodoLine("+UPPERCASE Upper");
+		expect(result.projects).toEqual(["UPPERCASE"]);
+		expect(result.description).toBe("+UPPERCASE Upper");
+	});
+
+	it("PR-05: +lowercase 小文字プロジェクト", () => {
+		const result = parseTodoLine("+lowercase Lower");
+		expect(result.projects).toEqual(["lowercase"]);
+		expect(result.description).toBe("+lowercase Lower");
+	});
+
+	it("PR-06: + スペース直後は無効", () => {
+		const result = parseTodoLine("Task + invalid");
+		expect(result.projects).toEqual([]);
+		expect(result.description).toBe("Task + invalid");
+	});
+
+	it("PR-07: Task+ 末尾+は無効（前にスペースなし）", () => {
+		const result = parseTodoLine("Task+ Trailing");
+		expect(result.projects).toEqual([]);
+		expect(result.description).toBe("Task+ Trailing");
+	});
+
+	it("PR-08: Task+inline 前にスペースなしは無効", () => {
+		const result = parseTodoLine("Task+inline No space");
+		expect(result.projects).toEqual([]);
+		expect(result.description).toBe("Task+inline No space");
+	});
+
+	it("PR-09: +A+B 連続+は1つのプロジェクトとして認識", () => {
+		const result = parseTodoLine("+A+B Chained");
+		expect(result.projects).toEqual(["A+B"]);
+		expect(result.description).toBe("+A+B Chained");
+	});
+
+	it("PR-10: ++double ダブルプラスは1つのプロジェクトとして認識", () => {
+		const result = parseTodoLine("++double Double plus");
+		expect(result.projects).toEqual(["+double"]);
+		expect(result.description).toBe("++double Double plus");
+	});
+
+	// Context edge cases (CX-01 to CX-07)
+	it("CX-01: @a 最短のコンテキスト名", () => {
+		const result = parseTodoLine("@a Minimal");
+		expect(result.contexts).toEqual(["a"]);
+		expect(result.description).toBe("@a Minimal");
+	});
+
+	it("CX-02: @home_office-2024 複合文字を含むコンテキスト", () => {
+		const result = parseTodoLine("@home_office-2024 Complex");
+		expect(result.contexts).toEqual(["home_office-2024"]);
+		expect(result.description).toBe("@home_office-2024 Complex");
+	});
+
+	it("CX-03: @会社 Unicodeコンテキスト名（実装ポリシー: 許可）", () => {
+		const result = parseTodoLine("@会社 Japanese");
+		expect(result.contexts).toEqual(["会社"]);
+		expect(result.description).toBe("@会社 Japanese");
+	});
+
+	it("CX-04: @ スペース直後は無効", () => {
+		const result = parseTodoLine("Task @ invalid");
+		expect(result.contexts).toEqual([]);
+		expect(result.description).toBe("Task @ invalid");
+	});
+
+	it("CX-05: email@example.com メールアドレスは無効（前にスペースなし）", () => {
+		const result = parseTodoLine("email@example.com Email");
+		expect(result.contexts).toEqual([]);
+		expect(result.description).toBe("email@example.com Email");
+	});
+
+	it("CX-06: Task@inline 前にスペースなしは無効", () => {
+		const result = parseTodoLine("Task@inline No space");
+		expect(result.contexts).toEqual([]);
+		expect(result.description).toBe("Task@inline No space");
+	});
+
+	it("CX-07: @@double ダブルアットは1つのコンテキストとして認識", () => {
+		const result = parseTodoLine("@@double Double at");
+		expect(result.contexts).toEqual(["@double"]);
+		expect(result.description).toBe("@@double Double at");
+	});
+});

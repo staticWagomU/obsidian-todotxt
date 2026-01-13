@@ -102,6 +102,14 @@ export function renderRecurrenceIcon(todo: Todo): HTMLElement | null {
 }
 
 /**
+ * Default settings that can be passed from plugin settings
+ */
+export interface DefaultFilterSettings {
+	sort?: string;
+	group?: string;
+}
+
+/**
  * Render task list in contentEl
  */
 export function renderTaskList(
@@ -111,9 +119,10 @@ export function renderTaskList(
 	onToggle: (index: number) => Promise<void>,
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
+	defaultSettings?: DefaultFilterSettings,
 ): void {
-	// Save current filter state before clearing
-	const filterState = saveFilterState(contentEl);
+	// Save current filter state before clearing (with default settings fallback)
+	const filterState = saveFilterState(contentEl, defaultSettings);
 
 	contentEl.empty();
 
@@ -124,7 +133,7 @@ export function renderTaskList(
 	renderAddButton(contentEl, onAddTask);
 
 	// Add control bar with priority filter and search box
-	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete);
+	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings);
 
 	const ul = contentEl.createEl("ul");
 
@@ -157,18 +166,23 @@ export function renderTaskList(
 
 /**
  * Save current filter state from DOM
+ * Falls back to defaultSettings if DOM elements don't exist (first render)
  */
-function saveFilterState(contentEl: HTMLElement): FilterState {
+function saveFilterState(contentEl: HTMLElement, defaultSettings?: DefaultFilterSettings): FilterState {
 	const previousPriorityFilter = contentEl.querySelector("select.priority-filter");
 	const previousSearchBox = contentEl.querySelector("input.search-box");
 	const previousGroupSelector = contentEl.querySelector("select.group-selector");
 	const previousSortSelector = contentEl.querySelector("select.sort-selector");
 
+	// Use DOM value if exists, otherwise fall back to default settings, then to hardcoded defaults
+	const defaultSort = defaultSettings?.sort || "default";
+	const defaultGroup = defaultSettings?.group || "none";
+
 	return {
 		priority: (previousPriorityFilter instanceof HTMLSelectElement ? previousPriorityFilter.value : null) || "all",
 		search: (previousSearchBox instanceof HTMLInputElement ? previousSearchBox.value : null) || "",
-		group: (previousGroupSelector instanceof HTMLSelectElement ? previousGroupSelector.value : null) || "none",
-		sort: (previousSortSelector instanceof HTMLSelectElement ? previousSortSelector.value : null) || "default",
+		group: (previousGroupSelector instanceof HTMLSelectElement ? previousGroupSelector.value : null) || defaultGroup,
+		sort: (previousSortSelector instanceof HTMLSelectElement ? previousSortSelector.value : null) || defaultSort,
 	};
 }
 
@@ -223,11 +237,12 @@ function renderControlBar(
 	onToggle: (index: number) => Promise<void>,
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
+	defaultSettings?: DefaultFilterSettings,
 ): void {
 	const controlBar = contentEl.createEl("div");
 	controlBar.classList.add("control-bar");
 
-	const onFilterChange = () => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete);
+	const onFilterChange = () => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete, defaultSettings);
 
 	// Render priority filter dropdown
 	renderPriorityFilterDropdown(controlBar, filterState.priority, onFilterChange);

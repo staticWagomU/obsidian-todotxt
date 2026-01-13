@@ -3,6 +3,15 @@ import type { WorkspaceLeaf } from "obsidian";
 import { TodotxtView } from "../view";
 import type { FilterState } from "../lib/rendering";
 import { DEFAULT_FILTER_STATE } from "../lib/rendering";
+import type TodotxtPlugin from "../main";
+import { DEFAULT_SETTINGS } from "../settings";
+
+// Create mock plugin for tests
+function createMockPlugin(): TodotxtPlugin {
+	return {
+		settings: { ...DEFAULT_SETTINGS },
+	} as TodotxtPlugin;
+}
 
 // Mock Obsidian modules
 vi.mock("obsidian", () => {
@@ -58,6 +67,27 @@ vi.mock("obsidian", () => {
 			open(): void {}
 			close(): void {}
 		},
+		PluginSettingTab: class {
+			app: unknown;
+			plugin: unknown;
+			containerEl: HTMLElement;
+
+			constructor(app: unknown, plugin: unknown) {
+				this.app = app;
+				this.plugin = plugin;
+				this.containerEl = document.createElement("div");
+			}
+
+			display(): void {}
+			hide(): void {}
+		},
+		Setting: class {
+			constructor(_containerEl: HTMLElement) {}
+			setName(_name: string) { return this; }
+			setDesc(_desc: string) { return this; }
+			addDropdown(_cb: unknown) { return this; }
+			addToggle(_cb: unknown) { return this; }
+		},
 	};
 });
 
@@ -89,7 +119,7 @@ describe("FilterState type", () => {
 	it("コントロールバーの各要素が適切なCSS classを持つ", () => {
 		// Setup
 		const mockLeaf = { view: null };
-		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 		view.setViewData("Task 1", false);
 
 		// Verify: Control bar exists with proper class
@@ -106,7 +136,7 @@ describe("FilterState type", () => {
 	it("コントロールバーの要素が期待される順序で配置される", () => {
 		// Setup
 		const mockLeaf = { view: null };
-		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 		view.setViewData("Task 1", false);
 
 		// Verify: Control bar elements are in correct order
@@ -129,7 +159,7 @@ describe("priority filter dropdown", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("優先度フィルタドロップダウンが表示される", () => {
@@ -268,7 +298,7 @@ describe("text search box", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("テキスト検索ボックスが表示される", () => {
@@ -401,7 +431,7 @@ describe("group selector", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("グループ化セレクタが表示される", () => {
@@ -517,7 +547,7 @@ describe("sort selector", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("ソートセレクタが表示される", () => {
@@ -604,7 +634,7 @@ describe("integration: filter + sort + group combination", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("優先度フィルタ+検索+ソートの組み合わせが正しく動作する", () => {
@@ -700,7 +730,7 @@ describe("integration: CRUD operations with filter state", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("優先度フィルタ適用後のタスク追加で状態が維持される", async () => {

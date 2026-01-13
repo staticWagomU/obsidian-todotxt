@@ -8,8 +8,8 @@ export default class TodotxtPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// Register TodotxtView
-		this.registerView(VIEW_TYPE_TODOTXT, (leaf) => new TodotxtView(leaf));
+		// Register TodotxtView with plugin instance for settings access
+		this.registerView(VIEW_TYPE_TODOTXT, (leaf) => new TodotxtView(leaf, this));
 
 		// Register file extensions
 		this.registerExtensions(["txt", "todotxt"], VIEW_TYPE_TODOTXT);

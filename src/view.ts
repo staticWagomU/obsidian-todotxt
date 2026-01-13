@@ -4,13 +4,17 @@ import { type Todo } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler } from "./lib/handlers";
-import { renderTaskList } from "./lib/rendering";
+import { renderTaskList, type DefaultFilterSettings } from "./lib/rendering";
+import type TodotxtPlugin from "./main";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
 export class TodotxtView extends TextFileView {
-	constructor(leaf: WorkspaceLeaf) {
+	plugin: TodotxtPlugin;
+
+	constructor(leaf: WorkspaceLeaf, plugin: TodotxtPlugin) {
 		super(leaf);
+		this.plugin = plugin;
 	}
 
 	getViewType(): string {
@@ -47,6 +51,26 @@ export class TodotxtView extends TextFileView {
 	}
 
 	/**
+	 * Get default filter settings from plugin settings
+	 */
+	private getDefaultFilterSettings(): DefaultFilterSettings {
+		const settings = this.plugin.settings;
+		// Map plugin settings to filter settings
+		// settings.defaultSortOrder: "completion" | "priority" | "date" | "alphabetical"
+		// FilterState.sort: "default" | "completion"
+		const sortMapping: Record<string, string> = {
+			completion: "completion",
+			priority: "default",
+			date: "default",
+			alphabetical: "default",
+		};
+		return {
+			sort: sortMapping[settings.defaultSortOrder] || "default",
+			group: settings.defaultGrouping,
+		};
+	}
+
+	/**
 	 * Render task list in contentEl
 	 * Public for testing compatibility
 	 */
@@ -58,6 +82,7 @@ export class TodotxtView extends TextFileView {
 			getToggleHandler(() => this.data, (data, clear) => this.setViewData(data, clear)),
 			(index) => this.openEditTaskModal(index),
 			getDeleteHandler(() => this.data, (data, clear) => this.setViewData(data, clear)),
+			this.getDefaultFilterSettings(),
 		);
 	}
 

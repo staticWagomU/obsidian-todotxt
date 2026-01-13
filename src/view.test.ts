@@ -2,6 +2,15 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { WorkspaceLeaf } from "obsidian";
 import { TodotxtView } from "./view";
 import { parseTodoTxt } from "./lib/parser";
+import type TodotxtPlugin from "./main";
+import { DEFAULT_SETTINGS } from "./settings";
+
+// Create mock plugin for tests
+function createMockPlugin(): TodotxtPlugin {
+	return {
+		settings: { ...DEFAULT_SETTINGS },
+	} as TodotxtPlugin;
+}
 
 // Mock Obsidian modules
 vi.mock("obsidian", () => {
@@ -58,6 +67,27 @@ vi.mock("obsidian", () => {
 			open(): void {}
 			close(): void {}
 		},
+		PluginSettingTab: class {
+			app: unknown;
+			plugin: unknown;
+			containerEl: HTMLElement;
+
+			constructor(app: unknown, plugin: unknown) {
+				this.app = app;
+				this.plugin = plugin;
+				this.containerEl = document.createElement("div");
+			}
+
+			display(): void {}
+			hide(): void {}
+		},
+		Setting: class {
+			constructor(_containerEl: HTMLElement) {}
+			setName(_name: string) { return this; }
+			setDesc(_desc: string) { return this; }
+			addDropdown(_cb: unknown) { return this; }
+			addToggle(_cb: unknown) { return this; }
+		},
 	};
 });
 
@@ -69,7 +99,7 @@ describe("update view after toggle", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("トグル操作でView内のデータが更新される", async () => {
@@ -164,7 +194,7 @@ describe("update view after task creation", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("新規タスクを追加してViewのデータが更新される", async () => {
@@ -238,7 +268,7 @@ describe("update view after task edit", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("編集後のView更新（モック）", async () => {
@@ -302,7 +332,7 @@ describe("update view after task deletion", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("削除ハンドラを取得して中間タスクを削除できる", async () => {
@@ -367,7 +397,7 @@ describe("setViewData preserves file data correctly", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("clear=trueでもファイルデータを保持する", () => {
@@ -410,7 +440,7 @@ describe("clear parameter is optimization flag only", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("clear=trueでもclear=falseでも同じデータ保持動作をする", () => {
@@ -465,7 +495,7 @@ describe("getViewData returns correct data for file save", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("setViewDataで設定したデータをgetViewDataで取得できる", () => {
@@ -530,7 +560,7 @@ describe("data persistence after task operations", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("タスク追加後にファイル保存可能なデータが保持される", async () => {
@@ -661,7 +691,7 @@ describe("integration test - data preserved on file reopen", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("ファイルを開く→編集→再度開く: データが保持される", async () => {
@@ -795,7 +825,7 @@ describe("render task list in view", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("空のtodo.txtファイルを読み込んでも例外が発生せず、空のリストが描画される", () => {
@@ -1333,7 +1363,7 @@ describe("render due date badge", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("due:タグを持つタスクに期限日バッジが表示される", () => {
@@ -1439,7 +1469,7 @@ describe("render due date badge with style", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("期限切れタスク(overdue)の期限日バッジが赤色で表示される", () => {
@@ -1562,7 +1592,7 @@ describe("render threshold date grayout", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("t:未来日付のタスク行がグレーアウト表示される(not_ready)", () => {
@@ -1682,7 +1712,7 @@ describe("integration: due and threshold visual display", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("due:とt:の両方を持つタスクで両方の視覚的フィードバックが適用される", () => {
@@ -1842,7 +1872,7 @@ describe("integration: UI operation to file save flow", () => {
 		mockLeaf = {
 			view: null,
 		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
 	it("チェックボックスクリック→データ更新→再レンダリング→UIに反映される完全フロー", async () => {
@@ -1884,12 +1914,13 @@ describe("integration: UI operation to file save flow", () => {
 		view.renderTaskList();
 
 		// Step 5: Verify UI reflects the saved data
+		// Note: With defaultSortOrder="completion", completed tasks are sorted to the end
 		const ulAfterReopen = container.querySelector("ul");
-		const secondLiAfterReopen = ulAfterReopen?.children[1] as HTMLLIElement;
-		const checkboxAfterReopen = secondLiAfterReopen.querySelector("input[type='checkbox']") as HTMLInputElement;
+		const lastLiAfterReopen = ulAfterReopen?.children[2] as HTMLLIElement; // Completed task moved to end due to sort
+		const checkboxAfterReopen = lastLiAfterReopen.querySelector("input[type='checkbox']") as HTMLInputElement;
 
 		expect(checkboxAfterReopen.checked).toBe(true);
-		expect(secondLiAfterReopen.classList.contains("completed")).toBe(true);
+		expect(lastLiAfterReopen.classList.contains("completed")).toBe(true);
 
 		vi.useRealTimers();
 	});

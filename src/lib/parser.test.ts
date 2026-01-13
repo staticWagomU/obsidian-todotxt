@@ -1043,3 +1043,120 @@ describe("tag edge cases", () => {
 		expect(result.description).toBe("Task キー:値");
 	});
 });
+
+describe("completion mark edge cases", () => {
+	it("X-01: x Task 正常な完了マーク", () => {
+		const result = parseTodoLine("x Task");
+		expect(result.completed).toBe(true);
+		expect(result.description).toBe("Task");
+	});
+
+	it("X-02: X Task 大文字Xは無効", () => {
+		const result = parseTodoLine("X Task uppercase");
+		expect(result.completed).toBe(false);
+		expect(result.description).toBe("X Task uppercase");
+	});
+
+	it("X-03: xTask スペースなしは無効", () => {
+		const result = parseTodoLine("xTask no space");
+		expect(result.completed).toBe(false);
+		expect(result.description).toBe("xTask no space");
+	});
+
+	it("X-04: ' x Leading space' 先頭スペースはトリムされ完了マークとして有効", () => {
+		const result = parseTodoLine(" x Leading space");
+		// trim()されるため "x Leading space" → 完了マークとして認識
+		expect(result.completed).toBe(true);
+		expect(result.description).toBe("Leading space");
+	});
+
+	it("X-05: Task x middle 途中のxは無効", () => {
+		const result = parseTodoLine("Task x middle");
+		expect(result.completed).toBe(false);
+		expect(result.description).toBe("Task x middle");
+	});
+
+	it("X-06: xx Double x 重複xは無効", () => {
+		const result = parseTodoLine("xx Double x");
+		expect(result.completed).toBe(false);
+		expect(result.description).toBe("xx Double x");
+	});
+
+	it("X-07: xylophone lesson 公式例（xで始まる単語）", () => {
+		const result = parseTodoLine("xylophone lesson");
+		expect(result.completed).toBe(false);
+		expect(result.description).toBe("xylophone lesson");
+	});
+
+	it("X-08: x\\t2024-01-01 タブ後は無効（スペース必須）", () => {
+		const result = parseTodoLine("x\t2024-01-01 Tab after");
+		// 正規表現 /^x\s/ は半角スペース1文字のみマッチ
+		expect(result.completed).toBe(false);
+		expect(result.description).toContain("x");
+	});
+});
+
+describe("whitespace and special characters", () => {
+	it("S-01: Task  double  space 複数スペースは保持", () => {
+		const result = parseTodoLine("Task  double  space");
+		expect(result.description).toBe("Task  double  space");
+	});
+
+	it("S-02: '  Leading spaces' 先頭スペースはトリム", () => {
+		const result = parseTodoLine("  Leading spaces");
+		expect(result.description).toBe("Leading spaces");
+	});
+
+	it("S-03: 'Trailing spaces  ' 末尾スペースはトリム", () => {
+		const result = parseTodoLine("Trailing spaces  ");
+		expect(result.description).toBe("Trailing spaces");
+	});
+
+	it("S-04: Task\\ttab タブの扱い（実装依存）", () => {
+		const result = parseTodoLine("Task\ttab");
+		// タブはそのまま保持される可能性
+		expect(result.description).toContain("Task");
+	});
+
+	it("S-05: Task \"quotes\" here ダブルクォート", () => {
+		const result = parseTodoLine('Task "quotes" here');
+		expect(result.description).toBe('Task "quotes" here');
+	});
+
+	it("S-06: Task 'apostrophe' here シングルクォート", () => {
+		const result = parseTodoLine("Task 'apostrophe' here");
+		expect(result.description).toBe("Task 'apostrophe' here");
+	});
+
+	it("S-07: Task `backtick` here バッククォート", () => {
+		const result = parseTodoLine("Task `backtick` here");
+		expect(result.description).toBe("Task `backtick` here");
+	});
+
+	it("S-08: Task <html> tags HTMLタグ", () => {
+		const result = parseTodoLine("Task <html> tags");
+		expect(result.description).toBe("Task <html> tags");
+	});
+
+	it("S-09: Task & ampersand アンパサンド", () => {
+		const result = parseTodoLine("Task & ampersand");
+		expect(result.description).toBe("Task & ampersand");
+	});
+
+	it("S-10: Task 日本語 🎉 emoji Unicode・絵文字", () => {
+		const result = parseTodoLine("Task 日本語 🎉 emoji");
+		expect(result.description).toBe("Task 日本語 🎉 emoji");
+	});
+
+	it("S-11: 全角　スペース +P 全角スペース（実装依存）", () => {
+		const result = parseTodoLine("全角　スペース +P");
+		// 全角スペースの扱いは実装依存
+		expect(result.description).toContain("全角");
+	});
+
+	it("S-12: CRLF line\\r\\n Windows改行（実装依存）", () => {
+		const result = parseTodoLine("CRLF line\r\n");
+		// trim()により末尾の\r\nは削除される
+		expect(result.description).toBe("CRLF line");
+	});
+});

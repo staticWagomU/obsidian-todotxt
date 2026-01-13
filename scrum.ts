@@ -34,8 +34,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 43, pbi: "PBI-043", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 43, pbi: "PBI-043", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
   phase: { number: 10, status: "in_progress", sprints: "43-", pbis: "PBI-043〜", goal: "パーサー堅牢化（unified-test-cases.md準拠で品質向上）" },
 };
 
@@ -105,9 +105,52 @@ export const definitionOfReady = {
 export const currentSprint = {
   sprint: 43,
   pbi: "PBI-043",
-  goal: "unified-test-cases.mdに基づくパーサーテスト網羅とパーサー堅牢化",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  goal: "unified-test-cases.mdに基づく82件のエッジケーステストを追加し、パーサー堅牢化を完了する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "P-01〜P-11: (a)小文字/(1)数字/(AA)複数文字/()空/( A)スペース内包/(A)NoSpace/途中優先度/(Á)アクセント付きが無効、A/M/Z大文字が有効",
+      implementation: "parseTodoLine優先度パース正規表現を検証し、必要に応じて修正",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "D-01〜D-14: スラッシュ形式/ゼロパディングなし/短縮年/無効月日/途中日付/ISO形式T付きが無効、YYYY-MM-DD形式/うるう年/境界日付が有効",
+      implementation: "日付正規表現とバリデーションロジックを検証・修正",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "PR-01〜PR-10, CX-01〜CX-07: 前空白なし/末尾+/@/スペース直後/メールアドレス誤認識が無効、Unicode/複合文字/連続が有効",
+      implementation: "プロジェクト/コンテキスト抽出正規表現を検証・修正（前空白必須対応）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "T-01〜T-12: キーなし/スペース入りが無効、URL/時刻(コロン複数)/日本語キーが有効（実装ポリシー準拠）",
+      implementation: "タグ抽出ロジックを検証・修正（valueの複数コロン対応）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "X-01〜X-08 完了マーク: 大文字X/スペースなし/途中xが無効。S-01〜S-12 空白/特殊: 複数スペース保持/トリム/Unicode絵文字対応",
+      implementation: "完了マークと空白処理ロジックを検証・修正",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "R-01〜R-08: 全要素組み合わせ（優先度+日付+プロジェクト+コンテキスト+タグ）の実用シナリオ",
+      implementation: "統合パースロジックを検証し、全要素の正確な組み合わせ処理を確認",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

@@ -702,3 +702,71 @@ describe("delete task at line index", () => {
 		expect(resultNegative).toBe("(A) 2026-01-01 Call Mom");
 	});
 });
+
+describe("priority edge cases", () => {
+	it("P-01: (A) 大文字A-Zは有効な優先度", () => {
+		const result = parseTodoLine("(A) Valid");
+		expect(result.priority).toBe("A");
+		expect(result.description).toBe("Valid");
+	});
+
+	it("P-02: (M) 中間の優先度も有効", () => {
+		const result = parseTodoLine("(M) Valid");
+		expect(result.priority).toBe("M");
+		expect(result.description).toBe("Valid");
+	});
+
+	it("P-03: (Z) 最低優先度も有効", () => {
+		const result = parseTodoLine("(Z) Valid");
+		expect(result.priority).toBe("Z");
+		expect(result.description).toBe("Valid");
+	});
+
+	it("P-04: (a) 小文字は無効な優先度", () => {
+		const result = parseTodoLine("(a) lowercase");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("(a) lowercase");
+	});
+
+	it("P-05: (1) 数字は無効な優先度", () => {
+		const result = parseTodoLine("(1) digit");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("(1) digit");
+	});
+
+	it("P-06: (AA) 複数文字は無効な優先度", () => {
+		const result = parseTodoLine("(AA) multiple");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("(AA) multiple");
+	});
+
+	it("P-07: () 空は無効な優先度", () => {
+		const result = parseTodoLine("() empty");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("() empty");
+	});
+
+	it("P-08: ( A) スペース内包は無効な優先度", () => {
+		const result = parseTodoLine("( A) space inside");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("( A) space inside");
+	});
+
+	it("P-09: (A)NoSpace 後続スペースなしは無効な優先度", () => {
+		const result = parseTodoLine("(A)NoSpace");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("(A)NoSpace");
+	});
+
+	it("P-10: 途中の(A)は無効な優先度", () => {
+		const result = parseTodoLine("Task (A) middle");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("Task (A) middle");
+	});
+
+	it("P-11: (Á) アクセント付きは無効な優先度", () => {
+		const result = parseTodoLine("(Á) accented");
+		expect(result.priority).toBeUndefined();
+		expect(result.description).toBe("(Á) accented");
+	});
+});

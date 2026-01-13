@@ -81,10 +81,10 @@ export const productBacklog: ProductBacklogItem[] = [
     implementationPolicies: {
       "完了タスクの優先度": { policy: "保持する", rationale: "既存実装(L140-143)は完了フラグに関係なくpriorityをパースしている。公式仕様では削除推奨だが、互換性のため保持" },
       "日付のバリデーション": { policy: "フォーマットチェックのみ", rationale: "YYYY-MM-DD正規表現による形式検証のみ実施。2024-02-30等の無効日付は本文扱い（パース時エラーとしない）" },
-      "Unicode対応": { policy: "許可する", rationale: "\\S+パターンで非空白文字全体を受け入れる実装(L178,L186)により、日本語・絵文字などUnicodeをプロジェクト/コンテキスト/タグ名に許可" },
+      "Unicode対応": { policy: "許可する", rationale: "非空白文字パターンで全体を受け入れる実装(L178,L186)により、日本語・絵文字などUnicodeをプロジェクト/コンテキスト/タグ名に許可" },
       "先頭・末尾の空白": { policy: "トリムする", rationale: "L131でtrim()実施。ただしdescription途中の複数スペースは保持" },
       "コメント行": { policy: "対応しない", rationale: "todo.txt公式仕様に記載なし。現在の実装にコメント行処理が存在せず、`#`で始まる行は通常タスクとして扱う" },
-      "タグのvalueにコロン": { policy: "最初のコロンで分割", rationale: "正規表現/(\S+):(\S+)/gにより、key:val:ue → key='val:ue'として2番目のキャプチャグループに残りを含む。時刻値(10:30)やURL(http://...)に対応" },
+      "タグのvalueにコロン": { policy: "最初のコロンで分割", rationale: "正規表現により、key:val:ue → key='val:ue'として2番目のキャプチャグループに残りを含む。時刻値(10:30)やURL(http://...)に対応" },
       "エラーハンドリング": { policy: "無効な行もパース", rationale: "現在の実装は例外スローせず、どんな行もTodoオブジェクトとして返す。空行はparseTodoTxtレベル(L12-14)でスキップ" },
     },
   },

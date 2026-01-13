@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 43, pbi: "TBD", status: "not_started" as SprintStatus,
+  sprint: { number: 43, pbi: "PBI-043", status: "not_started" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 9, status: "done", sprints: "40-42", pbis: "PBI-040〜042", goal: "UIデザイン刷新（Apple-likeモダンデザイン）完遂" },
+  phase: { number: 10, status: "in_progress", sprints: "43-", pbis: "PBI-043〜", goal: "パーサー堅牢化（unified-test-cases.md準拠で品質向上）" },
 };
 
 // Product Goal
@@ -57,7 +57,27 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 40 PBI-040: ミニマルUIデザイン基盤、626t、done
   //   Sprint 41 PBI-041: 滑らかなインタラクション、626t、done
   //   Sprint 42 PBI-042: モーダル洗練デザイン、626t、done、REFACTOR率50%達成
-  // Phase 10: 次のPhaseを計画中
+  // Phase 10: パーサー堅牢化（unified-test-cases.md準拠）
+  {
+    id: "PBI-043",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "様々なエッジケースを含むtodo.txt形式のタスクを正確にパースできる",
+      benefit: "公式仕様に準拠した堅牢なパース結果を得られ、データの信頼性が向上する",
+    },
+    acceptanceCriteria: [
+      { criterion: "優先度エッジケース11件をテストでカバー（小文字/数字/複数文字/スペース内包等の無効形式検出）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'priority edge'" },
+      { criterion: "日付エッジケース14件をテストでカバー（スラッシュ形式/ゼロパディングなし/無効月日等の検出）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'date edge'" },
+      { criterion: "プロジェクト/コンテキストエッジケース17件をテストでカバー（前空白必須/メールアドレス誤認識防止）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'project context edge'" },
+      { criterion: "タグエッジケース12件をテストでカバー（URL/時刻/複数コロン等の対応）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'tag edge'" },
+      { criterion: "完了マーク/空白/特殊文字エッジケース20件をテストでカバー", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'completion|whitespace|special'" },
+      { criterion: "実用的な複合パターン8件をテストでカバー", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'practical'" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 2, estimatedTests: 82, externalDependencies: 0, score: "HIGH", subtasks: 6 },
+    refactorChecklist: ["パーサー関数の責務分離", "正規表現の最適化", "エラーメッセージの改善"],
+  },
 ];
 
 // Definition of Ready
@@ -71,11 +91,11 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 43準備中)
+// Current Sprint (Sprint 43: パーサー堅牢化)
 export const currentSprint = {
   sprint: 43,
-  pbi: "TBD",
-  goal: "TBD - Phase 10の方向性を検討中",
+  pbi: "PBI-043",
+  goal: "unified-test-cases.mdに基づくパーサーテスト網羅とパーサー堅牢化",
   status: "not_started" as SprintStatus,
   subtasks: [] as Subtask[],
 };

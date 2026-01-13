@@ -770,3 +770,95 @@ describe("priority edge cases", () => {
 		expect(result.description).toBe("(Á) accented");
 	});
 });
+
+describe("date edge cases", () => {
+	it("D-01: 2024-01-01 年始の日付は有効", () => {
+		const result = parseTodoLine("2024-01-01 Year start");
+		expect(result.creationDate).toBe("2024-01-01");
+		expect(result.description).toBe("Year start");
+	});
+
+	it("D-02: 2024-12-31 年末の日付は有効", () => {
+		const result = parseTodoLine("2024-12-31 Year end");
+		expect(result.creationDate).toBe("2024-12-31");
+		expect(result.description).toBe("Year end");
+	});
+
+	it("D-03: 2024-02-29 うるう年の日付は有効", () => {
+		const result = parseTodoLine("2024-02-29 Leap year");
+		expect(result.creationDate).toBe("2024-02-29");
+		expect(result.description).toBe("Leap year");
+	});
+
+	it("D-04: 2000-01-01 2000年の日付は有効", () => {
+		const result = parseTodoLine("2000-01-01 Y2K");
+		expect(result.creationDate).toBe("2000-01-01");
+		expect(result.description).toBe("Y2K");
+	});
+
+	it("D-05: 9999-12-31 遠い未来の日付は有効", () => {
+		const result = parseTodoLine("9999-12-31 Far future");
+		expect(result.creationDate).toBe("9999-12-31");
+		expect(result.description).toBe("Far future");
+	});
+
+	it("D-06: 2024/01/15 スラッシュ形式は無効", () => {
+		const result = parseTodoLine("2024/01/15 Slash format");
+		expect(result.creationDate).toBeUndefined();
+		expect(result.description).toBe("2024/01/15 Slash format");
+	});
+
+	it("D-07: 2024-1-15 ゼロパディングなしは無効", () => {
+		const result = parseTodoLine("2024-1-15 No padding");
+		expect(result.creationDate).toBeUndefined();
+		expect(result.description).toBe("2024-1-15 No padding");
+	});
+
+	it("D-08: 24-01-15 短縮年は無効", () => {
+		const result = parseTodoLine("24-01-15 Short year");
+		expect(result.creationDate).toBeUndefined();
+		expect(result.description).toBe("24-01-15 Short year");
+	});
+
+	it("D-09: 2024-13-01 無効な月（フォーマットは通過）", () => {
+		const result = parseTodoLine("2024-13-01 Invalid month");
+		// Implementation policy: フォーマットチェックのみ、無効日付もパース
+		expect(result.creationDate).toBe("2024-13-01");
+		expect(result.description).toBe("Invalid month");
+	});
+
+	it("D-10: 2024-02-30 無効な日（フォーマットは通過）", () => {
+		const result = parseTodoLine("2024-02-30 Invalid day");
+		// Implementation policy: フォーマットチェックのみ、無効日付もパース
+		expect(result.creationDate).toBe("2024-02-30");
+		expect(result.description).toBe("Invalid day");
+	});
+
+	it("D-11: 2023-02-29 うるう年でない（フォーマットは通過）", () => {
+		const result = parseTodoLine("2023-02-29 Not leap year");
+		// Implementation policy: フォーマットチェックのみ、無効日付もパース
+		expect(result.creationDate).toBe("2023-02-29");
+		expect(result.description).toBe("Not leap year");
+	});
+
+	it("D-12: 途中の日付は本文扱い", () => {
+		const result = parseTodoLine("Task 2024-01-15 middle");
+		expect(result.creationDate).toBeUndefined();
+		expect(result.description).toBe("Task 2024-01-15 middle");
+	});
+
+	it("D-13: (A) 2024-01-02T10:00 ISO形式T付きは無効", () => {
+		const result = parseTodoLine("(A) 2024-01-02T10:00 ISO");
+		expect(result.priority).toBe("A");
+		expect(result.creationDate).toBeUndefined();
+		expect(result.description).toBe("2024-01-02T10:00 ISO");
+	});
+
+	it("D-14: x 2024-01-20 完了日のみ", () => {
+		const result = parseTodoLine("x 2024-01-20 Only completion");
+		expect(result.completed).toBe(true);
+		expect(result.completionDate).toBe("2024-01-20");
+		expect(result.creationDate).toBeUndefined();
+		expect(result.description).toBe("Only completion");
+	});
+});

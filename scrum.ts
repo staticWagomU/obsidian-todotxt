@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 47, pbi: "PBI-047", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 7, impediments: 0 },
   phase: { number: 12, status: "in_progress", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
 };
 
@@ -114,8 +114,11 @@ export const currentSprint = {
       test: "withRetry関数が指定回数リトライし、exponential backoffを適用するかテスト",
       implementation: "retry.tsにwithRetry, isRetryableError関数を実装（ネットワークエラー、429、5xxが対象）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(ai): add retry logic tests for withRetry and isRetryableError" },
+        { phase: "green" as CommitPhase, message: "feat(ai): implement retry logic with exponential backoff" },
+      ],
     },
     {
       test: "buildSystemPrompt関数が現在日付とカスタムコンテキストを使用してプロンプトを生成するかテスト",

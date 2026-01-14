@@ -32,6 +32,25 @@ vi.mock("obsidian", () => {
 
 	return {
 		TFile,
+		Modal: class {
+			app: unknown;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			contentEl: any;
+
+			constructor(app: unknown) {
+				this.app = app;
+				const container = document.createElement("div");
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				this.contentEl = addCreateElMethod(container);
+			}
+
+			open(): void {}
+			close(): void {}
+		},
+		Notice: class {
+			constructor(_message: string, _timeout?: number) {}
+			hide(): void {}
+		},
 		ItemView: class {
 			leaf: unknown;
 			app = {};
@@ -87,6 +106,17 @@ describe("TodoSidePanelView", () => {
 				defaultSortOrder: "completion",
 				defaultGrouping: "none",
 				showCompletedTasks: true,
+				openRouter: {
+					apiKey: "",
+					model: "anthropic/claude-3-haiku",
+					includeCreationDate: true,
+					customContexts: {},
+					retryConfig: {
+						enabled: true,
+						maxRetries: 3,
+						initialDelayMs: 1000,
+					},
+				},
 			},
 			app: {
 				vault: {

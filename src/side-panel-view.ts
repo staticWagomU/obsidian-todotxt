@@ -1,6 +1,7 @@
 import { ItemView, type WorkspaceLeaf, TFile } from "obsidian";
 import type TodotxtPlugin from "./main";
 import { parseTodoTxt } from "./lib/parser";
+import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 
 export const VIEW_TYPE_TODO_SIDEPANEL = "todotxt-sidepanel";
 
@@ -79,16 +80,37 @@ export class TodoSidePanelView extends ItemView {
 	}
 
 	/**
-	 * Render AI task addition button (placeholder for PBI-047)
+	 * Render AI task addition button
 	 */
 	renderAIAddButton(): void {
 		const aiButton = this.contentEl.createEl("button");
 		aiButton.classList.add("ai-add-task-button");
 		aiButton.textContent = "AI追加";
 		aiButton.addEventListener("click", () => {
-			// Placeholder: Will be implemented in PBI-047
-			console.log("AI task addition (coming in PBI-047)");
+			this.openAITaskDialog();
 		});
+	}
+
+	/**
+	 * Open AI task input dialog
+	 */
+	openAITaskDialog(): void {
+		const filePaths = this.plugin.settings.todotxtFilePaths;
+		if (filePaths.length === 0) {
+			console.warn("No todo.txt files configured");
+			return;
+		}
+
+		const targetPath = filePaths[0];
+		const dialog = new AITaskInputDialog(
+			this.app,
+			this.plugin.settings.openRouter,
+			targetPath,
+			() => {
+				void this.renderTaskList();
+			}
+		);
+		dialog.open();
 	}
 
 	/**

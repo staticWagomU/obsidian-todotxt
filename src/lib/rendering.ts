@@ -356,6 +356,30 @@ function renderControlBar(
 
 	// Row 2: Search box (full width)
 	renderSearchBox(controlBar, filterState.search, onSearchInput);
+
+	// Row 3: Progress bar
+	renderProgressBar(controlBar, data);
+}
+
+/**
+ * Render progress bar showing completion rate
+ */
+function renderProgressBar(container: HTMLElement, data: string): void {
+	const todos = parseTodoTxt(data);
+	const total = todos.length;
+	const completed = todos.filter((todo) => todo.completed).length;
+	const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+	const progressBar = container.createEl("div");
+	progressBar.classList.add("progress-bar");
+
+	const progressFill = progressBar.createEl("div");
+	progressFill.classList.add("progress-fill");
+	progressFill.style.width = `${percentage}%`;
+
+	const progressText = progressBar.createEl("span");
+	progressText.classList.add("progress-text");
+	progressText.textContent = `${completed}/${total}`;
 }
 
 /**

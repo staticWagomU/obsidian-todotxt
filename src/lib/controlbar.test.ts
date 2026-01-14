@@ -140,13 +140,14 @@ describe("FilterState type", () => {
 		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 		view.setViewData("Task 1", false);
 
-		// Verify: Control bar has row and search box
+		// Verify: Control bar has row, search box, and progress bar
 		const controlBar = view.contentEl.querySelector("div.control-bar");
 		const children = Array.from(controlBar?.children || []);
 
-		expect(children.length).toBe(2);
+		expect(children.length).toBe(3);
 		expect(children[0]?.classList.contains("control-bar-row")).toBe(true);
 		expect(children[1]?.classList.contains("search-box")).toBe(true);
+		expect(children[2]?.classList.contains("progress-bar")).toBe(true);
 
 		// Verify: Row contains all filter elements in correct order
 		const row = children[0] as HTMLElement;

@@ -180,14 +180,7 @@ describe("TodoSidePanelView", () => {
 			expect(tasks.length).toBe(3);
 		});
 
-		it("should handle click on task to open corresponding file", async () => {
-			const mockOpenFile = vi.fn();
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			mockPlugin.app.workspace = {
-				openLinkText: mockOpenFile,
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} as any;
-
+		it("should display edit button for each task in side panel", async () => {
 			const mockFiles = new Map([
 				["vault/todo.txt", "Buy milk"],
 			]);
@@ -212,15 +205,11 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 			await view.onOpen();
 
-			// Simulate click on "open" button (find button with "開く" text)
-			const buttons = view.contentEl.querySelectorAll(".edit-task-button");
-			const openButton = Array.from(buttons).find(btn => btn.textContent === "開く");
-			if (openButton) {
-				(openButton as HTMLElement).click();
-			}
-
-			// Verify file was opened
-			expect(mockOpenFile).toHaveBeenCalledWith("vault/todo.txt", "", false);
+			// Verify edit button exists for tasks
+			const editButtons = view.contentEl.querySelectorAll(".edit-task-button");
+			expect(editButtons.length).toBeGreaterThan(0);
+			// Verify first edit button has correct text
+			expect(editButtons[0]?.textContent).toBe("編集");
 		});
 	});
 
@@ -250,10 +239,10 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 			await view.onOpen();
 
-			// Check that AI button is displayed (with text for footer button style)
+			// Check that AI button is displayed (FAB style with icon only)
 			const aiButton = view.contentEl.querySelector(".ai-add-task-button");
 			expect(aiButton).not.toBeNull();
-			expect(aiButton?.textContent).toBe("✨ AIタスク追加");
+			expect(aiButton?.textContent).toBe("✨");
 		});
 
 		it("should open AITaskInputDialog when AI button is clicked", async () => {

@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 51, pbi: "PBI-048", status: "not_started" as SprintStatus,
+  sprint: { number: 51, pbi: "PBI-048", status: "in_progress" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048(ready)", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048(in_progress)", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -97,13 +97,49 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 50完了、次Sprint待機中)
+// Current Sprint (Sprint 51実行中)
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 51,
+  pbi: "PBI-048",
+  goal: "サイドパネルからメインビュー同等のタスク操作機能を提供し、Phase 13を完遂する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "サイドパネルから設定登録された全todotxtファイルにタスクを追加でき、複数ファイル選択時にファイル選択ダイアログが表示される",
+      implementation: "AddTaskModal（またはダイアログ）実装、ファイル選択UI追加、複数ファイル時のファイル選択ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "サイドパネルからタスクを選択して編集ボタンをクリックするとEditTaskModalが開き、編集内容が反映される",
+      implementation: "EditTaskModalの呼び出し処理実装、タスク選択状態管理、編集後のリスト更新処理",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "サイドパネルからタスク削除ボタンをクリックすると確認ダイアログが表示され、確認後に削除される",
+      implementation: "削除確認ダイアログ実装、削除処理とファイル保存、リスト更新処理",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "サイドパネルのタスクリストが設定値（defaultSortOrder、defaultGrouping）を引き継ぎ、ソート・グループ化される",
+      implementation: "設定値の読み込み処理、TodoSidePanelViewでのソート・グループ化ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "サイドパネルのUIがメインビューよりコンパクト（パディング・フォントサイズ縮小）になっている",
+      implementation: "styles.cssにtodotxt-sidepanel-compactクラス追加、パディング・フォントサイズ調整",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), see git history
 // Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history

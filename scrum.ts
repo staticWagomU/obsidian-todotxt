@@ -94,7 +94,7 @@ export const productBacklog: ProductBacklogItem[] = [
       },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
     complexity: {
       functions: 10,
       estimatedTests: 18,

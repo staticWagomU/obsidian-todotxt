@@ -22,6 +22,12 @@ export interface EditResult {
 	error?: string;
 }
 
+export interface BulkEditResult {
+	success: boolean;
+	updatedTodoLines?: string[];
+	error?: string;
+}
+
 interface OpenRouterResponse {
 	choices?: Array<{
 		message?: {
@@ -171,6 +177,112 @@ export class OpenRouterService {
 				error: this.formatErrorMessage(error),
 			};
 		}
+	}
+
+	async bulkEditTodos(
+		todos: Todo[],
+		instruction: string,
+		currentDate: string,
+		customContexts: Record<string, string>,
+	): Promise<BulkEditResult> {
+		try {
+			const systemPrompt = this.buildBulkEditPrompt(todos, instruction, currentDate, customContexts);
+
+			const apiCall = async () => {
+				const response = await requestUrl({
+					url: "https://openrouter.ai/api/v1/chat/completions",
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${this.config.apiKey}`,
+						"HTTP-Referer": "obsidian://todotxt",
+						"X-Title": "Obsidian Todo.txt Plugin",
+					},
+					body: JSON.stringify({
+						model: this.config.model,
+						messages: [
+							{ role: "user", content: systemPrompt },
+						],
+					}),
+				});
+
+				if (response.status >= 400) {
+					throw new ApiError(
+						response.status,
+						this.getHttpErrorMessage(response.status),
+					);
+				}
+
+				return response;
+			};
+
+			const response = await withRetry(apiCall, this.config.retryConfig);
+			const data = response.json as OpenRouterResponse;
+
+			if (!data.choices?.[0]?.message?.content) {
+				return {
+					success: false,
+					error: "Invalid response format from API",
+				};
+			}
+
+			const content = data.choices[0].message.content.trim();
+			const updatedLines = content
+				.split("\n")
+				.map((line) => line.trim())
+				.filter((line) => line.length > 0);
+
+			// Validate that we got the same number of lines as input todos
+			if (updatedLines.length !== todos.length) {
+				return {
+					success: false,
+					error: `Line count mismatch: expected ${todos.length}, got ${updatedLines.length}`,
+				};
+			}
+
+			return {
+				success: true,
+				updatedTodoLines: updatedLines,
+			};
+		} catch (error) {
+			return {
+				success: false,
+				error: this.formatErrorMessage(error),
+			};
+		}
+	}
+
+	/**
+	 * Build prompt for bulk editing multiple todos
+	 */
+	private buildBulkEditPrompt(
+		todos: Todo[],
+		instruction: string,
+		currentDate: string,
+		customContexts: Record<string, string>,
+	): string {
+		const todoList = todos.map((todo, idx) => `${idx + 1}. ${todo.raw}`).join("\n");
+		const contextMappings = Object.entries(customContexts)
+			.map(([key, value]) => `#${key} → @${value}`)
+			.join(", ");
+
+		return `You are a todo.txt format expert. Edit the following tasks according to the instruction.
+
+Current date: ${currentDate}
+${contextMappings ? `Context mappings: ${contextMappings}` : ""}
+
+## Tasks to edit:
+${todoList}
+
+## Instruction:
+${instruction}
+
+## Rules:
+- Output EXACTLY ${todos.length} lines, one for each input task
+- Each line must be a valid todo.txt format task
+- Apply the instruction to ALL tasks
+- Preserve existing tags/contexts unless explicitly modified
+- Output ONLY the edited tasks, no explanations or numbering`;
 	}
 
 	/**

@@ -198,4 +198,106 @@ describe("OpenRouterService", () => {
 			expect(requestUrl).toHaveBeenCalledTimes(2);
 		});
 	});
+
+	describe("bulkEditTodos", () => {
+		it("複数タスクを自然言語指示で一括編集する", async () => {
+			const todos = [
+				{ raw: "タスク1", description: "タスク1", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+				{ raw: "タスク2", description: "タスク2", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+			];
+
+			const mockResponse = {
+				choices: [
+					{
+						message: {
+							content: "(A) タスク1\n(A) タスク2",
+						},
+					},
+				],
+			};
+
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: mockResponse,
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
+			});
+
+			const service = new OpenRouterService(mockConfig);
+			const result = await service.bulkEditTodos(
+				todos,
+				"すべてのタスクに優先度Aを設定",
+				"2026-01-15",
+				{}
+			);
+
+			expect(result.success).toBe(true);
+			expect(result.updatedTodoLines).toEqual([
+				"(A) タスク1",
+				"(A) タスク2",
+			]);
+		});
+
+		it("タスク数と結果行数が一致しない場合エラーを返す", async () => {
+			const todos = [
+				{ raw: "タスク1", description: "タスク1", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+				{ raw: "タスク2", description: "タスク2", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+			];
+
+			const mockResponse = {
+				choices: [
+					{
+						message: {
+							content: "(A) タスク1", // 1行しかない
+						},
+					},
+				],
+			};
+
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: mockResponse,
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
+			});
+
+			const service = new OpenRouterService(mockConfig);
+			const result = await service.bulkEditTodos(
+				todos,
+				"すべてのタスクに優先度Aを設定",
+				"2026-01-15",
+				{}
+			);
+
+			expect(result.success).toBe(false);
+			expect(result.error).toContain("mismatch");
+		});
+
+		it("APIエラー時にエラーメッセージを返す", async () => {
+			const todos = [
+				{ raw: "タスク1", description: "タスク1", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+			];
+
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 500,
+				json: {},
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
+			});
+
+			const service = new OpenRouterService(mockConfig);
+			const result = await service.bulkEditTodos(
+				todos,
+				"優先度を設定",
+				"2026-01-15",
+				{}
+			);
+
+			expect(result.success).toBe(false);
+			expect(result.error).toContain("Server error");
+		});
+	});
 });

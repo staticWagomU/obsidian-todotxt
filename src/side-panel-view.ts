@@ -4,6 +4,7 @@ import { parseTodoTxt } from "./lib/parser";
 import type { Todo } from "./lib/todo";
 import { createAndAppendTask } from "./lib/todo";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
+import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
 import {
@@ -389,7 +390,7 @@ export class TodoSidePanelView extends ItemView {
 	 */
 	renderTaskItem(ul: HTMLUListElement, task: TaskWithFile, today: Date): void {
 		const li = ul.createEl("li");
-		const { todo, filePath } = task;
+		const { todo } = task;
 
 		// Apply threshold style
 		const thresholdStyle = getThresholdDateStyle(todo, today);
@@ -473,6 +474,14 @@ export class TodoSidePanelView extends ItemView {
 		editButton.textContent = "編集";
 		editButton.addEventListener("click", () => {
 			this.openEditTaskModal(task);
+		});
+
+		// AI Edit button
+		const aiEditButton = actionsRow.createEl("button");
+		aiEditButton.classList.add("ai-edit-task-button");
+		aiEditButton.textContent = "AI編集";
+		aiEditButton.addEventListener("click", () => {
+			this.openAIEditDialog(task);
 		});
 
 		// Delete button
@@ -735,6 +744,20 @@ export class TodoSidePanelView extends ItemView {
 			this.tasksData.map((t) => t.todo)
 		);
 		modal.open();
+	}
+
+	/**
+	 * Open AI edit dialog
+	 */
+	private openAIEditDialog(task: TaskWithFile): void {
+		const dialog = new AIEditDialog(
+			this.app,
+			task.todo,
+			() => {
+				void this.refreshTaskList();
+			}
+		);
+		dialog.open();
 	}
 
 	/**

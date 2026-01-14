@@ -4,6 +4,7 @@ import { type Todo } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
+import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler } from "./lib/handlers";
 import { renderTaskList, type DefaultFilterSettings } from "./lib/rendering";
 import type TodotxtPlugin from "./main";
@@ -86,6 +87,7 @@ export class TodotxtView extends TextFileView {
 			this.getDefaultFilterSettings(),
 			() => this.openArchiveWithConfirmation(),
 			() => this.openAITaskDialog(),
+			(index) => this.openAIEditDialog(index),
 		);
 	}
 
@@ -184,6 +186,25 @@ export class TodotxtView extends TextFileView {
 			todos,
 		);
 		modal.open();
+	}
+
+	/**
+	 * Open AI edit dialog
+	 * Public for testing compatibility
+	 */
+	openAIEditDialog(index: number): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		const dialog = new AIEditDialog(
+			this.app,
+			todo,
+			() => {
+				this.renderTaskList();
+			}
+		);
+		dialog.open();
 	}
 
 	/**

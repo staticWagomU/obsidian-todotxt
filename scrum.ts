@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 55, pbi: "PBI-055", status: "done" as SprintStatus,
-    subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
-  phase: { number: 16, status: "done", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
+  sprint: { number: 56, pbi: "PBI-056", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 8, impediments: 0 },
+  phase: { number: 17, status: "in_progress", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
 };
 
 // Product Goal
@@ -48,7 +48,7 @@ export const productGoal = {
 export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
-  phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "not_started" },
+  phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "in_progress" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -98,13 +98,24 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 55完了、次Sprint待機
+// Current Sprint - Sprint 56進行中
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 56,
+  pbi: "PBI-056",
+  goal: "キーボードショートカット機能を実装し、既存テスト5件の技術的負債を解消して、ユーザーがキーボード中心のワークフローで効率的にタスク操作できるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Behavioral Subtasks (6件 - Feature開発)
+    { test: "addCommand呼び出し、コマンドパレット表示を確認", implementation: "ショートカットコマンド基盤とObsidianコマンドパレット登録", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "上下キーでフォーカス移動を確認", implementation: "選択タスクのキーボードナビゲーション（上下矢印キー）", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "Enter/E/Deleteキーで操作実行を確認", implementation: "選択タスクのキーボード操作（Enter完了切替、E編集、Delete削除）", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "Ctrl+N→ダイアログ表示を確認", implementation: "新規タスクダイアログショートカット（Ctrl+N / Cmd+N）", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "Ctrl+F→検索ボックスフォーカスを確認", implementation: "検索フォーカス移動ショートカット（Ctrl+F / Cmd+F）", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "設定UIにショートカット一覧セクション表示を確認", implementation: "設定画面にショートカット一覧セクション追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    // Structural Subtasks (2件 - P0 Actions対応: DoD既存テスト失敗5件修正)
+    { test: "view.test.ts プログレスバー3件テスト pass", implementation: "DoD既存テスト失敗修正（view.test.ts 3件）", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "side-panel-view.test.ts 2件テスト pass", implementation: "DoD既存テスト失敗修正（side-panel-view.test.ts 2件）", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+  ] as Subtask[],
 };
 // Sprint 55: PBI-055完了 - 8 subtasks (6 behavioral + 2 structural), 8 commits (4 GREEN + 2 REFACTOR), Phase 16完遂, see git history
 // Sprint 49-54: see git history

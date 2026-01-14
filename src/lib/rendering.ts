@@ -463,7 +463,7 @@ function renderSearchBox(
 	const searchBox = container.createEl("input");
 	searchBox.type = "text";
 	searchBox.classList.add("search-box");
-	searchBox.placeholder = "検索...";
+	searchBox.placeholder = "タスク検索...";
 	searchBox.setAttribute("aria-label", "タスク検索");
 
 	// Set current value

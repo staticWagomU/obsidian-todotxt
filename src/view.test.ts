@@ -2383,3 +2383,69 @@ describe("side panel header with status filter and progress", () => {
 		expect(taskItems[0]?.classList.contains("completed")).toBe(true);
 	});
 });
+
+describe("side panel search box pill design", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("検索ボックスが.search-boxクラス、プレースホルダー「タスク検索...」でレンダリングされる", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load tasks and render
+		view.setViewData("Task 1\nTask 2\nTask 3", false);
+		view.renderTaskList();
+
+		// Verify: Search box exists with search-box class (CSS defines 20px border-radius)
+		const searchBox = container.querySelector("input.search-box") as HTMLInputElement;
+		expect(searchBox).not.toBeNull();
+		expect(searchBox?.classList.contains("search-box")).toBe(true);
+
+		// Verify: Placeholder text
+		expect(searchBox?.placeholder).toBe("タスク検索...");
+
+		// Verify: Input type
+		expect(searchBox?.type).toBe("text");
+	});
+});

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 48, pbi: "PBI-051", status: "done" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 1, impediments: 0 },
+  sprint: { number: 48, pbi: "PBI-051", status: "blocked" as SprintStatus,
+    subtasksCompleted: 1, subtasksTotal: 1, impediments: 2 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051,PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - ボタン不具合修正 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
@@ -131,7 +131,7 @@ export const currentSprint = {
   sprint: 48,
   pbi: "PBI-051",
   goal: "サイドパネルのAIボタン（✨）と追加ボタン（+）を修正し、タスク追加後のリスト更新を実装する",
-  status: "done" as SprintStatus,
+  status: "blocked" as SprintStatus,
   subtasks: [
     {
       test: "サイドパネルのAIボタン（✨）と追加ボタン（+）クリックでダイアログが開き、タスク追加後にリストが更新される",
@@ -151,7 +151,13 @@ export const currentSprint = {
 // Sprint 46: PBI-046完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 
 // Impediments
-export const impediments = { active: [] as { id: string; description: string; status: string }[], resolved: [] as string[] };
+export const impediments = {
+  active: [
+    { id: "IMP-048-1", description: "DoD Tests失敗: src/view.test.ts AIボタンテキストコンテンツ期待値不一致（既存の失敗）", status: "blocking Sprint 48 completion" },
+    { id: "IMP-048-2", description: "DoD Lint失敗: src/main.ts Promise処理エラー5件（既存のLintエラー）", status: "blocking Sprint 48 completion" },
+  ] as { id: string; description: string; status: string }[],
+  resolved: [] as string[]
+};
 
 // Definition of Done
 export const definitionOfDone = {

@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 55, pbi: "PBI-055", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 6, subtasksTotal: 8, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -171,8 +171,8 @@ export const currentSprint = {
       test: "N/A (ドキュメント整備)",
       implementation: "CLAUDE.mdにAction Management Process計算式セクション追加（executed加算ルール、remaining減算ルール、廃棄Actions扱い3項目明記）",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "refactor" as CommitPhase, message: "chore(docs): Sprint 55 Subtask 8 - CLAUDE.md計算例にSprint 55追加" }]
     }
   ] as Subtask[],
 };

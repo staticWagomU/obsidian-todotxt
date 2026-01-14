@@ -67,7 +67,14 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "完了タスクがない場合はアーカイブボタンが無効化される", verification: "pnpm vitest run -- -t 'archive disabled'" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 5,
+      estimatedTests: 10,
+      externalDependencies: 0,
+      score: "LOW",
+      subtasks: 3,
+    },
   },
   {
     id: "PBI-046",

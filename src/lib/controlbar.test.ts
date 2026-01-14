@@ -140,18 +140,25 @@ describe("FilterState type", () => {
 		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 		view.setViewData("Task 1", false);
 
-		// Verify: Control bar elements are in correct order
+		// Verify: Control bar has row and search box
 		const controlBar = view.contentEl.querySelector("div.control-bar");
 		const children = Array.from(controlBar?.children || []);
 
-		expect(children.length).toBe(7);
-		expect(children[0]?.classList.contains("status-filter")).toBe(true);
-		expect(children[1]?.classList.contains("progress-bar")).toBe(true);
-		expect(children[2]?.classList.contains("priority-filter")).toBe(true);
-		expect(children[3]?.classList.contains("search-box")).toBe(true);
-		expect(children[4]?.classList.contains("group-selector")).toBe(true);
-		expect(children[5]?.classList.contains("sort-selector")).toBe(true);
-		expect(children[6]?.classList.contains("archive-button")).toBe(true);
+		expect(children.length).toBe(2);
+		expect(children[0]?.classList.contains("control-bar-row")).toBe(true);
+		expect(children[1]?.classList.contains("search-box")).toBe(true);
+
+		// Verify: Row contains all filter elements in correct order
+		const row = children[0] as HTMLElement;
+		const rowChildren = Array.from(row?.children || []);
+
+		expect(rowChildren.length).toBe(6); // status, priority, group, sort, archive, batch-selection
+		expect(rowChildren[0]?.classList.contains("status-filter")).toBe(true);
+		expect(rowChildren[1]?.classList.contains("priority-filter")).toBe(true);
+		expect(rowChildren[2]?.classList.contains("group-selector")).toBe(true);
+		expect(rowChildren[3]?.classList.contains("sort-selector")).toBe(true);
+		expect(rowChildren[4]?.classList.contains("archive-button")).toBe(true);
+		expect(rowChildren[5]?.classList.contains("batch-selection-button")).toBe(true);
 	});
 });
 

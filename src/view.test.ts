@@ -188,12 +188,76 @@ describe("update view after toggle", () => {
 		view.setViewData(initialData, false);
 
 		const handleToggle = view.getToggleHandler();
-		
+
 		// Should not throw
 		await expect(handleToggle(99)).resolves.not.toThrow();
-		
+
 		// Data should remain unchanged
 		expect(view.getViewData()).toBe("Task 1");
+	});
+});
+
+describe("Batch Selection Mode", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("一括選択ボタンクリックでチェックボックス表示", () => {
+		// RED: Test batch selection button rendering
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		expect(batchButton).toBeTruthy();
+		expect(batchButton?.textContent).toBe("一括選択");
+	});
+
+	it("一括選択ボタンクリックでモード切替", () => {
+		// RED: Test selection mode toggle
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// After clicking, mode should be active
+		expect(batchButton?.classList.contains("active")).toBe(true);
+
+		// Selection checkboxes should be visible
+		const selectionCheckboxes = view.contentEl.querySelectorAll(".task-selection-checkbox");
+		expect(selectionCheckboxes.length).toBe(3);
+	});
+
+	it("モード切替後、チェックボックス非表示に戻る", () => {
+		// RED: Test returning to normal mode
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		let batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+
+		// Enter selection mode
+		batchButton?.click();
+		expect(view.contentEl.querySelectorAll(".task-selection-checkbox").length).toBe(3);
+
+		// Get fresh reference after re-render
+		batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+
+		// Exit selection mode
+		batchButton?.click();
+
+		// Get fresh reference again to check the state
+		batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		expect(batchButton?.classList.contains("active")).toBe(false);
+		expect(view.contentEl.querySelectorAll(".task-selection-checkbox").length).toBe(0);
 	});
 });
 

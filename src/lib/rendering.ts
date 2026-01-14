@@ -39,6 +39,8 @@ export interface FilterState {
 	group: string;
 	sort: string;
 	status: string;
+	selectionMode?: boolean;
+	selectedTodoIds?: number[];
 }
 
 /**
@@ -50,6 +52,8 @@ export const DEFAULT_FILTER_STATE: FilterState = {
 	group: "none",
 	sort: "default",
 	status: "all",
+	selectionMode: false,
+	selectedTodoIds: [],
 };
 
 /**
@@ -174,14 +178,14 @@ function renderTaskListSection(
 
 	// Render tasks with grouping if enabled
 	if (filterState.group !== "none") {
-		renderGroupedTasks(ul, filteredTodos, filterState.group, todoIndexMap, today, onToggle, onEdit, onDelete, onAIEdit);
+		renderGroupedTasks(ul, filteredTodos, filterState.group, todoIndexMap, today, onToggle, onEdit, onDelete, onAIEdit, filterState);
 	} else {
 		// Render tasks without grouping
 		for (const todo of filteredTodos) {
 			const originalIndex = todoIndexMap.get(todo);
 			if (originalIndex === undefined) continue;
 
-			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit);
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit, filterState);
 		}
 	}
 }
@@ -196,10 +200,14 @@ function saveFilterState(contentEl: HTMLElement, defaultSettings?: DefaultFilter
 	const previousGroupSelector = contentEl.querySelector("select.group-selector");
 	const previousSortSelector = contentEl.querySelector("select.sort-selector");
 	const previousStatusFilter = contentEl.querySelector("select.status-filter");
+	const previousBatchButton = contentEl.querySelector("button.batch-selection-button");
 
 	// Use DOM value if exists, otherwise fall back to default settings, then to hardcoded defaults
 	const defaultSort = defaultSettings?.sort || "default";
 	const defaultGroup = defaultSettings?.group || "none";
+
+	// Check if selection mode is active by looking at button's active class
+	const selectionMode = previousBatchButton instanceof HTMLButtonElement && previousBatchButton.classList.contains("active");
 
 	return {
 		priority: (previousPriorityFilter instanceof HTMLSelectElement ? previousPriorityFilter.value : null) || "all",
@@ -207,6 +215,8 @@ function saveFilterState(contentEl: HTMLElement, defaultSettings?: DefaultFilter
 		group: (previousGroupSelector instanceof HTMLSelectElement ? previousGroupSelector.value : null) || defaultGroup,
 		sort: (previousSortSelector instanceof HTMLSelectElement ? previousSortSelector.value : null) || defaultSort,
 		status: (previousStatusFilter instanceof HTMLSelectElement ? previousStatusFilter.value : null) || "all",
+		selectionMode: selectionMode,
+		selectedTodoIds: [],
 	};
 }
 
@@ -341,6 +351,9 @@ function renderControlBar(
 		renderArchiveButton(row1, data, onArchive);
 	}
 
+	// Render batch selection button
+	renderBatchSelectionButton(row1, filterState, onFilterChange);
+
 	// Row 2: Search box (full width)
 	renderSearchBox(controlBar, filterState.search, onSearchInput);
 }
@@ -393,6 +406,39 @@ function renderArchiveButton(container: HTMLElement, data: string, onArchive: ()
 	archiveButton.disabled = !hasCompletedTasks;
 	archiveButton.addEventListener("click", () => {
 		void onArchive();
+	});
+}
+
+/**
+ * Render batch selection button in control bar
+ */
+function renderBatchSelectionButton(
+	container: HTMLElement,
+	filterState: FilterState,
+	onChange: () => void,
+): void {
+	const batchButton = container.createEl("button");
+	batchButton.classList.add("batch-selection-button");
+
+	if (filterState.selectionMode) {
+		batchButton.classList.add("active");
+		batchButton.textContent = "選択終了";
+	} else {
+		batchButton.textContent = "一括選択";
+	}
+
+	batchButton.setAttribute("aria-label", "一括選択モード");
+	batchButton.addEventListener("click", () => {
+		// Toggle active class immediately to ensure state is saved correctly
+		if (batchButton.classList.contains("active")) {
+			batchButton.classList.remove("active");
+			batchButton.textContent = "一括選択";
+		} else {
+			batchButton.classList.add("active");
+			batchButton.textContent = "選択終了";
+		}
+		// Trigger re-render
+		onChange();
 	});
 }
 
@@ -562,6 +608,7 @@ function renderGroupedTasks(
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
 	onAIEdit?: (index: number) => void,
+	filterState?: FilterState,
 ): void {
 	const grouped = groupTodos(todos, groupBy);
 
@@ -570,7 +617,7 @@ function renderGroupedTasks(
 		for (const todo of todos) {
 			const originalIndex = todoIndexMap.get(todo);
 			if (originalIndex === undefined) continue;
-			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit);
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit, filterState);
 		}
 		return;
 	}
@@ -586,7 +633,7 @@ function renderGroupedTasks(
 		for (const todo of groupTodos) {
 			const originalIndex = todoIndexMap.get(todo);
 			if (originalIndex === undefined) continue;
-			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit);
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit, filterState);
 		}
 	}
 }
@@ -604,6 +651,7 @@ function renderTaskItem(
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
 	onAIEdit?: (index: number) => void,
+	filterState?: FilterState,
 ): void {
 	const li = ul.createEl("li");
 
@@ -614,6 +662,19 @@ function renderTaskItem(
 	// メインコンテンツ行: チェックボックス + 優先度 + 説明
 	const mainRow = li.createEl("div");
 	mainRow.classList.add("task-main-row");
+
+	// Add selection checkbox if in selection mode
+	if (filterState?.selectionMode) {
+		const selectionCheckbox = mainRow.createEl("input");
+		selectionCheckbox.type = "checkbox";
+		selectionCheckbox.classList.add("task-selection-checkbox");
+		selectionCheckbox.dataset.index = String(index);
+		// Check if this task is selected
+		if (filterState.selectedTodoIds?.includes(index)) {
+			selectionCheckbox.checked = true;
+		}
+		// Don't add click handler yet - will be added in Subtask 2
+	}
 
 	// Add checkbox
 	const checkbox = mainRow.createEl("input");

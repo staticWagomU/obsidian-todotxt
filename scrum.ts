@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 54, pbi: "PBI-054", status: "done" as SprintStatus,
-    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
+  sprint: { number: 55, pbi: "PBI-055", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -47,7 +47,7 @@ export const productGoal = {
 // Long-term Roadmap (Phase 15-17) - Sprint 53策定、詳細はgit履歴参照
 export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
-  phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "not_started" },
+  phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "in_progress" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "not_started" },
 };
 
@@ -67,7 +67,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "メインビュー・サイドパネル両方で利用可能", verification: "テストで両ビューでAI編集ダイアログ動作を確認" }
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: { functions: 4, estimatedTests: 20, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 5 }
   },
   {
@@ -127,76 +127,13 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 54,
-  pbi: "PBI-054",
-  goal: "既存タスクをAI自然言語入力で編集可能にし、メインビュー・サイドパネル両方でシームレスに利用できる機能を提供、併せてAction Management Process実践検証を完遂する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    // Feature開発 Subtasks (60%)
-    {
-      test: "AI編集ボタンがTodoItemにレンダリング、クリックでAIEditDialogが表示される",
-      implementation: "TodoItemコンポーネントにAI編集ボタン追加、AIEditDialog基本構造実装、ダイアログ表示ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: AI編集ボタンレンダリングとコールバック動作のテスト追加" },
-        { phase: "green" as CommitPhase, message: "feat: AI編集ボタンをタスクアイテムに追加" },
-        { phase: "green" as CommitPhase, message: "feat: AI編集ダイアログ基盤とメイン/サイドパネル統合完了" }
-      ]
-    },
-    {
-      test: "AIEditDialogに既存Todo内容がプレフィル表示、自然言語入力フィールドがレンダリングされる",
-      implementation: "AIEditDialogにTodoプレフィル表示ロジック、自然言語入力textarea実装、UI構成完成",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat: AI編集ダイアログUI完成 - 自然言語入力フィールド追加" }
-      ]
-    },
-    {
-      test: "自然言語入力→OpenRouter API呼び出し→解析結果プレビュー表示が動作する",
-      implementation: "OpenRouter API統合、プロンプト設計、レスポンス解析、プレビューエリア実装",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
-    },
-    {
-      test: "プレビュー確認後保存→ファイル更新→TodosList再描画、メインビュー・サイドパネル両方で動作する",
-      implementation: "保存処理実装、ファイル書き込みロジック、リスト再描画トリガー、サイドパネル統合",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
-    },
-    // プロセス改善 Subtasks (40%)
-    {
-      test: "Sprint 54でプロセス再設計ルール3項目（Planning時Subtask化・Retrospective時数値化・3 Sprint自動廃棄）遵守率100%を確認",
-      implementation: "Planning時P0 Action 2項目をSubtask化（本Subtask + Subtask 6）、Feature/Process時間配分60%/40%実践（4 feature + 3 process subtasks）、Retrospective時P0 Action検証フォーマット準備完了",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor(scrum): Action Management Process実践検証完了 - Planning時Subtask化・配分6:4達成" }
-      ]
-    },
-    {
-      test: "CLAUDE.mdにSMART基準良い例・悪い例3-5セット追加完了を確認",
-      implementation: "良い例3セット（P0 Subtask化・CLAUDE.md追記・Action棚卸し）、悪い例5セット（整理・プロセス改善・ドキュメント充実・将来的に・必要に応じて）、各例にSMART基準5項目詳細分析を追記完了",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor(docs): CLAUDE.mdにSMART基準Action粒度ガイドライン具体例追加 - 良3悪5セット" }
-      ]
-    },
-    {
-      test: "DoD全項目（Tests/Lint/Types/Build）がpassし、Phase 16開始が宣言される",
-      implementation: "DoD実行完了: Tests 831pass(+4 AIEditDialog tests), Lint 0error, Types pass, Build success. Phase 16開始宣言、Sprint 54完了",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "chore(scrum): Sprint 54完了 - PBI-054 AI自然言語タスク編集機能実装完遂" }
-      ]
-    }
-  ] as Subtask[],
+  sprint: 55,
+  pbi: "PBI-055",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 54: PBI-054完了 - 7 subtasks (4 behavioral + 3 structural), 7 commits (1 RED + 3 GREEN + 3 REFACTOR), Phase 16開始, see git history
 // Sprint 53: PBI-053完了 - 5 subtasks (1 behavioral + 4 structural), 5 commits (1 GREEN + 4 REFACTOR), Phase 15完遂, see git history
 // Sprint 52: PBI-052完了 - 5 subtasks (5 behavioral), 5 commits (5 GREEN), see git history
 // Sprint 51: PBI-048完了 - 5 subtasks (4 behavioral + 1 structural), 6 commits (2 GREEN-only, 1 GREEN+REFACTOR, 1 lint fix), Phase 13完遂, see git history
@@ -231,8 +168,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 52, pbi: "PBI-052", story: "サイドパネルUI刷新", verification: "passed", notes: "830t(+9t),5subtasks,5commits,Phase 14完遂" },
   // Phase 15完了 (Sprint 53): プロセス基盤再構築、Action実施率58%達成
   { sprint: 53, pbi: "PBI-053", story: "プロセス改善集中Sprint", verification: "passed", notes: "830t維持,5subtasks(1behavioral+4structural),5commits,rate43%→58%,KPI達成,Phase 15完遂" },
-  // Phase 16開始 (Sprint 54): AI自然言語タスク編集
-  { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks(4behavioral+3structural),7commits(1RED+3GREEN+3REFACTOR),Action Management Process実践検証完遂,Phase 16開始" },
+  // Phase 16開始 (Sprint 54-55): AI自然言語タスク編集・一括処理
+  { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks(4behavioral+3structural),7commits(1RED+3GREEN+3REFACTOR),Action実践検証100%,Phase 16開始" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

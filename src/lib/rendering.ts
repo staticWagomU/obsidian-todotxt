@@ -282,6 +282,11 @@ function renderControlBar(
 
 	// For search, only update task list to maintain focus
 	const onSearchInput = () => {
+		// Update filterState from search box value
+		const searchBox = controlBar.querySelector("input.search-box") as HTMLInputElement;
+		if (searchBox) {
+			filterState.search = searchBox.value;
+		}
 		// Remove existing task list
 		const existingList = contentEl.querySelector("ul");
 		if (existingList) {

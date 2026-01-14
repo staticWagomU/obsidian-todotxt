@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 54, pbi: "PBI-054", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 7, impediments: 0 },
+  sprint: { number: 54, pbi: "PBI-054", status: "done" as SprintStatus,
+    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -130,7 +130,7 @@ export const currentSprint = {
   sprint: 54,
   pbi: "PBI-054",
   goal: "既存タスクをAI自然言語入力で編集可能にし、メインビュー・サイドパネル両方でシームレスに利用できる機能を提供、併せてAction Management Process実践検証を完遂する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     // Feature開発 Subtasks (60%)
     {
@@ -188,10 +188,12 @@ export const currentSprint = {
     },
     {
       test: "DoD全項目（Tests/Lint/Types/Build）がpassし、Phase 16開始が宣言される",
-      implementation: "DoD実行、Phase 16ステータス更新、Sprint完了確認",
+      implementation: "DoD実行完了: Tests 831pass(+4 AIEditDialog tests), Lint 0error, Types pass, Build success. Phase 16開始宣言、Sprint 54完了",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "refactor" as CommitPhase, message: "chore(scrum): Sprint 54完了 - PBI-054 AI自然言語タスク編集機能実装完遂" }
+      ]
     }
   ] as Subtask[],
 };
@@ -229,6 +231,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 52, pbi: "PBI-052", story: "サイドパネルUI刷新", verification: "passed", notes: "830t(+9t),5subtasks,5commits,Phase 14完遂" },
   // Phase 15完了 (Sprint 53): プロセス基盤再構築、Action実施率58%達成
   { sprint: 53, pbi: "PBI-053", story: "プロセス改善集中Sprint", verification: "passed", notes: "830t維持,5subtasks(1behavioral+4structural),5commits,rate43%→58%,KPI達成,Phase 15完遂" },
+  // Phase 16開始 (Sprint 54): AI自然言語タスク編集
+  { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks(4behavioral+3structural),7commits(1RED+3GREEN+3REFACTOR),Action Management Process実践検証完遂,Phase 16開始" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

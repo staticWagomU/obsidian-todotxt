@@ -19,7 +19,18 @@ vi.mock("obsidian", () => {
 		return el;
 	}
 
+	// Mock TFile class
+	class TFile {
+		path: string;
+		stat: { mtime: number };
+		constructor(path: string) {
+			this.path = path;
+			this.stat = { mtime: Date.now() };
+		}
+	}
+
 	return {
+		TFile,
 		ItemView: class {
 			leaf: unknown;
 			app = {};
@@ -85,5 +96,67 @@ describe("TodoSidePanelView", () => {
 
 	it("should return correct icon", () => {
 		expect(view.getIcon()).toBe("checkbox-glyph");
+	});
+
+	describe("Task list rendering", () => {
+		it("should load tasks from configured todo.txt files", async () => {
+			// Setup mock files
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk\nWrite report +work"],
+				["vault/work.txt", "(A) Important task @office"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt", "vault/work.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					return { path } as any;
+				}
+				return null;
+			};
+			mockPlugin.app.vault.read = async (file: any) => {
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			await view.onOpen();
+
+			// Check that tasks are rendered
+			const tasks = view.contentEl.querySelectorAll(".todotxt-task");
+			expect(tasks.length).toBe(3);
+		});
+
+		it("should handle click on task to open corresponding file", async () => {
+			const mockOpenFile = vi.fn();
+			mockPlugin.app.workspace = {
+				openLinkText: mockOpenFile,
+			} as any;
+
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					return { path } as any;
+				}
+				return null;
+			};
+			mockPlugin.app.vault.read = async (file: any) => {
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			await view.onOpen();
+
+			// Simulate click on task
+			const taskElement = view.contentEl.querySelector(".todotxt-task");
+			if (taskElement) {
+				(taskElement as HTMLElement).click();
+			}
+
+			// Verify file was opened
+			expect(mockOpenFile).toHaveBeenCalledWith("vault/todo.txt", "", false);
+		});
 	});
 });

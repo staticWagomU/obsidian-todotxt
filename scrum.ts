@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 52, pbi: "PBI-052", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 14, status: "done", sprints: "52", pbis: "PBI-052", goal: "Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化" },
+  sprint: { number: 53, pbi: "PBI-053", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  phase: { number: 15, status: "in_progress", sprints: "53", pbis: "PBI-053", goal: "Phase 15: プロセス基盤再構築とAI連携機能拡張の両立" },
 };
 
 // Product Goal
@@ -65,6 +65,82 @@ export const productBacklog: ProductBacklogItem[] = [
 
   // Phase 14完了 (Sprint 52): サイドパネルUI刷新 - Apple-likeモダンデザイン強化、830t達成(+9t, +1.1%)
   //   Sprint 52 PBI-052: サイドパネルUI刷新、830t(+9t)、done
+
+  // Phase 15開始: プロセス基盤再構築とAI連携機能拡張の両立
+  {
+    id: "PBI-053",
+    story: {
+      role: "Scrum Team",
+      capability: "Actions抜本的整理とAction管理プロセス再設計を実行し、Action実施率KPIを43%→55%以上に改善する",
+      benefit: "プロセス改善とfeature開発のバランスを回復し、持続可能な開発体制を確立できる"
+    },
+    acceptanceCriteria: [
+      { criterion: "残55項目のActions全件レビューを実施し、最低20項目を廃棄/統合する", verification: "actionManagement.tracking.remaining <= 35、廃棄/統合リストがgit commitメッセージに記録" },
+      { criterion: "Action実施率KPI未達の根本原因を分析し、原因3項目以上と改善策を策定する", verification: "根本原因分析レポートがscrum.tsコメントまたはドキュメントに記載" },
+      { criterion: "Action実施プロセス再設計ルール3項目を確立する", verification: "CLAUDE.mdまたはscrum.tsにルール明記、次回Sprint Planning適用可能" },
+      { criterion: "Actions整理完了後、rate 55%以上達成", verification: "actionManagement.tracking.rate >= 55" },
+      { criterion: "Phase 15-17の3 Phase長期ビジョンを策定する", verification: "長期ロードマップ（各Phase Goal、主要PBI 2-3項目）が記載" }
+    ],
+    dependencies: [],
+    status: "ready" as PBIStatus,
+    complexity: { functions: 2, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM" as const, subtasks: 5 }
+  },
+  {
+    id: "PBI-054",
+    story: { role: "ユーザー", capability: "既存タスクを選択し、AI自然言語入力で内容を更新できる", benefit: "タスク編集時にAIの支援を受け、編集効率が向上する" },
+    acceptanceCriteria: [
+      { criterion: "タスクアイテムに「AI編集」ボタンが表示され、クリックでAI編集ダイアログが開く", verification: "テストでAI編集ボタンレンダリング、クリックでダイアログ表示を確認" },
+      { criterion: "AI編集ダイアログに既存タスク内容がプレフィル表示、自然言語入力フィールドを提供", verification: "テストで既存Todo表示、入力フィールドレンダリングを確認" },
+      { criterion: "自然言語入力をOpenRouter APIで解析し、更新プレビューを表示", verification: "テストでAI編集→OpenRouter応答→プレビュー表示を確認" },
+      { criterion: "プレビュー確認後、保存でファイル更新、リストに反映", verification: "テストでプレビュー→保存→ファイル更新→リスト再描画を確認" },
+      { criterion: "メインビュー・サイドパネル両方で利用可能", verification: "テストで両ビューでAI編集ダイアログ動作を確認" }
+    ],
+    dependencies: [],
+    status: "ready" as PBIStatus,
+    complexity: { functions: 4, estimatedTests: 20, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 5 }
+  },
+  {
+    id: "PBI-055",
+    story: { role: "ユーザー", capability: "複数タスクを一括選択し、AI自然言語でバッチ処理できる", benefit: "類似タスクの一括更新で生産性が向上する" },
+    acceptanceCriteria: [
+      { criterion: "「一括選択」ボタンでタスクアイテムにチェックボックス表示", verification: "テストで一括選択モード切替、チェックボックス表示を確認" },
+      { criterion: "複数タスク選択→「AI一括処理」ボタンでダイアログ表示", verification: "テストで複数選択→ダイアログ表示を確認" },
+      { criterion: "自然言語入力→OpenRouter解析→複数Todo更新プレビュー表示", verification: "テストでバッチ処理→プレビュー一覧表示を確認" },
+      { criterion: "一括保存でファイル更新、リストに反映", verification: "テストで一括保存→全タスク更新→リスト再描画を確認" },
+      { criterion: "一括処理後、選択状態クリア、通常モードに戻る", verification: "テストで保存後チェックボックス非表示、選択リセットを確認" }
+    ],
+    dependencies: ["PBI-054"],
+    status: "ready" as PBIStatus,
+    complexity: { functions: 5, estimatedTests: 25, externalDependencies: 1, score: "HIGH" as const, subtasks: 6 }
+  },
+  {
+    id: "PBI-056",
+    story: { role: "ユーザー", capability: "キーボードショートカットでタスク操作を高速実行できる", benefit: "キーボード中心のワークフローで作業効率が向上する" },
+    acceptanceCriteria: [
+      { criterion: "Obsidianコマンドパレットにショートカットコマンド登録、設定で変更可能", verification: "テストでaddCommand呼び出し、コマンドパレット表示を確認" },
+      { criterion: "上下矢印キーで選択、Enter完了切替、E編集、Delete削除", verification: "テストでキーボードイベント処理、操作実行を確認" },
+      { criterion: "Ctrl+N（Cmd+N）で新規タスクダイアログ", verification: "テストでCtrl+N→ダイアログ表示を確認" },
+      { criterion: "Ctrl+F（Cmd+F）で検索フォーカス移動", verification: "テストでCtrl+F→検索ボックスフォーカスを確認" },
+      { criterion: "設定画面にショートカット一覧表示", verification: "設定UIにショートカット一覧セクション表示を確認" }
+    ],
+    dependencies: [],
+    status: "ready" as PBIStatus,
+    complexity: { functions: 3, estimatedTests: 15, externalDependencies: 0, score: "MEDIUM" as const, subtasks: 5 }
+  },
+  {
+    id: "PBI-057",
+    story: { role: "ユーザー", capability: "高度検索機能でタスクを絞り込める", benefit: "大量タスクから目的タスクを素早く見つけられる" },
+    acceptanceCriteria: [
+      { criterion: "AND検索（空白）、OR検索（|）、NOT検索（-）が動作", verification: "テストでAND/OR/NOT検索クエリが正しくフィルタリングを確認" },
+      { criterion: "正規表現検索（/pattern/）が動作", verification: "テストで正規表現クエリフィルタリングを確認" },
+      { criterion: "特殊構文（project:、context:、due:、priority:）検索が動作", verification: "テストで特殊構文クエリフィルタリングを確認" },
+      { criterion: "日付範囲検索（due:YYYY-MM-DD..YYYY-MM-DD）が動作", verification: "テストで範囲クエリフィルタリングを確認" },
+      { criterion: "検索ヘルプアイコンで構文ヘルプモーダル表示", verification: "テストでヘルプアイコンクリック→モーダル表示を確認" }
+    ],
+    dependencies: [],
+    status: "ready" as PBIStatus,
+    complexity: { functions: 4, estimatedTests: 20, externalDependencies: 0, score: "MEDIUM" as const, subtasks: 5 }
+  },
 ];
 
 // Definition of Ready
@@ -78,54 +154,51 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 52 - PBI-052: サイドパネルUI刷新) - COMPLETED
+// Current Sprint (Sprint 53 - PBI-053: プロセス改善集中Sprint) - IN PROGRESS
 export const currentSprint = {
-  sprint: 52,
-  pbi: "PBI-052",
-  goal: "サイドパネルUI刷新: Apple-likeモダンデザイン強化（プログレスバー・フィルター・フッターボタン）",
-  status: "done" as SprintStatus,
+  sprint: 53,
+  pbi: "PBI-053",
+  goal: "Actions抜本的整理とプロセス再設計により、Action実施率43%→55%以上に改善し、Phase 15-17長期ビジョンを策定する",
+  status: "in_progress" as SprintStatus,
   subtasks: [
     {
-      test: "サイドパネルヘッダーに「全て/完了/未完了」のフィルターボタンと完了率表示プログレスバーをレンダリング、フィルター切り替えでタスクリスト更新を検証",
-      implementation: "既存実装でAC1満たしている（ステータスフィルター・プログレスバーは既存のrenderControlBarに実装済み）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [] as Commit[], // AC1は既存実装で満たしているため、コミットなし（Subtask 1はUser実装済み）
+      test: "scrum.ts内のretrospectives配列（Sprint 49-52）を全件走査し、4 Sprint以上経過・実施優先度低・重複Action 20項目以上を抽出、廃棄/統合リストを生成、actionManagement.tracking.remaining <= 35を検証",
+      implementation: "手動レビュー実施、廃棄/統合判断基準（実施可能性・重複度・優先度）を適用、リストをscrum.ts actionManagement.executedに記録、remaining更新",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
     },
     {
-      test: "検索ボックスが角丸20px、プレースホルダー「タスク検索...」、Apple-styleのピル型スタイルでレンダリングされることを検証",
-      implementation: "renderSearchBox関数でプレースホルダーを「検索...」→「タスク検索...」に変更、CSS既存のborder-radius: 20px活用",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green", message: "feat: update search box placeholder to 'タスク検索...' for AC2 (8c41b8a)" }] as Commit[],
+      test: "Sprint 49-52のAction実施率データ（rate 43%固定）を分析、feature開発時間圧迫・Action粒度不適切・実施判断基準不明確の3軸で原因を特定、改善策3項目以上をscrum.tsまたはCLAUDE.mdに記載、検証可能性を確認",
+      implementation: "定量分析（4 Sprint実施時間配分、Action粒度分布、実施判断プロセス）実施、根本原因レポート作成、改善策策定",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
     },
     {
-      test: "フィルタードロップダウン（なし/+project/@context）とソートドロップダウン（デフォルト/優先度/日付）が横並びでレンダリングされ、選択値が反映されることを検証",
-      implementation: "既存実装でAC3満たしている（group-selector・sort-selectorはrenderControlBarで実装済み、CSSで横並び）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green", message: "test: add test for filter/sort dropdowns horizontal layout (AC3) (271421c)" }] as Commit[], // テスト追加のみ
+      test: "再設計ルール3項目（例: Sprint Planning時Action必須Subtask化、Retrospective時実施率数値化、3 Sprint未実施Action自動廃棄）がCLAUDE.mdまたはscrum.tsに明記され、次回Sprint Planningで適用可能な具体性を検証",
+      implementation: "Subtask 2の改善策を基に、実施プロセス再設計ルールを策定、CLAUDE.mdのDevelopment Guidelinesまたはscrum.ts actionManagementに追記",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
     },
     {
-      test: "タスクアイテムが1行目に[チェックボックス][優先度][説明]、2行目に[プロジェクト/コンテキストタグ]、右端に[編集アイコン]のレイアウトでレンダリングされることを検証",
-      implementation: "既存実装でAC4満たしている（task-main-row・task-item-tags・task-actions-row構造は既存のrenderTaskItemに実装済み）",
+      test: "Subtask 1の廃棄/統合完了後、actionManagement.tracking.rate >= 55を検証、Sprint 53 Actions実施状況を数値化、KPI min 50%超過を確認",
+      implementation: "Subtask 1-3完了後、remaining更新によりrate再計算、Sprint 53 Retrospectiveでの実施率報告準備",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green", message: "test: add test for task item 2-line layout with edit icon (AC4) (948e272)" }] as Commit[], // テスト追加のみ
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
     },
     {
-      test: "フッターに「AIタスク追加」「タスク追加」の2ボタンが横並びで固定表示され、FABではなくフッターボタン形式でレンダリングされることを検証",
-      implementation: "サイドパネル: renderFooterButtons（テキスト付きフッターボタン）、メインビュー: renderFabContainer（アイコンのみFAB）を維持",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green", message: "feat: replace FAB with footer buttons for AC5 (974b547)" },
-        { phase: "green", message: "test: update test expectation for footer button text (b4cd2d0)" },
-        { phase: "green", message: "fix: revert main view to FAB, keep footer buttons for side panel only (ba70609)" },
-      ] as Commit[],
+      test: "scrum.ts productBacklogまたは専用ドキュメントに、Phase 15-17各Phaseの目標・主要PBI 2-3項目・期間見積もりが記載され、Product Goalとの整合性を検証",
+      implementation: "現在のProduct Goal「Obsidian内でtodo.txt形式のファイルを直感的に管理・表示する」を基に、Phase 15（プロセス基盤再構築）、Phase 16-17（AI連携機能拡張・高度検索機能）のビジョンを策定、PBI-054〜057との対応を確認",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
     },
   ] as Subtask[],
 };
+// Sprint 52: PBI-052完了 - 5 subtasks (5 behavioral), 5 commits (5 GREEN), see git history
 // Sprint 51: PBI-048完了 - 5 subtasks (4 behavioral + 1 structural), 6 commits (2 GREEN-only, 1 GREEN+REFACTOR, 1 lint fix), Phase 13完遂, see git history
 // Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), see git history
 // Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history

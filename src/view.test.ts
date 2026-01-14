@@ -2620,3 +2620,80 @@ describe("side panel task item layout", () => {
 		expect(editButton?.textContent).toBe("編集");
 	});
 });
+
+describe("side panel footer buttons", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("フッターに「AIタスク追加」「タスク追加」の2ボタンが横並びで固定表示される（FABではなくフッター形式）", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load tasks and render
+		view.setViewData("Task 1\nTask 2\nTask 3", false);
+		view.renderTaskList();
+
+		// Verify: Footer container exists (not fab-container)
+		const footer = container.querySelector(".footer-buttons");
+		expect(footer).not.toBeNull();
+
+		// Verify: FAB container does NOT exist
+		const fabContainer = container.querySelector(".fab-container");
+		expect(fabContainer).toBeNull();
+
+		// Verify: AI add button exists
+		const aiButton = footer?.querySelector("button.ai-add-task-button");
+		expect(aiButton).not.toBeNull();
+		expect(aiButton?.textContent).toContain("✨");
+
+		// Verify: Main add button exists
+		const addButton = footer?.querySelector("button.add-task-button");
+		expect(addButton).not.toBeNull();
+		expect(addButton?.textContent).toContain("+");
+
+		// Verify: Both buttons are in the same footer (horizontal layout)
+		expect(footer?.contains(aiButton!)).toBe(true);
+		expect(footer?.contains(addButton!)).toBe(true);
+	});
+});

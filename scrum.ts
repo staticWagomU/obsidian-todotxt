@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 50, pbi: "PBI-049", status: "not_started" as SprintStatus,
+  sprint: { number: 50, pbi: "PBI-049", status: "in_progress" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 2, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049(ready),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
@@ -113,13 +113,28 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 49完了、次Sprint待機中)
+// Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 50,
+  pbi: "PBI-049",
+  goal: "検索ボックスフォーカス維持機能実装により、サイドパネル・メインビュー両方で快適な検索体験を提供",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "サイドパネル検索ボックスでフォーカスが維持され、連続入力・リスト部分更新・カーソル位置維持が正常動作する",
+      implementation: "side-panel-view.ts onSearch関数とレンダリングロジックを修正、検索時にリスト部分のみ更新しコントロールバーを保持",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "メインビュー（rendering.ts）検索ボックスでフォーカスが維持され、サイドパネルと同等の動作をする",
+      implementation: "rendering.ts renderSearchBox関数を修正、検索時の部分更新ロジックを実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history
 // Sprint 48: PBI-051完了 - 1 subtask, 4 commits (1 RED, 1 GREEN, 2 REFACTOR), see git history

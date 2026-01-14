@@ -317,28 +317,29 @@ function renderControlBar(
 		renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete);
 	};
 
-	// Render status filter dropdown (全て/未完了/完了)
-	renderStatusFilterDropdown(controlBar, filterState.status, onFilterChange);
+	// Row 1: Filters and selectors (compact inline)
+	const row1 = controlBar.createEl("div");
+	row1.classList.add("control-bar-row");
 
-	// Render progress bar
-	renderProgressBar(controlBar, data);
+	// Render status filter dropdown (全て/未完了/完了)
+	renderStatusFilterDropdown(row1, filterState.status, onFilterChange);
 
 	// Render priority filter dropdown
-	renderPriorityFilterDropdown(controlBar, filterState.priority, onFilterChange);
-
-	// Render search box with special handler
-	renderSearchBox(controlBar, filterState.search, onSearchInput);
+	renderPriorityFilterDropdown(row1, filterState.priority, onFilterChange);
 
 	// Render group selector
-	renderGroupSelector(controlBar, filterState.group, onFilterChange);
+	renderGroupSelector(row1, filterState.group, onFilterChange);
 
 	// Render sort selector
-	renderSortSelector(controlBar, filterState.sort, onFilterChange);
+	renderSortSelector(row1, filterState.sort, onFilterChange);
 
 	// Render archive button if onArchive is provided
 	if (onArchive) {
-		renderArchiveButton(controlBar, data, onArchive);
+		renderArchiveButton(row1, data, onArchive);
 	}
+
+	// Row 2: Search box (full width)
+	renderSearchBox(controlBar, filterState.search, onSearchInput);
 }
 
 /**
@@ -373,29 +374,6 @@ function renderStatusFilterDropdown(
 
 	// Add change event listener
 	statusFilter.addEventListener("change", onChange);
-}
-
-/**
- * Render progress bar showing task completion rate
- */
-function renderProgressBar(container: HTMLElement, data: string): void {
-	const todos = parseTodoTxt(data);
-	const totalTasks = todos.length;
-	const completedTasks = todos.filter(todo => todo.completed).length;
-	const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-	const progressBarContainer = container.createEl("div");
-	progressBarContainer.classList.add("progress-bar");
-
-	// Progress fill (colored bar showing completion percentage)
-	const progressFill = progressBarContainer.createEl("div");
-	progressFill.classList.add("progress-fill");
-	progressFill.style.width = `${percentage}%`;
-
-	// Progress text (e.g., "3/10")
-	const progressText = progressBarContainer.createEl("span");
-	progressText.classList.add("progress-text");
-	progressText.textContent = `${completedTasks}/${totalTasks}`;
 }
 
 /**

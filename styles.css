@@ -523,16 +523,29 @@ button:active {
  * Apple-style Control Bar
  * ============================================
  * セグメントコントロール風のモダンなフィルターバー
+ * 2行レイアウト: 上段（フィルター類）、下段（検索）
  */
 .control-bar {
 	display: flex;
-	align-items: center;
-	gap: var(--spacing-md);
+	flex-direction: column;
+	gap: var(--spacing-sm);
 	padding: var(--spacing-md) var(--spacing-lg);
 	margin-bottom: var(--spacing-xl);
 	background: var(--background-secondary);
 	border-radius: var(--border-radius-lg);
+}
+
+/* 上段: セレクトボックスとボタンを横並び */
+.control-bar-row {
+	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--spacing-sm);
+}
+
+/* 検索ボックスは全幅 */
+.control-bar .search-box {
+	width: 100%;
 }
 
 /* Apple-style segmented control for dropdowns */
@@ -1389,26 +1402,14 @@ button:active {
 		padding: var(--spacing-lg);
 	}
 
-	/* コントロールバー - グリッドレイアウト */
+	/* コントロールバー - タブレットではパディング狭く */
 	.control-bar {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: var(--spacing-sm);
 		padding: var(--spacing-md);
 	}
 
-	/* 検索ボックスを全幅に（最上部） */
-	.control-bar .search-box {
-		grid-column: 1 / -1;
-		width: 100%;
-		min-width: unset;
-		order: -1;
-	}
-
-	/* セレクトボックスを2列グリッドに */
-	.control-bar select {
-		width: 100%;
-		min-width: unset;
+	/* フィルター行を折り返し可能に */
+	.control-bar-row {
+		flex-wrap: wrap;
 	}
 
 	/* FABコンテナの位置調整（指が届きやすい位置） */

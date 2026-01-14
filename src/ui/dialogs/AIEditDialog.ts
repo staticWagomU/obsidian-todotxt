@@ -41,6 +41,21 @@ export class AIEditDialog extends Modal {
 		});
 		currentTaskText.textContent = this.todo.raw || this.todo.description;
 
+		// 自然言語入力エリア
+		const inputSection = contentEl.createDiv("ai-dialog-input-section");
+		inputSection.createEl("h3", { text: "変更内容を入力" });
+
+		const textarea = inputSection.createEl("textarea", {
+			cls: "ai-edit-textarea",
+		});
+		/* eslint-disable obsidianmd/ui/sentence-case -- Japanese text does not require sentence case */
+		textarea.setAttribute(
+			"placeholder",
+			"変更内容を自然な文章で入力してください...\n\n例:\n・明日までに期限を設定\n・優先度をAに変更\n・@homeコンテキストを追加",
+		);
+		/* eslint-enable obsidianmd/ui/sentence-case */
+		textarea.rows = 6;
+
 		// ボタンエリア
 		const buttonContainer = contentEl.createDiv("ai-dialog-buttons");
 
@@ -52,7 +67,23 @@ export class AIEditDialog extends Modal {
 			this.close();
 		});
 
-		// 自動フォーカス（将来的にテキストエリアを追加）
+		const generateButton = buttonContainer.createEl("button", {
+			text: "AI編集実行",
+			cls: "mod-cta ai-btn-generate",
+		});
+		generateButton.addEventListener("click", () => {
+			// TODO: Implement in Subtask 3
+			void this.handleGenerate(textarea.value);
+		});
+
+		// 自動フォーカス
+		textarea.focus();
+	}
+
+	async handleGenerate(_naturalLanguage: string): Promise<void> {
+		// TODO: Implement in Subtask 3
+		// For now, just close the dialog
+		this.close();
 	}
 
 	onClose(): void {

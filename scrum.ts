@@ -93,7 +93,8 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "存在しないパスを指定した場合にエラーにならない", verification: "pnpm vitest run -- -t 'invalid path'" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: { functions: 4, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 3 },
   },
   {
     id: "PBI-045",
@@ -138,13 +139,17 @@ export const productBacklog: ProductBacklogItem[] = [
     },
     acceptanceCriteria: [
       { criterion: "AI追加ボタンクリックで自然言語入力ダイアログが開く", verification: "pnpm build && 手動確認: ダイアログが開く" },
-      { criterion: "入力された自然言語がtodo.txt形式に変換される", verification: "pnpm vitest run -- -t 'natural language to todotxt'" },
+      { criterion: "入力された自然言語がtodo.txt形式に変換される（プロジェクト/コンテキスト/優先度/期限を自動抽出）", verification: "pnpm vitest run -- -t 'natural language to todotxt'" },
       { criterion: "変換結果をプレビュー表示し、編集・確認できる", verification: "pnpm build && 手動確認: プレビューが編集可能" },
       { criterion: "確認後にタスクがtodo.txtに追加される", verification: "pnpm build && 手動確認: タスクが追加される" },
-      { criterion: "OpenRouterのAPIキー設定が可能", verification: "pnpm build && 手動確認: 設定画面にOpenRouter APIキー入力欄がある" },
+      { criterion: "複数タスクを一括で変換・追加できる（改行/箇条書き区切り）", verification: "pnpm vitest run -- -t 'multiple tasks'" },
+      { criterion: "OpenRouterのAPIキー・モデル設定が可能", verification: "pnpm build && 手動確認: 設定画面にOpenRouter設定がある" },
+      { criterion: "カスタムコンテキストマッピングが設定可能", verification: "pnpm vitest run -- -t 'custom context'" },
+      { criterion: "APIエラー時に設定に従い自動リトライする", verification: "pnpm vitest run -- -t 'retry'" },
     ],
     dependencies: ["PBI-046"],
     status: "draft" as PBIStatus,
+    // Design: docs/design/PBI-047-design.md (based on todonoeai specification)
   },
 ];
 

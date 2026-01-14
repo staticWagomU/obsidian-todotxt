@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 51, pbi: "PBI-048", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 5, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048(in_progress)", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
 };
 
@@ -108,8 +108,11 @@ export const currentSprint = {
       test: "サイドパネルから設定登録された全todotxtファイルにタスクを追加でき、複数ファイル選択時にファイル選択ダイアログが表示される",
       implementation: "AddTaskModal（またはダイアログ）実装、ファイル選択UI追加、複数ファイル時のファイル選択ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(side-panel): add file selection test for multiple files" },
+        { phase: "green" as CommitPhase, message: "feat(side-panel): implement file selection for multiple files - Subtask 1完了" },
+      ],
     },
     {
       test: "サイドパネルからタスクを選択して編集ボタンをクリックするとEditTaskModalが開き、編集内容が反映される",

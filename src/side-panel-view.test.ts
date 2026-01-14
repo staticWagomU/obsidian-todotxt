@@ -476,6 +476,102 @@ describe("TodoSidePanelView", () => {
 		});
 	});
 
+	describe("Task edit functionality", () => {
+		it("should open EditTaskModal when edit button is clicked", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk\n(A) Write report"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Find edit button (should exist in task actions row)
+			const editButtons = view.contentEl.querySelectorAll(".edit-task-button");
+			expect(editButtons.length).toBeGreaterThan(0);
+
+			// Spy on openEditTaskModal method
+			const openEditTaskModalSpy = vi.spyOn(view, "openEditTaskModal" as any);
+
+			// Click first edit button
+			(editButtons[0] as HTMLElement).click();
+
+			// Verify openEditTaskModal was called
+			expect(openEditTaskModalSpy).toHaveBeenCalledOnce();
+		});
+
+		it("should update task after editing via EditTaskModal", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+
+			let currentContent = "Buy milk";
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || currentContent;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.modify = async (_file: any, newContent: string): Promise<void> => {
+				currentContent = newContent;
+				mockFiles.set("vault/todo.txt", newContent);
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Check initial content
+			const initialDescription = view.contentEl.querySelector(".task-description");
+			expect(initialDescription?.textContent).toBe("Buy milk");
+
+			// Simulate editing
+			const mockFile = new TFile();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(mockFile as any).path = "vault/todo.txt";
+			await mockPlugin.app.vault.modify(mockFile, "(A) Buy milk and bread");
+
+			// Manually trigger refresh
+			await view.loadTasks();
+			view.renderView();
+
+			// Check updated content
+			const updatedDescription = view.contentEl.querySelector(".task-description");
+			expect(updatedDescription?.textContent).toBe("Buy milk and bread");
+
+			// Check priority badge appears
+			const priorityBadge = view.contentEl.querySelector(".priority");
+			expect(priorityBadge?.textContent).toBe("A");
+		});
+	});
+
 	describe("Search focus maintenance", () => {
 		it("should maintain focus when typing multiple characters in search box", async () => {
 			const mockFiles = new Map([

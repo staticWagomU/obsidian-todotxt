@@ -5,6 +5,7 @@ import type { Todo } from "./lib/todo";
 import { createAndAppendTask } from "./lib/todo";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AddTaskModal } from "./ui/AddTaskModal";
+import { EditTaskModal } from "./ui/EditTaskModal";
 import {
 	removeProjectsAndContextsFromDescription,
 	renderRecurrenceIcon,
@@ -440,6 +441,14 @@ export class TodoSidePanelView extends ItemView {
 		const actionsRow = li.createEl("div");
 		actionsRow.classList.add("task-actions-row");
 
+		// Edit button
+		const editButton = actionsRow.createEl("button");
+		editButton.classList.add("edit-task-button");
+		editButton.textContent = "編集";
+		editButton.addEventListener("click", () => {
+			this.openEditTaskModal(task);
+		});
+
 		// Open file button
 		const openButton = actionsRow.createEl("button");
 		openButton.classList.add("edit-task-button");
@@ -657,6 +666,84 @@ export class TodoSidePanelView extends ItemView {
 			this.tasksData.map((t) => t.todo)
 		);
 		modal.open();
+	}
+
+	/**
+	 * Open edit task modal
+	 */
+	private openEditTaskModal(task: TaskWithFile): void {
+		const file = this.app.vault.getAbstractFileByPath(task.filePath);
+		if (!(file instanceof TFile)) return;
+
+		// Extract initial values from todo
+		const initialDueDate = task.todo.tags.due || "";
+		const initialThresholdDate = task.todo.tags.t || "";
+
+		const modal = new EditTaskModal(
+			this.app,
+			task.todo.description,
+			(description: string, priority?: string, dueDate?: string, thresholdDate?: string) => {
+				void (async () => {
+					const content = await this.app.vault.read(file);
+					const lines = content.split("\n");
+
+					// Reconstruct the line with new values
+					const newLine = this.reconstructTaskLine(task.todo, description, priority, dueDate, thresholdDate);
+
+					lines[task.lineIndex] = newLine;
+					await this.app.vault.modify(file, lines.join("\n"));
+					await this.refreshTaskList();
+				})();
+			},
+			task.todo.priority,
+			initialDueDate,
+			initialThresholdDate,
+			this.tasksData.map((t) => t.todo)
+		);
+		modal.open();
+	}
+
+	/**
+	 * Reconstruct task line from todo and new values
+	 */
+	private reconstructTaskLine(
+		originalTodo: Todo,
+		description: string,
+		priority?: string,
+		dueDate?: string,
+		thresholdDate?: string
+	): string {
+		let line = "";
+
+		// Add completion marker if present
+		if (originalTodo.completed && originalTodo.completionDate) {
+			line += `x ${originalTodo.completionDate} `;
+		}
+
+		// Add priority
+		if (priority) {
+			line += `(${priority}) `;
+		}
+
+		// Add creation date if present
+		if (originalTodo.creationDate) {
+			line += `${originalTodo.creationDate} `;
+		}
+
+		// Add description
+		line += description;
+
+		// Add due date tag
+		if (dueDate) {
+			line += ` due:${dueDate}`;
+		}
+
+		// Add threshold date tag
+		if (thresholdDate) {
+			line += ` t:${thresholdDate}`;
+		}
+
+		return line.trim();
 	}
 
 	/**

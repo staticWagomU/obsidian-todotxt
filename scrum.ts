@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 49, pbi: "PBI-050", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 1, impediments: 0 },
+  sprint: { number: 49, pbi: "PBI-050", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - メインビューAI機能 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
@@ -128,13 +128,35 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 48完了、次Sprint待機中)
+// Current Sprint (Sprint 49開始 - メインビューAI機能統合+プロセス改善)
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 49,
+  pbi: "PBI-050",
+  goal: "メインビューへのAI機能統合とプロセス改善基盤確立",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "メインビューFABコンテナにAIボタン（✨）表示、クリックでAITaskInputDialog開く、生成タスクがファイルに追加される",
+      implementation: "view.tsにAIボタン追加、AITaskInputDialogインポート・モーダル表示処理実装、タスク追加処理統合",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "REFACTOR判断4項目チェック（重複コード/複雑度/命名/構造）をGREEN完了時に実施、判断結果をscrum.ts Subtask commitsに記録",
+      implementation: "REFACTOR判断プロセスをSubtask1のGREEN完了時に実施、判断結果をscrum.ts commitsに追記する体制確立",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "Sprint 47-48未実施Actions（累積29項目）から優先2項目を選定、実施可能性評価、廃棄/統合/再計画を判断",
+      implementation: "retrospectives配列のSprint 47-48 actionsを確認、優先順位付け、実施・廃棄判断をactionManagement trackingに反映",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 48: PBI-051完了 - 1 subtask, 4 commits (1 RED, 1 GREEN, 2 REFACTOR) + 1 fix, see git history
 // Sprint 47: PBI-047完了 - 7 subtasks, 11 commits (4 RED, 5 GREEN, 2 REFACTOR), see git history

@@ -8,12 +8,14 @@ export interface TodotxtPluginSettings {
 	defaultSortOrder: SortOrder;
 	defaultGrouping: Grouping;
 	showCompletedTasks: boolean;
+	todotxtFilePaths: string[];
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	defaultSortOrder: "completion",
 	defaultGrouping: "none",
 	showCompletedTasks: true,
+	todotxtFilePaths: [],
 };
 
 export class TodotxtSettingTab extends PluginSettingTab {

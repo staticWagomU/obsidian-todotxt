@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 44, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 44, pbi: "PBI-044", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
   phase: { number: 10, status: "done", sprints: "43", pbis: "PBI-043", goal: "パーサー堅牢化完了（unified-test-cases.md準拠、740t達成、+114t）" },
 };
 
@@ -164,13 +164,35 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (No active sprint)
+// Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 44,
+  pbi: "PBI-044",
+  goal: "設定ベースのファイルパス管理を実現し、ユーザーが明示的にtodo.txt管理対象を制御できる",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "settings.tsにtodotxtFilePathsプロパティのテストを記述、デフォルト空配列を検証",
+      implementation: "TodotxtPluginSettingsインターフェースにtodotxtFilePaths: string[]を追加、DEFAULT_SETTINGSに空配列を設定",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "指定パスマッチング・デフォルト拡張子判定・存在しないパス処理のテストを記述（3テストケース）",
+      implementation: "ファイルパスが設定配列に含まれるか判定する関数を実装、未指定時は.txt/.todotxt拡張子で判定",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "設定画面でファイルパス入力欄が存在するテストを記述（UI要素検証）",
+      implementation: "SettingTab.tsにテキストエリア追加、複数パス入力（改行区切り）をサポート、保存/読み込み処理実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 
 // Impediments

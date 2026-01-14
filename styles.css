@@ -517,6 +517,8 @@ button:active {
 	list-style: none;
 	padding: 0;
 	margin: 0;
+	/* FABボタンと重ならないよう下部にスペースを確保 */
+	padding-bottom: 100px;
 }
 
 /* ============================================

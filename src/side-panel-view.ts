@@ -115,28 +115,28 @@ export class TodoSidePanelView extends ItemView {
 		this.contentEl.classList.add("todotxt-view");
 		this.contentEl.classList.add("todotxt-sidepanel-compact");
 
+		// Render FAB container (same style as main view)
+		this.renderFabContainer();
+
 		// Render control bar
 		this.renderControlBar();
 
 		// Render task list
 		this.renderTaskList();
-
-		// Render footer buttons at the end (for side panel UI)
-		this.renderFooterButtons();
 	}
 
 	/**
-	 * Render footer buttons (fixed at bottom) with AI and main add buttons
-	 * Side panel specific: uses footer-buttons class instead of fab-container
+	 * Render FAB container with AI and main add buttons
+	 * Same style as main view for consistency
 	 */
-	renderFooterButtons(): void {
-		const footer = this.contentEl.createEl("div");
-		footer.classList.add("footer-buttons");
+	renderFabContainer(): void {
+		const fabContainer = this.contentEl.createEl("div");
+		fabContainer.classList.add("fab-container");
 
 		// AI add button (left side)
-		const aiButton = footer.createEl("button");
+		const aiButton = fabContainer.createEl("button");
 		aiButton.classList.add("ai-add-task-button");
-		aiButton.textContent = "✨ AIタスク追加";
+		aiButton.textContent = "✨";
 		aiButton.setAttribute("aria-label", "AIでタスクを追加");
 		aiButton.setAttribute("title", "AIでタスクを追加");
 		aiButton.addEventListener("click", () => {
@@ -144,9 +144,9 @@ export class TodoSidePanelView extends ItemView {
 		});
 
 		// Main add button (right side)
-		const addButton = footer.createEl("button");
+		const addButton = fabContainer.createEl("button");
 		addButton.classList.add("add-task-button");
-		addButton.textContent = "+ タスク追加";
+		addButton.textContent = "+";
 		addButton.setAttribute("aria-label", "タスクを追加");
 		addButton.addEventListener("click", () => {
 			this.openAddTaskDialog();
@@ -481,14 +481,6 @@ export class TodoSidePanelView extends ItemView {
 		deleteButton.textContent = "削除";
 		deleteButton.addEventListener("click", () => {
 			this.openDeleteConfirmDialog(task);
-		});
-
-		// Open file button
-		const openButton = actionsRow.createEl("button");
-		openButton.classList.add("edit-task-button");
-		openButton.textContent = "開く";
-		openButton.addEventListener("click", () => {
-			void this.openFile(filePath);
 		});
 
 		if (todo.completed) {
@@ -868,12 +860,5 @@ export class TodoSidePanelView extends ItemView {
 			}
 		);
 		dialog.open();
-	}
-
-	/**
-	 * Open file in workspace
-	 */
-	async openFile(filePath: string): Promise<void> {
-		await this.app.workspace.openLinkText(filePath, "", false);
 	}
 }

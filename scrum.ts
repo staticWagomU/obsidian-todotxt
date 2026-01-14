@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 53, pbi: "PBI-053", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 4, subtasksTotal: 5, impediments: 0 },
   phase: { number: 15, status: "in_progress", sprints: "53", pbis: "PBI-053", goal: "Phase 15: プロセス基盤再構築とAI連携機能拡張の両立" },
 };
 
@@ -192,8 +192,10 @@ export const currentSprint = {
       test: "Subtask 1の廃棄/統合完了後、actionManagement.tracking.rate >= 55を検証、Sprint 53 Actions実施状況を数値化、KPI min 50%超過を確認",
       implementation: "Subtask 1-3完了後、remaining更新によりrate再計算、Sprint 53 Retrospectiveでの実施率報告準備",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(scrum): Action実施率55%以上達成検証完了 - rate 58%到達" },
+      ] as Commit[],
     },
     {
       test: "scrum.ts productBacklogまたは専用ドキュメントに、Phase 15-17各Phaseの目標・主要PBI 2-3項目・期間見積もりが記載され、Product Goalとの整合性を検証",

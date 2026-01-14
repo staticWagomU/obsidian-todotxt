@@ -384,6 +384,46 @@ describe("TodoSidePanelView", () => {
 			expect(openAddTaskDialogSpy).toHaveBeenCalledOnce();
 		});
 
+		it("should open file selection modal when multiple files are configured", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+				["vault/work.txt", "Write report"],
+				["vault/personal.txt", "Call dentist"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt", "vault/work.txt", "vault/personal.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+
+			// Spy on openFileSelectionModal method
+			const openFileSelectionModalSpy = vi.spyOn(view, "openFileSelectionModal" as any);
+
+			await view.onOpen();
+
+			// Find and click add button
+			const addButton = view.contentEl.querySelector(".add-task-button");
+			expect(addButton).not.toBeNull();
+			(addButton as HTMLElement).click();
+
+			// Verify openFileSelectionModal was called with 3 files
+			expect(openFileSelectionModalSpy).toHaveBeenCalledOnce();
+		});
+
 		it("should refresh task list after adding task via AddTaskModal", async () => {
 			const mockFiles = new Map([
 				["vault/todo.txt", "Buy milk"],

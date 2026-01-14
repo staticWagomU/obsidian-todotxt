@@ -514,12 +514,134 @@ export class TodoSidePanelView extends ItemView {
 
 	/**
 	 * Open add task dialog
+	 * If multiple files are configured, open file selection modal first
 	 */
 	openAddTaskDialog(): void {
+		const filePaths = this.plugin.settings.todotxtFilePaths;
+
+		// If multiple files, show file selection modal
+		if (filePaths.length > 1) {
+			this.openFileSelectionModal();
+			return;
+		}
+
+		// Single file or no files: use primary file path
 		const targetPath = this.getPrimaryFilePath();
 		if (!targetPath) return;
 
-		const file = this.app.vault.getAbstractFileByPath(targetPath);
+		this.openAddTaskDialogForFile(targetPath);
+	}
+
+	/**
+	 * Open file selection modal for task addition
+	 */
+	private openFileSelectionModal(): void {
+		const filePaths = this.plugin.settings.todotxtFilePaths;
+
+		// Create simple modal for file selection
+		const modal = this.createModalBackdrop();
+		const dialog = this.createModalDialog();
+
+		const title = this.createModalTitle("ファイルを選択");
+		dialog.appendChild(title);
+
+		const list = this.createFileSelectionList(filePaths, modal);
+		dialog.appendChild(list);
+
+		const cancelBtn = this.createCancelButton(() => {
+			document.body.removeChild(modal);
+		});
+		dialog.appendChild(cancelBtn);
+
+		modal.appendChild(dialog);
+
+		// Close on backdrop click
+		modal.addEventListener("click", (e) => {
+			if (e.target === modal) {
+				document.body.removeChild(modal);
+			}
+		});
+
+		document.body.appendChild(modal);
+	}
+
+	/**
+	 * Create modal backdrop element
+	 */
+	private createModalBackdrop(): HTMLDivElement {
+		const modal = document.createElement("div");
+		modal.classList.add("modal-container");
+		modal.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;";
+		return modal;
+	}
+
+	/**
+	 * Create modal dialog element
+	 */
+	private createModalDialog(): HTMLDivElement {
+		const dialog = document.createElement("div");
+		dialog.classList.add("modal");
+		dialog.style.cssText = "background:var(--background-primary);padding:24px;border-radius:12px;max-width:400px;width:90%;";
+		return dialog;
+	}
+
+	/**
+	 * Create modal title element
+	 */
+	private createModalTitle(text: string): HTMLHeadingElement {
+		const title = document.createElement("h2");
+		title.textContent = text;
+		title.style.cssText = "margin:0 0 16px 0;font-size:18px;";
+		return title;
+	}
+
+	/**
+	 * Create file selection list
+	 */
+	private createFileSelectionList(filePaths: string[], modal: HTMLDivElement): HTMLUListElement {
+		const list = document.createElement("ul");
+		list.style.cssText = "list-style:none;padding:0;margin:0 0 16px 0;";
+
+		for (const filePath of filePaths) {
+			const item = document.createElement("li");
+			item.style.cssText = "padding:12px;margin:4px 0;border:1px solid var(--background-modifier-border);border-radius:6px;cursor:pointer;transition:all 0.15s ease;";
+			item.textContent = filePath.split("/").pop() || filePath;
+
+			item.addEventListener("click", () => {
+				document.body.removeChild(modal);
+				this.openAddTaskDialogForFile(filePath);
+			});
+
+			item.addEventListener("mouseenter", () => {
+				item.style.background = "var(--background-modifier-hover)";
+			});
+
+			item.addEventListener("mouseleave", () => {
+				item.style.background = "";
+			});
+
+			list.appendChild(item);
+		}
+
+		return list;
+	}
+
+	/**
+	 * Create cancel button
+	 */
+	private createCancelButton(onClick: () => void): HTMLButtonElement {
+		const cancelBtn = document.createElement("button");
+		cancelBtn.textContent = "キャンセル";
+		cancelBtn.style.cssText = "padding:8px 16px;border:1px solid var(--background-modifier-border);border-radius:6px;background:transparent;color:var(--text-muted);cursor:pointer;";
+		cancelBtn.addEventListener("click", onClick);
+		return cancelBtn;
+	}
+
+	/**
+	 * Open add task dialog for specific file
+	 */
+	private openAddTaskDialogForFile(filePath: string): void {
+		const file = this.app.vault.getAbstractFileByPath(filePath);
 		if (!(file instanceof TFile)) return;
 
 		const modal = new AddTaskModal(

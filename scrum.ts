@@ -35,7 +35,7 @@ interface Retrospective {
 export const quickStatus = {
   sprint: { number: 50, pbi: "PBI-049", status: "not_started" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 2, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049(ready),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -76,7 +76,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "メインビュー（rendering.ts）の検索ボックスでも同様にフォーカスが維持される", verification: "pnpm vitest run src/lib/rendering.test.ts -- --grep 'search focus'" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
     complexity: { functions: 2, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 2 },
   },
   {

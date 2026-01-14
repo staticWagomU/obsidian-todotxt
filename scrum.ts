@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 45, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 11, status: "not_started", sprints: "", pbis: "", goal: "TBD" },
+  sprint: { number: 45, pbi: "PBI-045", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  phase: { number: 11, status: "in_progress", sprints: "Sprint 45", pbis: "PBI-045", goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する" },
 };
 
 // Product Goal
@@ -127,13 +127,35 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (No active sprint)
+// Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 45,
+  pbi: "PBI-045",
+  goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "archiveCompletedTasks関数、getArchiveFilePath関数、appendToArchiveFile関数のテストを実装（完了タスク抽出、done.txtパス生成、ファイル追記処理の検証）",
+      implementation: "完了タスク抽出ロジック、done.txtパス生成、ファイル追記処理を実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "getArchiveHandler関数、アーカイブボタンのレンダリング、無効化状態のテストを実装（完了タスク0件時の無効化検証）",
+      implementation: "アーカイブボタンUI、ハンドラー統合、完了タスク0件時の無効化処理を実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "確認モーダル表示、ハンドラーexposure、完了タスク削除のテストを実装（アーカイブ後の元ファイル更新検証）",
+      implementation: "確認モーダル、Viewからのハンドラーアクセス、アーカイブ後の元ファイル更新を実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 44: PBI-044完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 

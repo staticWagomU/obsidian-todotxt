@@ -3,13 +3,15 @@
  * Allows editing existing tasks using natural language input
  */
 
-import { Modal, type App, Notice } from "obsidian";
+import { Modal, type App, Notice, TFile } from "obsidian";
 import type { Todo } from "../../lib/todo";
 import { OpenRouterService } from "../../ai/openrouter";
 import type { OpenRouterSettings } from "../../settings";
 
 export class AIEditDialog extends Modal {
 	private todo: Todo;
+	private filePath: string;
+	private lineIndex: number;
 	private onSuccess: () => void;
 	private settings: OpenRouterSettings;
 	private previewSection: HTMLElement | null = null;
@@ -18,11 +20,15 @@ export class AIEditDialog extends Modal {
 	constructor(
 		app: App,
 		todo: Todo,
+		filePath: string,
+		lineIndex: number,
 		settings: OpenRouterSettings,
 		onSuccess: () => void,
 	) {
 		super(app);
 		this.todo = todo;
+		this.filePath = filePath;
+		this.lineIndex = lineIndex;
 		this.settings = settings;
 		this.onSuccess = onSuccess;
 	}
@@ -94,12 +100,15 @@ export class AIEditDialog extends Modal {
 		}
 
 		if (!this.settings.apiKey) {
+			// eslint-disable-next-line obsidianmd/ui/sentence-case -- API key is a proper noun
 			new Notice("OpenRouter API key is not configured");
 			return;
 		}
 
 		// Show loading notice
+		 
 		const loadingNotice = new Notice("AIが編集中...", 0);
+		 
 
 		try {
 			const service = new OpenRouterService({
@@ -173,9 +182,35 @@ export class AIEditDialog extends Modal {
 	}
 
 	async handleSave(): Promise<void> {
-		// TODO: Implement in Subtask 4
-		this.close();
-		this.onSuccess();
+		if (!this.updatedTodoLine) {
+			new Notice("更新内容がありません");
+			return;
+		}
+
+		try {
+			const file = this.app.vault.getAbstractFileByPath(this.filePath);
+			if (!(file instanceof TFile)) {
+				new Notice("ファイルが見つかりません: " + this.filePath);
+				return;
+			}
+
+			// Read current file content
+			const content = await this.app.vault.read(file);
+			const lines = content.split("\n");
+
+			// Update the specific line with the AI-edited todo
+			lines[this.lineIndex] = this.updatedTodoLine;
+
+			// Write back to file
+			await this.app.vault.modify(file, lines.join("\n"));
+
+			new Notice("タスクを更新しました");
+			this.close();
+			this.onSuccess();
+		} catch (error) {
+			const errorMsg = error instanceof Error ? error.message : "不明なエラー";
+			new Notice("保存に失敗しました: " + errorMsg);
+		}
 	}
 
 	onClose(): void {

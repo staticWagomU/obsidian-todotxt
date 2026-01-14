@@ -57,9 +57,10 @@ describe("AIEditDialog - OpenRouter API Integration & Preview", () => {
 
 		const service = new OpenRouterService(mockConfig);
 
-		// Check that editTodo method exists
-		expect(service.editTodo).toBeDefined();
-		expect(typeof service.editTodo).toBe("function");
+		// Check that editTodo method exists and is a function
+		const editTodoMethod = service.editTodo.bind(service);
+		expect(editTodoMethod).toBeDefined();
+		expect(typeof editTodoMethod).toBe("function");
 	});
 
 	it("should export EditResult interface from openrouter", async () => {
@@ -85,13 +86,17 @@ describe("AIEditDialog - OpenRouter API Integration & Preview", () => {
 
 		const previewText = document.createElement("div");
 		previewText.className = "preview-todo-text";
+		/* eslint-disable obsidianmd/ui/sentence-case -- This is a todo.txt format example, not UI text */
 		previewText.textContent = "(A) 2026-01-14 重要なタスク @home +ProjectX due:2026-01-15";
+		/* eslint-enable obsidianmd/ui/sentence-case */
 		previewSection.appendChild(previewText);
 
 		// Verify structure
 		expect(contentEl.querySelector(".ai-dialog-preview")).toBeDefined();
+		 
 		expect(contentEl.querySelector(".preview-todo-text")?.textContent).toBe(
 			"(A) 2026-01-14 重要なタスク @home +ProjectX due:2026-01-15"
 		);
+		 
 	});
 });

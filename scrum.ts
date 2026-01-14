@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 44, pbi: "PBI-044", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 3, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 3, impediments: 0 },
   phase: { number: 10, status: "done", sprints: "43", pbis: "PBI-043", goal: "パーサー堅牢化完了（unified-test-cases.md準拠、740t達成、+114t）" },
 };
 
@@ -185,8 +185,11 @@ export const currentSprint = {
       test: "指定パスマッチング・デフォルト拡張子判定・存在しないパス処理のテストを記述（3テストケース）",
       implementation: "ファイルパスが設定配列に含まれるか判定する関数を実装、未指定時は.txt/.todotxt拡張子で判定",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(file-matcher): add file path matching tests" },
+        { phase: "green" as CommitPhase, message: "feat(file-matcher): implement file path matching logic" },
+      ],
     },
     {
       test: "設定画面でファイルパス入力欄が存在するテストを記述（UI要素検証）",

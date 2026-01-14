@@ -2204,3 +2204,181 @@ describe("AI task addition button", () => {
 		vi.useRealTimers();
 	});
 });
+
+describe("side panel header with status filter and progress", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("ステータスフィルター(全て/未完了/完了)が表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load tasks and render
+		view.setViewData("Task 1\nx 2026-01-01 Task 2\nTask 3", false);
+		view.renderTaskList();
+
+		// Verify: Status filter exists in header
+		const statusFilter = container.querySelector("select.status-filter");
+		expect(statusFilter).not.toBeNull();
+		expect(statusFilter?.tagName).toBe("SELECT");
+
+		// Verify: Filter has 3 options (全て, 未完了, 完了)
+		const options = statusFilter?.querySelectorAll("option");
+		expect(options?.length).toBe(3);
+		expect(options?.[0]?.value).toBe("all");
+		expect(options?.[0]?.textContent).toBe("全て");
+		expect(options?.[1]?.value).toBe("active");
+		expect(options?.[1]?.textContent).toBe("未完了");
+		expect(options?.[2]?.value).toBe("completed");
+		expect(options?.[2]?.textContent).toBe("完了");
+	});
+
+	it("プログレスバーが表示され、完了率が正しく計算される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: 3 tasks (1 completed, 2 active) = 33.3% progress
+		view.setViewData("Task 1\nx 2026-01-01 Task 2\nTask 3", false);
+		view.renderTaskList();
+
+		// Verify: Progress bar exists
+		const progressBar = container.querySelector(".progress-bar");
+		expect(progressBar).not.toBeNull();
+
+		// Verify: Progress fill shows correct percentage
+		const progressFill = progressBar?.querySelector(".progress-fill") as HTMLElement;
+		expect(progressFill).not.toBeNull();
+		expect(progressFill?.style.width).toBe("33%");
+
+		// Verify: Progress text shows "1/3"
+		const progressText = progressBar?.querySelector(".progress-text");
+		expect(progressText).not.toBeNull();
+		expect(progressText?.textContent).toBe("1/3");
+	});
+
+	it("プログレスバーが0%のとき正しく表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: All tasks are active (0% progress)
+		view.setViewData("Task 1\nTask 2\nTask 3", false);
+		view.renderTaskList();
+
+		// Verify: Progress fill shows 0%
+		const progressFill = container.querySelector(".progress-fill") as HTMLElement;
+		expect(progressFill).not.toBeNull();
+		expect(progressFill?.style.width).toBe("0%");
+
+		// Verify: Progress text shows "0/3"
+		const progressText = container.querySelector(".progress-text");
+		expect(progressText).not.toBeNull();
+		expect(progressText?.textContent).toBe("0/3");
+	});
+
+	it("プログレスバーが100%のとき正しく表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: All tasks are completed (100% progress)
+		view.setViewData("x 2026-01-01 Task 1\nx 2026-01-01 Task 2", false);
+		view.renderTaskList();
+
+		// Verify: Progress fill shows 100%
+		const progressFill = container.querySelector(".progress-fill") as HTMLElement;
+		expect(progressFill).not.toBeNull();
+		expect(progressFill?.style.width).toBe("100%");
+
+		// Verify: Progress text shows "2/2"
+		const progressText = container.querySelector(".progress-text");
+		expect(progressText).not.toBeNull();
+		expect(progressText?.textContent).toBe("2/2");
+	});
+
+	it("ステータスフィルター変更時、表示タスクがフィルタリングされる", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load mixed tasks
+		view.setViewData("Task 1\nx 2026-01-01 Task 2\nTask 3", false);
+		view.renderTaskList();
+
+		// Initial state: 3 tasks visible
+		let taskItems = container.querySelectorAll("ul > li:not(.group-header)");
+		expect(taskItems.length).toBe(3);
+
+		// Change filter to "未完了"
+		const statusFilter = container.querySelector("select.status-filter") as HTMLSelectElement;
+		statusFilter.value = "active";
+		statusFilter.dispatchEvent(new Event("change"));
+
+		// Verify: Only 2 active tasks visible
+		taskItems = container.querySelectorAll("ul > li:not(.group-header)");
+		expect(taskItems.length).toBe(2);
+
+		// Change filter to "完了"
+		statusFilter.value = "completed";
+		statusFilter.dispatchEvent(new Event("change"));
+
+		// Verify: Only 1 completed task visible
+		taskItems = container.querySelectorAll("ul > li:not(.group-header)");
+		expect(taskItems.length).toBe(1);
+		expect(taskItems[0]?.classList.contains("completed")).toBe(true);
+	});
+});

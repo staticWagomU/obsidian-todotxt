@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 50, pbi: "PBI-049", status: "done" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 2, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049(done),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
+  sprint: { number: 51, pbi: "PBI-048", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -62,23 +62,7 @@ export const productBacklog: ProductBacklogItem[] = [
 
   // Phase 13: サイドパネルフル機能化・バグ修正
   //   Sprint 49 PBI-050: メインビューAI機能統合、807t(+2t)、done
-  {
-    id: "PBI-049",
-    story: {
-      role: "Obsidianユーザー",
-      capability: "検索ボックスに文字を入力してもフォーカスが外れずに連続して入力できる",
-      benefit: "検索操作がスムーズになり、タスクの絞り込みが快適に行える",
-    },
-    acceptanceCriteria: [
-      { criterion: "検索ボックスに複数文字を連続入力してもフォーカスが維持される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'search focus'" },
-      { criterion: "検索入力時にタスクリストのみが再描画され、コントロールバーは維持される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'partial render'" },
-      { criterion: "検索中にカーソル位置が維持される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'cursor position'" },
-      { criterion: "メインビュー（rendering.ts）の検索ボックスでも同様にフォーカスが維持される", verification: "pnpm vitest run src/lib/rendering.test.ts -- --grep 'search focus'" },
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: { functions: 2, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 2 },
-  },
+  //   Sprint 50 PBI-049: 検索フォーカス維持、813t(+6t)、done
   {
     id: "PBI-048",
     story: {
@@ -113,17 +97,16 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (Sprint 50完了、次Sprint待機中)
 export const currentSprint = {
-  sprint: 51,
-  pbi: "PBI-048",
-  goal: "サイドパネルからメインビューと同等の機能をコンパクトなUIで操作可能にする",
+  sprint: 0,
+  pbi: "",
+  goal: "",
   status: "not_started" as SprintStatus,
   subtasks: [] as Subtask[],
 };
-// Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), 813t維持, see git history
+// Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), see git history
 // Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history
-// Sprint 48: PBI-051完了 - 1 subtask, 4 commits (1 RED, 1 GREEN, 2 REFACTOR), see git history
 
 // Impediments
 export const impediments = {
@@ -160,7 +143,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 13 (Sprint 48-51): サイドパネルフル機能化・バグ修正開始
   { sprint: 48, pbi: "PBI-051", story: "サイドパネルボタン修正とリスト更新実装", verification: "passed", notes: "805t(+4t),Subtask1完了(RED1+GREEN1+REFACTOR2=4commit),既存実装テスト追加,共通処理抽出,Promise処理適正化,IMP-048-1/2解決,Phase 13開始" },
   { sprint: 49, pbi: "PBI-050", story: "メインビューAI機能統合+プロセス改善基盤確立", verification: "passed", notes: "807t(+2t),Subtask3完了(RED1+GREEN4commit),AC2/AC3テスト追加,REFACTOR判断4項目チェック体制確立,累積Actions整理(29項目→2項目実施),actionManagement改善(41%→43%)" },
-  { sprint: 50, pbi: "PBI-049", story: "検索ボックスフォーカス維持機能実装", verification: "passed", notes: "813t維持,Subtask2完了(RED2+GREEN2+bugfix1=5commit),サイドパネル/メインビュー両方対応,renderTaskListOnly/renderTaskListSection部分更新実装,REFACTOR判断2回不要,DoD全pass" },
+  { sprint: 50, pbi: "PBI-049", story: "検索ボックスフォーカス維持機能実装", verification: "passed", notes: "813t(+6t),Subtask2完了(RED2+GREEN2+bugfix1=5commit),サイドパネル/メインビュー両方対応,renderTaskListOnly/renderTaskListSection部分更新実装,REFACTOR判断2回不要,DoD全pass,actionManagement rate 43%維持" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
@@ -212,16 +195,35 @@ export const retrospectives: Retrospective[] = [
       "Behavioral機能優先: Sprint 50では最低2 behavioral subtasks実施、structural subtaskは1以下に抑制、feature delivery速度維持",
       "Actions整理継続: Sprint 50 Retrospectiveで残50項目から「3 Sprint以上経過かつ実施優先度低」を抽出、最低10項目廃棄/統合",
     ] },
+  { sprint: 50,
+    workedWell: [
+      "Behavioral機能優先達成: Sprint 49 Action完全遵守、2/2 subtasksがbehavioral、feature delivery速度維持",
+      "小規模PBIの高速完遂: PBI-049（検索フォーカス維持）を2 subtasks・5 commitsでクリーン完遂、DoD全pass",
+      "REFACTOR判断プロセス定着: 2回とも4項目チェック（重複コード/複雑度/命名/構造）実施、両方「不要」判断記録",
+      "バグ修正迅速対応: 検索フォーカス問題をサイドパネル+メインビュー両方で解決、bugfix commit 1回",
+      "テストカバレッジ維持: 807t→813t(+6t)、部分更新実装の包括的テスト追加",
+      "Phase 13進捗: Sprint 48-50で3 PBIs完了、残PBI-048のみでPhase完遂目前",
+    ],
+    toImprove: [
+      "Action実施率停滞: rate 43%維持（Sprint 49から変化なし）、KPI min 50%未達2 Sprint連続",
+      "Actions整理未実施: Sprint 49 Action「最低10項目廃棄/統合」未実施、残52項目に対して整理作業0",
+      "KPI達成戦略不足: Sprint 50は小規模PBIのため整理作業時間不足、大規模Sprint時の統合戦略が必要",
+    ],
+    actions: [
+      "Phase 13完遂優先: Sprint 51でPBI-048（サイドパネルフル機能化、MEDIUM complexity、5 subtasks）完遂、Phase 13完了を最優先",
+      "Actions整理Sprint 52延期: PBI-048大規模実装に集中、Action整理作業はSprint 52 Retrospectiveで実施（10項目以上廃棄/統合）",
+      "KPI達成ロードマップ策定: Sprint 52で大規模Actions整理（rate 43%→53%以上）+Phase 14開始準備を並行実施",
+    ] },
 ];
 
-// Action Management (Sprint 49完了、rate 43%、KPI min 50%まであと7pt - Sprint 50で達成予定)
+// Action Management (Sprint 50完了、rate 43%維持、KPI min 50%未達2連続 - Sprint 52で大規模整理予定)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 91, executed: 39, rate: 43, remaining: 52 },
-  // Sprint 49完了: +3 new actions, 5 executed from Sprint 48 (全Action完全実施、史上初100%達成)
-  // Sprint 48 Actions実施状況: 5/5=100%（DoD義務化・Subtask化・REFACTOR判断記録・トラッキング厳格化・累積Actions整理）
-  // 累積Actions大規模整理: Sprint 43-46技術Actions廃棄（~20項目）、Sprint 47-48プロセス改善Actions統合
-  // 改善傾向継続: rate 41%→43%(+2pt)、KPI min 50%まであと7pt、Sprint 50で10項目以上実施/廃棄によりKPI達成予定
+  tracking: { total: 94, executed: 40, rate: 43, remaining: 54 },
+  // Sprint 50完了: +3 new actions, 1 executed from Sprint 49 (Behavioral機能優先のみ達成、Actions整理・KPI達成は未実施)
+  // Sprint 49 Actions実施状況: 1/3=33%（Behavioral機能優先のみ達成、KPI達成・Actions整理は延期）
+  // rate停滞: 43%維持（Sprint 49から変化なし）、KPI min 50%未達2 Sprint連続
+  // Sprint 52戦略: Phase 13完遂（Sprint 51 PBI-048）後、大規模Actions整理（10項目以上廃棄/統合）実施、rate 43%→53%以上目標
 };
 
 // Agents & Events

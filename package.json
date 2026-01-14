@@ -6,6 +6,7 @@
 	"authorUrl": "https://github.com/staticWagomU",
 	"main": "main.js",
 	"type": "module",
+	"packageManager": "pnpm@10.24.0",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",

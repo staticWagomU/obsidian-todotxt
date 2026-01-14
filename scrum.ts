@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 52, pbi: "PBI-052", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 52, pbi: "PBI-052", status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
   phase: { number: 14, status: "in_progress", sprints: "52-", pbis: "PBI-052", goal: "Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化" },
 };
 
@@ -116,47 +116,50 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 52 - PBI-052: サイドパネルUI刷新)
+// Current Sprint (Sprint 52 - PBI-052: サイドパネルUI刷新) - COMPLETED
 export const currentSprint = {
   sprint: 52,
   pbi: "PBI-052",
   goal: "サイドパネルUI刷新: Apple-likeモダンデザイン強化（プログレスバー・フィルター・フッターボタン）",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "サイドパネルヘッダーに「全て/完了/未完了」のフィルターボタンと完了率表示プログレスバーをレンダリング、フィルター切り替えでタスクリスト更新を検証",
-      implementation: "TodoSidePanelViewにステータスフィルター（filterStatus: 'all' | 'completed' | 'incomplete'）とプログレスバー（完了タスク数/総タスク数%）をヘッダーに追加",
+      implementation: "既存実装でAC1満たしている（ステータスフィルター・プログレスバーは既存のrenderControlBarに実装済み）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [] as Commit[], // AC1は既存実装で満たしているため、コミットなし（Subtask 1はUser実装済み）
     },
     {
       test: "検索ボックスが角丸20px、プレースホルダー「タスク検索...」、Apple-styleのピル型スタイルでレンダリングされることを検証",
-      implementation: "検索ボックスにCSSクラス`.search-box-pill`を追加、スタイルに`border-radius: 20px`、padding/背景色/プレースホルダーを設定",
+      implementation: "renderSearchBox関数でプレースホルダーを「検索...」→「タスク検索...」に変更、CSS既存のborder-radius: 20px活用",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green", message: "feat: update search box placeholder to 'タスク検索...' for AC2 (8c41b8a)" }] as Commit[],
     },
     {
       test: "フィルタードロップダウン（なし/+project/@context）とソートドロップダウン（デフォルト/優先度/日付）が横並びでレンダリングされ、選択値が反映されることを検証",
-      implementation: "TodoSidePanelViewにfilterType（'none' | 'project' | 'context'）とsortType（'default' | 'priority' | 'date'）のドロップダウンを追加、flexboxで横並び配置",
+      implementation: "既存実装でAC3満たしている（group-selector・sort-selectorはrenderControlBarで実装済み、CSSで横並び）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green", message: "test: add test for filter/sort dropdowns horizontal layout (AC3) (271421c)" }] as Commit[], // テスト追加のみ
     },
     {
       test: "タスクアイテムが1行目に[チェックボックス][優先度][説明]、2行目に[プロジェクト/コンテキストタグ]、右端に[編集アイコン]のレイアウトでレンダリングされることを検証",
-      implementation: "TodoItemコンポーネントに2行レイアウトCSS追加、1行目にチェックボックス+優先度+説明、2行目にタグ、右端にeditアイコンボタン配置",
+      implementation: "既存実装でAC4満たしている（task-main-row・task-item-tags・task-actions-row構造は既存のrenderTaskItemに実装済み）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green", message: "test: add test for task item 2-line layout with edit icon (AC4) (948e272)" }] as Commit[], // テスト追加のみ
     },
     {
       test: "フッターに「AIタスク追加」「タスク追加」の2ボタンが横並びで固定表示され、FABではなくフッターボタン形式でレンダリングされることを検証",
-      implementation: "TodoSidePanelViewにフッター領域追加、AIボタン+追加ボタンをflexboxで横並び配置、position: stickyでフッター固定、FABスタイル削除",
+      implementation: "renderFabContainer→renderFooterButtonsに名前変更、.fab-container→.footer-buttonsクラス変更、ボタンテキスト追加、レンダリング順序変更（FAB廃止）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green", message: "feat: replace FAB with footer buttons for AC5 (974b547)" },
+        { phase: "green", message: "test: update test expectation for footer button text (b4cd2d0)" },
+      ] as Commit[],
     },
   ] as Subtask[],
 };

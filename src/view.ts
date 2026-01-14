@@ -200,6 +200,7 @@ export class TodotxtView extends TextFileView {
 		const dialog = new AIEditDialog(
 			this.app,
 			todo,
+			this.plugin.settings.openRouter,
 			() => {
 				this.renderTaskList();
 			}

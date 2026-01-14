@@ -753,6 +753,7 @@ export class TodoSidePanelView extends ItemView {
 		const dialog = new AIEditDialog(
 			this.app,
 			task.todo,
+			this.plugin.settings.openRouter,
 			() => {
 				void this.refreshTaskList();
 			}

@@ -3,20 +3,27 @@
  * Allows editing existing tasks using natural language input
  */
 
-import { Modal, type App } from "obsidian";
+import { Modal, type App, Notice } from "obsidian";
 import type { Todo } from "../../lib/todo";
+import { OpenRouterService } from "../../ai/openrouter";
+import type { OpenRouterSettings } from "../../settings";
 
 export class AIEditDialog extends Modal {
 	private todo: Todo;
 	private onSuccess: () => void;
+	private settings: OpenRouterSettings;
+	private previewSection: HTMLElement | null = null;
+	private updatedTodoLine: string | null = null;
 
 	constructor(
 		app: App,
 		todo: Todo,
+		settings: OpenRouterSettings,
 		onSuccess: () => void,
 	) {
 		super(app);
 		this.todo = todo;
+		this.settings = settings;
 		this.onSuccess = onSuccess;
 	}
 
@@ -80,10 +87,95 @@ export class AIEditDialog extends Modal {
 		textarea.focus();
 	}
 
-	async handleGenerate(_naturalLanguage: string): Promise<void> {
-		// TODO: Implement in Subtask 3
-		// For now, just close the dialog
+	async handleGenerate(naturalLanguage: string): Promise<void> {
+		if (!naturalLanguage.trim()) {
+			new Notice("変更内容を入力してください");
+			return;
+		}
+
+		if (!this.settings.apiKey) {
+			new Notice("OpenRouter API key is not configured");
+			return;
+		}
+
+		// Show loading notice
+		const loadingNotice = new Notice("AIが編集中...", 0);
+
+		try {
+			const service = new OpenRouterService({
+				apiKey: this.settings.apiKey,
+				model: this.settings.model,
+				retryConfig: this.settings.retryConfig,
+			});
+
+			const currentDate = new Date().toISOString().split("T")[0] || "";
+			const result = await service.editTodo(
+				this.todo,
+				naturalLanguage,
+				currentDate,
+				this.settings.customContexts,
+			);
+
+			loadingNotice.hide();
+
+			if (!result.success || !result.updatedTodoLine) {
+				const errorMsg = result.error || "不明なエラー";
+				new Notice("編集に失敗しました: " + errorMsg);
+				return;
+			}
+
+			// Store updated todo line and show preview
+			this.updatedTodoLine = result.updatedTodoLine;
+			this.showPreview(result.updatedTodoLine);
+		} catch (error) {
+			loadingNotice.hide();
+			const errorMsg = error instanceof Error ? error.message : "不明なエラー";
+			new Notice("エラーが発生しました: " + errorMsg);
+		}
+	}
+
+	private showPreview(updatedTodoLine: string): void {
+		const { contentEl } = this;
+
+		// Remove preview section if it exists
+		if (this.previewSection) {
+			this.previewSection.remove();
+		}
+
+		// Create preview section
+		this.previewSection = contentEl.createDiv("ai-dialog-preview");
+		this.previewSection.createEl("h3", { text: "プレビュー" });
+
+		const previewText = this.previewSection.createDiv({
+			cls: "preview-todo-text",
+		});
+		previewText.textContent = updatedTodoLine;
+
+		// Add save button
+		const buttonContainer = this.previewSection.createDiv("ai-dialog-buttons");
+
+		const saveButton = buttonContainer.createEl("button", {
+			text: "保存",
+			cls: "mod-cta ai-btn-save",
+		});
+		saveButton.addEventListener("click", () => {
+			// TODO: Implement in Subtask 4
+			void this.handleSave();
+		});
+
+		const cancelButton = buttonContainer.createEl("button", {
+			text: "キャンセル",
+			cls: "ai-btn-cancel",
+		});
+		cancelButton.addEventListener("click", () => {
+			this.close();
+		});
+	}
+
+	async handleSave(): Promise<void> {
+		// TODO: Implement in Subtask 4
 		this.close();
+		this.onSuccess();
 	}
 
 	onClose(): void {

@@ -1,6 +1,8 @@
 import { buildSystemPrompt } from "./prompt";
+import { buildEditPrompt } from "./edit-prompt";
 import { withRetry, type RetryConfig } from "./retry";
 import { requestUrl } from "obsidian";
+import type { Todo } from "../lib/todo";
 
 export interface OpenRouterConfig {
 	apiKey: string;
@@ -11,6 +13,12 @@ export interface OpenRouterConfig {
 export interface ConversionResult {
 	success: boolean;
 	todoLines?: string[];
+	error?: string;
+}
+
+export interface EditResult {
+	success: boolean;
+	updatedTodoLine?: string;
 	error?: string;
 }
 
@@ -95,6 +103,67 @@ export class OpenRouterService {
 			return {
 				success: true,
 				todoLines,
+			};
+		} catch (error) {
+			return {
+				success: false,
+				error: this.formatErrorMessage(error),
+			};
+		}
+	}
+
+	async editTodo(
+		todo: Todo,
+		instruction: string,
+		currentDate: string,
+		customContexts: Record<string, string>,
+	): Promise<EditResult> {
+		try {
+			const systemPrompt = buildEditPrompt(todo, instruction, currentDate, customContexts);
+
+			const apiCall = async () => {
+				const response = await requestUrl({
+					url: "https://openrouter.ai/api/v1/chat/completions",
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${this.config.apiKey}`,
+						"HTTP-Referer": "obsidian://todotxt",
+						"X-Title": "Obsidian Todo.txt Plugin",
+					},
+					body: JSON.stringify({
+						model: this.config.model,
+						messages: [
+							{ role: "user", content: systemPrompt },
+						],
+					}),
+				});
+
+				if (response.status >= 400) {
+					throw new ApiError(
+						response.status,
+						this.getHttpErrorMessage(response.status),
+					);
+				}
+
+				return response;
+			};
+
+			const response = await withRetry(apiCall, this.config.retryConfig);
+			const data = response.json as OpenRouterResponse;
+
+			if (!data.choices?.[0]?.message?.content) {
+				return {
+					success: false,
+					error: "Invalid response format from API",
+				};
+			}
+
+			const content = data.choices[0].message.content.trim();
+
+			return {
+				success: true,
+				updatedTodoLine: content,
 			};
 		} catch (error) {
 			return {

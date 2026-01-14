@@ -149,23 +149,40 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 	});
 
 	describe("アーカイブボタン表示", () => {
+		// Helper to add Obsidian-like methods to container
+		type MockContainer = HTMLElement & { empty: () => void; createEl: (tag: string) => HTMLElement };
+
+		const createMockContainer = (): MockContainer => {
+			const container = document.createElement("div") as MockContainer;
+			container.empty = function (this: HTMLElement) {
+				this.innerHTML = "";
+			};
+			container.createEl = function (this: HTMLElement, tag: string): HTMLElement {
+				const el = document.createElement(tag) as MockContainer;
+				el.empty = function (this: HTMLElement) { this.innerHTML = ""; };
+				el.createEl = container.createEl;
+				this.appendChild(el);
+				return el;
+			};
+			return container;
+		};
+
 		it("renderTaskListにonArchiveコールバックが渡される", () => {
-			const container = document.createElement("div");
+			const container = createMockContainer();
 			const onAddTask = () => {};
 			const onToggle = async () => {};
 			const onEdit = () => {};
 			const onDelete = async () => {};
 			const onArchive = async () => {};
 
-			// This should not throw even if renderTaskList doesn't support onArchive yet
+			// This should not throw
 			expect(() => {
-				// @ts-expect-error - Testing RED phase, onArchive parameter doesn't exist yet
 				renderTaskList(container, "", onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
 			}).not.toThrow();
 		});
 
 		it("完了タスクが存在する場合、アーカイブボタンが有効になる", () => {
-			const container = document.createElement("div");
+			const container = createMockContainer();
 			const data = "Task 1\nx 2025-01-14 Completed task\n";
 			const onAddTask = () => {};
 			const onToggle = async () => {};
@@ -173,7 +190,6 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			const onDelete = async () => {};
 			const onArchive = async () => {};
 
-			// @ts-expect-error - Testing RED phase
 			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
 
 			const archiveButton = container.querySelector("button.archive-button") as HTMLButtonElement;
@@ -182,7 +198,7 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 		});
 
 		it("完了タスクがない場合、アーカイブボタンが無効になる", () => {
-			const container = document.createElement("div");
+			const container = createMockContainer();
 			const data = "Task 1\nTask 2\n";
 			const onAddTask = () => {};
 			const onToggle = async () => {};
@@ -190,7 +206,6 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			const onDelete = async () => {};
 			const onArchive = async () => {};
 
-			// @ts-expect-error - Testing RED phase
 			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
 
 			const archiveButton = container.querySelector("button.archive-button") as HTMLButtonElement;
@@ -199,7 +214,7 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 		});
 
 		it("アーカイブボタンクリックでonArchiveコールバックが呼ばれる", () => {
-			const container = document.createElement("div");
+			const container = createMockContainer();
 			const data = "x 2025-01-14 Completed task\n";
 			const onAddTask = () => {};
 			const onToggle = async () => {};
@@ -207,7 +222,6 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			const onDelete = async () => {};
 			const onArchive = vi.fn();
 
-			// @ts-expect-error - Testing RED phase
 			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
 
 			const archiveButton = container.querySelector("button.archive-button") as HTMLButtonElement;

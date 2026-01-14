@@ -120,6 +120,7 @@ export function renderTaskList(
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
 	defaultSettings?: DefaultFilterSettings,
+	onArchive?: () => Promise<void>,
 ): void {
 	// Save current filter state before clearing (with default settings fallback)
 	const filterState = saveFilterState(contentEl, defaultSettings);
@@ -131,6 +132,11 @@ export function renderTaskList(
 
 	// Add task button
 	renderAddButton(contentEl, onAddTask);
+
+	// Add archive button if onArchive is provided
+	if (onArchive) {
+		renderArchiveButton(contentEl, data, onArchive);
+	}
 
 	// Add control bar with priority filter and search box
 	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings);
@@ -223,6 +229,22 @@ function renderAddButton(contentEl: HTMLElement, onAddTask: () => void): void {
 	addButton.textContent = "+";
 	addButton.addEventListener("click", () => {
 		onAddTask();
+	});
+}
+
+/**
+ * Render archive button
+ */
+function renderArchiveButton(contentEl: HTMLElement, data: string, onArchive: () => Promise<void>): void {
+	const todos = parseTodoTxt(data);
+	const hasCompletedTasks = todos.some((todo) => todo.completed);
+
+	const archiveButton = contentEl.createEl("button");
+	archiveButton.classList.add("archive-button");
+	archiveButton.textContent = "アーカイブ";
+	archiveButton.disabled = !hasCompletedTasks;
+	archiveButton.addEventListener("click", () => {
+		void onArchive();
 	});
 }
 

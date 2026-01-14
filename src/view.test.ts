@@ -1989,6 +1989,13 @@ describe("archive completed tasks", () => {
 	});
 
 	it("getArchiveHandler should be exposed from View", () => {
+		// Mock file property
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
+
 		const archiveHandler = view.getArchiveHandler();
 		expect(archiveHandler).toBeDefined();
 		expect(typeof archiveHandler).toBe("function");
@@ -1997,6 +2004,22 @@ describe("archive completed tasks", () => {
 	it("archive handler should remove completed tasks from view", async () => {
 		view.setViewData("Task 1\nx 2025-01-14 Completed task\n(A) Task 2\n", false);
 
+		// Mock file and vault
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
+
+		// Mock app.vault methods
+		let archiveContent = "";
+		view.app.vault = {
+			getAbstractFileByPath: () => null,
+			create: async (_path: string, content: string) => {
+				archiveContent = content;
+			},
+		} as unknown as typeof view.app.vault;
+
 		const archiveHandler = view.getArchiveHandler();
 		await archiveHandler();
 
@@ -2004,11 +2027,19 @@ describe("archive completed tasks", () => {
 		expect(updatedData).not.toContain("x 2025-01-14 Completed task");
 		expect(updatedData).toContain("Task 1");
 		expect(updatedData).toContain("(A) Task 2");
+		expect(archiveContent).toContain("x 2025-01-14 Completed task");
 	});
 
 	it("archive handler should do nothing when no completed tasks", async () => {
 		const initialData = "Task 1\n(A) Task 2\n";
 		view.setViewData(initialData, false);
+
+		// Mock file
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
 
 		const archiveHandler = view.getArchiveHandler();
 		await archiveHandler();
@@ -2020,7 +2051,14 @@ describe("archive completed tasks", () => {
 	it("should show confirmation modal before archiving", async () => {
 		view.setViewData("Task 1\nx 2025-01-14 Completed task\n", false);
 
-		const showConfirmationSpy = vi.spyOn(view, "showArchiveConfirmation");
+		// Mock file
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
+
+		const showConfirmationSpy = vi.spyOn(view, "showArchiveConfirmation").mockResolvedValue(false);
 		await view.openArchiveWithConfirmation();
 
 		expect(showConfirmationSpy).toHaveBeenCalled();
@@ -2028,6 +2066,21 @@ describe("archive completed tasks", () => {
 
 	it("should archive after user confirms in modal", async () => {
 		view.setViewData("Task 1\nx 2025-01-14 Completed task\n(A) Task 2\n", false);
+
+		// Mock file and vault
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
+
+		let archiveContent = "";
+		view.app.vault = {
+			getAbstractFileByPath: () => null,
+			create: async (_path: string, content: string) => {
+				archiveContent = content;
+			},
+		} as unknown as typeof view.app.vault;
 
 		// Mock confirmation to return true
 		vi.spyOn(view, "showArchiveConfirmation").mockResolvedValue(true);
@@ -2038,11 +2091,19 @@ describe("archive completed tasks", () => {
 		expect(updatedData).not.toContain("x 2025-01-14 Completed task");
 		expect(updatedData).toContain("Task 1");
 		expect(updatedData).toContain("(A) Task 2");
+		expect(archiveContent).toContain("x 2025-01-14 Completed task");
 	});
 
 	it("should not archive when user cancels confirmation", async () => {
 		const initialData = "Task 1\nx 2025-01-14 Completed task\n";
 		view.setViewData(initialData, false);
+
+		// Mock file
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
 
 		// Mock confirmation to return false
 		vi.spyOn(view, "showArchiveConfirmation").mockResolvedValue(false);

@@ -1,9 +1,9 @@
-import { TextFileView, type TFile, type WorkspaceLeaf } from "obsidian";
+import { TextFileView, type TFile, type WorkspaceLeaf, Modal } from "obsidian";
 import { parseTodoTxt } from "./lib/parser";
 import { type Todo } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
-import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler } from "./lib/handlers";
+import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler } from "./lib/handlers";
 import { renderTaskList, type DefaultFilterSettings } from "./lib/rendering";
 import type TodotxtPlugin from "./main";
 
@@ -83,6 +83,7 @@ export class TodotxtView extends TextFileView {
 			(index) => this.openEditTaskModal(index),
 			getDeleteHandler(() => this.data, (data, clear) => this.setViewData(data, clear)),
 			this.getDefaultFilterSettings(),
+			() => this.openArchiveWithConfirmation(),
 		);
 	}
 
@@ -160,5 +161,110 @@ export class TodotxtView extends TextFileView {
 			todos,
 		);
 		modal.open();
+	}
+
+	/**
+	 * Get archive handler for archiving completed tasks
+	 * Public for testing compatibility
+	 */
+	getArchiveHandler(): () => Promise<void> {
+		if (!this.file) {
+			// Return no-op handler if file is not set
+			return async () => {};
+		}
+
+		const todoPath = this.file.path;
+		const readArchive = async (): Promise<string> => {
+			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
+			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
+			if (archiveFile && 'extension' in archiveFile) {
+				return await this.app.vault.read(archiveFile);
+			}
+			return "";
+		};
+
+		const writeArchive = async (data: string): Promise<void> => {
+			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
+			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
+			if (archiveFile && 'extension' in archiveFile) {
+				await this.app.vault.modify(archiveFile, data);
+			} else {
+				// Create new file
+				const dirPath = archivePath.substring(0, archivePath.lastIndexOf('/'));
+				await this.app.vault.create(archivePath, data);
+			}
+		};
+
+		return getArchiveHandler(
+			() => this.data,
+			(data, clear) => this.setViewData(data, clear),
+			todoPath,
+			readArchive,
+			writeArchive,
+		);
+	}
+
+	/**
+	 * Show archive confirmation modal
+	 * Public for testing compatibility
+	 */
+	showArchiveConfirmation(): Promise<boolean> {
+		return new Promise((resolve) => {
+			const modal = new ArchiveConfirmationModal(this.app, (confirmed) => {
+				resolve(confirmed);
+			});
+			modal.open();
+		});
+	}
+
+	/**
+	 * Open archive with confirmation modal
+	 * Public for testing compatibility
+	 */
+	async openArchiveWithConfirmation(): Promise<void> {
+		const confirmed = await this.showArchiveConfirmation();
+		if (confirmed) {
+			const archiveHandler = this.getArchiveHandler();
+			await archiveHandler();
+		}
+	}
+}
+
+/**
+ * Archive confirmation modal
+ */
+class ArchiveConfirmationModal extends Modal {
+	onConfirm: (confirmed: boolean) => void;
+
+	constructor(app: unknown, onConfirm: (confirmed: boolean) => void) {
+		super(app);
+		this.onConfirm = onConfirm;
+	}
+
+	onOpen(): void {
+		const { contentEl } = this;
+		contentEl.empty();
+
+		contentEl.createEl("h2", { text: "完了タスクをアーカイブ" });
+		contentEl.createEl("p", { text: "完了したタスクをdone.txtファイルに移動しますか？" });
+
+		const buttonContainer = contentEl.createEl("div", { cls: "modal-button-container" });
+
+		const confirmButton = buttonContainer.createEl("button", { text: "アーカイブ", cls: "mod-cta" });
+		confirmButton.addEventListener("click", () => {
+			this.close();
+			this.onConfirm(true);
+		});
+
+		const cancelButton = buttonContainer.createEl("button", { text: "キャンセル" });
+		cancelButton.addEventListener("click", () => {
+			this.close();
+			this.onConfirm(false);
+		});
+	}
+
+	onClose(): void {
+		const { contentEl } = this;
+		contentEl.empty();
 	}
 }

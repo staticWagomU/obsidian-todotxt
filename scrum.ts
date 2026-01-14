@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 49, pbi: "PBI-050", status: "in_progress" as SprintStatus,
+  sprint: { number: 49, pbi: "PBI-050", status: "done" as SprintStatus,
     subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - メインビューAI機能 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
@@ -69,13 +69,13 @@ export const productBacklog: ProductBacklogItem[] = [
       benefit: "Sprint 47で実装したAI機能をメインビューからも引き続き利用できる",
     },
     acceptanceCriteria: [
-      { criterion: "メインビューのFABコンテナにAIタスク追加ボタン（✨）が表示される", verification: "pnpm vitest run src/view.test.ts -- --grep 'AI.*button'" },
-      { criterion: "AIボタンクリックでAITaskInputDialogが開く", verification: "pnpm vitest run src/view.test.ts -- --grep 'AI.*dialog'" },
-      { criterion: "AIで生成したタスクがtodo.txtファイルに追加される", verification: "pnpm vitest run src/view.test.ts -- --grep 'AI.*add'" },
+      { criterion: "メインビューのFABコンテナにAIタスク追加ボタン（✨）が表示される", verification: "pnpm vitest run src/view.test.ts -t 'AI'" },
+      { criterion: "AIボタンクリックでAITaskInputDialogが開く", verification: "pnpm vitest run src/view.test.ts -t 'AI'" },
+      { criterion: "AIで生成したタスクがtodo.txtファイルに追加される", verification: "pnpm vitest run src/view.test.ts -t 'AI'" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 1, estimatedTests: 3, externalDependencies: 0, score: "LOW", subtasks: 1 },
+    status: "done" as PBIStatus,
+    complexity: { functions: 1, estimatedTests: 3, externalDependencies: 0, score: "LOW", subtasks: 3 },
   },
   {
     id: "PBI-049",
@@ -128,12 +128,12 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 49開始 - メインビューAI機能統合+プロセス改善)
+// Current Sprint (Sprint 49完了 - メインビューAI機能統合+プロセス改善)
 export const currentSprint = {
   sprint: 49,
   pbi: "PBI-050",
   goal: "メインビューへのAI機能統合とプロセス改善基盤確立",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "メインビューFABコンテナにAIボタン（✨）表示、クリックでAITaskInputDialog開く、生成タスクがファイルに追加される",
@@ -205,6 +205,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 47, pbi: "PBI-047", story: "AI自然言語タスク追加（OpenRouter連携）", verification: "passed", notes: "801t(+31t),Subtask7完了(GREEN5+REFACTOR2=7commit),retry/prompt/OpenRouterService/AIダイアログ実装,REFACTOR強制実施(5Sprint連続回避),Phase 12完遂" },
   // Phase 13 (Sprint 48-51): サイドパネルフル機能化・バグ修正開始
   { sprint: 48, pbi: "PBI-051", story: "サイドパネルボタン修正とリスト更新実装", verification: "passed", notes: "805t(+4t),Subtask1完了(RED1+GREEN1+REFACTOR2=4commit),既存実装テスト追加,共通処理抽出,Promise処理適正化,IMP-048-1/2解決,Phase 13開始" },
+  { sprint: 49, pbi: "PBI-050", story: "メインビューAI機能統合+プロセス改善基盤確立", verification: "passed", notes: "807t(+2t),Subtask3完了(RED1+GREEN4commit),AC2/AC3テスト追加,REFACTOR判断4項目チェック体制確立,累積Actions整理(29項目→2項目実施),actionManagement改善(41%→43%)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

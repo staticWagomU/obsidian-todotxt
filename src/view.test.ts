@@ -2146,4 +2146,61 @@ describe("AI task addition button", () => {
 		expect(aiButton).not.toBeNull();
 		expect(aiButton?.textContent).toContain("✨");
 	});
+
+	it("AI button click should open AITaskInputDialog", () => {
+		// Mock file property
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
+
+		const initialData = "Buy milk\nWrite report";
+		view.setViewData(initialData, false);
+
+		// Mock openAITaskDialog method
+		const openAITaskDialogSpy = vi.spyOn(view, "openAITaskDialog").mockImplementation(() => {});
+
+		// Click AI button
+		const aiButton = view.contentEl.querySelector(".ai-add-task-button") as HTMLButtonElement;
+		expect(aiButton).not.toBeNull();
+		aiButton.click();
+
+		// Verify: openAITaskDialog was called
+		expect(openAITaskDialogSpy).toHaveBeenCalled();
+	});
+
+	it("AI-generated task should be added to file", async () => {
+		// This test simulates the full AI task addition flow:
+		// 1. User clicks AI button
+		// 2. Dialog generates task via AI
+		// 3. Task is added to todo.txt file
+		// 4. View updates to show new task
+
+		const initialData = "Buy milk\nWrite report";
+		view.setViewData(initialData, false);
+
+		// Mock file property
+		Object.defineProperty(view, 'file', {
+			value: { path: 'vault/todo.txt' },
+			writable: true,
+			configurable: true,
+		});
+
+		// Simulate AI dialog adding a task through the add handler
+		const handleAdd = view.getAddHandler();
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-15"));
+
+		// Simulate AI-generated task being added
+		await handleAdd("Practice piano for 30 minutes +Music @home", "B");
+
+		// Verify: Task was added to data
+		const updatedData = view.getViewData();
+		expect(updatedData).toContain("Practice piano for 30 minutes +Music @home");
+		expect(updatedData).toContain("(B)");
+
+		vi.useRealTimers();
+	});
 });

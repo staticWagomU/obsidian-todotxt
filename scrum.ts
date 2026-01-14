@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 54, pbi: "PBI-054", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 7, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -137,8 +137,12 @@ export const currentSprint = {
       test: "AI編集ボタンがTodoItemにレンダリング、クリックでAIEditDialogが表示される",
       implementation: "TodoItemコンポーネントにAI編集ボタン追加、AIEditDialog基本構造実装、ダイアログ表示ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: AI編集ボタンレンダリングとコールバック動作のテスト追加" },
+        { phase: "green" as CommitPhase, message: "feat: AI編集ボタンをタスクアイテムに追加" },
+        { phase: "green" as CommitPhase, message: "feat: AI編集ダイアログ基盤とメイン/サイドパネル統合完了" }
+      ]
     },
     {
       test: "AIEditDialogに既存Todo内容がプレフィル表示、自然言語入力フィールドがレンダリングされる",

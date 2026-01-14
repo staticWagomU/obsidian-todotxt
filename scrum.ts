@@ -139,15 +139,22 @@ export const currentSprint = {
       test: "メインビューFABコンテナにAIボタン（✨）表示、クリックでAITaskInputDialog開く、生成タスクがファイルに追加される",
       implementation: "view.tsにAIボタン追加、AITaskInputDialogインポート・モーダル表示処理実装、タスク追加処理統合",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "green" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(view): add AI button interaction tests for AC2 and AC3" },
+        { phase: "green" as CommitPhase, message: "GREEN確認: 既存実装でAIテスト3件全てpass（実装は事前完了済み）" },
+        { phase: "refactor" as CommitPhase, message: "REFACTOR判断: 4項目チェック実施→不要（重複なし/複雑度低/命名明確/構造良好）" },
+      ],
     },
     {
       test: "REFACTOR判断4項目チェック（重複コード/複雑度/命名/構造）をGREEN完了時に実施、判断結果をscrum.ts Subtask commitsに記録",
       implementation: "REFACTOR判断プロセスをSubtask1のGREEN完了時に実施、判断結果をscrum.ts commitsに追記する体制確立",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "4項目チェック実施: view.ts+rendering.tsのAI機能を評価→全項目OK" },
+        { phase: "green" as CommitPhase, message: "scrum.ts Subtask 1にREFACTOR判断結果を記録、体制確立完了" },
+      ],
     },
     {
       test: "Sprint 47-48未実施Actions（累積29項目）から優先2項目を選定、実施可能性評価、廃棄/統合/再計画を判断",

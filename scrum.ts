@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 46, pbi: "PBI-046", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
-  phase: { number: 12, status: "in_progress", sprints: "Sprint 46", pbis: "PBI-046", goal: "サイドパネルにtodo.txt一覧ビューを実装し、タスク俯瞰と簡易操作を可能にする" },
+  sprint: { number: 47, pbi: "PBI-047", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 12, status: "in_progress", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
 };
 
 // Product Goal
@@ -54,34 +54,8 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 44 PBI-044: 設定ベースのファイルパス管理、738t(-2t統合化)、done
   // Phase 11完了 (Sprint 45): アーカイブ機能実装、762t達成(+24t)
   //   Sprint 45 PBI-045: 完了タスクアーカイブ機能、762t(+24t)、done
-  {
-    id: "PBI-046",
-    story: {
-      role: "Obsidianユーザー",
-      capability: "サイドパネルでtodo.txtタスクの一覧表示と簡易操作ができる",
-      benefit: "メインエディタを開かずにタスクを俯瞰・追加できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "サイドパネル（Obsidian Leaf）にタスク一覧が表示される", verification: "pnpm build && 手動確認: サイドパネルにタスク一覧が表示される" },
-      { criterion: "タスク追加ボタンがあり、クリックで新規タスクを追加できる", verification: "pnpm build && 手動確認: 追加ボタンでタスクが追加される" },
-      { criterion: "サイドパネルのタスクをクリックすると該当todo.txtが開く", verification: "pnpm build && 手動確認: タスククリックでファイルが開く" },
-      { criterion: "AI用タスク追加ボタンがサイドパネルに表示される", verification: "pnpm build && 手動確認: AIボタンがサイドパネルに存在する" },
-      { criterion: "AI用タスク追加ボタンがtodo.txtメインビューにも表示される", verification: "pnpm build && 手動確認: AIボタンがメインビューに存在する" },
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: {
-      functions: 8,
-      estimatedTests: 15,
-      externalDependencies: 0,
-      score: "LOW" as const,
-      subtasks: 3,
-    },
-    refactorChecklist: [
-      "rendering.tsのrenderTaskList関数が既に複雑（590行）、サイドパネル用レンダリング追加時は関数分割を検討",
-      "AIボタン追加後、renderAddButton周辺のUI構築ロジックが肥大化する場合は別ファイル分離を検討",
-    ],
-  },
+  // Phase 12 (Sprint 46): サイドパネル実装完了、770t達成(+8t)
+  //   Sprint 46 PBI-046: サイドパネル実装、770t(+8t)、done
   {
     id: "PBI-047",
     story: {
@@ -118,44 +92,13 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 46,
-  pbi: "PBI-046",
-  goal: "サイドパネルにtodo.txt一覧ビューを実装し、タスク俯瞰と簡易操作を可能にする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "TodoSidePanelViewがItemViewを継承し、getViewType/getDisplayText/getIconを実装することをテストする",
-      implementation: "TodoSidePanelViewクラスを実装し、プラグインにVIEW_TYPE_TODO_SIDEPANELを登録する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add TodoSidePanelView basic structure tests (RED)" },
-        { phase: "green" as CommitPhase, message: "feat: implement TodoSidePanelView class (GREEN)" },
-        { phase: "green" as CommitPhase, message: "feat: register TodoSidePanelView in plugin (GREEN)" },
-      ],
-    },
-    {
-      test: "サイドパネルが設定からtodo.txtファイルパスを読み込み、全タスクをレンダリングし、タスククリックで該当ファイルを開くことをテストする",
-      implementation: "renderTaskListを拡張し、複数ファイル対応、タスククリック時のファイルオープン処理を実装する",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add multi-file task list rendering tests (RED)" },
-        { phase: "green" as CommitPhase, message: "feat: implement multi-file task list rendering in side panel (GREEN)" },
-      ],
-    },
-    {
-      test: "サイドパネルとメインビュー（TodotxtView）の両方にAIタスク追加ボタンが表示されることをテストする",
-      implementation: "renderAddButtonを拡張し、AIボタンUIを両ビューに追加する（PBI-047のプレースホルダーとして）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add AI task addition button display tests (RED)" },
-        { phase: "green" as CommitPhase, message: "feat: add AI task addition button to both views (GREEN)" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 47,
+  pbi: "PBI-047",
+  goal: "自然言語からtodo.txt形式への変換機能を実装し、直感的なタスク追加を可能にする",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 46: PBI-046完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 // Sprint 45: PBI-045完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 
 // Impediments
@@ -181,7 +124,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 44, pbi: "PBI-044", story: "設定ベースのファイルパス管理", verification: "passed", notes: "738t(-2t統合化),Subtask3完了(RED-GREEN6commit),todotxtFilePaths設定追加,file-matcher実装,設定UIテキストエリア追加,Phase 10完遂" },
   // Phase 11 (Sprint 45): アーカイブ機能実装完了、762t達成(+24t)
   { sprint: 45, pbi: "PBI-045", story: "完了タスクアーカイブ機能", verification: "passed", notes: "762t(+24t),Subtask3完了(RED-GREEN6commit),アーカイブボタンUI追加,done.txt自動生成,確認モーダル実装,Phase 11完遂" },
-  // Phase 12 (Sprint 46): サイドパネル実装、770t達成(+8t)
+  // Phase 12 (Sprint 46-): サイドパネル・AI連携、770t達成(+8t)
   { sprint: 46, pbi: "PBI-046", story: "サイドパネルでtodo.txt一覧表示と簡易操作", verification: "passed", notes: "770t(+8t),Subtask3完了(RED-GREEN6commit),TodoSidePanelView実装,複数ファイルタスク表示,AIボタンプレースホルダー追加,Phase 12開始" },
 ];
 

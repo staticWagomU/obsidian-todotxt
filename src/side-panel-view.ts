@@ -449,6 +449,14 @@ export class TodoSidePanelView extends ItemView {
 			this.openEditTaskModal(task);
 		});
 
+		// Delete button
+		const deleteButton = actionsRow.createEl("button");
+		deleteButton.classList.add("delete-task-button");
+		deleteButton.textContent = "削除";
+		deleteButton.addEventListener("click", () => {
+			this.openDeleteConfirmDialog(task);
+		});
+
 		// Open file button
 		const openButton = actionsRow.createEl("button");
 		openButton.classList.add("edit-task-button");
@@ -744,6 +752,67 @@ export class TodoSidePanelView extends ItemView {
 		}
 
 		return line.trim();
+	}
+
+	/**
+	 * Open delete confirmation dialog
+	 */
+	private openDeleteConfirmDialog(task: TaskWithFile): void {
+		const modal = this.createModalBackdrop();
+		const dialog = this.createModalDialog();
+
+		const title = this.createModalTitle("タスクを削除しますか？");
+		dialog.appendChild(title);
+
+		// Task preview
+		const preview = document.createElement("p");
+		preview.textContent = task.todo.description;
+		preview.style.cssText = "margin:16px 0;padding:12px;background:var(--background-secondary);border-radius:6px;";
+		dialog.appendChild(preview);
+
+		// Button row
+		const buttonRow = document.createElement("div");
+		buttonRow.style.cssText = "display:flex;gap:8px;justify-content:flex-end;";
+
+		const cancelBtn = this.createCancelButton(() => {
+			document.body.removeChild(modal);
+		});
+		buttonRow.appendChild(cancelBtn);
+
+		const deleteBtn = document.createElement("button");
+		deleteBtn.textContent = "削除";
+		deleteBtn.style.cssText = "padding:8px 16px;border:none;border-radius:6px;background:#dc3545;color:white;cursor:pointer;font-weight:500;";
+		deleteBtn.addEventListener("click", () => {
+			document.body.removeChild(modal);
+			void this.deleteTask(task);
+		});
+		buttonRow.appendChild(deleteBtn);
+
+		dialog.appendChild(buttonRow);
+		modal.appendChild(dialog);
+
+		// Close on backdrop click
+		modal.addEventListener("click", (e) => {
+			if (e.target === modal) {
+				document.body.removeChild(modal);
+			}
+		});
+
+		document.body.appendChild(modal);
+	}
+
+	/**
+	 * Delete task from file
+	 */
+	private async deleteTask(task: TaskWithFile): Promise<void> {
+		const file = this.app.vault.getAbstractFileByPath(task.filePath);
+		if (!(file instanceof TFile)) return;
+
+		const content = await this.app.vault.read(file);
+		const lines = content.split("\n");
+		lines.splice(task.lineIndex, 1);
+		await this.app.vault.modify(file, lines.join("\n"));
+		await this.refreshTaskList();
 	}
 
 	/**

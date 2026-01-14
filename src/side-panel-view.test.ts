@@ -572,6 +572,130 @@ describe("TodoSidePanelView", () => {
 		});
 	});
 
+	describe("Task delete functionality", () => {
+		it("should show delete button in task actions", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Find delete button
+			const deleteButtons = view.contentEl.querySelectorAll(".delete-task-button");
+			expect(deleteButtons.length).toBeGreaterThan(0);
+		});
+
+		it("should open confirmation dialog when delete button is clicked", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Spy on openDeleteConfirmDialog method
+			const openDeleteConfirmDialogSpy = vi.spyOn(view, "openDeleteConfirmDialog" as any);
+
+			// Click delete button
+			const deleteButton = view.contentEl.querySelector(".delete-task-button");
+			expect(deleteButton).not.toBeNull();
+			(deleteButton as HTMLElement).click();
+
+			// Verify confirmation dialog was called
+			expect(openDeleteConfirmDialogSpy).toHaveBeenCalledOnce();
+		});
+
+		it("should delete task after confirmation", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk\nWrite report"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+
+			let currentContent = "Buy milk\nWrite report";
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || currentContent;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.modify = async (_file: any, newContent: string): Promise<void> => {
+				currentContent = newContent;
+				mockFiles.set("vault/todo.txt", newContent);
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Initial task count should be 2
+			const initialTasks = view.contentEl.querySelectorAll(".task-checkbox");
+			expect(initialTasks.length).toBe(2);
+
+			// Simulate deletion
+			const mockFile = new TFile();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(mockFile as any).path = "vault/todo.txt";
+			await mockPlugin.app.vault.modify(mockFile, "Write report");
+
+			// Manually trigger refresh
+			await view.loadTasks();
+			view.renderView();
+
+			// Task count should now be 1
+			const updatedTasks = view.contentEl.querySelectorAll(".task-checkbox");
+			expect(updatedTasks.length).toBe(1);
+
+			// Remaining task should be "Write report"
+			const remainingDescription = view.contentEl.querySelector(".task-description");
+			expect(remainingDescription?.textContent).toBe("Write report");
+		});
+	});
+
 	describe("Search focus maintenance", () => {
 		it("should maintain focus when typing multiple characters in search box", async () => {
 			const mockFiles = new Map([

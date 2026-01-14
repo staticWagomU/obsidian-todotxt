@@ -63,27 +63,8 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 13: サイドパネルフル機能化・バグ修正
   //   Sprint 49 PBI-050: メインビューAI機能統合、807t(+2t)、done
   //   Sprint 50 PBI-049: 検索フォーカス維持、813t(+6t)、done
-  {
-    id: "PBI-048",
-    story: {
-      role: "Obsidianユーザー",
-      capability: "サイドパネルからメインビューと同等の機能（タスク追加・編集・削除・完了切替・フィルタリング・ソート・グループ化）をコンパクトなUIで操作できる",
-      benefit: "メインビューを開かずにサイドバーから素早くタスク管理ができ、作業効率が向上する",
-    },
-    acceptanceCriteria: [
-      { criterion: "サイドパネルから設定で登録した全todotxtファイルにタスクを追加できる", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'add task'" },
-      { criterion: "サイドパネルからタスクの編集ができる（EditTaskModal連携）", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'edit task'" },
-      { criterion: "サイドパネルからタスクの削除ができる（確認ダイアログ付き）", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'delete task'" },
-      { criterion: "検索ボックスでタスクをリアルタイムフィルタリングできる", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'search'" },
-      { criterion: "ソート順が設定値（defaultSortOrder）を引き継ぐ", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'sort.*settings'" },
-      { criterion: "グループ化が設定値（defaultGrouping）を引き継ぐ", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'group.*settings'" },
-      { criterion: "UIがメインビューよりコンパクト（パディング・フォントサイズ縮小）", verification: "grep -q 'todotxt-sidepanel-compact' styles.css" },
-      { criterion: "複数ファイル選択時に追加先ファイルを選択できる", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'file selection'" },
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 8, estimatedTests: 12, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
-  },
+  // Phase 13完了 (Sprint 48-51): サイドパネルフル機能化・バグ修正完了、821t達成(+20t)
+  //   Sprint 51 PBI-048: サイドパネルフル機能化（追加/編集/削除/設定値引き継ぎ/コンパクトUI）、821t(+8t)、done
 ];
 
 // Definition of Ready

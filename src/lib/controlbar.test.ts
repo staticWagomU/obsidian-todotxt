@@ -99,6 +99,7 @@ describe("FilterState type", () => {
 			search: "",
 			group: "none",
 			sort: "default",
+			status: "all",
 		};
 		expect(state).toBeDefined();
 		expect(state.priority).toBe("all");
@@ -143,12 +144,14 @@ describe("FilterState type", () => {
 		const controlBar = view.contentEl.querySelector("div.control-bar");
 		const children = Array.from(controlBar?.children || []);
 
-		expect(children.length).toBe(5);
-		expect(children[0]?.classList.contains("priority-filter")).toBe(true);
-		expect(children[1]?.classList.contains("search-box")).toBe(true);
-		expect(children[2]?.classList.contains("group-selector")).toBe(true);
-		expect(children[3]?.classList.contains("sort-selector")).toBe(true);
-		expect(children[4]?.classList.contains("archive-button")).toBe(true);
+		expect(children.length).toBe(7);
+		expect(children[0]?.classList.contains("status-filter")).toBe(true);
+		expect(children[1]?.classList.contains("progress-bar")).toBe(true);
+		expect(children[2]?.classList.contains("priority-filter")).toBe(true);
+		expect(children[3]?.classList.contains("search-box")).toBe(true);
+		expect(children[4]?.classList.contains("group-selector")).toBe(true);
+		expect(children[5]?.classList.contains("sort-selector")).toBe(true);
+		expect(children[6]?.classList.contains("archive-button")).toBe(true);
 	});
 });
 

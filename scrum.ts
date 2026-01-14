@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 44, pbi: "PBI-044", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
-  phase: { number: 10, status: "done", sprints: "43", pbis: "PBI-043", goal: "パーサー堅牢化完了（unified-test-cases.md準拠、740t達成、+114t）" },
+  sprint: { number: 45, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 11, status: "not_started", sprints: "", pbis: "", goal: "TBD" },
 };
 
 // Product Goal
@@ -223,9 +223,9 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 1-7 (Sprint 1-34): 基本機能+ドキュメント+UI実装完了、554t達成
   // Phase 8 (Sprint 35-39): フォームUI強化完了、626t達成(+72t)
   // Phase 9 (Sprint 40-42): UIデザイン刷新完了（Apple-likeモダンデザイン）、626t維持
-  // Phase 10 (Sprint 43): パーサー堅牢化完了（unified-test-cases.md準拠）、740t達成(+114t)
-  { sprint: 43, pbi: "PBI-043", story: "パーサー堅牢化（エッジケース対応）", verification: "passed", notes: "740t(+114t),70エッジケーステスト追加,プロジェクト/コンテキスト前スペース必須化,タグ最初コロン分割対応,Phase 10完遂" },
-  { sprint: 44, pbi: "PBI-044", story: "設定ベースのファイルパス管理", verification: "passed", notes: "738t(-2t統合化),Subtask3完了(RED-GREEN6commit),todotxtFilePaths設定追加,file-matcher実装,設定UIテキストエリア追加" },
+  // Phase 10 (Sprint 43-44): パーサー堅牢化・設定強化完了、738t達成(+112t)
+  { sprint: 43, pbi: "PBI-043", story: "パーサー堅牢化（エッジケース対応）", verification: "passed", notes: "740t(+114t),70エッジケーステスト追加,プロジェクト/コンテキスト前スペース必須化,タグ最初コロン分割対応,Phase 10開始" },
+  { sprint: 44, pbi: "PBI-044", story: "設定ベースのファイルパス管理", verification: "passed", notes: "738t(-2t統合化),Subtask3完了(RED-GREEN6commit),todotxtFilePaths設定追加,file-matcher実装,設定UIテキストエリア追加,Phase 10完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

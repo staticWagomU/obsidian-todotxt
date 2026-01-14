@@ -1,5 +1,6 @@
 import { parseTodoTxt, updateTodoInList } from "./parser";
 import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type TaskUpdates } from "./todo";
+import { archiveCompletedTasks, appendToArchiveFile, getArchiveFilePath } from "./archive";
 
 /**
  * Get toggle handler for task completion status
@@ -99,5 +100,34 @@ export function getDeleteHandler(
 		const updatedData = deleteAndRemoveTask(currentData, index);
 
 		setViewData(updatedData, false);
+	};
+}
+
+/**
+ * Get archive handler for archiving completed tasks to done.txt
+ */
+export function getArchiveHandler(
+	getData: () => string,
+	setViewData: (data: string, clear: boolean) => void,
+	todoPath: string,
+	readArchive: () => Promise<string>,
+	writeArchive: (data: string) => Promise<void>,
+): () => Promise<void> {
+	return async () => {
+		const currentData = getData();
+		const { completedTasks, remainingContent } = archiveCompletedTasks(currentData);
+
+		// Do nothing if no completed tasks
+		if (completedTasks.length === 0) {
+			return;
+		}
+
+		// Read existing archive, append completed tasks, and write back
+		const existingArchive = await readArchive();
+		const updatedArchive = appendToArchiveFile(existingArchive, completedTasks);
+		await writeArchive(updatedArchive);
+
+		// Update original file to remove completed tasks
+		setViewData(remainingContent, false);
 	};
 }

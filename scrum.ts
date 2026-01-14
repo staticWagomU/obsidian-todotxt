@@ -148,8 +148,11 @@ export const currentSprint = {
       test: "getArchiveHandler関数、アーカイブボタンのレンダリング、無効化状態のテストを実装（完了タスク0件時の無効化検証）",
       implementation: "アーカイブボタンUI、ハンドラー統合、完了タスク0件時の無効化処理を実装",
       type: "behavioral" as SubtaskType,
-      status: "red" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test(handlers): add RED phase tests for archive handler" },
+        { phase: "green", message: "feat(handlers): implement archive handler" },
+      ],
     },
     {
       test: "確認モーダル表示、ハンドラーexposure、完了タスク削除のテストを実装（アーカイブ後の元ファイル更新検証）",

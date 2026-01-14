@@ -361,4 +361,79 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			expect(searchBox.selectionStart).toBe(cursorPosition);
 		});
 	});
+
+	describe("PBI-054: AI編集ボタン表示", () => {
+		// Helper to add Obsidian-like methods to container
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		type MockContainer = HTMLElement & { empty: () => void; createEl: any };
+
+		const createMockContainer = (): MockContainer => {
+			const container = document.createElement("div") as MockContainer;
+			container.empty = function (this: HTMLElement) {
+				this.innerHTML = "";
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			container.createEl = function (this: HTMLElement, tag: string): any {
+				const el = document.createElement(tag) as MockContainer;
+				el.empty = function (this: HTMLElement) { this.innerHTML = ""; };
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				el.createEl = container.createEl;
+				this.appendChild(el);
+				return el;
+			};
+			return container;
+		};
+
+		it("AI編集ボタンがタスクアイテムにレンダリングされる", () => {
+			const container = createMockContainer();
+			const data = "Buy milk";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+			const onAIEdit = vi.fn();
+
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, undefined, undefined, onAIEdit);
+
+			const aiEditButton = container.querySelector("button.ai-edit-task-button") as HTMLButtonElement;
+			expect(aiEditButton).not.toBeNull();
+			expect(aiEditButton?.textContent).toBe("AI編集");
+		});
+
+		it("AI編集ボタンクリックでonAIEditコールバックが呼ばれる", () => {
+			const container = createMockContainer();
+			const data = "Buy milk";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+			const onAIEdit = vi.fn();
+
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, undefined, undefined, onAIEdit);
+
+			const aiEditButton = container.querySelector("button.ai-edit-task-button") as HTMLButtonElement;
+			aiEditButton?.click();
+
+			expect(onAIEdit).toHaveBeenCalledWith(0); // First task has index 0
+		});
+
+		it("複数タスクでそれぞれのAI編集ボタンが正しいインデックスを渡す", () => {
+			const container = createMockContainer();
+			const data = "Task 1\nTask 2\nTask 3";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+			const onAIEdit = vi.fn();
+
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, undefined, undefined, onAIEdit);
+
+			const aiEditButtons = container.querySelectorAll("button.ai-edit-task-button");
+			expect(aiEditButtons).toHaveLength(3);
+
+			// Click second task's AI edit button
+			(aiEditButtons[1] as HTMLButtonElement)?.click();
+			expect(onAIEdit).toHaveBeenCalledWith(1);
+		});
+	});
 });

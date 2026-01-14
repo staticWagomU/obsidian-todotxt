@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 47, pbi: "PBI-047", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 12, status: "in_progress", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
+  sprint: { number: 47, pbi: "PBI-047", status: "done" as SprintStatus,
+    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
+  phase: { number: 12, status: "done", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
 };
 
 // Product Goal
@@ -54,15 +54,9 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 44 PBI-044: 設定ベースのファイルパス管理、738t(-2t統合化)、done
   // Phase 11完了 (Sprint 45): アーカイブ機能実装、762t達成(+24t)
   //   Sprint 45 PBI-045: 完了タスクアーカイブ機能、762t(+24t)、done
-  // Phase 12 (Sprint 46): サイドパネル実装完了、770t達成(+8t)
+  // Phase 12完了 (Sprint 46-47): サイドパネル・AI連携完了、801t達成(+31t)
   //   Sprint 46 PBI-046: サイドパネル実装、770t(+8t)、done
-  {
-    id: "PBI-047",
-    story: {
-      role: "todo.txtユーザー",
-      capability: "自然言語でタスクを説明するとtodo.txt形式に変換して追加できる",
-      benefit: "形式を覚えなくても自然な文章でタスクを追加できる",
-    },
+  //   Sprint 47 PBI-047: AI自然言語タスク追加、801t(+31t)、done
     acceptanceCriteria: [
       { criterion: "AI追加ボタンクリックで自然言語入力ダイアログが開く", verification: "pnpm build && 手動確認: ダイアログが開く" },
       { criterion: "入力された自然言語がtodo.txt形式に変換される（プロジェクト/コンテキスト/優先度/期限を自動抽出）", verification: "pnpm vitest run -- -t 'natural language to todotxt'" },
@@ -108,7 +102,7 @@ export const currentSprint = {
   sprint: 47,
   pbi: "PBI-047",
   goal: "自然言語からtodo.txt形式への変換機能を実装し、直感的なタスク追加を可能にする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "withRetry関数が指定回数リトライし、exponential backoffを適用するかテスト",
@@ -154,22 +148,30 @@ export const currentSprint = {
       test: "AITaskInputDialogが開き、自然言語入力と生成ボタンが機能するかテスト",
       implementation: "ui/dialogs/AITaskInputDialog.tsを実装（Modal継承、OpenRouterService呼び出し）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(ai): implement AITaskInputDialog for natural language task input" },
+      ],
     },
     {
       test: "AITaskPreviewDialogがプレビュー表示、編集、再生成、追加機能を提供するかテスト",
       implementation: "ui/dialogs/AITaskPreviewDialog.tsを実装（todo.txt編集可能、ファイル追記処理）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(ai): implement AITaskPreviewDialog for task preview and file appending" },
+      ],
     },
     {
       test: "サイドパネルとメインビューのAIボタンがAITaskInputDialogを開くかテスト",
-      implementation: "TodoSidePanelView/TodosViewのAIボタンをAITaskInputDialogに接続 + REFACTOR実施（エラーハンドリング整理、プロンプト分割、BaseDialog抽出）",
+      implementation: "TodoSidePanelView/TodosViewのAIボタンをAITaskInputDialogに接続 + REFACTOR実施（エラーハンドリング整理、プロンプト分割）",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(ai): integrate AI task input dialog with side panel view" },
+        { phase: "refactor" as CommitPhase, message: "refactor(ai): organize error handling by HTTP status code and split prompt sections" },
+        { phase: "refactor" as CommitPhase, message: "fix(types): add type guards for TypeScript strict checks" },
+      ],
     },
   ] as Subtask[],
 };
@@ -199,8 +201,9 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 44, pbi: "PBI-044", story: "設定ベースのファイルパス管理", verification: "passed", notes: "738t(-2t統合化),Subtask3完了(RED-GREEN6commit),todotxtFilePaths設定追加,file-matcher実装,設定UIテキストエリア追加,Phase 10完遂" },
   // Phase 11 (Sprint 45): アーカイブ機能実装完了、762t達成(+24t)
   { sprint: 45, pbi: "PBI-045", story: "完了タスクアーカイブ機能", verification: "passed", notes: "762t(+24t),Subtask3完了(RED-GREEN6commit),アーカイブボタンUI追加,done.txt自動生成,確認モーダル実装,Phase 11完遂" },
-  // Phase 12 (Sprint 46-): サイドパネル・AI連携、770t達成(+8t)
+  // Phase 12 (Sprint 46-47): サイドパネル・AI連携完了、801t達成(+39t)
   { sprint: 46, pbi: "PBI-046", story: "サイドパネルでtodo.txt一覧表示と簡易操作", verification: "passed", notes: "770t(+8t),Subtask3完了(RED-GREEN6commit),TodoSidePanelView実装,複数ファイルタスク表示,AIボタンプレースホルダー追加,Phase 12開始" },
+  { sprint: 47, pbi: "PBI-047", story: "AI自然言語タスク追加（OpenRouter連携）", verification: "passed", notes: "801t(+31t),Subtask7完了(GREEN5+REFACTOR2=7commit),retry/prompt/OpenRouterService/AIダイアログ実装,REFACTOR強制実施(5Sprint連続回避),Phase 12完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

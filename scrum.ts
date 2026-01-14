@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 46, pbi: "PBI-046", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  sprint: { number: 46, pbi: "PBI-046", status: "done" as SprintStatus,
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 12, status: "in_progress", sprints: "Sprint 46", pbis: "PBI-046", goal: "サイドパネルにtodo.txt一覧ビューを実装し、タスク俯瞰と簡易操作を可能にする" },
 };
 
@@ -121,28 +121,38 @@ export const currentSprint = {
   sprint: 46,
   pbi: "PBI-046",
   goal: "サイドパネルにtodo.txt一覧ビューを実装し、タスク俯瞰と簡易操作を可能にする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "TodoSidePanelViewがItemViewを継承し、getViewType/getDisplayText/getIconを実装することをテストする",
       implementation: "TodoSidePanelViewクラスを実装し、プラグインにVIEW_TYPE_TODO_SIDEPANELを登録する",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add TodoSidePanelView basic structure tests (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: implement TodoSidePanelView class (GREEN)" },
+        { phase: "green" as CommitPhase, message: "feat: register TodoSidePanelView in plugin (GREEN)" },
+      ],
     },
     {
       test: "サイドパネルが設定からtodo.txtファイルパスを読み込み、全タスクをレンダリングし、タスククリックで該当ファイルを開くことをテストする",
       implementation: "renderTaskListを拡張し、複数ファイル対応、タスククリック時のファイルオープン処理を実装する",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add multi-file task list rendering tests (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: implement multi-file task list rendering in side panel (GREEN)" },
+      ],
     },
     {
       test: "サイドパネルとメインビュー（TodotxtView）の両方にAIタスク追加ボタンが表示されることをテストする",
       implementation: "renderAddButtonを拡張し、AIボタンUIを両ビューに追加する（PBI-047のプレースホルダーとして）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add AI task addition button display tests (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: add AI task addition button to both views (GREEN)" },
+      ],
     },
   ] as Subtask[],
 };
@@ -171,6 +181,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 44, pbi: "PBI-044", story: "設定ベースのファイルパス管理", verification: "passed", notes: "738t(-2t統合化),Subtask3完了(RED-GREEN6commit),todotxtFilePaths設定追加,file-matcher実装,設定UIテキストエリア追加,Phase 10完遂" },
   // Phase 11 (Sprint 45): アーカイブ機能実装完了、762t達成(+24t)
   { sprint: 45, pbi: "PBI-045", story: "完了タスクアーカイブ機能", verification: "passed", notes: "762t(+24t),Subtask3完了(RED-GREEN6commit),アーカイブボタンUI追加,done.txt自動生成,確認モーダル実装,Phase 11完遂" },
+  // Phase 12 (Sprint 46): サイドパネル実装、770t達成(+8t)
+  { sprint: 46, pbi: "PBI-046", story: "サイドパネルでtodo.txt一覧表示と簡易操作", verification: "passed", notes: "770t(+8t),Subtask3完了(RED-GREEN6commit),TodoSidePanelView実装,複数ファイルタスク表示,AIボタンプレースホルダー追加,Phase 12開始" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

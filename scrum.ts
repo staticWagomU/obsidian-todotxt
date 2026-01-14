@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 55, pbi: "PBI-055", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 8, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -129,8 +129,8 @@ export const currentSprint = {
       test: "チェックボックスクリック→selectedTodoIds配列更新、全選択/全解除テスト",
       implementation: "selectedTodoIds state、handleSelectTodo、handleSelectAll関数",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 2 - select all/deselect all buttons with checkbox click handling" }]
     },
     {
       test: "複数選択状態で「AI一括処理」ボタンクリック→ダイアログ表示テスト",

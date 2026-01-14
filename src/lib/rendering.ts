@@ -462,6 +462,7 @@ function renderSelectAllButtons(container: HTMLElement): void {
 				checkbox.checked = true;
 			});
 		}
+		updateAIBulkProcessButtonState(container);
 	});
 
 	const deselectAllButton = container.createEl("button");
@@ -475,7 +476,48 @@ function renderSelectAllButtons(container: HTMLElement): void {
 				checkbox.checked = false;
 			});
 		}
+		updateAIBulkProcessButtonState(container);
 	});
+
+	// AI bulk process button
+	const aiBulkButton = container.createEl("button");
+	aiBulkButton.classList.add("ai-bulk-process-button");
+	aiBulkButton.textContent = "AI一括処理";
+	aiBulkButton.setAttribute("aria-label", "AI一括処理");
+	aiBulkButton.disabled = true; // Initially disabled until tasks are selected
+
+	aiBulkButton.addEventListener("click", () => {
+		// Will be implemented in later subtasks to open dialog
+		const selectedIndices = getSelectedTodoIndices(container);
+		console.log("AI bulk process for indices:", selectedIndices);
+	});
+}
+
+/**
+ * Get indices of selected todos from checkboxes
+ */
+function getSelectedTodoIndices(container: HTMLElement): number[] {
+	const checkboxes = container.closest(".todotxt-view")?.querySelectorAll<HTMLInputElement>(".task-selection-checkbox:checked");
+	if (!checkboxes) return [];
+	const indices: number[] = [];
+	checkboxes.forEach((checkbox) => {
+		const index = parseInt(checkbox.dataset.index || "", 10);
+		if (!isNaN(index)) {
+			indices.push(index);
+		}
+	});
+	return indices;
+}
+
+/**
+ * Update AI bulk process button state based on selection
+ */
+function updateAIBulkProcessButtonState(container: HTMLElement): void {
+	const aiBulkButton = container.querySelector<HTMLButtonElement>(".ai-bulk-process-button");
+	if (!aiBulkButton) return;
+
+	const selectedCount = getSelectedTodoIndices(container).length;
+	aiBulkButton.disabled = selectedCount === 0;
 }
 
 /**
@@ -709,7 +751,13 @@ function renderTaskItem(
 		if (filterState.selectedTodoIds?.includes(index)) {
 			selectionCheckbox.checked = true;
 		}
-		// Don't add click handler yet - will be added in Subtask 2
+		// Update AI bulk process button state when checkbox changes
+		selectionCheckbox.addEventListener("change", () => {
+			const controlBar = ul.closest(".todotxt-view")?.querySelector(".control-bar-row");
+			if (controlBar) {
+				updateAIBulkProcessButtonState(controlBar as HTMLElement);
+			}
+		});
 	}
 
 	// Add checkbox

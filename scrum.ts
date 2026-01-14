@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 48, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 13, status: "not_started", sprints: "", pbis: "", goal: "TBD - Product Backlog空、新PBI作成待ち" },
+  sprint: { number: 48, pbi: "PBI-051", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 1, impediments: 0 },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051,PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - ボタン不具合修正 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -57,6 +57,79 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 12完了 (Sprint 46-47): サイドパネル・AI連携完了、801t達成(+31t)
   //   Sprint 46 PBI-046: サイドパネル実装、770t(+8t)、done
   //   Sprint 47 PBI-047: AI自然言語タスク追加、801t(+31t)、done
+
+  // Phase 13: サイドパネルフル機能化・バグ修正
+  {
+    id: "PBI-051",
+    story: {
+      role: "Obsidianユーザー",
+      capability: "サイドパネルのAIタスク追加ボタン（✨）とタスク追加ボタン（+）をクリックしてタスクを追加できる",
+      benefit: "サイドパネルからタスク追加操作が正常に行え、作業効率が向上する",
+    },
+    acceptanceCriteria: [
+      { criterion: "サイドパネルのAIボタン（✨）クリックでAITaskInputDialogが開く", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'AI.*click'" },
+      { criterion: "サイドパネルの追加ボタン（+）クリックでAddTaskModalが開く", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'add.*click'" },
+      { criterion: "AIダイアログからタスクを追加するとサイドパネルのリストが更新される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'AI.*refresh'" },
+      { criterion: "AddTaskModalからタスクを追加するとサイドパネルのリストが更新される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'add.*refresh'" },
+    ],
+    dependencies: [],
+    status: "ready" as PBIStatus,
+    complexity: { functions: 2, estimatedTests: 4, externalDependencies: 0, score: "LOW", subtasks: 1 },
+  },
+  {
+    id: "PBI-050",
+    story: {
+      role: "Obsidianユーザー",
+      capability: "メインビューからAIタスク追加ボタン（✨）をクリックしてAIでタスクを追加できる",
+      benefit: "Sprint 47で実装したAI機能をメインビューからも引き続き利用できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "メインビューのFABコンテナにAIタスク追加ボタン（✨）が表示される", verification: "pnpm vitest run src/view.test.ts -- --grep 'AI.*button'" },
+      { criterion: "AIボタンクリックでAITaskInputDialogが開く", verification: "pnpm vitest run src/view.test.ts -- --grep 'AI.*dialog'" },
+      { criterion: "AIで生成したタスクがtodo.txtファイルに追加される", verification: "pnpm vitest run src/view.test.ts -- --grep 'AI.*add'" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 1, estimatedTests: 3, externalDependencies: 0, score: "LOW", subtasks: 1 },
+  },
+  {
+    id: "PBI-049",
+    story: {
+      role: "Obsidianユーザー",
+      capability: "検索ボックスに文字を入力してもフォーカスが外れずに連続して入力できる",
+      benefit: "検索操作がスムーズになり、タスクの絞り込みが快適に行える",
+    },
+    acceptanceCriteria: [
+      { criterion: "検索ボックスに複数文字を連続入力してもフォーカスが維持される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'search focus'" },
+      { criterion: "検索入力時にタスクリストのみが再描画され、コントロールバーは維持される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'partial render'" },
+      { criterion: "検索中にカーソル位置が維持される", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'cursor position'" },
+      { criterion: "メインビュー（rendering.ts）の検索ボックスでも同様にフォーカスが維持される", verification: "pnpm vitest run src/lib/rendering.test.ts -- --grep 'search focus'" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 2, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 2 },
+  },
+  {
+    id: "PBI-048",
+    story: {
+      role: "Obsidianユーザー",
+      capability: "サイドパネルからメインビューと同等の機能（タスク追加・編集・削除・完了切替・フィルタリング・ソート・グループ化）をコンパクトなUIで操作できる",
+      benefit: "メインビューを開かずにサイドバーから素早くタスク管理ができ、作業効率が向上する",
+    },
+    acceptanceCriteria: [
+      { criterion: "サイドパネルから設定で登録した全todotxtファイルにタスクを追加できる", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'add task'" },
+      { criterion: "サイドパネルからタスクの編集ができる（EditTaskModal連携）", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'edit task'" },
+      { criterion: "サイドパネルからタスクの削除ができる（確認ダイアログ付き）", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'delete task'" },
+      { criterion: "検索ボックスでタスクをリアルタイムフィルタリングできる", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'search'" },
+      { criterion: "ソート順が設定値（defaultSortOrder）を引き継ぐ", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'sort.*settings'" },
+      { criterion: "グループ化が設定値（defaultGrouping）を引き継ぐ", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'group.*settings'" },
+      { criterion: "UIがメインビューよりコンパクト（パディング・フォントサイズ縮小）", verification: "grep -q 'todotxt-sidepanel-compact' styles.css" },
+      { criterion: "複数ファイル選択時に追加先ファイルを選択できる", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'file selection'" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 8, estimatedTests: 12, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
+  },
 ];
 
 // Definition of Ready

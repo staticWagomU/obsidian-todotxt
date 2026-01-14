@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 55, pbi: "PBI-055", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 6, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -150,15 +150,15 @@ export const currentSprint = {
       test: "プレビュー確認→一括保存→ファイル更新→リスト再描画テスト",
       implementation: "handleBulkSave関数、複数Todo更新、file write、リスト更新",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 5-6 - handleBulkSave and resetSelectionMode functions" }]
     },
     {
       test: "一括保存後→チェックボックス非表示、selectedTodoIds空配列、通常モード復帰テスト",
       implementation: "resetSelectionMode関数、state初期化",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 5-6 - handleBulkSave and resetSelectionMode functions" }]
     },
     {
       test: "N/A (プロセス改善)",

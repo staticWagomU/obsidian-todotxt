@@ -274,6 +274,77 @@ export class TodotxtView extends TextFileView {
 			await archiveHandler();
 		}
 	}
+
+	/**
+	 * Get bulk save handler for updating multiple todos at once
+	 * Public for testing compatibility
+	 * @returns Handler function that takes selected indices and updated todo lines
+	 */
+	getHandleBulkSave(): (selectedIndices: number[], updatedTodoLines: string[]) => Promise<void> {
+		return async (selectedIndices: number[], updatedTodoLines: string[]): Promise<void> => {
+			// Validate: Empty selection does nothing
+			if (selectedIndices.length === 0) {
+				return;
+			}
+
+			// Validate: Index count must match updated lines count
+			if (selectedIndices.length !== updatedTodoLines.length) {
+				return;
+			}
+
+			// Get current data as lines
+			const lines = this.data.split("\n");
+
+			// Update each selected line with the corresponding updated todo
+			for (let i = 0; i < selectedIndices.length; i++) {
+				const lineIndex = selectedIndices[i];
+				const updatedLine = updatedTodoLines[i];
+				if (lineIndex !== undefined && updatedLine !== undefined && lineIndex < lines.length) {
+					lines[lineIndex] = updatedLine;
+				}
+			}
+
+			// Update data and re-render
+			this.setViewData(lines.join("\n"), false);
+		};
+	}
+
+	/**
+	 * Get reset selection mode handler
+	 * Resets selection mode to normal mode: hides checkboxes, clears selections
+	 * Public for testing compatibility
+	 */
+	getResetSelectionMode(): () => void {
+		return (): void => {
+			// Find the batch selection button and deactivate it if active
+			const batchButton = this.contentEl.querySelector(".batch-selection-button");
+			if (batchButton instanceof HTMLButtonElement && batchButton.classList.contains("active")) {
+				// Remove active class to trigger mode reset
+				batchButton.classList.remove("active");
+				batchButton.textContent = "一括選択";
+			}
+
+			// Re-render the task list to reflect the normal mode
+			this.renderTaskList();
+		};
+	}
+
+	/**
+	 * Get bulk save handler with automatic selection mode reset
+	 * Combines bulk save with selection mode reset after successful save
+	 * Public for testing compatibility
+	 */
+	getHandleBulkSaveWithReset(): (selectedIndices: number[], updatedTodoLines: string[]) => Promise<void> {
+		return async (selectedIndices: number[], updatedTodoLines: string[]): Promise<void> => {
+			// Perform bulk save
+			const bulkSave = this.getHandleBulkSave();
+			await bulkSave(selectedIndices, updatedTodoLines);
+
+			// Reset selection mode after successful save
+			const resetSelectionMode = this.getResetSelectionMode();
+			resetSelectionMode();
+		};
+	}
 }
 
 /**

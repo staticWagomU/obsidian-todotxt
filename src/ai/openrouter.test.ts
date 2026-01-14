@@ -202,8 +202,8 @@ describe("OpenRouterService", () => {
 	describe("bulkEditTodos", () => {
 		it("複数タスクを自然言語指示で一括編集する", async () => {
 			const todos = [
-				{ raw: "タスク1", description: "タスク1", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
-				{ raw: "タスク2", description: "タスク2", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+				{ raw: "タスク1", description: "タスク1", completed: false, priority: undefined, projects: [], contexts: [], tags: {}, creationDate: undefined, completionDate: undefined },
+				{ raw: "タスク2", description: "タスク2", completed: false, priority: undefined, projects: [], contexts: [], tags: {}, creationDate: undefined, completionDate: undefined },
 			];
 
 			const mockResponse = {
@@ -241,8 +241,8 @@ describe("OpenRouterService", () => {
 
 		it("タスク数と結果行数が一致しない場合エラーを返す", async () => {
 			const todos = [
-				{ raw: "タスク1", description: "タスク1", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
-				{ raw: "タスク2", description: "タスク2", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+				{ raw: "タスク1", description: "タスク1", completed: false, priority: undefined, projects: [], contexts: [], tags: {}, creationDate: undefined, completionDate: undefined },
+				{ raw: "タスク2", description: "タスク2", completed: false, priority: undefined, projects: [], contexts: [], tags: {}, creationDate: undefined, completionDate: undefined },
 			];
 
 			const mockResponse = {
@@ -277,7 +277,7 @@ describe("OpenRouterService", () => {
 
 		it("APIエラー時にエラーメッセージを返す", async () => {
 			const todos = [
-				{ raw: "タスク1", description: "タスク1", completed: false, priority: null, projects: [], contexts: [], tags: {}, creationDate: null, completionDate: null },
+				{ raw: "タスク1", description: "タスク1", completed: false, priority: undefined, projects: [], contexts: [], tags: {}, creationDate: undefined, completionDate: undefined },
 			];
 
 			vi.mocked(requestUrl).mockResolvedValue({

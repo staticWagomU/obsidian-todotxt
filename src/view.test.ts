@@ -390,6 +390,40 @@ describe("Batch Selection Mode", () => {
 		// Note: actual implementation needs to handle checkbox change
 		expect(aiBulkButton).toBeTruthy();
 	});
+
+	it("選択モード終了時にチェックボックスが非表示になり選択状態がリセットされる", () => {
+		// Subtask 5-6: Test selection mode exit resets state
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		let batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Select some tasks
+		const checkboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		checkboxes[0]?.click();
+		checkboxes[1]?.click();
+
+		// Exit selection mode
+		batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Checkboxes should be hidden
+		const checkboxesAfter = view.contentEl.querySelectorAll(".task-selection-checkbox");
+		expect(checkboxesAfter.length).toBe(0);
+
+		// Re-enter selection mode
+		batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// All checkboxes should be unchecked (selection state reset)
+		const newCheckboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		newCheckboxes.forEach((checkbox) => {
+			expect(checkbox.checked).toBe(false);
+		});
+	});
 });
 
 describe("update view after task creation", () => {
@@ -2861,5 +2895,239 @@ describe("side panel footer buttons", () => {
 		// Verify: Both buttons are in the same footer (horizontal layout)
 		expect(footerEl?.contains(aiBtn!)).toBe(true);
 		expect(footerEl?.contains(addBtn!)).toBe(true);
+	});
+});
+
+describe("Bulk Save - Subtask 5", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("handleBulkSaveで複数Todoが更新される", async () => {
+		// Setup: 3 tasks
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Select first two tasks (indices 0 and 1)
+		const checkboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		checkboxes[0]?.click();
+		checkboxes[1]?.click();
+
+		// Get selected indices
+		const selectedIndices = [0, 1];
+
+		// Updated todo lines from AI (simulated)
+		const updatedTodoLines = [
+			"(A) Task 1 +priority",
+			"(B) Task 2 +priority"
+		];
+
+		// Call handleBulkSave
+		const handleBulkSave = view.getHandleBulkSave();
+		expect(handleBulkSave).toBeDefined();
+		await handleBulkSave(selectedIndices, updatedTodoLines);
+
+		// Verify: Data is updated
+		const updatedData = view.getViewData();
+		const lines = updatedData.split("\n");
+		expect(lines[0]).toBe("(A) Task 1 +priority");
+		expect(lines[1]).toBe("(B) Task 2 +priority");
+		expect(lines[2]).toBe("Task 3"); // Unchanged
+	});
+
+	it("handleBulkSaveでファイルが正しく更新される", async () => {
+		const initialData = "(C) Important task\nRegular task";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		const selectedIndices = [1];
+		const updatedTodoLines = ["(A) Regular task now urgent"];
+
+		const handleBulkSave = view.getHandleBulkSave();
+		await handleBulkSave(selectedIndices, updatedTodoLines);
+
+		const updatedData = view.getViewData();
+		expect(updatedData).toContain("(C) Important task");
+		expect(updatedData).toContain("(A) Regular task now urgent");
+	});
+
+	it("handleBulkSave後にリストが再描画される", async () => {
+		const initialData = "Task A\nTask B";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Get initial task descriptions from DOM
+		const initialDescs = Array.from(view.contentEl.querySelectorAll(".task-description"))
+			.map(el => el.textContent);
+		expect(initialDescs).toContain("Task A");
+		expect(initialDescs).toContain("Task B");
+
+		const selectedIndices = [0];
+		const updatedTodoLines = ["(A) Updated Task A"];
+
+		const handleBulkSave = view.getHandleBulkSave();
+		await handleBulkSave(selectedIndices, updatedTodoLines);
+
+		// Verify DOM is updated after re-render
+		const updatedDescs = Array.from(view.contentEl.querySelectorAll(".task-description"))
+			.map(el => el.textContent);
+		expect(updatedDescs).toContain("Updated Task A");
+	});
+
+	it("空の選択でhandleBulkSaveを呼んでもデータは変更されない", async () => {
+		const initialData = "Task 1\nTask 2";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		const handleBulkSave = view.getHandleBulkSave();
+		await handleBulkSave([], []);
+
+		expect(view.getViewData()).toBe(initialData);
+	});
+
+	it("インデックス数と更新行数が一致しない場合は更新しない", async () => {
+		const initialData = "Task 1\nTask 2";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		const selectedIndices = [0, 1];
+		const updatedTodoLines = ["Only one line"]; // Mismatch
+
+		const handleBulkSave = view.getHandleBulkSave();
+		await handleBulkSave(selectedIndices, updatedTodoLines);
+
+		// Data should remain unchanged due to mismatch
+		expect(view.getViewData()).toBe(initialData);
+	});
+});
+
+describe("Selection Mode Reset - Subtask 6", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("resetSelectionModeでチェックボックスが非表示になる", () => {
+		// Setup: Enter selection mode
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Verify selection mode is active
+		expect(view.contentEl.querySelectorAll(".task-selection-checkbox").length).toBe(3);
+
+		// Call resetSelectionMode
+		const resetSelectionMode = view.getResetSelectionMode();
+		expect(resetSelectionMode).toBeDefined();
+		resetSelectionMode();
+
+		// Checkboxes should be hidden
+		expect(view.contentEl.querySelectorAll(".task-selection-checkbox").length).toBe(0);
+	});
+
+	it("resetSelectionModeで選択状態がクリアされる", () => {
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode and select some tasks
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		const checkboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		checkboxes[0]?.click();
+		checkboxes[1]?.click();
+
+		// Verify tasks are selected
+		expect(checkboxes[0]?.checked).toBe(true);
+		expect(checkboxes[1]?.checked).toBe(true);
+
+		// Reset selection mode
+		const resetSelectionMode = view.getResetSelectionMode();
+		resetSelectionMode();
+
+		// Re-enter selection mode and verify all unchecked
+		const newBatchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		newBatchButton?.click();
+
+		const newCheckboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		newCheckboxes.forEach((checkbox) => {
+			expect(checkbox.checked).toBe(false);
+		});
+	});
+
+	it("resetSelectionModeで通常モードに復帰する", () => {
+		const initialData = "Task 1\nTask 2";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		let batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Verify active state
+		batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		expect(batchButton?.classList.contains("active")).toBe(true);
+
+		// Reset selection mode
+		const resetSelectionMode = view.getResetSelectionMode();
+		resetSelectionMode();
+
+		// Verify normal mode (button not active)
+		batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		expect(batchButton?.classList.contains("active")).toBe(false);
+		expect(batchButton?.textContent).toBe("一括選択");
+	});
+
+	it("handleBulkSaveWithReset後に選択モードがリセットされる", async () => {
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Select tasks
+		const checkboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		checkboxes[0]?.click();
+		checkboxes[1]?.click();
+
+		// Call bulk save with reset
+		const handleBulkSaveWithReset = view.getHandleBulkSaveWithReset();
+		expect(handleBulkSaveWithReset).toBeDefined();
+		await handleBulkSaveWithReset([0, 1], ["(A) Task 1 updated", "(B) Task 2 updated"]);
+
+		// Verify: Data is updated
+		const updatedData = view.getViewData();
+		expect(updatedData).toContain("(A) Task 1 updated");
+		expect(updatedData).toContain("(B) Task 2 updated");
+
+		// Verify: Selection mode is reset (no checkboxes visible)
+		expect(view.contentEl.querySelectorAll(".task-selection-checkbox").length).toBe(0);
+
+		// Verify: Button is not active
+		const newBatchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		expect(newBatchButton?.classList.contains("active")).toBe(false);
 	});
 });

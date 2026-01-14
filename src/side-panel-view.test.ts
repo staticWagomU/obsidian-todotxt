@@ -435,4 +435,145 @@ describe("TodoSidePanelView", () => {
 			expect(updatedTasks.length).toBe(2);
 		});
 	});
+
+	describe("Search focus maintenance", () => {
+		it("should maintain focus when typing multiple characters in search box", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk\nWrite report\nFix bug"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Find search box and focus it
+			const searchBox = view.contentEl.querySelector(".search-box") as HTMLInputElement;
+			expect(searchBox).not.toBeNull();
+			searchBox.focus();
+
+			// Type first character
+			searchBox.value = "m";
+			searchBox.dispatchEvent(new Event("input"));
+
+			// Verify search box still has focus
+			expect(document.activeElement).toBe(searchBox);
+
+			// Type second character
+			searchBox.value = "mi";
+			searchBox.dispatchEvent(new Event("input"));
+
+			// Verify search box still has focus
+			expect(document.activeElement).toBe(searchBox);
+
+			// Type third character
+			searchBox.value = "mil";
+			searchBox.dispatchEvent(new Event("input"));
+
+			// Verify search box still has focus
+			expect(document.activeElement).toBe(searchBox);
+		});
+
+		it("should only re-render task list when searching, not control bar", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk\nWrite report"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Get initial references to control bar and search box
+			const initialControlBar = view.contentEl.querySelector(".control-bar");
+			const initialSearchBox = view.contentEl.querySelector(".search-box");
+			expect(initialControlBar).not.toBeNull();
+			expect(initialSearchBox).not.toBeNull();
+
+			// Trigger search input
+			const searchBox = initialSearchBox as HTMLInputElement;
+			searchBox.value = "milk";
+			searchBox.dispatchEvent(new Event("input"));
+
+			// Verify control bar and search box are the same elements (not re-created)
+			const afterControlBar = view.contentEl.querySelector(".control-bar");
+			const afterSearchBox = view.contentEl.querySelector(".search-box");
+
+			expect(afterControlBar).toBe(initialControlBar);
+			expect(afterSearchBox).toBe(initialSearchBox);
+		});
+
+		it("should maintain cursor position when typing in search box", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk\nWrite report"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			const searchBox = view.contentEl.querySelector(".search-box") as HTMLInputElement;
+			expect(searchBox).not.toBeNull();
+
+			// Type text and set cursor position in middle
+			searchBox.value = "test";
+			searchBox.setSelectionRange(2, 2); // Cursor after "te"
+			searchBox.focus();
+
+			const cursorPosition = searchBox.selectionStart;
+			expect(cursorPosition).toBe(2);
+
+			// Trigger input event
+			searchBox.dispatchEvent(new Event("input"));
+
+			// Verify cursor position is maintained
+			expect(searchBox.selectionStart).toBe(cursorPosition);
+		});
+	});
 });

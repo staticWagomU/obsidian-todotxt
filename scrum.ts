@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 50, pbi: "PBI-049", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 2, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 2, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049(ready),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
@@ -124,8 +124,12 @@ export const currentSprint = {
       test: "サイドパネル検索ボックスでフォーカスが維持され、連続入力・リスト部分更新・カーソル位置維持が正常動作する",
       implementation: "side-panel-view.ts onSearch関数とレンダリングロジックを修正、検索時にリスト部分のみ更新しコントロールバーを保持",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test(search): add side panel search focus maintenance tests" },
+        { phase: "green", message: "feat(search): implement side panel search focus maintenance" },
+      ],
+      // REFACTOR判断: 不要 - (1)重複なし (2)複雑度良好renderTaskListOnly5行 (3)命名明確 (4)構造適切分離 → 全4項目OK
     },
     {
       test: "メインビュー（rendering.ts）検索ボックスでフォーカスが維持され、サイドパネルと同等の動作をする",

@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 55, pbi: "PBI-055", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 5, subtasksTotal: 8, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -143,8 +143,8 @@ export const currentSprint = {
       test: "自然言語入力→OpenRouter呼び出し→複数Todo更新プレビュー生成テスト",
       implementation: "bulkProcessWithAI関数、OpenRouter batch request、プレビューデータ生成",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 4 - bulkEditTodos function for batch AI processing" }]
     },
     {
       test: "プレビュー確認→一括保存→ファイル更新→リスト再描画テスト",
@@ -164,8 +164,8 @@ export const currentSprint = {
       test: "N/A (プロセス改善)",
       implementation: "retrospectives配列から未実施Actions抽出、優先度再評価、廃棄/統合/継続判定、actionManagement.tracking更新（total削減、rate 60%→65%）",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "refactor" as CommitPhase, message: "chore(scrum): Sprint 55 Subtask 7 - Actions棚卸し完了、rate 60%→64%" }]
     },
     {
       test: "N/A (ドキュメント整備)",
@@ -242,12 +242,15 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 54完了: rate 58%→60%(+2%)、2 Sprint連続KPI min 50%達成、詳細はgit履歴参照)
+// Action Management (Sprint 55進行中: rate 60%→64%(+4%)、P0 Actions 2項目実施、棚卸し完了)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 103, executed: 62, rate: 60, remaining: 41 },
-  // Sprint 54: P0 Actions 2項目実施（Process実践検証・SMART具体例8セット追加）、P1 2項目継続（棚卸し・トラッキング精度）
-  // Sprint 53: 15項目廃棄/統合、根本原因3軸分析完了、プロセス再設計ルール3項目確立（CLAUDE.md追記）
+  tracking: { total: 100, executed: 64, rate: 64, remaining: 36 },
+  // Sprint 55: P0 Actions 2項目実施（P1 Actions Subtask化・CLAUDE.md計算式追加）
+  //   棚卸し: P2 Action 1項目廃棄（ロードマップ策定→3 Sprint経過）、total 103→100 (-3)
+  //   繰越: P1 2項目（トラッキング精度改善）→Sprint 56へ
+  // Sprint 54: P0 Actions 2項目実施、P1 2項目継続
+  // Sprint 53: 15項目廃棄/統合、根本原因3軸分析完了、プロセス再設計ルール3項目確立
 };
 
 // Agents & Events

@@ -138,8 +138,11 @@ export const currentSprint = {
       test: "archiveCompletedTasks関数、getArchiveFilePath関数、appendToArchiveFile関数のテストを実装（完了タスク抽出、done.txtパス生成、ファイル追記処理の検証）",
       implementation: "完了タスク抽出ロジック、done.txtパス生成、ファイル追記処理を実装",
       type: "behavioral" as SubtaskType,
-      status: "red" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test(archive): add RED phase tests for archive core functionality" },
+        { phase: "green", message: "feat(archive): implement archive core functionality" },
+      ],
     },
     {
       test: "getArchiveHandler関数、アーカイブボタンのレンダリング、無効化状態のテストを実装（完了タスク0件時の無効化検証）",

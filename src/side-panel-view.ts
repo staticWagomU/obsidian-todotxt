@@ -35,6 +35,30 @@ export class TodoSidePanelView extends ItemView {
 	constructor(leaf: WorkspaceLeaf, plugin: TodotxtPlugin) {
 		super(leaf);
 		this.plugin = plugin;
+		// Inherit settings
+		this.initializeFilterStateFromSettings();
+	}
+
+	/**
+	 * Initialize filter state from plugin settings
+	 */
+	private initializeFilterStateFromSettings(): void {
+		// Map SortOrder to filter state sort value
+		const sortMapping: Record<string, string> = {
+			"completion": "completion",
+			"priority": "default",
+			"date": "default",
+			"alphabetical": "default",
+		};
+		this.filterState.sort = sortMapping[this.plugin.settings.defaultSortOrder] || "default";
+
+		// Map Grouping to filter state group value
+		const groupMapping: Record<string, string> = {
+			"none": "none",
+			"project": "project",
+			"context": "context",
+		};
+		this.filterState.group = groupMapping[this.plugin.settings.defaultGrouping] || "none";
 	}
 
 	getViewType(): string {

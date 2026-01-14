@@ -696,6 +696,76 @@ describe("TodoSidePanelView", () => {
 		});
 	});
 
+	describe("Settings inheritance", () => {
+		it("should inherit defaultSortOrder from settings", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "x 2024-01-01 Completed task\nPending task"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.settings.defaultSortOrder = "completion";  // Set to completion sort
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Check that sort selector has the correct value
+			const sortSelector = view.contentEl.querySelector(".sort-selector") as HTMLSelectElement;
+			expect(sortSelector).not.toBeNull();
+			expect(sortSelector.value).toBe("completion");
+		});
+
+		it("should inherit defaultGrouping from settings", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Task1 +project1\nTask2 +project2"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.settings.defaultGrouping = "project";  // Set to project grouping
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Check that group selector has the correct value
+			const groupSelector = view.contentEl.querySelector(".group-selector") as HTMLSelectElement;
+			expect(groupSelector).not.toBeNull();
+			expect(groupSelector.value).toBe("project");
+
+			// Check that group headers are rendered
+			const groupHeaders = view.contentEl.querySelectorAll(".group-header");
+			expect(groupHeaders.length).toBeGreaterThan(0);
+		});
+	});
+
 	describe("Search focus maintenance", () => {
 		it("should maintain focus when typing multiple characters in search box", async () => {
 			const mockFiles = new Map([

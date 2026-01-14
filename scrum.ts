@@ -57,33 +57,6 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 12完了 (Sprint 46-47): サイドパネル・AI連携完了、801t達成(+31t)
   //   Sprint 46 PBI-046: サイドパネル実装、770t(+8t)、done
   //   Sprint 47 PBI-047: AI自然言語タスク追加、801t(+31t)、done
-    acceptanceCriteria: [
-      { criterion: "AI追加ボタンクリックで自然言語入力ダイアログが開く", verification: "pnpm build && 手動確認: ダイアログが開く" },
-      { criterion: "入力された自然言語がtodo.txt形式に変換される（プロジェクト/コンテキスト/優先度/期限を自動抽出）", verification: "pnpm vitest run -- -t 'natural language to todotxt'" },
-      { criterion: "変換結果をプレビュー表示し、編集・確認できる", verification: "pnpm build && 手動確認: プレビューが編集可能" },
-      { criterion: "確認後にタスクがtodo.txtに追加される", verification: "pnpm build && 手動確認: タスクが追加される" },
-      { criterion: "複数タスクを一括で変換・追加できる（改行/箇条書き区切り）", verification: "pnpm vitest run -- -t 'multiple tasks'" },
-      { criterion: "OpenRouterのAPIキー・モデル設定が可能", verification: "pnpm build && 手動確認: 設定画面にOpenRouter設定がある" },
-      { criterion: "カスタムコンテキストマッピングが設定可能", verification: "pnpm vitest run -- -t 'custom context'" },
-      { criterion: "APIエラー時に設定に従い自動リトライする", verification: "pnpm vitest run -- -t 'retry'" },
-    ],
-    dependencies: ["PBI-046"],
-    status: "ready" as PBIStatus,
-    complexity: {
-      functions: 14,
-      estimatedTests: 28,
-      externalDependencies: 1,
-      score: "MEDIUM",
-      subtasks: 7,
-    },
-    refactorChecklist: [
-      "OpenRouterServiceのエラーハンドリングをHTTPステータスコード別に整理",
-      "プロンプトテンプレートをコンテキスト・優先度・期限の各セクションに分割",
-      "ダイアログコンポーネントの共通UI部分をBaseDialogクラスに抽出",
-    ],
-    // Design: docs/design/PBI-047-design.md (based on todonoeai specification)
-    // External Dependency: OpenRouter API (https://openrouter.ai/api/v1/chat/completions)
-  },
 ];
 
 // Definition of Ready

@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 44, pbi: "PBI-044", status: "in_progress" as SprintStatus,
+  sprint: { number: 44, pbi: "PBI-044", status: "done" as SprintStatus,
     subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 10, status: "done", sprints: "43", pbis: "PBI-043", goal: "パーサー堅牢化完了（unified-test-cases.md準拠、740t達成、+114t）" },
 };
@@ -93,7 +93,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "存在しないパスを指定した場合にエラーにならない", verification: "pnpm vitest run -- -t 'invalid path'" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: { functions: 4, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 3 },
   },
   {
@@ -169,7 +169,7 @@ export const currentSprint = {
   sprint: 44,
   pbi: "PBI-044",
   goal: "設定ベースのファイルパス管理を実現し、ユーザーが明示的にtodo.txt管理対象を制御できる",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "settings.tsにtodotxtFilePathsプロパティのテストを記述、デフォルト空配列を検証",
@@ -225,6 +225,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 9 (Sprint 40-42): UIデザイン刷新完了（Apple-likeモダンデザイン）、626t維持
   // Phase 10 (Sprint 43): パーサー堅牢化完了（unified-test-cases.md準拠）、740t達成(+114t)
   { sprint: 43, pbi: "PBI-043", story: "パーサー堅牢化（エッジケース対応）", verification: "passed", notes: "740t(+114t),70エッジケーステスト追加,プロジェクト/コンテキスト前スペース必須化,タグ最初コロン分割対応,Phase 10完遂" },
+  { sprint: 44, pbi: "PBI-044", story: "設定ベースのファイルパス管理", verification: "passed", notes: "738t(-2t統合化),Subtask3完了(RED-GREEN6commit),todotxtFilePaths設定追加,file-matcher実装,設定UIテキストエリア追加" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

@@ -35,7 +35,7 @@ interface Retrospective {
 export const quickStatus = {
   sprint: { number: 51, pbi: "PBI-048", status: "not_started" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048(ready)", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -81,7 +81,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "複数ファイル選択時に追加先ファイルを選択できる", verification: "pnpm vitest run src/side-panel-view.test.ts -- --grep 'file selection'" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
     complexity: { functions: 8, estimatedTests: 12, externalDependencies: 0, score: "MEDIUM", subtasks: 5 },
   },
 ];

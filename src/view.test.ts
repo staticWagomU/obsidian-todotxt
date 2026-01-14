@@ -2125,3 +2125,25 @@ describe("archive completed tasks", () => {
 		expect(view.getViewData()).toBe(initialData);
 	});
 });
+
+describe("AI task addition button", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("should display AI task addition button in main view", () => {
+		const initialData = "Buy milk\nWrite report";
+		view.setViewData(initialData, false);
+
+		// Check that AI button is displayed
+		const aiButton = view.contentEl.querySelector(".ai-add-task-button");
+		expect(aiButton).not.toBeNull();
+		expect(aiButton?.textContent).toContain("AI");
+	});
+});

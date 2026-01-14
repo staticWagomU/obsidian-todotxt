@@ -192,4 +192,37 @@ describe("TodoSidePanelView", () => {
 			expect(mockOpenFile).toHaveBeenCalledWith("vault/todo.txt", "", false);
 		});
 	});
+
+	describe("AI task addition button", () => {
+		it("should display AI task addition button in side panel", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Check that AI button is displayed
+			const aiButton = view.contentEl.querySelector(".ai-add-task-button");
+			expect(aiButton).not.toBeNull();
+			expect(aiButton?.textContent).toContain("AI");
+		});
+	});
 });

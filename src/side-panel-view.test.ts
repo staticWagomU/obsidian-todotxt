@@ -212,8 +212,9 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 			await view.onOpen();
 
-			// Simulate click on "open" button (now as edit-task-button with "開く" text)
-			const openButton = view.contentEl.querySelector(".edit-task-button");
+			// Simulate click on "open" button (find button with "開く" text)
+			const buttons = view.contentEl.querySelectorAll(".edit-task-button");
+			const openButton = Array.from(buttons).find(btn => btn.textContent === "開く");
 			if (openButton) {
 				(openButton as HTMLElement).click();
 			}

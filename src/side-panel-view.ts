@@ -113,6 +113,7 @@ export class TodoSidePanelView extends ItemView {
 	renderView(): void {
 		this.contentEl.empty();
 		this.contentEl.classList.add("todotxt-view");
+		this.contentEl.classList.add("todotxt-sidepanel-compact");
 
 		// Render FAB container
 		this.renderFabContainer();

@@ -1760,6 +1760,96 @@ button:active {
 	}
 }
 
+/* ============================================
+ * Side Panel - Compact UI
+ * ============================================
+ * サイドパネル専用のコンパクトなUIスタイル
+ * メインビューよりも小さいパディング・フォントサイズ
+ */
+
+.todotxt-sidepanel-compact {
+	/* コンテナのパディングを縮小 */
+	padding: var(--spacing-md) !important;
+}
+
+.todotxt-sidepanel-compact .control-bar {
+	/* コントロールバーをコンパクト化 */
+	padding: var(--spacing-sm) var(--spacing-md);
+	gap: var(--spacing-sm);
+	margin-bottom: var(--spacing-lg);
+}
+
+.todotxt-sidepanel-compact .control-bar select,
+.todotxt-sidepanel-compact .control-bar .search-box {
+	/* フォントサイズを小さく */
+	font-size: 12px;
+	padding: 6px 12px;
+}
+
+.todotxt-sidepanel-compact ul > li:not(.group-header) {
+	/* タスクアイテムのパディングを縮小 */
+	padding: var(--spacing-sm) var(--spacing-md);
+	margin-bottom: 6px;
+}
+
+.todotxt-sidepanel-compact .task-description {
+	/* タスク説明のフォントサイズを縮小 */
+	font-size: var(--font-size-small);
+}
+
+.todotxt-sidepanel-compact .priority {
+	/* 優先度バッジを小さく */
+	width: 20px;
+	height: 20px;
+	font-size: 10px;
+}
+
+.todotxt-sidepanel-compact .tag-chip {
+	/* タグチップを小さく */
+	padding: 4px 8px;
+	font-size: 11px;
+	min-height: 24px;
+}
+
+.todotxt-sidepanel-compact .due-date {
+	/* 期限日バッジを小さく */
+	padding: 2px 8px;
+	font-size: 11px;
+}
+
+.todotxt-sidepanel-compact .edit-task-button,
+.todotxt-sidepanel-compact .delete-task-button {
+	/* アクションボタンを小さく */
+	padding: 4px 8px;
+	font-size: 11px;
+}
+
+.todotxt-sidepanel-compact .group-header {
+	/* グループヘッダーをコンパクト化 */
+	font-size: var(--font-size-medium);
+	padding: var(--spacing-md) var(--spacing-sm);
+	margin-top: var(--spacing-lg);
+	margin-bottom: var(--spacing-xs);
+}
+
+.todotxt-sidepanel-compact .fab-container {
+	/* FABボタンを少し小さく */
+	bottom: 16px;
+	right: 16px;
+}
+
+.todotxt-sidepanel-compact .add-task-button {
+	width: 48px;
+	height: 48px;
+	font-size: 24px;
+}
+
+.todotxt-sidepanel-compact .ai-add-task-button {
+	width: 36px;
+	height: 36px;
+	font-size: 16px;
+}
+
 /* --------------------------------------------
  * Touch Device Optimizations
  * -------------------------------------------- */

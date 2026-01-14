@@ -179,10 +179,12 @@ export const currentSprint = {
     },
     {
       test: "CLAUDE.mdにSMART基準良い例・悪い例3-5セット追加完了を確認",
-      implementation: "過去Sprint ActionsからSMART基準適合/不適合事例抽出、良い例・悪い例を3-5セット作成、CLAUDE.md Action Management Processセクションに追記",
+      implementation: "良い例3セット（P0 Subtask化・CLAUDE.md追記・Action棚卸し）、悪い例5セット（整理・プロセス改善・ドキュメント充実・将来的に・必要に応じて）、各例にSMART基準5項目詳細分析を追記完了",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "refactor" as CommitPhase, message: "refactor(docs): CLAUDE.mdにSMART基準Action粒度ガイドライン具体例追加 - 良3悪5セット" }
+      ]
     },
     {
       test: "DoD全項目（Tests/Lint/Types/Build）がpassし、Phase 16開始が宣言される",

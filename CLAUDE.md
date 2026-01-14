@@ -150,6 +150,59 @@ This project uses AI-Agentic Scrum methodology:
 - **Relevant**: Product GoalおよびPhase Goalとの整合性を確認
 - **Time-bound**: 優先度（P0/P1/P2）による期限明示
 
+**Good Examples (SMART準拠):**
+1. ✓ "Sprint 54 Planning時にP0 Actions 2項目をSubtask化する"
+   - Specific: 具体的なSprintと作業内容を明記
+   - Measurable: 2項目という数値目標
+   - Achievable: Planning時の限定作業
+   - Relevant: プロセス再設計ルール実践に直結
+   - Time-bound: Sprint 54 Planning時
+
+2. ✓ "CLAUDE.mdにSMART基準の良い例・悪い例を3-5セット追加"
+   - Specific: CLAUDE.mdへの具体的な追記内容
+   - Measurable: 3-5セットという定量目標
+   - Achievable: 1 Sprint内でドキュメント更新可能
+   - Relevant: Action粒度ガイドライン強化に貢献
+   - Time-bound: 暗黙的に次Sprint
+
+3. ✓ "残43項目Action棚卸しレビュー実施、rate 65%目標"
+   - Specific: 43項目の棚卸しレビュー
+   - Measurable: rate 65%という明確な数値目標
+   - Achievable: Sprint 54-55の2 Sprint想定
+   - Relevant: Action Management KPI改善に直結
+   - Time-bound: P1優先度（2 Sprint以内）
+
+**Bad Examples (SMART不適合):**
+1. ✗ "Actionsを整理する"
+   - Specific: ✗ "整理"が抽象的、成果物不明
+   - Measurable: ✗ 定量目標なし
+   - Achievable: △ 粒度不明
+   - Time-bound: ✗ 期限なし
+
+2. ✗ "プロセス改善を実施する"
+   - Specific: ✗ "プロセス改善"が広範囲すぎる
+   - Measurable: ✗ 成果指標なし
+   - Achievable: ✗ 範囲が不明確
+   - Relevant: △ 方向性のみ
+   - Time-bound: ✗ 期限なし
+
+3. ✗ "ドキュメントを充実させる"
+   - Specific: ✗ "充実"が主観的、対象ファイル不明
+   - Measurable: ✗ 完了基準なし
+   - Achievable: ✗ スコープ不明
+   - Time-bound: ✗ 期限なし
+
+4. ✗ "将来的にテストカバレッジを向上させる"
+   - Specific: △ テストカバレッジは具体的だが"将来的に"が曖昧
+   - Measurable: ✗ 目標値（%）なし
+   - Time-bound: ✗ "将来的"は期限として不適切
+
+5. ✗ "必要に応じてリファクタリング"
+   - Specific: ✗ "必要に応じて"は条件が不明確
+   - Measurable: ✗ 対象範囲・完了基準なし
+   - Achievable: ✗ スコープ未定義
+   - Time-bound: ✗ 期限なし
+
 ## References
 
 - [todo.txt format](https://github.com/todotxt/todo.txt)

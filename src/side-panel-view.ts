@@ -189,7 +189,7 @@ export class TodoSidePanelView extends ItemView {
 
 		searchBox.addEventListener("input", () => {
 			this.filterState.search = searchBox.value;
-			this.renderView();
+			this.renderTaskListOnly();
 		});
 	}
 
@@ -245,6 +245,21 @@ export class TodoSidePanelView extends ItemView {
 			this.filterState.sort = select.value;
 			this.renderView();
 		});
+	}
+
+	/**
+	 * Render task list only (without re-rendering control bar)
+	 * Used for search input to maintain focus
+	 */
+	renderTaskListOnly(): void {
+		// Remove existing task list
+		const existingList = this.contentEl.querySelector("ul");
+		if (existingList) {
+			existingList.remove();
+		}
+
+		// Re-render task list
+		this.renderTaskList();
 	}
 
 	/**

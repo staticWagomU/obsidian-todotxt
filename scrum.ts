@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 51, pbi: "PBI-048", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048(in_progress)", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
+  sprint: { number: 51, pbi: "PBI-048", status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  phase: { number: 13, status: "done", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048(done)", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -97,12 +97,12 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 51実行中)
+// Current Sprint (Sprint 51完了 - Phase 13完遂)
 export const currentSprint = {
   sprint: 51,
   pbi: "PBI-048",
   goal: "サイドパネルからメインビュー同等のタスク操作機能を提供し、Phase 13を完遂する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "サイドパネルから設定登録された全todotxtファイルにタスクを追加でき、複数ファイル選択時にファイル選択ダイアログが表示される",
@@ -118,29 +118,38 @@ export const currentSprint = {
       test: "サイドパネルからタスクを選択して編集ボタンをクリックするとEditTaskModalが開き、編集内容が反映される",
       implementation: "EditTaskModalの呼び出し処理実装、タスク選択状態管理、編集後のリスト更新処理",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(side-panel): implement task edit functionality - Subtask 2完了" },
+      ],
     },
     {
       test: "サイドパネルからタスク削除ボタンをクリックすると確認ダイアログが表示され、確認後に削除される",
       implementation: "削除確認ダイアログ実装、削除処理とファイル保存、リスト更新処理",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(side-panel): implement task delete with confirmation - Subtask 3完了" },
+      ],
     },
     {
       test: "サイドパネルのタスクリストが設定値（defaultSortOrder、defaultGrouping）を引き継ぎ、ソート・グループ化される",
       implementation: "設定値の読み込み処理、TodoSidePanelViewでのソート・グループ化ロジック実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(side-panel): inherit settings for sort and group - Subtask 4完了" },
+      ],
     },
     {
       test: "サイドパネルのUIがメインビューよりコンパクト（パディング・フォントサイズ縮小）になっている",
       implementation: "styles.cssにtodotxt-sidepanel-compactクラス追加、パディング・フォントサイズ調整",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat(side-panel): add compact UI styling - Subtask 5完了" },
+        { phase: "refactor" as CommitPhase, message: "fix(lint): resolve eslint errors in side panel" },
+      ],
     },
   ] as Subtask[],
 };
@@ -183,6 +192,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 48, pbi: "PBI-051", story: "サイドパネルボタン修正とリスト更新実装", verification: "passed", notes: "805t(+4t),Subtask1完了(RED1+GREEN1+REFACTOR2=4commit),既存実装テスト追加,共通処理抽出,Promise処理適正化,IMP-048-1/2解決,Phase 13開始" },
   { sprint: 49, pbi: "PBI-050", story: "メインビューAI機能統合+プロセス改善基盤確立", verification: "passed", notes: "807t(+2t),Subtask3完了(RED1+GREEN4commit),AC2/AC3テスト追加,REFACTOR判断4項目チェック体制確立,累積Actions整理(29項目→2項目実施),actionManagement改善(41%→43%)" },
   { sprint: 50, pbi: "PBI-049", story: "検索ボックスフォーカス維持機能実装", verification: "passed", notes: "813t(+6t),Subtask2完了(RED2+GREEN2+bugfix1=5commit),サイドパネル/メインビュー両方対応,renderTaskListOnly/renderTaskListSection部分更新実装,REFACTOR判断2回不要,DoD全pass,actionManagement rate 43%維持" },
+  { sprint: 51, pbi: "PBI-048", story: "サイドパネルフル機能化（追加/編集/削除/設定値引き継ぎ/コンパクトUI）", verification: "passed", notes: "821t(+8t),Subtask5完了(4 behavioral+1 structural),6commits(2 GREEN-only,1 GREEN+REFACTOR,1 lint fix),タスク追加(ファイル選択),編集(EditTaskModal),削除(確認ダイアログ),設定値引き継ぎ,コンパクトUIスタイル,REFACTOR判断4項目チェック実施,DoD全pass,Phase 13完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

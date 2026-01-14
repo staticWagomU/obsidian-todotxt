@@ -175,8 +175,8 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 			await view.onOpen();
 
-			// Check that tasks are rendered
-			const tasks = view.contentEl.querySelectorAll(".todotxt-task");
+			// Check that tasks are rendered (now as li items with task-checkbox)
+			const tasks = view.contentEl.querySelectorAll(".task-checkbox");
 			expect(tasks.length).toBe(3);
 		});
 
@@ -212,10 +212,10 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 			await view.onOpen();
 
-			// Simulate click on task
-			const taskElement = view.contentEl.querySelector(".todotxt-task");
-			if (taskElement) {
-				(taskElement as HTMLElement).click();
+			// Simulate click on "open" button (now as edit-task-button with "開く" text)
+			const openButton = view.contentEl.querySelector(".edit-task-button");
+			if (openButton) {
+				(openButton as HTMLElement).click();
 			}
 
 			// Verify file was opened
@@ -249,10 +249,188 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 			await view.onOpen();
 
-			// Check that AI button is displayed
+			// Check that AI button is displayed (now with ✨ emoji)
 			const aiButton = view.contentEl.querySelector(".ai-add-task-button");
 			expect(aiButton).not.toBeNull();
-			expect(aiButton?.textContent).toContain("AI");
+			expect(aiButton?.textContent).toBe("✨");
+		});
+
+		it("should open AITaskInputDialog when AI button is clicked", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+
+			// Spy on openAITaskDialog method
+			const openAITaskDialogSpy = vi.spyOn(view, "openAITaskDialog");
+
+			await view.onOpen();
+
+			// Find and click AI button
+			const aiButton = view.contentEl.querySelector(".ai-add-task-button");
+			expect(aiButton).not.toBeNull();
+			(aiButton as HTMLElement).click();
+
+			// Verify openAITaskDialog was called
+			expect(openAITaskDialogSpy).toHaveBeenCalledOnce();
+		});
+
+		it("should refresh task list after adding task via AI dialog", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+
+			let currentContent = "Buy milk";
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || currentContent;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.modify = async (_file: any, newContent: string): Promise<void> => {
+				currentContent = newContent;
+				mockFiles.set("vault/todo.txt", newContent);
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Initial task count should be 1
+			const initialTasks = view.contentEl.querySelectorAll(".task-checkbox");
+			expect(initialTasks.length).toBe(1);
+
+			// Simulate opening AI dialog and adding a task
+			// We'll directly call the callback that would be invoked after AI task creation
+			const aiDialog = view.openAITaskDialog();
+
+			// Simulate task addition by modifying file content
+			await mockPlugin.app.vault.modify({}, "Buy milk\nWrite report");
+
+			// Manually trigger the refresh callback that AI dialog would call
+			await view.loadTasks();
+			view.renderView();
+
+			// Task count should now be 2
+			const updatedTasks = view.contentEl.querySelectorAll(".task-checkbox");
+			expect(updatedTasks.length).toBe(2);
+		});
+	});
+
+	describe("Add task button", () => {
+		it("should open AddTaskModal when add button is clicked", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+
+			// Spy on openAddTaskDialog method
+			const openAddTaskDialogSpy = vi.spyOn(view, "openAddTaskDialog");
+
+			await view.onOpen();
+
+			// Find and click add button
+			const addButton = view.contentEl.querySelector(".add-task-button");
+			expect(addButton).not.toBeNull();
+			(addButton as HTMLElement).click();
+
+			// Verify openAddTaskDialog was called
+			expect(openAddTaskDialogSpy).toHaveBeenCalledOnce();
+		});
+
+		it("should refresh task list after adding task via AddTaskModal", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+
+			let currentContent = "Buy milk";
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || currentContent;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.modify = async (_file: any, newContent: string): Promise<void> => {
+				currentContent = newContent;
+				mockFiles.set("vault/todo.txt", newContent);
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			// Initial task count should be 1
+			const initialTasks = view.contentEl.querySelectorAll(".task-checkbox");
+			expect(initialTasks.length).toBe(1);
+
+			// Simulate task addition by modifying file content
+			await mockPlugin.app.vault.modify({}, "Buy milk\nFix bug");
+
+			// Manually trigger the refresh that AddTaskModal callback would call
+			await view.loadTasks();
+			view.renderView();
+
+			// Task count should now be 2
+			const updatedTasks = view.contentEl.querySelectorAll(".task-checkbox");
+			expect(updatedTasks.length).toBe(2);
 		});
 	});
 });

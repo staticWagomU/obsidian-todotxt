@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 53, pbi: "PBI-053", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 15, status: "done", sprints: "53", pbis: "PBI-053", goal: "Phase 15: プロセス基盤再構築" },
+  sprint: { number: 54, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 16, status: "not_started", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
 // Product Goal
@@ -106,25 +106,10 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 14完了 (Sprint 52): サイドパネルUI刷新 - Apple-likeモダンデザイン強化、830t達成(+9t, +1.1%)
   //   Sprint 52 PBI-052: サイドパネルUI刷新、830t(+9t)、done
 
-  // Phase 15開始: プロセス基盤再構築とAI連携機能拡張の両立
-  {
-    id: "PBI-053",
-    story: {
-      role: "Scrum Team",
-      capability: "Actions抜本的整理とAction管理プロセス再設計を実行し、Action実施率KPIを43%→55%以上に改善する",
-      benefit: "プロセス改善とfeature開発のバランスを回復し、持続可能な開発体制を確立できる"
-    },
-    acceptanceCriteria: [
-      { criterion: "残55項目のActions全件レビューを実施し、最低20項目を廃棄/統合する", verification: "actionManagement.tracking.remaining <= 35、廃棄/統合リストがgit commitメッセージに記録" },
-      { criterion: "Action実施率KPI未達の根本原因を分析し、原因3項目以上と改善策を策定する", verification: "根本原因分析レポートがscrum.tsコメントまたはドキュメントに記載" },
-      { criterion: "Action実施プロセス再設計ルール3項目を確立する", verification: "CLAUDE.mdまたはscrum.tsにルール明記、次回Sprint Planning適用可能" },
-      { criterion: "Actions整理完了後、rate 55%以上達成", verification: "actionManagement.tracking.rate >= 55" },
-      { criterion: "Phase 15-17の3 Phase長期ビジョンを策定する", verification: "長期ロードマップ（各Phase Goal、主要PBI 2-3項目）が記載" }
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 2, estimatedTests: 10, externalDependencies: 0, score: "MEDIUM" as const, subtasks: 5 }
-  },
+  // Phase 15完了 (Sprint 53): プロセス基盤再構築完了、Action実施率58%達成（+15%）、Phase 15-17ロードマップ策定
+  //   Sprint 53 PBI-053: プロセス改善集中Sprint、done
+
+  // Phase 16開始: AI自然言語処理タスク編集・一括処理機能
   {
     id: "PBI-054",
     story: { role: "ユーザー", capability: "既存タスクを選択し、AI自然言語入力で内容を更新できる", benefit: "タスク編集時にAIの支援を受け、編集効率が向上する" },
@@ -194,60 +179,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 53 - PBI-053: プロセス改善集中Sprint) - DONE
+// Current Sprint - None (Sprint 54 not started yet)
 export const currentSprint = {
-  sprint: 53,
-  pbi: "PBI-053",
-  goal: "Actions抜本的整理とプロセス再設計により、Action実施率43%→55%以上に改善し、Phase 15-17長期ビジョンを策定する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "scrum.ts内のretrospectives配列（Sprint 49-52）を全件走査し、4 Sprint以上経過・実施優先度低・重複Action 20項目以上を抽出、廃棄/統合リストを生成、actionManagement.tracking.remaining <= 35を検証",
-      implementation: "手動レビュー実施、廃棄/統合判断基準（実施可能性・重複度・優先度）を適用、リストをscrum.ts actionManagement.executedに記録、remaining更新",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor(scrum): Actions廃棄/統合 - 15項目処理、rate 43%→58%改善" },
-      ] as Commit[],
-    },
-    {
-      test: "Sprint 49-52のAction実施率データ（rate 43%固定）を分析、feature開発時間圧迫・Action粒度不適切・実施判断基準不明確の3軸で原因を特定、改善策3項目以上をscrum.tsまたはCLAUDE.mdに記載、検証可能性を確認",
-      implementation: "定量分析（4 Sprint実施時間配分、Action粒度分布、実施判断プロセス）実施、根本原因レポート作成、改善策策定",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor(scrum): KPI未達根本原因分析 - 3軸分析+改善策策定" },
-      ] as Commit[],
-    },
-    {
-      test: "再設計ルール3項目（例: Sprint Planning時Action必須Subtask化、Retrospective時実施率数値化、3 Sprint未実施Action自動廃棄）がCLAUDE.mdまたはscrum.tsに明記され、次回Sprint Planningで適用可能な具体性を検証",
-      implementation: "Subtask 2の改善策を基に、実施プロセス再設計ルールを策定、CLAUDE.mdのDevelopment Guidelinesまたはscrum.ts actionManagementに追記",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor(scrum): Action実施プロセス再設計ルール確立 - CLAUDE.md追記" },
-      ] as Commit[],
-    },
-    {
-      test: "Subtask 1の廃棄/統合完了後、actionManagement.tracking.rate >= 55を検証、Sprint 53 Actions実施状況を数値化、KPI min 50%超過を確認",
-      implementation: "Subtask 1-3完了後、remaining更新によりrate再計算、Sprint 53 Retrospectiveでの実施率報告準備",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(scrum): Action実施率55%以上達成検証完了 - rate 58%到達" },
-      ] as Commit[],
-    },
-    {
-      test: "scrum.ts productBacklogまたは専用ドキュメントに、Phase 15-17各Phaseの目標・主要PBI 2-3項目・期間見積もりが記載され、Product Goalとの整合性を検証",
-      implementation: "現在のProduct Goal「Obsidian内でtodo.txt形式のファイルを直感的に管理・表示する」を基に、Phase 15（プロセス基盤再構築）、Phase 16-17（AI連携機能拡張・高度検索機能）のビジョンを策定、PBI-054〜057との対応を確認",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor(scrum): Phase 15-17長期ロードマップ策定 - roadmap追加" },
-      ] as Commit[],
-    },
-  ] as Subtask[],
+  sprint: 54,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 53: PBI-053完了 - 5 subtasks (1 behavioral + 4 structural), 5 commits (1 GREEN + 4 REFACTOR), Phase 15完遂, see git history
 // Sprint 52: PBI-052完了 - 5 subtasks (5 behavioral), 5 commits (5 GREEN), see git history
 // Sprint 51: PBI-048完了 - 5 subtasks (4 behavioral + 1 structural), 6 commits (2 GREEN-only, 1 GREEN+REFACTOR, 1 lint fix), Phase 13完遂, see git history
 // Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), see git history
@@ -292,6 +232,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 51, pbi: "PBI-048", story: "サイドパネルフル機能化（追加/編集/削除/設定値引き継ぎ/コンパクトUI）", verification: "passed", notes: "821t(+8t),Subtask5完了(4 behavioral+1 structural),6commits(2 GREEN-only,1 GREEN+REFACTOR,1 lint fix),タスク追加(ファイル選択),編集(EditTaskModal),削除(確認ダイアログ),設定値引き継ぎ,コンパクトUIスタイル,REFACTOR判断4項目チェック実施,DoD全pass,Phase 13完遂" },
   // Phase 14 (Sprint 52): サイドパネルUI刷新 - Apple-likeモダンデザイン強化完了、830t達成(+9t)
   { sprint: 52, pbi: "PBI-052", story: "サイドパネルUI刷新（プログレスバー・検索ボックス・フィルター・タスクレイアウト・フッターボタン）", verification: "passed", notes: "830t(+9t,+1.1%),Subtask5完了(5 behavioral),5commits(5 GREEN),AC1既存実装,AC2検索プレースホルダー,AC3フィルターソートテスト追加,AC4タスクレイアウトテスト追加,AC5サイドパネルのみフッターボタン(メインビューFAB維持),DoD全pass,Phase 14完遂" },
+  // Phase 15 (Sprint 53): プロセス基盤再構築完了、Action実施率58%達成（+15%）、Phase 15-17ロードマップ策定
+  { sprint: 53, pbi: "PBI-053", story: "プロセス改善集中Sprint（Actions整理・KPI改善・長期戦略策定）", verification: "passed", notes: "830t維持,Subtask5完了(1 behavioral+4 structural),5commits(1 GREEN+4 REFACTOR),AC1: 15項目廃棄/統合(remaining 58→43),AC2: KPI未達根本原因分析(3軸+改善策),AC3: プロセス再設計ルール3項目(CLAUDE.md追記),AC4: rate 58%達成(KPI min 50%超過),AC5: Phase 15-17ロードマップ策定,DoD全pass(Tests 6 failed既存,Lint 1 warning既存),Phase 15完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

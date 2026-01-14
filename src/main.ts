@@ -1,6 +1,7 @@
 import { Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, TodotxtPluginSettings, TodotxtSettingTab } from "./settings";
 import { TodotxtView, VIEW_TYPE_TODOTXT } from "./view";
+import { TodoSidePanelView, VIEW_TYPE_TODO_SIDEPANEL } from "./side-panel-view";
 
 export default class TodotxtPlugin extends Plugin {
 	settings: TodotxtPluginSettings;
@@ -10,6 +11,9 @@ export default class TodotxtPlugin extends Plugin {
 
 		// Register TodotxtView with plugin instance for settings access
 		this.registerView(VIEW_TYPE_TODOTXT, (leaf) => new TodotxtView(leaf, this));
+
+		// Register TodoSidePanelView for side panel
+		this.registerView(VIEW_TYPE_TODO_SIDEPANEL, (leaf) => new TodoSidePanelView(leaf, this));
 
 		// Register file extensions
 		this.registerExtensions(["txt", "todotxt"], VIEW_TYPE_TODOTXT);

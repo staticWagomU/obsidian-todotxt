@@ -259,6 +259,81 @@ describe("Batch Selection Mode", () => {
 		expect(batchButton?.classList.contains("active")).toBe(false);
 		expect(view.contentEl.querySelectorAll(".task-selection-checkbox").length).toBe(0);
 	});
+
+	it("チェックボックスクリックでselectedTodoIds配列が更新される", () => {
+		// RED: Test checkbox click updates selectedTodoIds
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Get selection checkboxes
+		const checkboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		expect(checkboxes.length).toBe(3);
+
+		// Click first checkbox to select
+		checkboxes[0]?.click();
+		expect(checkboxes[0]?.checked).toBe(true);
+
+		// Click second checkbox to select
+		checkboxes[1]?.click();
+		expect(checkboxes[1]?.checked).toBe(true);
+
+		// Click first checkbox again to deselect
+		checkboxes[0]?.click();
+		expect(checkboxes[0]?.checked).toBe(false);
+	});
+
+	it("全選択ボタンクリックで全タスクが選択される", () => {
+		// RED: Test select all button
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Click select all button
+		const selectAllButton = view.contentEl.querySelector(".select-all-button") as HTMLButtonElement;
+		expect(selectAllButton).toBeTruthy();
+		selectAllButton?.click();
+
+		// All checkboxes should be checked
+		const checkboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		checkboxes.forEach((checkbox) => {
+			expect(checkbox.checked).toBe(true);
+		});
+	});
+
+	it("全解除ボタンクリックで全タスクの選択が解除される", () => {
+		// RED: Test deselect all button
+		const initialData = "Task 1\nTask 2\nTask 3";
+		view.setViewData(initialData, false);
+		view.renderTaskList();
+
+		// Enter selection mode
+		const batchButton = view.contentEl.querySelector(".batch-selection-button") as HTMLButtonElement;
+		batchButton?.click();
+
+		// Select all first
+		const selectAllButton = view.contentEl.querySelector(".select-all-button") as HTMLButtonElement;
+		selectAllButton?.click();
+
+		// Click deselect all button
+		const deselectAllButton = view.contentEl.querySelector(".deselect-all-button") as HTMLButtonElement;
+		expect(deselectAllButton).toBeTruthy();
+		deselectAllButton?.click();
+
+		// All checkboxes should be unchecked
+		const checkboxes = view.contentEl.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		checkboxes.forEach((checkbox) => {
+			expect(checkbox.checked).toBe(false);
+		});
+	});
 });
 
 describe("update view after task creation", () => {

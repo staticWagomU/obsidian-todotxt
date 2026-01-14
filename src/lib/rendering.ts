@@ -440,6 +440,42 @@ function renderBatchSelectionButton(
 		// Trigger re-render
 		onChange();
 	});
+
+	// Render select all / deselect all buttons in selection mode
+	if (filterState.selectionMode) {
+		renderSelectAllButtons(container);
+	}
+}
+
+/**
+ * Render select all and deselect all buttons
+ */
+function renderSelectAllButtons(container: HTMLElement): void {
+	const selectAllButton = container.createEl("button");
+	selectAllButton.classList.add("select-all-button");
+	selectAllButton.textContent = "全選択";
+	selectAllButton.setAttribute("aria-label", "全て選択");
+	selectAllButton.addEventListener("click", () => {
+		const checkboxes = container.closest(".todotxt-view")?.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		if (checkboxes) {
+			checkboxes.forEach((checkbox) => {
+				checkbox.checked = true;
+			});
+		}
+	});
+
+	const deselectAllButton = container.createEl("button");
+	deselectAllButton.classList.add("deselect-all-button");
+	deselectAllButton.textContent = "全解除";
+	deselectAllButton.setAttribute("aria-label", "全て解除");
+	deselectAllButton.addEventListener("click", () => {
+		const checkboxes = container.closest(".todotxt-view")?.querySelectorAll<HTMLInputElement>(".task-selection-checkbox");
+		if (checkboxes) {
+			checkboxes.forEach((checkbox) => {
+				checkbox.checked = false;
+			});
+		}
+	});
 }
 
 /**

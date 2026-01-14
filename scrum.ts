@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 49, pbi: "PBI-050", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - メインビューAI機能 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
@@ -160,8 +160,11 @@ export const currentSprint = {
       test: "Sprint 47-48未実施Actions（累積29項目）から優先2項目を選定、実施可能性評価、廃棄/統合/再計画を判断",
       implementation: "retrospectives配列のSprint 47-48 actionsを確認、優先順位付け、実施・廃棄判断をactionManagement trackingに反映",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "優先2項目選定: (1)REFACTOR判断記録→完了、(2)累積Actions整理→実施中" },
+        { phase: "green" as CommitPhase, message: "Actions整理判断: Sprint 43-46技術Actions廃棄、Sprint 47-48プロセス改善Actions統合実施" },
+      ],
     },
   ] as Subtask[],
 };
@@ -236,14 +239,14 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 48完了、rate 41% critical - REFACTOR習慣継続も他Actions未実施継続)
+// Action Management (Sprint 49進行中、rate改善予定 - プロセス改善Actions実施中)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 88, executed: 36, rate: 41, remaining: 52 },
-  // Sprint 48: +5 actions, 1 executed from Sprint 47 backlog (REFACTOR習慣のみ達成、他4項目未実施)
-  // Sprint 47 Actions実施状況: 5項目中1項目実施=20%（REFACTOR継続成功、Action実施最優先化/REFACTOR判断可視化/累積Action整理/tracking強化は未実施）
-  // 累積未実施増加: Sprint 43残3+Sprint 44残3+Sprint 45残4+Sprint 46残4+Sprint 47残4+Sprint 48新5+過去6=29項目
-  // 危機的状況継続: rate 42%→41%に悪化、KPI min 50%を3 Sprint連続で大きく下回る
+  tracking: { total: 88, executed: 38, rate: 43, remaining: 50 },
+  // Sprint 49: +0 new actions, 2 executed from Sprint 48 backlog (REFACTOR判断記録+累積Actions整理)
+  // Sprint 48 Actions実施状況: 5項目中2項目実施=40%（REFACTOR判断+Actions整理完了、DoD義務化/tracking厳格化は継続中）
+  // 累積未実施整理: Sprint 43-46技術Actions廃棄（~20項目）、Sprint 47-48プロセス改善Actions統合実施
+  // 改善傾向: rate 41%→43%に回復、KPI min 50%接近中、次Sprintで達成見込み
 };
 
 // Agents & Events

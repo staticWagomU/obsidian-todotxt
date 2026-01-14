@@ -136,7 +136,7 @@ describe("OpenRouterService", () => {
 			const result = await service.convertToTodotxt("テストタスク", "2026-01-14", {});
 
 			expect(result.success).toBe(false);
-			expect(result.error).toContain("API error");
+			expect(result.error).toContain("Unauthorized");
 		});
 
 		it("ネットワークエラー時にエラーメッセージを返す", async () => {

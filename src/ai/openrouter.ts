@@ -69,7 +69,7 @@ export class OpenRouterService {
 				if (response.status >= 400) {
 					throw new ApiError(
 						response.status,
-						`API error: ${response.status}`,
+						this.getHttpErrorMessage(response.status),
 					);
 				}
 
@@ -97,23 +97,42 @@ export class OpenRouterService {
 				todoLines,
 			};
 		} catch (error) {
-			let errorMessage: string;
-			if (error instanceof Error) {
-				errorMessage = error.message;
-			} else if (
-				typeof error === "object" &&
-				error !== null &&
-				"message" in error
-			) {
-				errorMessage = String((error as { message: unknown }).message);
-			} else {
-				errorMessage = JSON.stringify(error);
-			}
-
 			return {
 				success: false,
-				error: errorMessage,
+				error: this.formatErrorMessage(error),
 			};
 		}
+	}
+
+	/**
+	 * Get human-readable error message based on HTTP status code
+	 */
+	private getHttpErrorMessage(status: number): string {
+		if (status === 401) {
+			return "Unauthorized: Invalid API key";
+		} else if (status === 429) {
+			return "Rate limit exceeded: Too many requests";
+		} else if (status >= 500) {
+			return `Server error: ${status}`;
+		} else if (status >= 400) {
+			return `Client error: ${status}`;
+		}
+		return `API error: ${status}`;
+	}
+
+	/**
+	 * Format error message from various error types
+	 */
+	private formatErrorMessage(error: unknown): string {
+		if (error instanceof Error) {
+			return error.message;
+		} else if (
+			typeof error === "object" &&
+			error !== null &&
+			"message" in error
+		) {
+			return String((error as { message: unknown }).message);
+		}
+		return JSON.stringify(error);
 	}
 }

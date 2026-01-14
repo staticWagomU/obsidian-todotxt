@@ -1,6 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { OpenRouterService } from "./openrouter";
 import type { OpenRouterConfig } from "./openrouter";
+
+// Mock Obsidian's requestUrl
+vi.mock("obsidian", () => ({
+	requestUrl: vi.fn(),
+}));
+
+import { requestUrl } from "obsidian";
 
 describe("OpenRouterService", () => {
 	const mockConfig: OpenRouterConfig = {
@@ -14,7 +22,7 @@ describe("OpenRouterService", () => {
 	};
 
 	beforeEach(() => {
-		global.fetch = vi.fn();
+		vi.clearAllMocks();
 	});
 
 	describe("convertToTodotxt", () => {
@@ -29,9 +37,12 @@ describe("OpenRouterService", () => {
 				],
 			};
 
-			(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-				ok: true,
-				json: async () => mockResponse,
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: mockResponse,
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
 			});
 
 			const service = new OpenRouterService(mockConfig);
@@ -53,17 +64,20 @@ describe("OpenRouterService", () => {
 				choices: [{ message: { content: "2026-01-14 テストタスク" } }],
 			};
 
-			(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-				ok: true,
-				json: async () => mockResponse,
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: mockResponse,
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
 			});
 
 			const service = new OpenRouterService(mockConfig);
 			await service.convertToTodotxt("テストタスク", "2026-01-14", {});
 
-			expect(global.fetch).toHaveBeenCalledWith(
-				"https://openrouter.ai/api/v1/chat/completions",
+			expect(requestUrl).toHaveBeenCalledWith(
 				expect.objectContaining({
+					url: "https://openrouter.ai/api/v1/chat/completions",
 					method: "POST",
 					headers: expect.objectContaining({
 						"Content-Type": "application/json",
@@ -72,8 +86,9 @@ describe("OpenRouterService", () => {
 				})
 			);
 
-			const callArgs = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
-			const body = JSON.parse(callArgs[1].body);
+			const callArgs = vi.mocked(requestUrl).mock.calls[0]?.[0];
+			if (!callArgs?.body) return;
+			const body = JSON.parse(callArgs.body as string) as { model: string };
 			expect(body.model).toBe("anthropic/claude-3-haiku");
 		});
 
@@ -82,31 +97,39 @@ describe("OpenRouterService", () => {
 				choices: [{ message: { content: "2026-01-14 テストタスク" } }],
 			};
 
-			(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-				ok: true,
-				json: async () => mockResponse,
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: mockResponse,
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
 			});
 
 			const customContexts = { パソコン: "pc" };
 			const service = new OpenRouterService(mockConfig);
 			await service.convertToTodotxt("テストタスク", "2026-01-14", customContexts);
 
-			const callArgs = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
-			const body = JSON.parse(callArgs[1].body);
+			const callArgs = vi.mocked(requestUrl).mock.calls[0]?.[0];
+			if (!callArgs?.body) return;
+			const body = JSON.parse(callArgs.body as string) as {
+				messages: Array<{ role: string; content: string }>;
+			};
 
 			expect(body.messages).toHaveLength(2);
-			expect(body.messages[0].role).toBe("system");
-			expect(body.messages[0].content).toContain("2026-01-14");
-			expect(body.messages[0].content).toContain("#パソコン → @pc");
-			expect(body.messages[1].role).toBe("user");
-			expect(body.messages[1].content).toBe("テストタスク");
+			expect(body.messages[0]?.role).toBe("system");
+			expect(body.messages[0]?.content).toContain("2026-01-14");
+			expect(body.messages[0]?.content).toContain("#パソコン → @pc");
+			expect(body.messages[1]?.role).toBe("user");
+			expect(body.messages[1]?.content).toBe("テストタスク");
 		});
 
 		it("APIエラー時にエラーメッセージを返す", async () => {
-			(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-				ok: false,
+			vi.mocked(requestUrl).mockResolvedValue({
 				status: 401,
-				statusText: "Unauthorized",
+				json: {},
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
 			});
 
 			const service = new OpenRouterService(mockConfig);
@@ -117,7 +140,7 @@ describe("OpenRouterService", () => {
 		});
 
 		it("ネットワークエラー時にエラーメッセージを返す", async () => {
-			(global.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(
+			vi.mocked(requestUrl).mockRejectedValue(
 				new Error("Network error")
 			);
 
@@ -129,9 +152,12 @@ describe("OpenRouterService", () => {
 		});
 
 		it("無効なレスポンス形式の場合エラーを返す", async () => {
-			(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-				ok: true,
-				json: async () => ({}),
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: {},
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
 			});
 
 			const service = new OpenRouterService(mockConfig);
@@ -155,18 +181,21 @@ describe("OpenRouterService", () => {
 				choices: [{ message: { content: "2026-01-14 テストタスク" } }],
 			};
 
-			(global.fetch as ReturnType<typeof vi.fn>)
+			vi.mocked(requestUrl)
 				.mockRejectedValueOnce({ status: 429, message: "Rate limit" })
 				.mockResolvedValue({
-					ok: true,
-					json: async () => mockResponse,
+					status: 200,
+					json: mockResponse,
+					headers: {},
+					arrayBuffer: new ArrayBuffer(0),
+					text: "",
 				});
 
 			const service = new OpenRouterService(configWithRetry);
 			const result = await service.convertToTodotxt("テストタスク", "2026-01-14", {});
 
 			expect(result.success).toBe(true);
-			expect(global.fetch).toHaveBeenCalledTimes(2);
+			expect(requestUrl).toHaveBeenCalledTimes(2);
 		});
 	});
 });

@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 52, pbi: "未定", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 14, status: "not_started", sprints: "52-", pbis: "", goal: "Phase 14準備中 - Backlog empty状態、次期目標策定必要" },
+  sprint: { number: 52, pbi: "PBI-052", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+  phase: { number: 14, status: "planning", sprints: "52-", pbis: "PBI-052", goal: "Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化" },
 };
 
 // Product Goal
@@ -63,7 +63,46 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 50 PBI-049: 検索フォーカス維持、813t(+6t)、done
   //   Sprint 51 PBI-048: サイドパネルフル機能化（追加/編集/削除/設定値引き継ぎ/コンパクトUI）、821t(+8t)、done
 
-  // Phase 14準備中: Backlog empty状態、次期目標策定とPBI準備必要
+  // Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化
+  {
+    id: "PBI-052",
+    story: {
+      role: "Obsidianユーザー",
+      capability: "サイドパネルで洗練されたUIでタスクを管理できる",
+      benefit: "狭いスペースでも快適にタスク操作ができ、作業効率が向上する",
+    },
+    acceptanceCriteria: [
+      {
+        criterion: "ヘッダーにステータスフィルター（全て/完了/未完了）とプログレスバー（完了率表示）を表示",
+        verification: "pnpm vitest run src/view.test.ts --grep 'side panel header with status filter and progress'",
+      },
+      {
+        criterion: "検索ボックスをApple-styleのピル型デザインで表示（角丸20px、プレースホルダー付き）",
+        verification: "pnpm vitest run src/view.test.ts --grep 'side panel search box pill design'",
+      },
+      {
+        criterion: "フィルタードロップダウン（なし/+project/@context）とソートドロップダウン（デフォルト/優先度/日付）を横並びで表示",
+        verification: "pnpm vitest run src/view.test.ts --grep 'side panel filter sort dropdowns'",
+      },
+      {
+        criterion: "タスクアイテムに[チェックボックス][優先度][説明]を1行目、[プロジェクト/コンテキストタグ]を2行目、[編集アイコン]を右端に表示",
+        verification: "pnpm vitest run src/view.test.ts --grep 'side panel task item layout'",
+      },
+      {
+        criterion: "フッターに「AIタスク追加」「タスク追加」の2つのボタンを横並びで固定表示（FABではなくフッターボタン形式）",
+        verification: "pnpm vitest run src/view.test.ts --grep 'side panel footer buttons'",
+      },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: {
+      functions: 10,
+      estimatedTests: 18,
+      externalDependencies: 0,
+      score: "MEDIUM" as const,
+      subtasks: 5,
+    },
+  },
 ];
 
 // Definition of Ready
@@ -77,11 +116,11 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 52準備中 - Phase 14開始、Backlog empty)
+// Current Sprint (Sprint 52 - PBI-052: サイドパネルUI刷新)
 export const currentSprint = {
   sprint: 52,
-  pbi: "未定",
-  goal: "Phase 14開始準備: Backlog Refinementで次期PBI策定、累積Actions整理実施",
+  pbi: "PBI-052",
+  goal: "サイドパネルUI刷新: Apple-likeモダンデザイン強化（プログレスバー・フィルター・フッターボタン）",
   status: "not_started" as SprintStatus,
   subtasks: [] as Subtask[],
 };

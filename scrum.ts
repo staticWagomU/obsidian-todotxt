@@ -33,15 +33,55 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 53, pbi: "PBI-053", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 15, status: "in_progress", sprints: "53", pbis: "PBI-053", goal: "Phase 15: プロセス基盤再構築とAI連携機能拡張の両立" },
+  sprint: { number: 53, pbi: "PBI-053", status: "done" as SprintStatus,
+    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  phase: { number: 15, status: "done", sprints: "53", pbis: "PBI-053", goal: "Phase 15: プロセス基盤再構築" },
 };
 
 // Product Goal
 export const productGoal = {
   statement: "Obsidian内でtodo.txt形式のファイルを直感的に管理・表示する",
   owner: "@scrum-team-product-owner",
+};
+
+// Long-term Roadmap (Phase 15-17) - Sprint 53 Subtask 5で策定
+export const roadmap = {
+  phase15: {
+    number: 15,
+    goal: "プロセス基盤再構築により持続可能な開発体制を確立し、次Phaseの機能拡張に備える",
+    sprints: "53",
+    pbis: ["PBI-053"],
+    duration: "1 Sprint",
+    deliverables: [
+      "Action実施率58%達成（KPI min 50%超過）",
+      "プロセス再設計ルール3項目確立（Planning時Subtask化、Retrospective時数値化、3 Sprint未実施自動廃棄）",
+      "Phase 15-17長期ロードマップ策定",
+    ],
+  },
+  phase16: {
+    number: 16,
+    goal: "AI自然言語処理によるタスク編集・一括処理機能を提供し、ユーザー編集効率を向上させる",
+    sprints: "54-55（見積もり）",
+    pbis: ["PBI-054", "PBI-055"],
+    duration: "2 Sprints（見積もり）",
+    expectedOutcomes: [
+      "AI編集機能でタスク更新効率30%向上",
+      "一括処理で類似タスク管理時間50%削減",
+      "メインビュー・サイドパネル両方で利用可能",
+    ],
+  },
+  phase17: {
+    number: 17,
+    goal: "キーボードショートカット・高度検索機能により、大量タスク管理時のユーザー体験を向上させる",
+    sprints: "56-57（見積もり）",
+    pbis: ["PBI-056", "PBI-057"],
+    duration: "2 Sprints（見積もり）",
+    expectedOutcomes: [
+      "キーボード操作でタスク管理速度50%向上",
+      "高度検索で大量タスクからの目的タスク発見時間70%削減",
+      "Obsidianコマンドパレット統合でショートカットカスタマイズ可能",
+    ],
+  },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -154,12 +194,12 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 53 - PBI-053: プロセス改善集中Sprint) - IN PROGRESS
+// Current Sprint (Sprint 53 - PBI-053: プロセス改善集中Sprint) - DONE
 export const currentSprint = {
   sprint: 53,
   pbi: "PBI-053",
   goal: "Actions抜本的整理とプロセス再設計により、Action実施率43%→55%以上に改善し、Phase 15-17長期ビジョンを策定する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "scrum.ts内のretrospectives配列（Sprint 49-52）を全件走査し、4 Sprint以上経過・実施優先度低・重複Action 20項目以上を抽出、廃棄/統合リストを生成、actionManagement.tracking.remaining <= 35を検証",
@@ -201,8 +241,10 @@ export const currentSprint = {
       test: "scrum.ts productBacklogまたは専用ドキュメントに、Phase 15-17各Phaseの目標・主要PBI 2-3項目・期間見積もりが記載され、Product Goalとの整合性を検証",
       implementation: "現在のProduct Goal「Obsidian内でtodo.txt形式のファイルを直感的に管理・表示する」を基に、Phase 15（プロセス基盤再構築）、Phase 16-17（AI連携機能拡張・高度検索機能）のビジョンを策定、PBI-054〜057との対応を確認",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "refactor" as CommitPhase, message: "refactor(scrum): Phase 15-17長期ロードマップ策定 - roadmap追加" },
+      ] as Commit[],
     },
   ] as Subtask[],
 };

@@ -74,8 +74,21 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "APIエラー時に設定に従い自動リトライする", verification: "pnpm vitest run -- -t 'retry'" },
     ],
     dependencies: ["PBI-046"],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 14,
+      estimatedTests: 28,
+      externalDependencies: 1,
+      score: "MEDIUM",
+      subtasks: 7,
+    },
+    refactorChecklist: [
+      "OpenRouterServiceのエラーハンドリングをHTTPステータスコード別に整理",
+      "プロンプトテンプレートをコンテキスト・優先度・期限の各セクションに分割",
+      "ダイアログコンポーネントの共通UI部分をBaseDialogクラスに抽出",
+    ],
     // Design: docs/design/PBI-047-design.md (based on todonoeai specification)
+    // External Dependency: OpenRouter API (https://openrouter.ai/api/v1/chat/completions)
   },
 ];
 

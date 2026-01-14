@@ -362,8 +362,8 @@ export class TodoSidePanelView extends ItemView {
 		checkbox.type = "checkbox";
 		checkbox.classList.add("task-checkbox");
 		checkbox.checked = todo.completed;
-		checkbox.addEventListener("click", async () => {
-			await this.toggleTask(task);
+		checkbox.addEventListener("click", () => {
+			void this.toggleTask(task);
 		});
 
 		// Priority badge
@@ -509,11 +509,13 @@ export class TodoSidePanelView extends ItemView {
 
 		const modal = new AddTaskModal(
 			this.app,
-			async (description: string, priority?: string, dueDate?: string, thresholdDate?: string) => {
-				const content = await this.app.vault.read(file);
-				const newContent = createAndAppendTask(content, description, priority, dueDate, thresholdDate);
-				await this.app.vault.modify(file, newContent);
-				await this.refreshTaskList();
+			(description: string, priority?: string, dueDate?: string, thresholdDate?: string) => {
+				void (async () => {
+					const content = await this.app.vault.read(file);
+					const newContent = createAndAppendTask(content, description, priority, dueDate, thresholdDate);
+					await this.app.vault.modify(file, newContent);
+					await this.refreshTaskList();
+				})();
 			},
 			this.tasksData.map((t) => t.todo)
 		);
@@ -531,8 +533,8 @@ export class TodoSidePanelView extends ItemView {
 			this.app,
 			this.plugin.settings.openRouter,
 			targetPath,
-			async () => {
-				await this.refreshTaskList();
+			() => {
+				void this.refreshTaskList();
 			}
 		);
 		dialog.open();

@@ -329,10 +329,6 @@ describe("TodoSidePanelView", () => {
 			const initialTasks = view.contentEl.querySelectorAll(".task-checkbox");
 			expect(initialTasks.length).toBe(1);
 
-			// Simulate opening AI dialog and adding a task
-			// We'll directly call the callback that would be invoked after AI task creation
-			const aiDialog = view.openAITaskDialog();
-
 			// Simulate task addition by modifying file content
 			await mockPlugin.app.vault.modify({}, "Buy milk\nWrite report");
 

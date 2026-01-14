@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@wagomu/todotxt-parser':
+        specifier: ^1.0.0
+        version: 1.0.0
       obsidian:
         specifier: latest
         version: 1.11.4(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
@@ -775,6 +778,9 @@ packages:
 
   '@vitest/utils@4.0.16':
     resolution: {integrity: sha512-h8z9yYhV3e1LEfaQ3zdypIrnAg/9hguReGZoS7Gl0aBG5xgA410zBqECqmaF/+RkTggRsfnzc1XaAHA6bmUufA==}
+
+  '@wagomu/todotxt-parser@1.0.0':
+    resolution: {integrity: sha512-QP4sJILQYB6FG1G8Dum95eyWQ7jhgl7+zbuKDshNwVgtwIsNUdmLlUJOY/dGi/VMHvd2laIeSAsb5lVFr4WorQ==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2540,6 +2546,8 @@ snapshots:
     dependencies:
       '@vitest/pretty-format': 4.0.16
       tinyrainbow: 3.0.3
+
+  '@wagomu/todotxt-parser@1.0.0': {}
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:

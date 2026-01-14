@@ -1,21 +1,21 @@
 /**
- * Todo.txt data model
+ * Todo.txt data model and operations
+ *
+ * Re-exports the Todo type from @wagomu/todotxt-parser and provides
+ * additional operations specific to this Obsidian plugin.
  */
 
-import { appendTaskToFile, parseTodoTxt, updateTaskAtLine, deleteTaskAtLine } from "./parser";
+import {
+	appendTaskToFile,
+	parseTodoTxt,
+	updateTaskAtLine,
+	deleteTaskAtLine,
+	type Todo,
+} from "@wagomu/todotxt-parser";
 import { createRecurringTask } from "./recurrence";
 
-export interface Todo {
-	completed: boolean;
-	priority?: string; // (A)-(Z)
-	completionDate?: string; // YYYY-MM-DD
-	creationDate?: string; // YYYY-MM-DD
-	description: string;
-	projects: string[]; // +project
-	contexts: string[]; // @context
-	tags: Record<string, string>; // key:value (due:, t:, rec:, pri:)
-	raw: string; // 元の行
-}
+// Re-export Todo type from the parser package
+export type { Todo } from "@wagomu/todotxt-parser";
 
 /**
  * Toggle completion status of a todo

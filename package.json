@@ -35,6 +35,7 @@
 		"vitest": "^4.0.16"
 	},
 	"dependencies": {
+		"@wagomu/todotxt-parser": "^1.0.0",
 		"obsidian": "latest"
 	}
 }

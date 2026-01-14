@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 48, pbi: "PBI-051", status: "not_started" as SprintStatus,
+  sprint: { number: 48, pbi: "PBI-051", status: "in_progress" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 1, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051,PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - ボタン不具合修正 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
@@ -143,13 +143,21 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (No active sprint - Phase 12 complete, Product Backlog empty)
+// Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 48,
+  pbi: "PBI-051",
+  goal: "サイドパネルのAIボタン（✨）と追加ボタン（+）を修正し、タスク追加後のリスト更新を実装する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "サイドパネルのAIボタン（✨）と追加ボタン（+）クリックでダイアログが開き、タスク追加後にリストが更新される",
+      implementation: "handleAIButtonClick、handleAddButtonClickハンドラー実装とリスト更新処理追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 47: PBI-047完了 - 7 subtasks, 11 commits (4 RED, 5 GREEN, 2 REFACTOR), see git history
 // Sprint 46: PBI-046完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history

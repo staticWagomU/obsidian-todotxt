@@ -69,7 +69,18 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "AI用タスク追加ボタンがtodo.txtメインビューにも表示される", verification: "pnpm build && 手動確認: AIボタンがメインビューに存在する" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 8,
+      estimatedTests: 15,
+      externalDependencies: 0,
+      score: "LOW" as const,
+      subtasks: 3,
+    },
+    refactorChecklist: [
+      "rendering.tsのrenderTaskList関数が既に複雑（590行）、サイドパネル用レンダリング追加時は関数分割を検討",
+      "AIボタン追加後、renderAddButton周辺のUI構築ロジックが肥大化する場合は別ファイル分離を検討",
+    ],
   },
   {
     id: "PBI-047",

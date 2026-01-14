@@ -972,10 +972,10 @@ describe("render task list in view", () => {
 		view.setViewData("", false);
 		view.renderTaskList();
 
-		// Verify: Add button exists
+		// Verify: Add button exists (footer style with text)
 		const addButton = container.querySelector("button.add-task-button");
 		expect(addButton).not.toBeNull();
-		expect(addButton?.textContent).toBe("+");
+		expect(addButton?.textContent).toBe("+ タスク追加");
 	});
 
 	it("追加ボタンクリックでopenAddTaskModalが呼ばれること", () => {

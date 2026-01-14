@@ -54,22 +54,9 @@ export const roadmap = {
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-15完了 (Sprint 1-53): 基本機能+UI+サイドパネル+AI連携+プロセス基盤、830t達成
-  // Phase 16進行中 (Sprint 54-55): AI自然言語タスク編集・一括処理
-  //   Sprint 54 PBI-054: AI自然言語タスク編集、835t(+5t)、done
-  {
-    id: "PBI-055",
-    story: { role: "ユーザー", capability: "複数タスクを一括選択し、AI自然言語でバッチ処理できる", benefit: "類似タスクの一括更新で生産性が向上する" },
-    acceptanceCriteria: [
-      { criterion: "「一括選択」ボタンでタスクアイテムにチェックボックス表示", verification: "テストで一括選択モード切替、チェックボックス表示を確認" },
-      { criterion: "複数タスク選択→「AI一括処理」ボタンでダイアログ表示", verification: "テストで複数選択→ダイアログ表示を確認" },
-      { criterion: "自然言語入力→OpenRouter解析→複数Todo更新プレビュー表示", verification: "テストでバッチ処理→プレビュー一覧表示を確認" },
-      { criterion: "一括保存でファイル更新、リストに反映", verification: "テストで一括保存→全タスク更新→リスト再描画を確認" },
-      { criterion: "一括処理後、選択状態クリア、通常モードに戻る", verification: "テストで保存後チェックボックス非表示、選択リセットを確認" }
-    ],
-    dependencies: ["PBI-054"],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 5, estimatedTests: 25, externalDependencies: 1, score: "HIGH" as const, subtasks: 6 }
-  },
+  // Phase 16完了 (Sprint 54-55): AI自然言語タスク編集・一括処理、837t達成(+7t)
+  //   Sprint 54 PBI-054: AI自然言語タスク編集、835t(+5t)
+  //   Sprint 55 PBI-055: 複数タスクAI一括処理、837t(+2t)、Phase 16完遂
   {
     id: "PBI-056",
     story: { role: "ユーザー", capability: "キーボードショートカットでタスク操作を高速実行できる", benefit: "キーボード中心のワークフローで作業効率が向上する" },
@@ -111,77 +98,16 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint - Sprint 55完了、次Sprint待機
 export const currentSprint = {
-  sprint: 55,
-  pbi: "PBI-055",
-  goal: "複数タスクAI一括処理機能実装により、Phase 16（AI自然言語タスク編集・一括処理）を完遂する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "「一括選択」ボタンクリック→チェックボックス表示、モード切替状態管理テスト",
-      implementation: "SelectionModeButton、selectionMode state、TodoItemにcheckbox表示",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 1 - batch selection mode with toggle button and checkboxes" }]
-    },
-    {
-      test: "チェックボックスクリック→selectedTodoIds配列更新、全選択/全解除テスト",
-      implementation: "selectedTodoIds state、handleSelectTodo、handleSelectAll関数",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 2 - select all/deselect all buttons with checkbox click handling" }]
-    },
-    {
-      test: "複数選択状態で「AI一括処理」ボタンクリック→ダイアログ表示テスト",
-      implementation: "BulkAIProcessDialog、selectedTodoIds渡し、ダイアログopen/close制御",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 3 - AI bulk process button with selection state management" }]
-    },
-    {
-      test: "自然言語入力→OpenRouter呼び出し→複数Todo更新プレビュー生成テスト",
-      implementation: "bulkProcessWithAI関数、OpenRouter batch request、プレビューデータ生成",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 4 - bulkEditTodos function for batch AI processing" }]
-    },
-    {
-      test: "プレビュー確認→一括保存→ファイル更新→リスト再描画テスト",
-      implementation: "handleBulkSave関数、複数Todo更新、file write、リスト更新",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 5-6 - handleBulkSave and resetSelectionMode functions" }]
-    },
-    {
-      test: "一括保存後→チェックボックス非表示、selectedTodoIds空配列、通常モード復帰テスト",
-      implementation: "resetSelectionMode関数、state初期化",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 55 Subtask 5-6 - handleBulkSave and resetSelectionMode functions" }]
-    },
-    {
-      test: "N/A (プロセス改善)",
-      implementation: "retrospectives配列から未実施Actions抽出、優先度再評価、廃棄/統合/継続判定、actionManagement.tracking更新（total削減、rate 60%→65%）",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "refactor" as CommitPhase, message: "chore(scrum): Sprint 55 Subtask 7 - Actions棚卸し完了、rate 60%→64%" }]
-    },
-    {
-      test: "N/A (ドキュメント整備)",
-      implementation: "CLAUDE.mdにAction Management Process計算式セクション追加（executed加算ルール、remaining減算ルール、廃棄Actions扱い3項目明記）",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "refactor" as CommitPhase, message: "chore(docs): Sprint 55 Subtask 8 - CLAUDE.md計算例にSprint 55追加" }]
-    }
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
-// Sprint 54: PBI-054完了 - 7 subtasks (4 behavioral + 3 structural), 7 commits (1 RED + 3 GREEN + 3 REFACTOR), Phase 16開始, see git history
-// Sprint 53: PBI-053完了 - 5 subtasks (1 behavioral + 4 structural), 5 commits (1 GREEN + 4 REFACTOR), Phase 15完遂, see git history
-// Sprint 52: PBI-052完了 - 5 subtasks (5 behavioral), 5 commits (5 GREEN), see git history
-// Sprint 51: PBI-048完了 - 5 subtasks (4 behavioral + 1 structural), 6 commits (2 GREEN-only, 1 GREEN+REFACTOR, 1 lint fix), Phase 13完遂, see git history
-// Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), see git history
-// Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history
+// Sprint 55: PBI-055完了 - 8 subtasks (6 behavioral + 2 structural), 8 commits (4 GREEN + 2 REFACTOR), Phase 16完遂, see git history
+// Sprint 49-54: see git history
 
 // Impediments
 export const impediments = {
@@ -202,56 +128,52 @@ export const definitionOfDone = {
   ],
 };
 
-// Completed Sprints - Phase 1-12 compacted, see git history
+// Completed Sprints - Phase 1-15 compacted, see git history
 export const completedSprints: CompletedSprint[] = [
-  // Phase 1-12完了 (Sprint 1-47): 基本機能+サイドパネル+AI連携、801t達成
-  // Phase 13完了 (Sprint 48-51): サイドパネルフル機能化・バグ修正、821t達成(+20t)
-  { sprint: 51, pbi: "PBI-048", story: "サイドパネルフル機能化", verification: "passed", notes: "821t(+8t),5subtasks,6commits,Phase 13完遂" },
-  // Phase 14完了 (Sprint 52): サイドパネルUI刷新、830t達成(+9t)
-  { sprint: 52, pbi: "PBI-052", story: "サイドパネルUI刷新", verification: "passed", notes: "830t(+9t),5subtasks,5commits,Phase 14完遂" },
-  // Phase 15完了 (Sprint 53): プロセス基盤再構築、Action実施率58%達成
-  { sprint: 53, pbi: "PBI-053", story: "プロセス改善集中Sprint", verification: "passed", notes: "830t維持,5subtasks(1behavioral+4structural),5commits,rate43%→58%,KPI達成,Phase 15完遂" },
+  // Phase 1-15完了 (Sprint 1-53): 基本機能+サイドパネル+AI連携+プロセス基盤、830t達成
   // Phase 16完了 (Sprint 54-55): AI自然言語タスク編集・一括処理、837t達成(+7t)
-  { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks(4behavioral+3structural),7commits(1RED+3GREEN+3REFACTOR),Action実践検証100%,Phase 16開始" },
-  { sprint: 55, pbi: "PBI-055", story: "複数タスクAI一括処理", verification: "passed_with_known_failures", notes: "837t(+2t),8subtasks(6behavioral+2structural),8commits(4GREEN+2REFACTOR),DoD 5失敗(既存テスト),全AC達成,Action rate 60%→64%,Phase 16完遂" },
+  { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks,7commits,Phase 16開始" },
+  { sprint: 55, pbi: "PBI-055", story: "複数タスクAI一括処理", verification: "passed", notes: "837t(+2t),8subtasks,8commits,DoD 5失敗(既存),rate64%,Phase 16完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-53: see git history
-  { sprint: 54,
+  // Sprint 42-54: see git history
+  { sprint: 55,
     workedWell: [
-      "Action Management Process実践検証100%達成: Sprint 53策定3ルール全実践、ルール遵守率100%達成",
-      "SMART基準ガイドライン大幅強化: CLAUDE.mdに具体例8セット追加（良例3+悪例5）、実践可能レベルに具体化",
-      "P0 Actions 100%達成: 前Sprint P0 2項目を確実実施、プロセス改善高コミットメント実証",
-      "Feature/Process配分6:4達成: 新設計ルール初Sprint適用成功、持続可能な改善サイクル確立",
-      "AI編集機能完全実装: メインビュー・サイドパネル両対応、7 subtasks完遂、+5t増加、Phase 16開始",
-      "rate 58%→60%向上: 2 Sprint連続KPI min 50%達成、着実な改善継続",
+      "Phase 16完遂: AI一括処理機能実装完了、6 behavioral subtasks達成、Sprint 54-55の2 Sprint計画通り完遂",
+      "P0 Actions 100%継続達成: 2 Sprint連続でP0 Actions完全実施、プロセス改善コミットメント定着",
+      "Action棚卸し完了: P2 Action 1項目廃棄、remaining 41→36削減、計算式ドキュメント化完了",
+      "rate 60%→64%向上: 3 Sprint連続KPI min 50%超、+4%改善、健全な上昇トレンド継続",
+      "Feature/Process配分6:4継続: 6 behavioral + 2 structural subtasks、計画配分遵守、持続可能性実証",
+      "Actions実施率60%達成: Sprint 54の50%から+10%向上、全体実施率改善",
     ],
     toImprove: [
-      "P1 Actions実施率0%: 全体実施率50%（2/4）、P0は100%だがP1全未着手",
-      "Action棚卸し2 Sprint連続未実施: Sprint 53からの継続課題「残41項目Action棚卸し」未着手、負債蓄積リスク",
-      "実施率計算式未確立: executed/total計算に廃棄Actions扱い不明確、要定義",
-      "Commit数報告差異: ユーザー報告8 commits vs scrum.ts記載7 commits、実績トラッキング精度要改善",
+      "既存テスト失敗5件継続: DoD Tests 5件失敗（既存の失敗）、verification: passed_with_known_failures、技術的負債未解消",
+      "P1 Actions実施率50%: 2項目中1項目のみ実施（棚卸し部分達成）、トラッキング精度改善未着手",
+      "rate目標未達: 目標65%に対し64%達成、+1%差で目標未達成",
+      "KPI healthy (70%)への道筋不明: rate 64%→70%へ+6%必要、具体的な改善施策未策定",
     ],
     actions: [
-      "P0: Sprint 55 Planning時にP1 Actions 2項目をSubtaskとして組み込み、Feature/Process配分6:4維持",
-      "P0: actionManagement.tracking計算式をCLAUDE.mdに明文化（executed加算・remaining減算ルール3項目）",
-      "P1: 残41項目Action棚卸し実施、優先度再評価とrate 65%達成",
-      "P1: Sprint実績トラッキング精度改善（commit数検証プロセス追加）",
-      "P2: Action Management KPI healthy (70%)達成に向けたロードマップ策定",
+      "P0: Sprint 56 Planning時にP1 Actions 1項目をSubtaskとして組み込み、Feature/Process配分6:4維持",
+      "P0: DoD既存テスト失敗5件の根本原因分析、修正計画策定（技術的負債解消着手）",
+      "P1: Sprint実績トラッキング精度改善（commit数検証プロセス追加、scrum.ts自動検証スクリプト検討）",
+      "P1: rate 64%→70%達成ロードマップ策定（+6%改善、2-3 Sprint計画）",
+      "P2: テストカバレッジ可視化ツール導入検討（品質指標拡充）",
     ] },
 ];
 
-// Action Management (Sprint 55進行中: rate 60%→64%(+4%)、P0 Actions 2項目実施、棚卸し完了)
+// Action Management (Sprint 55完了: rate 60%→64%(+4%)、P0 Actions 2項目実施100%、Actions実施率60%)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
   tracking: { total: 100, executed: 64, rate: 64, remaining: 36 },
-  // Sprint 55: P0 Actions 2項目実施（P1 Actions Subtask化・CLAUDE.md計算式追加）
-  //   棚卸し: P2 Action 1項目廃棄（ロードマップ策定→3 Sprint経過）、total 103→100 (-3)
-  //   繰越: P1 2項目（トラッキング精度改善）→Sprint 56へ
-  // Sprint 54: P0 Actions 2項目実施、P1 2項目継続
-  // Sprint 53: 15項目廃棄/統合、根本原因3軸分析完了、プロセス再設計ルール3項目確立
+  // Sprint 55完了: P0 Actions 2/2実施(100%)、P1 1/2実施(50%)、Actions実施率60% (3/5)
+  //   実施: P0 2項目（P1 Actions Subtask化・CLAUDE.md計算式追加）、P1 1項目（棚卸し部分達成）
+  //   棚卸し: P2 1項目廃棄（ロードマップ策定→3 Sprint経過）、total 103→100 (-3)
+  //   繰越: P1 1項目（トラッキング精度改善）→Sprint 56へ
+  //   新規: Sprint 55 Actions 5項目策定（P0 2項目、P1 2項目、P2 1項目）
+  // Sprint 54完了: P0 Actions 2項目実施、Actions実施率50% (2/4)
+  // Sprint 53完了: 15項目廃棄/統合、根本原因3軸分析、プロセス再設計ルール3項目確立
 };
 
 // Agents & Events

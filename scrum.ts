@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 53, pbi: "PBI-053", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 5, impediments: 0 },
   phase: { number: 15, status: "in_progress", sprints: "53", pbis: "PBI-053", goal: "Phase 15: プロセス基盤再構築とAI連携機能拡張の両立" },
 };
 
@@ -183,8 +183,10 @@ export const currentSprint = {
       test: "再設計ルール3項目（例: Sprint Planning時Action必須Subtask化、Retrospective時実施率数値化、3 Sprint未実施Action自動廃棄）がCLAUDE.mdまたはscrum.tsに明記され、次回Sprint Planningで適用可能な具体性を検証",
       implementation: "Subtask 2の改善策を基に、実施プロセス再設計ルールを策定、CLAUDE.mdのDevelopment Guidelinesまたはscrum.ts actionManagementに追記",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "refactor" as CommitPhase, message: "refactor(scrum): Action実施プロセス再設計ルール確立 - CLAUDE.md追記" },
+      ] as Commit[],
     },
     {
       test: "Subtask 1の廃棄/統合完了後、actionManagement.tracking.rate >= 55を検証、Sprint 53 Actions実施状況を数値化、KPI min 50%超過を確認",

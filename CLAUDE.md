@@ -121,6 +121,35 @@ This project uses AI-Agentic Scrum methodology:
 - `@scrum-event-sprint-retrospective` - Process improvement
 - `@scrum-event-backlog-refinement` - Refine PBIs to ready status
 
+### Action Management Process (Sprint 53 Established)
+
+**Process Redesign Rules (3 items):**
+
+1. **Sprint Planning時Action必須Subtask化**
+   - Retrospective ActionsにP0（次Sprint必須）優先度を明記
+   - Sprint Planning時、P0 Actions 1-2項目を必ずSubtaskとして組み込み
+   - Feature開発とプロセス改善の時間配分を6:4に調整（従来8:2）
+   - P0 Actionが未完了の場合、Sprint Reviewで明示的に報告
+
+2. **Retrospective時Action実施状況数値化**
+   - Retrospective時、前SprintのActions実施状況を必ず数値化（実施数/総数、実施率%）
+   - actionManagement.trackingを毎Sprint更新（total, executed, rate, remaining）
+   - rate >= 50%をKPI min、rate >= 70%をKPI healthyと定義
+   - KPI未達が2 Sprint連続の場合、次SprintでActions整理Subtask必須化
+
+3. **3 Sprint未実施Action自動廃棄ルール**
+   - Actions優先度を3段階で明記（P0: 次Sprint必須、P1: 2 Sprint以内、P2: 3 Sprint以内）
+   - P2 Actionが3 Sprint経過で自動廃棄（executedに加算せず、remainingから削除）
+   - 廃棄Actionsはgit commitメッセージに記録（透明性確保）
+   - 実施済みActionsは即座にexecutedに加算、remainingから削除
+
+**Action粒度ガイドライン (SMART基準):**
+- **Specific**: 抽象的な表現（"整理"、"分析"、"策定"）を避け、具体的な成果物を明記
+- **Measurable**: 定量的な目標（"10項目抽出"、"3軸分析"、"5ルール確立"）を設定
+- **Achievable**: 1 Sprint内で完了可能な粒度に分割（大粒度→複数小粒度）
+- **Relevant**: Product GoalおよびPhase Goalとの整合性を確認
+- **Time-bound**: 優先度（P0/P1/P2）による期限明示
+
 ## References
 
 - [todo.txt format](https://github.com/todotxt/todo.txt)

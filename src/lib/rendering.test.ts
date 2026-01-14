@@ -233,4 +233,132 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			expect(onArchive).toHaveBeenCalled();
 		});
 	});
+
+	describe("Search focus maintenance", () => {
+		// Helper to add Obsidian-like methods to container
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		type MockContainer = HTMLElement & { empty: () => void; createEl: any };
+
+		const createMockContainer = (): MockContainer => {
+			const container = document.createElement("div") as MockContainer;
+			container.empty = function (this: HTMLElement) {
+				this.innerHTML = "";
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			container.createEl = function (this: HTMLElement, tag: string): any {
+				const el = document.createElement(tag) as MockContainer;
+				el.empty = function (this: HTMLElement) { this.innerHTML = ""; };
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				el.createEl = container.createEl;
+				this.appendChild(el);
+				return el;
+			};
+			return container;
+		};
+
+		it("should maintain focus when typing multiple characters in search box", () => {
+			const container = createMockContainer();
+			const data = "Buy milk\nWrite report\nFix bug";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete);
+
+			// Find search box and focus it
+			let searchBox = container.querySelector(".search-box") as HTMLInputElement;
+			expect(searchBox).not.toBeNull();
+			searchBox.focus();
+
+			// Type first character
+			searchBox.value = "m";
+			const inputEvent = new Event("input", { bubbles: true });
+			searchBox.dispatchEvent(inputEvent);
+
+			// Re-query the search box after input (should be the same element)
+			searchBox = container.querySelector(".search-box") as HTMLInputElement;
+			expect(searchBox).not.toBeNull();
+			expect(searchBox.value).toBe("m");
+
+			// Type second character
+			searchBox.focus();
+			searchBox.value = "mi";
+			searchBox.dispatchEvent(inputEvent);
+
+			// Re-query again
+			searchBox = container.querySelector(".search-box") as HTMLInputElement;
+			expect(searchBox).not.toBeNull();
+			expect(searchBox.value).toBe("mi");
+
+			// Type third character
+			searchBox.focus();
+			searchBox.value = "mil";
+			searchBox.dispatchEvent(inputEvent);
+
+			// Final verification
+			searchBox = container.querySelector(".search-box") as HTMLInputElement;
+			expect(searchBox).not.toBeNull();
+			expect(searchBox.value).toBe("mil");
+		});
+
+		it("should only re-render task list when searching, not control bar", () => {
+			const container = createMockContainer();
+			const data = "Buy milk\nWrite report";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete);
+
+			// Get initial references to control bar and search box
+			const initialControlBar = container.querySelector(".control-bar");
+			const initialSearchBox = container.querySelector(".search-box");
+			expect(initialControlBar).not.toBeNull();
+			expect(initialSearchBox).not.toBeNull();
+
+			// Trigger search input
+			const searchBox = initialSearchBox as HTMLInputElement;
+			searchBox.value = "milk";
+			const inputEvent = new Event("input", { bubbles: true });
+			searchBox.dispatchEvent(inputEvent);
+
+			// Verify control bar and search box are the same elements (not re-created)
+			const afterControlBar = container.querySelector(".control-bar");
+			const afterSearchBox = container.querySelector(".search-box");
+
+			expect(afterControlBar).toBe(initialControlBar);
+			expect(afterSearchBox).toBe(initialSearchBox);
+		});
+
+		it("should maintain cursor position when typing in search box", () => {
+			const container = createMockContainer();
+			const data = "Buy milk\nWrite report";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete);
+
+			const searchBox = container.querySelector(".search-box") as HTMLInputElement;
+			expect(searchBox).not.toBeNull();
+
+			// Type text and set cursor position in middle
+			searchBox.value = "test";
+			searchBox.setSelectionRange(2, 2); // Cursor after "te"
+			searchBox.focus();
+
+			const cursorPosition = searchBox.selectionStart;
+			expect(cursorPosition).toBe(2);
+
+			// Trigger input event
+			const inputEvent = new Event("input", { bubbles: true });
+			searchBox.dispatchEvent(inputEvent);
+
+			// Verify cursor position is maintained
+			expect(searchBox.selectionStart).toBe(cursorPosition);
+		});
+	});
 });

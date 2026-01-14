@@ -64,6 +64,9 @@ export class TodoSidePanelView extends ItemView {
 			}
 		}
 
+		// Render AI add button
+		this.renderAIAddButton();
+
 		// Render tasks
 		const container = this.contentEl.createDiv("todotxt-sidepanel-container");
 		tasks.forEach((task) => {
@@ -72,6 +75,19 @@ export class TodoSidePanelView extends ItemView {
 			taskEl.addEventListener("click", () => {
 				void this.openFile(task.filePath);
 			});
+		});
+	}
+
+	/**
+	 * Render AI task addition button (placeholder for PBI-047)
+	 */
+	renderAIAddButton(): void {
+		const aiButton = this.contentEl.createEl("button");
+		aiButton.classList.add("ai-add-task-button");
+		aiButton.textContent = "AI追加";
+		aiButton.addEventListener("click", () => {
+			// Placeholder: Will be implemented in PBI-047
+			console.log("AI task addition (coming in PBI-047)");
 		});
 	}
 

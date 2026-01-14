@@ -133,6 +133,9 @@ export function renderTaskList(
 	// Add task button
 	renderAddButton(contentEl, onAddTask);
 
+	// Add AI task addition button (placeholder for PBI-047)
+	renderAIAddButton(contentEl);
+
 	// Add archive button if onArchive is provided
 	if (onArchive) {
 		renderArchiveButton(contentEl, data, onArchive);
@@ -229,6 +232,19 @@ function renderAddButton(contentEl: HTMLElement, onAddTask: () => void): void {
 	addButton.textContent = "+";
 	addButton.addEventListener("click", () => {
 		onAddTask();
+	});
+}
+
+/**
+ * Render AI task addition button (placeholder for PBI-047)
+ */
+function renderAIAddButton(contentEl: HTMLElement): void {
+	const aiButton = contentEl.createEl("button");
+	aiButton.classList.add("ai-add-task-button");
+	aiButton.textContent = "AI追加";
+	aiButton.addEventListener("click", () => {
+		// Placeholder: Will be implemented in PBI-047
+		console.log("AI task addition (coming in PBI-047)");
 	});
 }
 

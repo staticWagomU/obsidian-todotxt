@@ -133,33 +133,36 @@ export const retrospectives: Retrospective[] = [
   // Sprint 42: Phase 9完遂、REFACTOR率50%達成、CSS 214→513行 - see git history
   // Sprint 43: 740t(+114t)、70エッジケーステスト追加、Phase 10開始 - see git history
   // Sprint 44: 738t(-2t統合化)、Phase 10完遂、Actions 5項目未消化 - see git history
-  { sprint: 45,
+  // Sprint 45: 762t(+24t)、アーカイブ機能実装、REFACTOR 3連続未実施 - see git history
+  { sprint: 46,
     workedWell: [
-      "完璧なTDD実行: RED-GREEN 6 commits、テストファースト徹底",
-      "lint自動検出: Sprint Review時にlint issueを検出・即座に修正（品質維持）",
-      "Test増加率健全: 738t→762t(+24t, 3.25%増)、機能拡張に比例した適切なテスト追加",
-      "Phase 11完遂: 1 Sprint計画で完了、アーカイブ機能実装達成",
-      "Sprint 44 Actions部分実施: Phase 11方向性決定とLOW complexity PBI実施（2/5項目）",
+      "完璧なTDD継続: RED-GREEN 6 commits、4 Sprint連続でテストファースト徹底",
+      "新View実装成功: ItemView使用のTodoSidePanelView実装、複数ファイル対応実現",
+      "DoD完全クリア: Tests/Lint/Types/Build全てpass、品質基準維持",
+      "Phase 12開始: サイドパネル・AI連携の基盤構築、PBI-047への橋渡し完了",
+      "効率的なテスト追加: 762t→770t(+8t, 1.05%増)、機能に対する適切なテストカバレッジ",
     ],
     toImprove: [
-      "REFACTOR phase未実施継続: Sprint 43/44に続き3 Sprint連続でREFACTOR phase未実施",
-      "Sprint 44 Actions 60%未実施: 5項目中3項目未実施（累積Actions増加）",
-      "lint issue後検出: Review時に検出（開発中のlint実行習慣不足）",
-      "Action累積加速: 累積未実施Actions増加傾向（KPI 46%維持）",
+      "REFACTOR phase未実施深刻化: 4 Sprint連続未実施（Sprint 43-46）、技術的負債蓄積リスク増大",
+      "Sprint 45 Actions全滅: 4項目全て未実施（0/4 = 0%実施率）、Action機能不全状態",
+      "Action累積危機的: execution rate 47%維持も実質的改善なし、累積Actions 39項目に増加",
+      "REFACTOR判断プロセス欠如: GREEN完了後のREFACTOR要否判断が完全にスキップされている",
     ],
     actions: [
-      "開発中lint実行習慣化: GREEN commit前に`pnpm lint`必須実行プロセス導入",
-      "REFACTOR判断基準明確化: GREEN完了時にREFACTOR要否チェックリスト導入（コード重複/複雑度/命名/構造）",
-      "累積Actions緊急対処: Sprint 46でAction実施専用Subtask追加検討（技術的負債返済）",
-      "Action KPI目標引き上げ: 次Phase（Phase 12）でexecution rate 50%→70%目標設定",
+      "REFACTOR強制実行: Sprint 47で必ずREFACTOR phase実施、Subtask 1つをREFACTOR専用に割当",
+      "Action実施KPI厳格化: Sprint 47で最低2 Actions実施必須（50%以上実施率）、未達成時はSprint失敗扱い",
+      "GREEN後REFACTOR判断義務化: 各Subtask GREEN完了時、REFACTOR要否4項目チェック（重複/複雑度/命名/構造）必須記録",
+      "技術的負債可視化: Sprint 47 Planning時、累積未実施Actions 39項目から緊急対処項目2つ選定・Subtask化",
+      "retrospective action追跡: Sprint 47で過去4 Sprintの未実施Actions実施状況を明示的にレビュー",
     ] },
 ];
 
-// Action Management (Sprint 45完了、rate 47% still below KPI min)
+// Action Management (Sprint 46完了、rate 44% critical below KPI min)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 73, executed: 34, rate: 47, remaining: 39 },
-  // Sprint 45: +4 actions, 2 executed from Sprint 44 backlog (累積未実施16項目: Sprint 43残3+Sprint 44残3+Sprint 45新4+過去6)
+  tracking: { total: 78, executed: 34, rate: 44, remaining: 44 },
+  // Sprint 46: +5 actions, 0 executed from Sprint 45 backlog (累積未実施21項目: Sprint 43残3+Sprint 44残3+Sprint 45残4+Sprint 46新5+過去6)
+  // 危機的状況: 4 Sprint連続でAction実施率0%、KPI min 50%を大きく下回る44%に悪化
 };
 
 // Agents & Events

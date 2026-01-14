@@ -3,8 +3,8 @@
  * Sprint 34: PBI-031 implementation
  */
 
-import { describe, it, expect } from "vitest";
-import { renderInternalLinks, renderExternalLinks, renderRecurrenceIcon } from "./rendering";
+import { describe, it, expect, vi } from "vitest";
+import { renderInternalLinks, renderExternalLinks, renderRecurrenceIcon, renderTaskList } from "./rendering";
 import type { Todo } from "./todo";
 
 describe("PBI-031: 内部/外部リンククリック可能表示", () => {
@@ -145,6 +145,75 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			const iconElement = renderRecurrenceIcon(todo);
 
 			expect(iconElement).toBeNull();
+		});
+	});
+
+	describe("アーカイブボタン表示", () => {
+		it("renderTaskListにonArchiveコールバックが渡される", () => {
+			const container = document.createElement("div");
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+			const onArchive = async () => {};
+
+			// This should not throw even if renderTaskList doesn't support onArchive yet
+			expect(() => {
+				// @ts-expect-error - Testing RED phase, onArchive parameter doesn't exist yet
+				renderTaskList(container, "", onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
+			}).not.toThrow();
+		});
+
+		it("完了タスクが存在する場合、アーカイブボタンが有効になる", () => {
+			const container = document.createElement("div");
+			const data = "Task 1\nx 2025-01-14 Completed task\n";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+			const onArchive = async () => {};
+
+			// @ts-expect-error - Testing RED phase
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
+
+			const archiveButton = container.querySelector("button.archive-button") as HTMLButtonElement;
+			expect(archiveButton).not.toBeNull();
+			expect(archiveButton?.disabled).toBe(false);
+		});
+
+		it("完了タスクがない場合、アーカイブボタンが無効になる", () => {
+			const container = document.createElement("div");
+			const data = "Task 1\nTask 2\n";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+			const onArchive = async () => {};
+
+			// @ts-expect-error - Testing RED phase
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
+
+			const archiveButton = container.querySelector("button.archive-button") as HTMLButtonElement;
+			expect(archiveButton).not.toBeNull();
+			expect(archiveButton?.disabled).toBe(true);
+		});
+
+		it("アーカイブボタンクリックでonArchiveコールバックが呼ばれる", () => {
+			const container = document.createElement("div");
+			const data = "x 2025-01-14 Completed task\n";
+			const onAddTask = () => {};
+			const onToggle = async () => {};
+			const onEdit = () => {};
+			const onDelete = async () => {};
+			const onArchive = vi.fn();
+
+			// @ts-expect-error - Testing RED phase
+			renderTaskList(container, data, onAddTask, onToggle, onEdit, onDelete, undefined, onArchive);
+
+			const archiveButton = container.querySelector("button.archive-button") as HTMLButtonElement;
+			archiveButton?.click();
+
+			expect(onArchive).toHaveBeenCalled();
 		});
 	});
 });

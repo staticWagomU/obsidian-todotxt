@@ -1976,3 +1976,80 @@ describe("integration: UI operation to file save flow", () => {
 		vi.useRealTimers();
 	});
 });
+
+describe("archive completed tasks", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("getArchiveHandler should be exposed from View", () => {
+		const archiveHandler = view.getArchiveHandler();
+		expect(archiveHandler).toBeDefined();
+		expect(typeof archiveHandler).toBe("function");
+	});
+
+	it("archive handler should remove completed tasks from view", async () => {
+		view.setViewData("Task 1\nx 2025-01-14 Completed task\n(A) Task 2\n", false);
+
+		const archiveHandler = view.getArchiveHandler();
+		await archiveHandler();
+
+		const updatedData = view.getViewData();
+		expect(updatedData).not.toContain("x 2025-01-14 Completed task");
+		expect(updatedData).toContain("Task 1");
+		expect(updatedData).toContain("(A) Task 2");
+	});
+
+	it("archive handler should do nothing when no completed tasks", async () => {
+		const initialData = "Task 1\n(A) Task 2\n";
+		view.setViewData(initialData, false);
+
+		const archiveHandler = view.getArchiveHandler();
+		await archiveHandler();
+
+		// Data should remain unchanged
+		expect(view.getViewData()).toBe(initialData);
+	});
+
+	it("should show confirmation modal before archiving", async () => {
+		view.setViewData("Task 1\nx 2025-01-14 Completed task\n", false);
+
+		const showConfirmationSpy = vi.spyOn(view, "showArchiveConfirmation");
+		await view.openArchiveWithConfirmation();
+
+		expect(showConfirmationSpy).toHaveBeenCalled();
+	});
+
+	it("should archive after user confirms in modal", async () => {
+		view.setViewData("Task 1\nx 2025-01-14 Completed task\n(A) Task 2\n", false);
+
+		// Mock confirmation to return true
+		vi.spyOn(view, "showArchiveConfirmation").mockResolvedValue(true);
+
+		await view.openArchiveWithConfirmation();
+
+		const updatedData = view.getViewData();
+		expect(updatedData).not.toContain("x 2025-01-14 Completed task");
+		expect(updatedData).toContain("Task 1");
+		expect(updatedData).toContain("(A) Task 2");
+	});
+
+	it("should not archive when user cancels confirmation", async () => {
+		const initialData = "Task 1\nx 2025-01-14 Completed task\n";
+		view.setViewData(initialData, false);
+
+		// Mock confirmation to return false
+		vi.spyOn(view, "showArchiveConfirmation").mockResolvedValue(false);
+
+		await view.openArchiveWithConfirmation();
+
+		// Data should remain unchanged
+		expect(view.getViewData()).toBe(initialData);
+	});
+});

@@ -30,38 +30,61 @@ export class AITaskInputDialog extends Modal {
 		contentEl.empty();
 		contentEl.addClass("ai-task-input-dialog");
 
-		contentEl.createEl("h2", { text: "AIタスク追加" });
-		contentEl.createEl("p", {
-			text: "自然な文章でタスクを入力してください。AIがtodo.txt形式に変換します。",
+		// ヘッダーセクション
+		const headerEl = contentEl.createDiv("ai-dialog-header");
+		headerEl.createEl("h2", { text: "AIタスク追加" });
+		headerEl.createEl("p", {
+			text: "自然な文章でタスクを入力すると、AIがtodo.txt形式に変換します",
+			cls: "ai-dialog-description",
 		});
 
-		// Natural language input
-		const inputContainer = contentEl.createDiv("input-container");
-		inputContainer.createEl("label", { text: "タスクの内容" });
-		const textarea = inputContainer.createEl("textarea", {
-			cls: "natural-language-input",
-		});
-		const placeholderText = "例: 明日までに報告書を作成する #pc\n買い物リストを作る @home\n緊急で会議の準備をする +ProjectX";
-		textarea.setAttribute("placeholder", placeholderText);
-		textarea.rows = 6;
+		// メイン入力エリア
+		const inputSection = contentEl.createDiv("ai-dialog-input-section");
 
-		// Button container
-		const buttonContainer = contentEl.createDiv("modal-button-container");
+		const textarea = inputSection.createEl("textarea", {
+			cls: "ai-task-textarea",
+		});
+		textarea.setAttribute(
+			"placeholder",
+			"タスクを入力してください...\n\n例:\n・明日までに報告書を作成する #pc\n・買い物リストを作る @home\n・緊急で会議の準備をする +ProjectX",
+		);
+		textarea.rows = 8;
+
+		// ヒントセクション
+		const hintSection = contentEl.createDiv("ai-dialog-hints");
+		const hints = [
+			{ icon: "#", text: "コンテキスト", example: "@home @office" },
+			{ icon: "+", text: "プロジェクト", example: "+Work +Personal" },
+			{ icon: "📅", text: "期限", example: "明日まで、来週金曜" },
+		];
+		for (const hint of hints) {
+			const hintItem = hintSection.createDiv("ai-hint-item");
+			hintItem.createSpan({ text: hint.icon, cls: "ai-hint-icon" });
+			hintItem.createSpan({ text: hint.text, cls: "ai-hint-label" });
+			hintItem.createSpan({ text: hint.example, cls: "ai-hint-example" });
+		}
+
+		// ボタンエリア
+		const buttonContainer = contentEl.createDiv("ai-dialog-buttons");
+
+		const cancelButton = buttonContainer.createEl("button", {
+			text: "キャンセル",
+			cls: "ai-btn-cancel",
+		});
+		cancelButton.addEventListener("click", () => {
+			this.close();
+		});
 
 		const generateButton = buttonContainer.createEl("button", {
-			text: "生成",
-			cls: "mod-cta",
+			text: "AIで生成",
+			cls: "mod-cta ai-btn-generate",
 		});
 		generateButton.addEventListener("click", () => {
 			void this.handleGenerate(textarea.value);
 		});
 
-		const cancelButton = buttonContainer.createEl("button", {
-			text: "キャンセル",
-		});
-		cancelButton.addEventListener("click", () => {
-			this.close();
-		});
+		// 自動フォーカス
+		textarea.focus();
 	}
 
 	async handleGenerate(naturalLanguage: string): Promise<void> {

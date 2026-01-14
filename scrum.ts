@@ -35,7 +35,7 @@ interface Retrospective {
 export const quickStatus = {
   sprint: { number: 52, pbi: "PBI-052", status: "done" as SprintStatus,
     subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 14, status: "in_progress", sprints: "52-", pbis: "PBI-052", goal: "Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化" },
+  phase: { number: 14, status: "done", sprints: "52", pbis: "PBI-052", goal: "Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化" },
 };
 
 // Product Goal
@@ -63,46 +63,8 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 50 PBI-049: 検索フォーカス維持、813t(+6t)、done
   //   Sprint 51 PBI-048: サイドパネルフル機能化（追加/編集/削除/設定値引き継ぎ/コンパクトUI）、821t(+8t)、done
 
-  // Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化
-  {
-    id: "PBI-052",
-    story: {
-      role: "Obsidianユーザー",
-      capability: "サイドパネルで洗練されたUIでタスクを管理できる",
-      benefit: "狭いスペースでも快適にタスク操作ができ、作業効率が向上する",
-    },
-    acceptanceCriteria: [
-      {
-        criterion: "ヘッダーにステータスフィルター（全て/完了/未完了）とプログレスバー（完了率表示）を表示",
-        verification: "pnpm vitest run src/view.test.ts --grep 'side panel header with status filter and progress'",
-      },
-      {
-        criterion: "検索ボックスをApple-styleのピル型デザインで表示（角丸20px、プレースホルダー付き）",
-        verification: "pnpm vitest run src/view.test.ts --grep 'side panel search box pill design'",
-      },
-      {
-        criterion: "フィルタードロップダウン（なし/+project/@context）とソートドロップダウン（デフォルト/優先度/日付）を横並びで表示",
-        verification: "pnpm vitest run src/view.test.ts --grep 'side panel filter sort dropdowns'",
-      },
-      {
-        criterion: "タスクアイテムに[チェックボックス][優先度][説明]を1行目、[プロジェクト/コンテキストタグ]を2行目、[編集アイコン]を右端に表示",
-        verification: "pnpm vitest run src/view.test.ts --grep 'side panel task item layout'",
-      },
-      {
-        criterion: "フッターに「AIタスク追加」「タスク追加」の2つのボタンを横並びで固定表示（FABではなくフッターボタン形式）",
-        verification: "pnpm vitest run src/view.test.ts --grep 'side panel footer buttons'",
-      },
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: {
-      functions: 10,
-      estimatedTests: 18,
-      externalDependencies: 0,
-      score: "MEDIUM" as const,
-      subtasks: 5,
-    },
-  },
+  // Phase 14完了 (Sprint 52): サイドパネルUI刷新 - Apple-likeモダンデザイン強化、830t達成(+9t, +1.1%)
+  //   Sprint 52 PBI-052: サイドパネルUI刷新、830t(+9t)、done
 ];
 
 // Definition of Ready
@@ -204,6 +166,8 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 49, pbi: "PBI-050", story: "メインビューAI機能統合+プロセス改善基盤確立", verification: "passed", notes: "807t(+2t),Subtask3完了(RED1+GREEN4commit),AC2/AC3テスト追加,REFACTOR判断4項目チェック体制確立,累積Actions整理(29項目→2項目実施),actionManagement改善(41%→43%)" },
   { sprint: 50, pbi: "PBI-049", story: "検索ボックスフォーカス維持機能実装", verification: "passed", notes: "813t(+6t),Subtask2完了(RED2+GREEN2+bugfix1=5commit),サイドパネル/メインビュー両方対応,renderTaskListOnly/renderTaskListSection部分更新実装,REFACTOR判断2回不要,DoD全pass,actionManagement rate 43%維持" },
   { sprint: 51, pbi: "PBI-048", story: "サイドパネルフル機能化（追加/編集/削除/設定値引き継ぎ/コンパクトUI）", verification: "passed", notes: "821t(+8t),Subtask5完了(4 behavioral+1 structural),6commits(2 GREEN-only,1 GREEN+REFACTOR,1 lint fix),タスク追加(ファイル選択),編集(EditTaskModal),削除(確認ダイアログ),設定値引き継ぎ,コンパクトUIスタイル,REFACTOR判断4項目チェック実施,DoD全pass,Phase 13完遂" },
+  // Phase 14 (Sprint 52): サイドパネルUI刷新 - Apple-likeモダンデザイン強化完了、830t達成(+9t)
+  { sprint: 52, pbi: "PBI-052", story: "サイドパネルUI刷新（プログレスバー・検索ボックス・フィルター・タスクレイアウト・フッターボタン）", verification: "passed", notes: "830t(+9t,+1.1%),Subtask5完了(5 behavioral),4commits(4 GREEN-only),AC1既存実装,AC2検索プレースホルダー,AC3フィルターソートテスト追加,AC4タスクレイアウトテスト追加,AC5 FAB→フッターボタン変更,DoD全pass,Phase 14完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

@@ -44,10 +44,12 @@ export class AITaskInputDialog extends Modal {
 		const textarea = inputSection.createEl("textarea", {
 			cls: "ai-task-textarea",
 		});
+		/* eslint-disable obsidianmd/ui/sentence-case -- Japanese text does not require sentence case */
 		textarea.setAttribute(
 			"placeholder",
 			"タスクを入力してください...\n\n例:\n・明日までに報告書を作成する #pc\n・買い物リストを作る @home\n・緊急で会議の準備をする +ProjectX",
 		);
+		/* eslint-enable obsidianmd/ui/sentence-case */
 		textarea.rows = 8;
 
 		// ヒントセクション

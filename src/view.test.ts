@@ -2144,6 +2144,6 @@ describe("AI task addition button", () => {
 		// Check that AI button is displayed
 		const aiButton = view.contentEl.querySelector(".ai-add-task-button");
 		expect(aiButton).not.toBeNull();
-		expect(aiButton?.textContent).toContain("AI");
+		expect(aiButton?.textContent).toContain("✨");
 	});
 });

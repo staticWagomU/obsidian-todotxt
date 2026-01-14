@@ -143,11 +143,12 @@ describe("FilterState type", () => {
 		const controlBar = view.contentEl.querySelector("div.control-bar");
 		const children = Array.from(controlBar?.children || []);
 
-		expect(children.length).toBe(4);
+		expect(children.length).toBe(5);
 		expect(children[0]?.classList.contains("priority-filter")).toBe(true);
 		expect(children[1]?.classList.contains("search-box")).toBe(true);
 		expect(children[2]?.classList.contains("group-selector")).toBe(true);
 		expect(children[3]?.classList.contains("sort-selector")).toBe(true);
+		expect(children[4]?.classList.contains("archive-button")).toBe(true);
 	});
 });
 

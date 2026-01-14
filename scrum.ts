@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 45, pbi: "PBI-045", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 11, status: "in_progress", sprints: "Sprint 45", pbis: "PBI-045", goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する" },
 };
 
@@ -158,8 +158,11 @@ export const currentSprint = {
       test: "確認モーダル表示、ハンドラーexposure、完了タスク削除のテストを実装（アーカイブ後の元ファイル更新検証）",
       implementation: "確認モーダル、Viewからのハンドラーアクセス、アーカイブ後の元ファイル更新を実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red", message: "test(archive): add RED phase tests for view integration and confirmation modal" },
+        { phase: "green", message: "feat(archive): implement view integration and confirmation modal" },
+      ],
     },
   ] as Subtask[],
 };

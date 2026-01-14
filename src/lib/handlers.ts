@@ -1,6 +1,6 @@
 import { parseTodoTxt, updateTodoInList } from "./parser";
 import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type TaskUpdates } from "./todo";
-import { archiveCompletedTasks, appendToArchiveFile, getArchiveFilePath } from "./archive";
+import { archiveCompletedTasks, appendToArchiveFile } from "./archive";
 
 /**
  * Get toggle handler for task completion status

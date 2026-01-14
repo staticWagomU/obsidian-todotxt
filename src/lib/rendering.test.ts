@@ -150,14 +150,16 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 
 	describe("アーカイブボタン表示", () => {
 		// Helper to add Obsidian-like methods to container
-		type MockContainer = HTMLElement & { empty: () => void; createEl: (tag: string) => HTMLElement };
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		type MockContainer = HTMLElement & { empty: () => void; createEl: any };
 
 		const createMockContainer = (): MockContainer => {
 			const container = document.createElement("div") as MockContainer;
 			container.empty = function (this: HTMLElement) {
 				this.innerHTML = "";
 			};
-			container.createEl = function (this: HTMLElement, tag: string): HTMLElement {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			container.createEl = function (this: HTMLElement, tag: string): any {
 				const el = document.createElement(tag) as MockContainer;
 				el.empty = function (this: HTMLElement) { this.innerHTML = ""; };
 				el.createEl = container.createEl;

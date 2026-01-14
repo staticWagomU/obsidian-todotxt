@@ -177,8 +177,8 @@ export class TodotxtView extends TextFileView {
 		const readArchive = async (): Promise<string> => {
 			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
-			if (archiveFile && 'extension' in archiveFile) {
-				return await this.app.vault.read(archiveFile);
+			if (archiveFile && 'stat' in archiveFile) {
+				return await this.app.vault.read(archiveFile as TFile);
 			}
 			return "";
 		};
@@ -186,11 +186,10 @@ export class TodotxtView extends TextFileView {
 		const writeArchive = async (data: string): Promise<void> => {
 			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
-			if (archiveFile && 'extension' in archiveFile) {
-				await this.app.vault.modify(archiveFile, data);
+			if (archiveFile && 'stat' in archiveFile) {
+				await this.app.vault.modify(archiveFile as TFile, data);
 			} else {
 				// Create new file
-				const dirPath = archivePath.substring(0, archivePath.lastIndexOf('/'));
 				await this.app.vault.create(archivePath, data);
 			}
 		};
@@ -237,7 +236,8 @@ class ArchiveConfirmationModal extends Modal {
 	onConfirm: (confirmed: boolean) => void;
 
 	constructor(app: unknown, onConfirm: (confirmed: boolean) => void) {
-		super(app);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		super(app as any);
 		this.onConfirm = onConfirm;
 	}
 

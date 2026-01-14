@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 47, pbi: "PBI-047", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 47, pbi: "PBI-047", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
   phase: { number: 12, status: "in_progress", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
 };
 
@@ -108,8 +108,58 @@ export const currentSprint = {
   sprint: 47,
   pbi: "PBI-047",
   goal: "自然言語からtodo.txt形式への変換機能を実装し、直感的なタスク追加を可能にする",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "withRetry関数が指定回数リトライし、exponential backoffを適用するかテスト",
+      implementation: "retry.tsにwithRetry, isRetryableError関数を実装（ネットワークエラー、429、5xxが対象）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "buildSystemPrompt関数が現在日付とカスタムコンテキストを使用してプロンプトを生成するかテスト",
+      implementation: "prompt.tsにbuildSystemPrompt関数を実装（プロジェクト/コンテキスト/優先度/期限のルール埋め込み）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "OpenRouterService.convertToTodotxt()がAPI呼び出しとレスポンスパースを行うかテスト、エラーハンドリング含む",
+      implementation: "openrouter.tsにOpenRouterServiceクラスとconvertToTodotxt実装（API client + retry統合）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "settings.tsにOpenRouter設定（apiKey, model, retryConfig, customContexts）が追加され、UIで編集可能かテスト",
+      implementation: "settings.tsを拡張してOpenRouter関連設定を追加、設定UI実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AITaskInputDialogが開き、自然言語入力と生成ボタンが機能するかテスト",
+      implementation: "ui/dialogs/AITaskInputDialog.tsを実装（Modal継承、OpenRouterService呼び出し）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "AITaskPreviewDialogがプレビュー表示、編集、再生成、追加機能を提供するかテスト",
+      implementation: "ui/dialogs/AITaskPreviewDialog.tsを実装（todo.txt編集可能、ファイル追記処理）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "サイドパネルとメインビューのAIボタンがAITaskInputDialogを開くかテスト",
+      implementation: "TodoSidePanelView/TodosViewのAIボタンをAITaskInputDialogに接続 + REFACTOR実施（エラーハンドリング整理、プロンプト分割、BaseDialog抽出）",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 46: PBI-046完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 // Sprint 45: PBI-045完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history

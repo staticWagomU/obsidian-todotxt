@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 54, pbi: "PBI-054", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 7, impediments: 0 },
   phase: { number: 16, status: "in_progress", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
@@ -148,8 +148,10 @@ export const currentSprint = {
       test: "AIEditDialogに既存Todo内容がプレフィル表示、自然言語入力フィールドがレンダリングされる",
       implementation: "AIEditDialogにTodoプレフィル表示ロジック、自然言語入力textarea実装、UI構成完成",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: []
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "green" as CommitPhase, message: "feat: AI編集ダイアログUI完成 - 自然言語入力フィールド追加" }
+      ]
     },
     {
       test: "自然言語入力→OpenRouter API呼び出し→解析結果プレビュー表示が動作する",

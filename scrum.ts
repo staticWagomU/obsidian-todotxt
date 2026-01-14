@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 44, pbi: "PBI-044", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 3, impediments: 0 },
   phase: { number: 10, status: "done", sprints: "43", pbis: "PBI-043", goal: "パーサー堅牢化完了（unified-test-cases.md準拠、740t達成、+114t）" },
 };
 
@@ -175,8 +175,11 @@ export const currentSprint = {
       test: "settings.tsにtodotxtFilePathsプロパティのテストを記述、デフォルト空配列を検証",
       implementation: "TodotxtPluginSettingsインターフェースにtodotxtFilePaths: string[]を追加、DEFAULT_SETTINGSに空配列を設定",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(settings): add todotxtFilePaths property tests" },
+        { phase: "green" as CommitPhase, message: "feat(settings): add todotxtFilePaths property to settings" },
+      ],
     },
     {
       test: "指定パスマッチング・デフォルト拡張子判定・存在しないパス処理のテストを記述（3テストケース）",

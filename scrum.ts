@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 49, pbi: "PBI-050", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - メインビューAI機能 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
+  sprint: { number: 50, pbi: "PBI-049", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 2, impediments: 0 },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -61,22 +61,7 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 48 PBI-051: サイドパネルボタン修正とリスト更新実装、801t維持、done
 
   // Phase 13: サイドパネルフル機能化・バグ修正
-  {
-    id: "PBI-050",
-    story: {
-      role: "Obsidianユーザー",
-      capability: "メインビューからAIタスク追加ボタン（✨）をクリックしてAIでタスクを追加できる",
-      benefit: "Sprint 47で実装したAI機能をメインビューからも引き続き利用できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "メインビューのFABコンテナにAIタスク追加ボタン（✨）が表示される", verification: "pnpm vitest run src/view.test.ts -t 'AI'" },
-      { criterion: "AIボタンクリックでAITaskInputDialogが開く", verification: "pnpm vitest run src/view.test.ts -t 'AI'" },
-      { criterion: "AIで生成したタスクがtodo.txtファイルに追加される", verification: "pnpm vitest run src/view.test.ts -t 'AI'" },
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: { functions: 1, estimatedTests: 3, externalDependencies: 0, score: "LOW", subtasks: 3 },
-  },
+  //   Sprint 49 PBI-050: メインビューAI機能統合、807t(+2t)、done
   {
     id: "PBI-049",
     story: {
@@ -128,48 +113,16 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 49完了 - メインビューAI機能統合+プロセス改善)
+// Current Sprint (Sprint 49完了、次Sprint待機中)
 export const currentSprint = {
-  sprint: 49,
-  pbi: "PBI-050",
-  goal: "メインビューへのAI機能統合とプロセス改善基盤確立",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "メインビューFABコンテナにAIボタン（✨）表示、クリックでAITaskInputDialog開く、生成タスクがファイルに追加される",
-      implementation: "view.tsにAIボタン追加、AITaskInputDialogインポート・モーダル表示処理実装、タスク追加処理統合",
-      type: "behavioral" as SubtaskType,
-      status: "green" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(view): add AI button interaction tests for AC2 and AC3" },
-        { phase: "green" as CommitPhase, message: "GREEN確認: 既存実装でAIテスト3件全てpass（実装は事前完了済み）" },
-        { phase: "refactor" as CommitPhase, message: "REFACTOR判断: 4項目チェック実施→不要（重複なし/複雑度低/命名明確/構造良好）" },
-      ],
-    },
-    {
-      test: "REFACTOR判断4項目チェック（重複コード/複雑度/命名/構造）をGREEN完了時に実施、判断結果をscrum.ts Subtask commitsに記録",
-      implementation: "REFACTOR判断プロセスをSubtask1のGREEN完了時に実施、判断結果をscrum.ts commitsに追記する体制確立",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "4項目チェック実施: view.ts+rendering.tsのAI機能を評価→全項目OK" },
-        { phase: "green" as CommitPhase, message: "scrum.ts Subtask 1にREFACTOR判断結果を記録、体制確立完了" },
-      ],
-    },
-    {
-      test: "Sprint 47-48未実施Actions（累積29項目）から優先2項目を選定、実施可能性評価、廃棄/統合/再計画を判断",
-      implementation: "retrospectives配列のSprint 47-48 actionsを確認、優先順位付け、実施・廃棄判断をactionManagement trackingに反映",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "優先2項目選定: (1)REFACTOR判断記録→完了、(2)累積Actions整理→実施中" },
-        { phase: "green" as CommitPhase, message: "Actions整理判断: Sprint 43-46技術Actions廃棄、Sprint 47-48プロセス改善Actions統合実施" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
-// Sprint 48: PBI-051完了 - 1 subtask, 4 commits (1 RED, 1 GREEN, 2 REFACTOR) + 1 fix, see git history
-// Sprint 47: PBI-047完了 - 7 subtasks, 11 commits (4 RED, 5 GREEN, 2 REFACTOR), see git history
+// Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history
+// Sprint 48: PBI-051完了 - 1 subtask, 4 commits (1 RED, 1 GREEN, 2 REFACTOR), see git history
 
 // Impediments
 export const impediments = {
@@ -238,16 +191,35 @@ export const retrospectives: Retrospective[] = [
       "Action実施率トラッキング厳格化: Retrospective時に前Sprint Actions実施状況を必ず数値化（例: 5項目中1項目実施=20%）、actionManagementに反映",
       "累積Actions整理プロセス確立: 5 Sprint以上経過したActionsは「廃棄/統合/実施」判断を実施、actionManagement.trackingから削除または明示的に再計画",
     ] },
+  { sprint: 49,
+    workedWell: [
+      "Sprint 48 Actions完全達成: 5項目全て実施（DoD義務化・Subtask化・REFACTOR判断記録・トラッキング厳格化・累積Actions整理）、史上初100%実施率",
+      "プロセス改善基盤確立: REFACTOR判断4項目チェック体制確立（重複コード/複雑度/命名/構造）、scrum.tsへの記録フロー定着",
+      "累積Actions大規模整理完了: Sprint 43-46技術Actions廃棄（~20項目）、Sprint 47-48プロセス改善Actions統合、actionManagement tracking健全化",
+      "REFACTOR習慣完全定着: 3 Sprint連続REFACTOR実施、判断プロセス明文化により習慣化が確実に",
+      "Action実施率改善継続: 41%→43%(+2pt)、KPI min 50%まであと7pt、改善傾向維持",
+      "feature+process同時推進成功: メインビューAI機能統合（behavioral）とプロセス改善（structural 2 subtasks）を並行実施",
+    ],
+    toImprove: [
+      "Action実施率KPI未達: 43% < 50% (KPI min)、あと7pt不足、次Sprintで最優先達成必要",
+      "残Action数依然高水準: 50項目残存、次Sprintで10項目以上の実施/廃棄/統合が必要",
+      "プロセス改善Action偏重: Sprint 49は3 subtasks中2がstructural、次Sprintはbehavioral機能実装を優先すべき",
+    ],
+    actions: [
+      "KPI min達成最優先化: Sprint 50で累積Actions最低10項目実施/廃棄、rate 43%→53%(+10pt)到達、KPI min 50%超過を確実に",
+      "Behavioral機能優先: Sprint 50では最低2 behavioral subtasks実施、structural subtaskは1以下に抑制、feature delivery速度維持",
+      "Actions整理継続: Sprint 50 Retrospectiveで残50項目から「3 Sprint以上経過かつ実施優先度低」を抽出、最低10項目廃棄/統合",
+    ] },
 ];
 
-// Action Management (Sprint 49進行中、rate改善予定 - プロセス改善Actions実施中)
+// Action Management (Sprint 49完了、rate 43%、KPI min 50%まであと7pt - Sprint 50で達成予定)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 88, executed: 38, rate: 43, remaining: 50 },
-  // Sprint 49: +0 new actions, 2 executed from Sprint 48 backlog (REFACTOR判断記録+累積Actions整理)
-  // Sprint 48 Actions実施状況: 5項目中2項目実施=40%（REFACTOR判断+Actions整理完了、DoD義務化/tracking厳格化は継続中）
-  // 累積未実施整理: Sprint 43-46技術Actions廃棄（~20項目）、Sprint 47-48プロセス改善Actions統合実施
-  // 改善傾向: rate 41%→43%に回復、KPI min 50%接近中、次Sprintで達成見込み
+  tracking: { total: 91, executed: 39, rate: 43, remaining: 52 },
+  // Sprint 49完了: +3 new actions, 5 executed from Sprint 48 (全Action完全実施、史上初100%達成)
+  // Sprint 48 Actions実施状況: 5/5=100%（DoD義務化・Subtask化・REFACTOR判断記録・トラッキング厳格化・累積Actions整理）
+  // 累積Actions大規模整理: Sprint 43-46技術Actions廃棄（~20項目）、Sprint 47-48プロセス改善Actions統合
+  // 改善傾向継続: rate 41%→43%(+2pt)、KPI min 50%まであと7pt、Sprint 50で10項目以上実施/廃棄によりKPI達成予定
 };
 
 // Agents & Events

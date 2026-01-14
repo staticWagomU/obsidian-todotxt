@@ -591,12 +591,22 @@ button:active {
 }
 
 /* ============================================
- * Apple-style Floating Action Button
- * ============================================ */
-.add-task-button {
+ * Apple-style Floating Action Buttons
+ * ============================================
+ * FABコンテナ: AI追加ボタン + メイン追加ボタンを右下に配置
+ */
+.fab-container {
 	position: fixed;
 	bottom: 24px;
 	right: 24px;
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	z-index: 100;
+}
+
+/* メイン追加ボタン（+） */
+.add-task-button {
 	width: 56px;
 	height: 56px;
 	border-radius: 50%;
@@ -608,7 +618,6 @@ button:active {
 	cursor: pointer;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 	transition: var(--transition-default);
-	z-index: 100;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -621,6 +630,62 @@ button:active {
 
 .add-task-button:active {
 	transform: scale(0.95);
+}
+
+/* AI追加ボタン（✨） - FAB左隣の小さめボタン */
+.ai-add-task-button {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 18px;
+	border: 1px solid var(--background-modifier-border);
+	cursor: pointer;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+	transition: var(--transition-default);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ai-add-task-button:hover {
+	transform: scale(1.1);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	border-color: var(--interactive-accent);
+	background: var(--background-modifier-hover);
+}
+
+.ai-add-task-button:active {
+	transform: scale(0.95);
+}
+
+/* ============================================
+ * Archive Button - Control Bar Style
+ * ============================================
+ * コントロールバー内のツールバー風ボタン
+ */
+.archive-button {
+	padding: var(--spacing-sm) var(--spacing-lg);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--border-radius-md);
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: var(--font-size-small);
+	font-weight: 500;
+	cursor: pointer;
+	transition: var(--transition-default);
+	white-space: nowrap;
+}
+
+.archive-button:hover:not(:disabled) {
+	background-color: var(--background-modifier-hover);
+	border-color: var(--interactive-accent);
+}
+
+.archive-button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
 }
 
 /* ============================================
@@ -1346,13 +1411,23 @@ button:active {
 		min-width: unset;
 	}
 
-	/* FABの位置調整（指が届きやすい位置） */
-	.add-task-button {
+	/* FABコンテナの位置調整（指が届きやすい位置） */
+	.fab-container {
 		bottom: 20px;
 		right: 20px;
+		gap: var(--spacing-sm);
+	}
+
+	.add-task-button {
 		width: 52px;
 		height: 52px;
 		font-size: 26px;
+	}
+
+	.ai-add-task-button {
+		width: 40px;
+		height: 40px;
+		font-size: 16px;
 	}
 
 	/* タスクアイテム - モバイルで縦積みレイアウト */
@@ -1422,15 +1497,25 @@ button:active {
 		min-height: 44px;
 	}
 
-	/* FABをさらに調整 */
-	.add-task-button {
+	/* FABコンテナをさらに調整 */
+	.fab-container {
 		bottom: 16px;
 		right: 16px;
+	}
+
+	.add-task-button {
 		width: 56px;
 		height: 56px;
 		font-size: 28px;
 		/* 影を強めてタップ領域を明確に */
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	}
+
+	.ai-add-task-button {
+		width: 44px;
+		height: 44px;
+		font-size: 18px;
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
 	}
 
 	/* タスクアイテム - コンパクト化 */
@@ -1636,7 +1721,7 @@ button:active {
 			padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
 		}
 
-		.add-task-button {
+		.fab-container {
 			right: max(20px, calc(env(safe-area-inset-right) + 16px));
 			bottom: max(20px, calc(env(safe-area-inset-bottom) + 16px));
 		}

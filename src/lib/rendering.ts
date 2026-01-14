@@ -121,6 +121,7 @@ export function renderTaskList(
 	onDelete: (index: number) => Promise<void>,
 	defaultSettings?: DefaultFilterSettings,
 	onArchive?: () => Promise<void>,
+	onAIAdd?: () => void,
 ): void {
 	// Save current filter state before clearing (with default settings fallback)
 	const filterState = saveFilterState(contentEl, defaultSettings);
@@ -130,19 +131,11 @@ export function renderTaskList(
 	// Add todotxt-view class for styling
 	contentEl.classList.add("todotxt-view");
 
-	// Add task button
-	renderAddButton(contentEl, onAddTask);
+	// Add FAB container (AI add button + task add button)
+	renderFabContainer(contentEl, onAddTask, onAIAdd);
 
-	// Add AI task addition button (placeholder for PBI-047)
-	renderAIAddButton(contentEl);
-
-	// Add archive button if onArchive is provided
-	if (onArchive) {
-		renderArchiveButton(contentEl, data, onArchive);
-	}
-
-	// Add control bar with priority filter and search box
-	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings);
+	// Add control bar with priority filter, search box, and archive button
+	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings, onArchive);
 
 	const ul = contentEl.createEl("ul");
 
@@ -224,48 +217,36 @@ function applyPriorityFilter(todos: Todo[], priorityValue: string): Todo[] {
 }
 
 /**
- * Render add task button
+ * Render FAB container with AI add button and task add button
  */
-function renderAddButton(contentEl: HTMLElement, onAddTask: () => void): void {
-	const addButton = contentEl.createEl("button");
+function renderFabContainer(contentEl: HTMLElement, onAddTask: () => void, onAIAdd?: () => void): void {
+	const fabContainer = contentEl.createEl("div");
+	fabContainer.classList.add("fab-container");
+
+	// AI add button (left side)
+	if (onAIAdd) {
+		const aiButton = fabContainer.createEl("button");
+		aiButton.classList.add("ai-add-task-button");
+		aiButton.textContent = "✨";
+		aiButton.setAttribute("aria-label", "AIでタスクを追加");
+		aiButton.setAttribute("title", "AIでタスクを追加");
+		aiButton.addEventListener("click", () => {
+			onAIAdd();
+		});
+	}
+
+	// Main add button (right side)
+	const addButton = fabContainer.createEl("button");
 	addButton.classList.add("add-task-button");
 	addButton.textContent = "+";
+	addButton.setAttribute("aria-label", "タスクを追加");
 	addButton.addEventListener("click", () => {
 		onAddTask();
 	});
 }
 
 /**
- * Render AI task addition button (placeholder for PBI-047)
- */
-function renderAIAddButton(contentEl: HTMLElement): void {
-	const aiButton = contentEl.createEl("button");
-	aiButton.classList.add("ai-add-task-button");
-	aiButton.textContent = "AI追加";
-	aiButton.addEventListener("click", () => {
-		// Placeholder: Will be implemented in PBI-047
-		console.log("AI task addition (coming in PBI-047)");
-	});
-}
-
-/**
- * Render archive button
- */
-function renderArchiveButton(contentEl: HTMLElement, data: string, onArchive: () => Promise<void>): void {
-	const todos = parseTodoTxt(data);
-	const hasCompletedTasks = todos.some((todo) => todo.completed);
-
-	const archiveButton = contentEl.createEl("button");
-	archiveButton.classList.add("archive-button");
-	archiveButton.textContent = "アーカイブ";
-	archiveButton.disabled = !hasCompletedTasks;
-	archiveButton.addEventListener("click", () => {
-		void onArchive();
-	});
-}
-
-/**
- * Render control bar with filters and sorting options
+ * Render control bar with filters, sorting options, and archive button
  */
 function renderControlBar(
 	contentEl: HTMLElement,
@@ -276,11 +257,12 @@ function renderControlBar(
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
 	defaultSettings?: DefaultFilterSettings,
+	onArchive?: () => Promise<void>,
 ): void {
 	const controlBar = contentEl.createEl("div");
 	controlBar.classList.add("control-bar");
 
-	const onFilterChange = () => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete, defaultSettings);
+	const onFilterChange = () => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete, defaultSettings, onArchive);
 
 	// Render priority filter dropdown
 	renderPriorityFilterDropdown(controlBar, filterState.priority, onFilterChange);
@@ -293,6 +275,28 @@ function renderControlBar(
 
 	// Render sort selector
 	renderSortSelector(controlBar, filterState.sort, onFilterChange);
+
+	// Render archive button if onArchive is provided
+	if (onArchive) {
+		renderArchiveButton(controlBar, data, onArchive);
+	}
+}
+
+/**
+ * Render archive button in control bar
+ */
+function renderArchiveButton(container: HTMLElement, data: string, onArchive: () => Promise<void>): void {
+	const todos = parseTodoTxt(data);
+	const hasCompletedTasks = todos.some((todo) => todo.completed);
+
+	const archiveButton = container.createEl("button");
+	archiveButton.classList.add("archive-button");
+	archiveButton.textContent = "アーカイブ";
+	archiveButton.setAttribute("aria-label", "完了タスクをアーカイブ");
+	archiveButton.disabled = !hasCompletedTasks;
+	archiveButton.addEventListener("click", () => {
+		void onArchive();
+	});
 }
 
 /**

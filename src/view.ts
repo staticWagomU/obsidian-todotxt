@@ -3,6 +3,7 @@ import { parseTodoTxt } from "./lib/parser";
 import { type Todo } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
+import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler } from "./lib/handlers";
 import { renderTaskList, type DefaultFilterSettings } from "./lib/rendering";
 import type TodotxtPlugin from "./main";
@@ -84,7 +85,29 @@ export class TodotxtView extends TextFileView {
 			getDeleteHandler(() => this.data, (data, clear) => this.setViewData(data, clear)),
 			this.getDefaultFilterSettings(),
 			() => this.openArchiveWithConfirmation(),
+			() => this.openAITaskDialog(),
 		);
+	}
+
+	/**
+	 * Open AI task input dialog
+	 * Public for testing compatibility
+	 */
+	openAITaskDialog(): void {
+		if (!this.file) {
+			console.warn("No file associated with this view");
+			return;
+		}
+
+		const dialog = new AITaskInputDialog(
+			this.app,
+			this.plugin.settings.openRouter,
+			this.file.path,
+			() => {
+				this.renderTaskList();
+			}
+		);
+		dialog.open();
 	}
 
 	/**

@@ -105,46 +105,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (No active sprint)
 export const currentSprint = {
-  sprint: 45,
-  pbi: "PBI-045",
-  goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "archiveCompletedTasks関数、getArchiveFilePath関数、appendToArchiveFile関数のテストを実装（完了タスク抽出、done.txtパス生成、ファイル追記処理の検証）",
-      implementation: "完了タスク抽出ロジック、done.txtパス生成、ファイル追記処理を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test(archive): add RED phase tests for archive core functionality" },
-        { phase: "green", message: "feat(archive): implement archive core functionality" },
-      ],
-    },
-    {
-      test: "getArchiveHandler関数、アーカイブボタンのレンダリング、無効化状態のテストを実装（完了タスク0件時の無効化検証）",
-      implementation: "アーカイブボタンUI、ハンドラー統合、完了タスク0件時の無効化処理を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test(handlers): add RED phase tests for archive handler" },
-        { phase: "green", message: "feat(handlers): implement archive handler" },
-      ],
-    },
-    {
-      test: "確認モーダル表示、ハンドラーexposure、完了タスク削除のテストを実装（アーカイブ後の元ファイル更新検証）",
-      implementation: "確認モーダル、Viewからのハンドラーアクセス、アーカイブ後の元ファイル更新を実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test(archive): add RED phase tests for view integration and confirmation modal" },
-        { phase: "green", message: "feat(archive): implement view integration and confirmation modal" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
-// Sprint 44: PBI-044完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
+// Sprint 45: PBI-045完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 
 // Impediments
 export const impediments = { active: [] as { id: string; description: string; status: string }[], resolved: [] as string[] };
@@ -175,34 +144,34 @@ export const completedSprints: CompletedSprint[] = [
 export const retrospectives: Retrospective[] = [
   // Sprint 42: Phase 9完遂、REFACTOR率50%達成、CSS 214→513行 - see git history
   // Sprint 43: 740t(+114t)、70エッジケーステスト追加、Phase 10開始 - see git history
-  { sprint: 44,
+  // Sprint 44: 738t(-2t統合化)、Phase 10完遂、Actions 5項目未消化 - see git history
+  { sprint: 45,
     workedWell: [
-      "TDD厳守: 完璧なRED-GREENサイクル（3 RED→3 GREEN commits）",
-      "統合テスト最適化: 740t→738t(-2t)、重複テスト統合で保守性向上",
-      "複雑度見積精度: LOW complexity適切、3 subtasks見積正確",
-      "Phase 10完遂: 2 Sprint計画通り完了（Sprint 43-44）",
-      "追加GREEN commit活用: Subtask 3で統合テスト追加、柔軟な対応",
+      "完璧なTDD実行: RED-GREEN 6 commits、テストファースト徹底",
+      "lint自動検出: Sprint Review時にlint issueを検出・即座に修正（品質維持）",
+      "Test増加率健全: 738t→762t(+24t, 3.25%増)、機能拡張に比例した適切なテスト追加",
+      "Phase 11完遂: 1 Sprint計画で完了、アーカイブ機能実装達成",
+      "Sprint 44 Actions部分実施: Phase 11方向性決定とLOW complexity PBI実施（2/5項目）",
     ],
     toImprove: [
-      "REFACTOR phase不実施（Sprint 43と同様の課題が継続）",
-      "Sprint 43 Actions全件未実施（5項目未消化、累積10項目）",
-      "Phase 11方向性未決定（PBI-045～047がdraft状態）",
-      "Test数変動の詳細説明不足（-2t統合化の具体的内容記録なし）",
+      "REFACTOR phase未実施継続: Sprint 43/44に続き3 Sprint連続でREFACTOR phase未実施",
+      "Sprint 44 Actions 60%未実施: 5項目中3項目未実施（累積Actions増加）",
+      "lint issue後検出: Review時に検出（開発中のlint実行習慣不足）",
+      "Action累積加速: 累積未実施Actions増加傾向（KPI 46%維持）",
     ],
     actions: [
-      "REFACTOR実施ルール策定（GREEN完了後必ずREFACTOR検討プロセス追加）",
-      "Phase 11方向性決定（PBI-045 Backlog Refinement実施、技術的負債 vs 新機能判断）",
-      "累積Action項目優先順位付け（Sprint 43/44の10項目から最重要3項目選定）",
-      "Test数変動記録テンプレート導入（増減理由・影響範囲を明示）",
-      "LOW complexity PBI連続実施検討（Phase 11で小粒度PBI複数Sprint可能性評価）",
+      "開発中lint実行習慣化: GREEN commit前に`pnpm lint`必須実行プロセス導入",
+      "REFACTOR判断基準明確化: GREEN完了時にREFACTOR要否チェックリスト導入（コード重複/複雑度/命名/構造）",
+      "累積Actions緊急対処: Sprint 46でAction実施専用Subtask追加検討（技術的負債返済）",
+      "Action KPI目標引き上げ: 次Phase（Phase 12）でexecution rate 50%→70%目標設定",
     ] },
 ];
 
-// Action Management (Sprint 44完了、rate 46% below KPI min)
+// Action Management (Sprint 45完了、rate 47% still below KPI min)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 69, executed: 32, rate: 46, remaining: 37 },
-  // Sprint 44: +5 actions, 0 executed from backlog (累積未実施15項目: Sprint 42/43/44各5項目)
+  tracking: { total: 73, executed: 34, rate: 47, remaining: 39 },
+  // Sprint 45: +4 actions, 2 executed from Sprint 44 backlog (累積未実施16項目: Sprint 43残3+Sprint 44残3+Sprint 45新4+過去6)
 };
 
 // Agents & Events

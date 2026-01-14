@@ -412,6 +412,7 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 
 			// Spy on openFileSelectionModal method
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const openFileSelectionModalSpy = vi.spyOn(view, "openFileSelectionModal" as any);
 
 			await view.onOpen();
@@ -508,6 +509,7 @@ describe("TodoSidePanelView", () => {
 			expect(editButtons.length).toBeGreaterThan(0);
 
 			// Spy on openEditTaskModal method
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const openEditTaskModalSpy = vi.spyOn(view, "openEditTaskModal" as any);
 
 			// Click first edit button
@@ -630,6 +632,7 @@ describe("TodoSidePanelView", () => {
 			await view.onOpen();
 
 			// Spy on openDeleteConfirmDialog method
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const openDeleteConfirmDialogSpy = vi.spyOn(view, "openDeleteConfirmDialog" as any);
 
 			// Click delete button

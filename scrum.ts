@@ -48,54 +48,10 @@ export const productGoal = {
 export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-7完了: Sprint 1-34（34 PBIs done）
   // Phase 8完了 (Sprint 35-39): フォームUI強化、626t達成(+72t)
-  //   Sprint 35 PBI-035: 優先度ドロップダウン、563t(+9t)、done
-  //   Sprint 36 PBI-036: デートピッカー、585t(+22t)、done
-  //   Sprint 37 PBI-037: プロジェクト/コンテキスト選択、597t(+12t)、done
-  //   Sprint 38 PBI-038: リアルタイムプレビュー、610t(+13t)、done
-  //   Sprint 39 PBI-039: フォーム/テキストモード切替、626t(+16t)、done
   // Phase 9完了 (Sprint 40-42): UIデザイン刷新（Apple-likeモダンデザイン）、626t維持
-  //   Sprint 40 PBI-040: ミニマルUIデザイン基盤、626t、done
-  //   Sprint 41 PBI-041: 滑らかなインタラクション、626t、done
-  //   Sprint 42 PBI-042: モーダル洗練デザイン、626t、done、REFACTOR率50%達成
-  // Phase 10: パーサー堅牢化（unified-test-cases.md準拠）
-  {
-    id: "PBI-043",
-    story: {
-      role: "todo.txtユーザー",
-      capability: "様々なエッジケースを含むtodo.txt形式のタスクを正確にパースできる",
-      benefit: "公式仕様に準拠した堅牢なパース結果を得られ、データの信頼性が向上する",
-    },
-    acceptanceCriteria: [
-      { criterion: "優先度エッジケース11件をテストでカバー（小文字/数字/複数文字/スペース内包等の無効形式検出）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'priority edge'" },
-      { criterion: "日付エッジケース14件をテストでカバー（スラッシュ形式/ゼロパディングなし/無効月日等の検出）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'date edge'" },
-      { criterion: "プロジェクト/コンテキストエッジケース17件をテストでカバー（前空白必須/メールアドレス誤認識防止）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'project context edge'" },
-      { criterion: "タグエッジケース12件をテストでカバー（URL/時刻/複数コロン等の対応）", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'tag edge'" },
-      { criterion: "完了マーク/空白/特殊文字エッジケース20件をテストでカバー", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'completion|whitespace|special'" },
-      { criterion: "実用的な複合パターン8件をテストでカバー", verification: "pnpm vitest run src/lib/parser.test.ts -- -t 'practical'" },
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: { functions: 2, estimatedTests: 82, externalDependencies: 0, score: "HIGH", subtasks: 6 },
-    refactorChecklist: ["パーサー関数の責務分離", "正規表現の最適化", "エラーメッセージの改善"],
-    // Implementation Policies (7 items): 完了優先度=保持, 日付=フォーマットのみ, Unicode=許可, 空白=トリム, コメント=非対応, タグコロン=最初分割, エラー=パース継続
-  },
-  {
-    id: "PBI-044",
-    story: {
-      role: "Obsidianユーザー",
-      capability: "設定からtodo.txtとして扱うファイルパスを指定できる",
-      benefit: "意図しないファイルがtodo.txtビューで開かれることを防ぎ、明示的に管理対象を制御できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "設定画面でファイルパス（複数可）を入力できるUIが存在する", verification: "pnpm build && 手動確認: 設定タブにファイルパス入力欄が表示される" },
-      { criterion: "指定されたパスのファイルのみがtodo.txtビューで開かれる", verification: "pnpm vitest run -- -t 'file path setting'" },
-      { criterion: "パスが未指定の場合は従来通り.txt/.todotxt拡張子で判定する", verification: "pnpm vitest run -- -t 'default extension'" },
-      { criterion: "存在しないパスを指定した場合にエラーにならない", verification: "pnpm vitest run -- -t 'invalid path'" },
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: { functions: 4, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 3 },
-  },
+  // Phase 10完了 (Sprint 43-44): パーサー堅牢化・設定強化、738t達成(+112t)
+  //   Sprint 43 PBI-043: パーサー堅牢化（エッジケース対応）、740t(+114t)、done
+  //   Sprint 44 PBI-044: 設定ベースのファイルパス管理、738t(-2t統合化)、done
   {
     id: "PBI-045",
     story: {
@@ -164,46 +120,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (No active sprint)
 export const currentSprint = {
-  sprint: 44,
-  pbi: "PBI-044",
-  goal: "設定ベースのファイルパス管理を実現し、ユーザーが明示的にtodo.txt管理対象を制御できる",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "settings.tsにtodotxtFilePathsプロパティのテストを記述、デフォルト空配列を検証",
-      implementation: "TodotxtPluginSettingsインターフェースにtodotxtFilePaths: string[]を追加、DEFAULT_SETTINGSに空配列を設定",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(settings): add todotxtFilePaths property tests" },
-        { phase: "green" as CommitPhase, message: "feat(settings): add todotxtFilePaths property to settings" },
-      ],
-    },
-    {
-      test: "指定パスマッチング・デフォルト拡張子判定・存在しないパス処理のテストを記述（3テストケース）",
-      implementation: "ファイルパスが設定配列に含まれるか判定する関数を実装、未指定時は.txt/.todotxt拡張子で判定",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(file-matcher): add file path matching tests" },
-        { phase: "green" as CommitPhase, message: "feat(file-matcher): implement file path matching logic" },
-      ],
-    },
-    {
-      test: "設定画面でファイルパス入力欄が存在するテストを記述（UI要素検証）",
-      implementation: "SettingTab.tsにテキストエリア追加、複数パス入力（改行区切り）をサポート、保存/読み込み処理実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(settings): add UI tests for file paths textarea" },
-        { phase: "green" as CommitPhase, message: "feat(settings): add file paths textarea to settings UI" },
-        { phase: "green" as CommitPhase, message: "test(main): add integration tests for file path matching" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 44: PBI-044完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 
 // Impediments
 export const impediments = { active: [] as { id: string; description: string; status: string }[], resolved: [] as string[] };
@@ -231,33 +156,35 @@ export const completedSprints: CompletedSprint[] = [
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
   // Sprint 42: Phase 9完遂、REFACTOR率50%達成、CSS 214→513行 - see git history
-  { sprint: 43,
+  // Sprint 43: 740t(+114t)、70エッジケーステスト追加、Phase 10開始 - see git history
+  { sprint: 44,
     workedWell: [
-      "TDD厳守: 626t→740t(+114t,18%増)、70エッジケーステスト追加",
-      "RED-GREEN-REFACTORサイクル徹底: プロジェクト/コンテキスト前スペース必須化・タグ最初コロン分割の2件修正",
-      "unified-test-cases.md完全準拠: 82件見積→70件実装（既存テストで基本パターンカバー済）",
-      "実装ポリシー7項目明文化（implementationPolicies）",
-      "Phase 10完遂: パーサー堅牢化を1 Sprintで達成",
+      "TDD厳守: 完璧なRED-GREENサイクル（3 RED→3 GREEN commits）",
+      "統合テスト最適化: 740t→738t(-2t)、重複テスト統合で保守性向上",
+      "複雑度見積精度: LOW complexity適切、3 subtasks見積正確",
+      "Phase 10完遂: 2 Sprint計画通り完了（Sprint 43-44）",
+      "追加GREEN commit活用: Subtask 3で統合テスト追加、柔軟な対応",
     ],
     toImprove: [
-      "Subtask 1/2でRED失敗せず（既存実装が正確）",
-      "見積もり乖離（82→70件）、既存テスト重複分析不足",
-      "REFACTORフェーズ不実施（改善機会損失）",
-      "Sprint 42 Action未消化（5件残存）",
+      "REFACTOR phase不実施（Sprint 43と同様の課題が継続）",
+      "Sprint 43 Actions全件未実施（5項目未消化、累積10項目）",
+      "Phase 11方向性未決定（PBI-045～047がdraft状態）",
+      "Test数変動の詳細説明不足（-2t統合化の具体的内容記録なし）",
     ],
     actions: [
-      "テスト記述テンプレート導入",
-      "既存テストとの差分分析プロセス確立",
-      "REFACTORチェックリスト策定",
-      "Phase 11方向性決定（技術的負債/新機能/パフォーマンス）",
-      "Sprint 42 Action残件優先順位付け",
+      "REFACTOR実施ルール策定（GREEN完了後必ずREFACTOR検討プロセス追加）",
+      "Phase 11方向性決定（PBI-045 Backlog Refinement実施、技術的負債 vs 新機能判断）",
+      "累積Action項目優先順位付け（Sprint 43/44の10項目から最重要3項目選定）",
+      "Test数変動記録テンプレート導入（増減理由・影響範囲を明示）",
+      "LOW complexity PBI連続実施検討（Phase 11で小粒度PBI複数Sprint可能性評価）",
     ] },
 ];
 
-// Action Management (Sprint 43完了、rate 50% at KPI min)
+// Action Management (Sprint 44完了、rate 46% below KPI min)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 64, executed: 32, rate: 50, remaining: 32 },
+  tracking: { total: 69, executed: 32, rate: 46, remaining: 37 },
+  // Sprint 44: +5 actions, 0 executed from backlog (累積未実施15項目: Sprint 42/43/44各5項目)
 };
 
 // Agents & Events

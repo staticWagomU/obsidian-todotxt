@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 50, pbi: "PBI-049", status: "in_progress" as SprintStatus,
+  sprint: { number: 50, pbi: "PBI-049", status: "done" as SprintStatus,
     subtasksCompleted: 2, subtasksTotal: 2, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049(ready),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-049(done),PBI-048", goal: "サイドパネルフル機能化・バグ修正 - 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -115,35 +115,13 @@ export const definitionOfReady = {
 
 // Current Sprint
 export const currentSprint = {
-  sprint: 50,
-  pbi: "PBI-049",
-  goal: "検索ボックスフォーカス維持機能実装により、サイドパネル・メインビュー両方で快適な検索体験を提供",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    {
-      test: "サイドパネル検索ボックスでフォーカスが維持され、連続入力・リスト部分更新・カーソル位置維持が正常動作する",
-      implementation: "side-panel-view.ts onSearch関数とレンダリングロジックを修正、検索時にリスト部分のみ更新しコントロールバーを保持",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test(search): add side panel search focus maintenance tests" },
-        { phase: "green", message: "feat(search): implement side panel search focus maintenance" },
-      ],
-      // REFACTOR判断: 不要 - (1)重複なし (2)複雑度良好renderTaskListOnly5行 (3)命名明確 (4)構造適切分離 → 全4項目OK
-    },
-    {
-      test: "メインビュー（rendering.ts）検索ボックスでフォーカスが維持され、サイドパネルと同等の動作をする",
-      implementation: "rendering.ts renderSearchBox関数を修正、検索時の部分更新ロジックを実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red", message: "test(search): add main view search focus maintenance tests" },
-        { phase: "green", message: "feat(search): implement main view search focus maintenance" },
-      ],
-      // REFACTOR判断: 不要 - (1)重複削減renderTaskListSection抽出 (2)複雑度良好28行+10行 (3)命名明確 (4)構造適切分離 → 全4項目OK
-    },
-  ] as Subtask[],
+  sprint: 51,
+  pbi: "PBI-048",
+  goal: "サイドパネルからメインビューと同等の機能をコンパクトなUIで操作可能にする",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), 813t維持, see git history
 // Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history
 // Sprint 48: PBI-051完了 - 1 subtask, 4 commits (1 RED, 1 GREEN, 2 REFACTOR), see git history
 
@@ -182,6 +160,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 13 (Sprint 48-51): サイドパネルフル機能化・バグ修正開始
   { sprint: 48, pbi: "PBI-051", story: "サイドパネルボタン修正とリスト更新実装", verification: "passed", notes: "805t(+4t),Subtask1完了(RED1+GREEN1+REFACTOR2=4commit),既存実装テスト追加,共通処理抽出,Promise処理適正化,IMP-048-1/2解決,Phase 13開始" },
   { sprint: 49, pbi: "PBI-050", story: "メインビューAI機能統合+プロセス改善基盤確立", verification: "passed", notes: "807t(+2t),Subtask3完了(RED1+GREEN4commit),AC2/AC3テスト追加,REFACTOR判断4項目チェック体制確立,累積Actions整理(29項目→2項目実施),actionManagement改善(41%→43%)" },
+  { sprint: 50, pbi: "PBI-049", story: "検索ボックスフォーカス維持機能実装", verification: "passed", notes: "813t維持,Subtask2完了(RED2+GREEN2+bugfix1=5commit),サイドパネル/メインビュー両方対応,renderTaskListOnly/renderTaskListSection部分更新実装,REFACTOR判断2回不要,DoD全pass" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

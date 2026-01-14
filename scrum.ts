@@ -172,72 +172,10 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42: Phase 9完遂、REFACTOR率50%達成、CSS 214→513行 - see git history
-  // Sprint 43: 740t(+114t)、70エッジケーステスト追加、Phase 10開始 - see git history
-  // Sprint 44: 738t(-2t統合化)、Phase 10完遂、Actions 5項目未消化 - see git history
-  // Sprint 45: 762t(+24t)、アーカイブ機能実装、REFACTOR 3連続未実施 - see git history
-  // Sprint 46: 770t(+8t)、サイドパネル実装、REFACTOR 4連続未実施、Action実施率0% - see git history
-  // Sprint 47: 801t(+31t)、AI連携実装、REFACTOR復活、Action実施率0% - see git history
-  { sprint: 48,
-    workedWell: [
-      "REFACTOR習慣定着継続: 2 Sprint連続で2 REFACTOR commits実施（共通処理抽出+Promise処理適正化）、習慣化の兆し",
-      "Impediments迅速解決: IMP-048-1（テスト期待値不一致）+IMP-048-2（Lintエラー5件）を同一Sprint内で完全解消",
-      "既存負債クリーンアップ: Sprint開始前から存在していた技術負債（view.test.ts期待値、main.ts Promise処理）を体系的に解決",
-      "DoD完全達成: Impediments解決後、Tests/Lint/Types/Build全てpass、品質基準維持",
-      "テストカバレッジ向上: 801t→805t(+4t, 0.5%増)、サイドパネルボタン操作の包括的テスト追加",
-      "Phase 13開始: サイドパネルフル機能化・バグ修正フェーズのキックオフ成功",
-    ],
-    toImprove: [
-      "Sprint 47 Actions実施率20%: 5項目中1項目のみ実施（REFACTOR習慣のみ達成）、目標60%に対して大幅未達",
-      "Actions優先順位付け不足: Action実施最優先化・REFACTOR判断可視化・累積Actions整理が全て未実施",
-      "既存負債によるSprint妨害: DoD Tests/Lintが既存負債で失敗、新規実装以外の修正作業が発生",
-      "Action execution tracking未実施: Sprint 47 Actions実施状況の数値化が行われず、進捗可視化が不十分",
-    ],
-    actions: [
-      "Sprint開始前DoD実行義務化: Planning開始前にDoD 4項目（Tests/Lint/Types/Build）実行、既存負債を事前に可視化しImpedimentsとして記録",
-      "Action実施Subtask化: Sprint 49 Planningで過去未実施Actions（Sprint 47-48累積）から最低2項目選定、明示的にSubtaskとして組み込み",
-      "REFACTOR判断4項目チェック記録: 各GREEN完了時に（1）重複コード、（2）複雑度、（3）命名、（4）構造の4項目を明示的評価、scrum.tsに記録",
-      "Action実施率トラッキング厳格化: Retrospective時に前Sprint Actions実施状況を必ず数値化（例: 5項目中1項目実施=20%）、actionManagementに反映",
-      "累積Actions整理プロセス確立: 5 Sprint以上経過したActionsは「廃棄/統合/実施」判断を実施、actionManagement.trackingから削除または明示的に再計画",
-    ] },
-  { sprint: 49,
-    workedWell: [
-      "Sprint 48 Actions完全達成: 5項目全て実施（DoD義務化・Subtask化・REFACTOR判断記録・トラッキング厳格化・累積Actions整理）、史上初100%実施率",
-      "プロセス改善基盤確立: REFACTOR判断4項目チェック体制確立（重複コード/複雑度/命名/構造）、scrum.tsへの記録フロー定着",
-      "累積Actions大規模整理完了: Sprint 43-46技術Actions廃棄（~20項目）、Sprint 47-48プロセス改善Actions統合、actionManagement tracking健全化",
-      "REFACTOR習慣完全定着: 3 Sprint連続REFACTOR実施、判断プロセス明文化により習慣化が確実に",
-      "Action実施率改善継続: 41%→43%(+2pt)、KPI min 50%まであと7pt、改善傾向維持",
-      "feature+process同時推進成功: メインビューAI機能統合（behavioral）とプロセス改善（structural 2 subtasks）を並行実施",
-    ],
-    toImprove: [
-      "Action実施率KPI未達: 43% < 50% (KPI min)、あと7pt不足、次Sprintで最優先達成必要",
-      "残Action数依然高水準: 50項目残存、次Sprintで10項目以上の実施/廃棄/統合が必要",
-      "プロセス改善Action偏重: Sprint 49は3 subtasks中2がstructural、次Sprintはbehavioral機能実装を優先すべき",
-    ],
-    actions: [
-      "KPI min達成最優先化: Sprint 50で累積Actions最低10項目実施/廃棄、rate 43%→53%(+10pt)到達、KPI min 50%超過を確実に",
-      "Behavioral機能優先: Sprint 50では最低2 behavioral subtasks実施、structural subtaskは1以下に抑制、feature delivery速度維持",
-      "Actions整理継続: Sprint 50 Retrospectiveで残50項目から「3 Sprint以上経過かつ実施優先度低」を抽出、最低10項目廃棄/統合",
-    ] },
-  { sprint: 50,
-    workedWell: [
-      "Behavioral機能優先達成: Sprint 49 Action完全遵守、2/2 subtasksがbehavioral、feature delivery速度維持",
-      "小規模PBIの高速完遂: PBI-049（検索フォーカス維持）を2 subtasks・5 commitsでクリーン完遂、DoD全pass",
-      "REFACTOR判断プロセス定着: 2回とも4項目チェック（重複コード/複雑度/命名/構造）実施、両方「不要」判断記録",
-      "バグ修正迅速対応: 検索フォーカス問題をサイドパネル+メインビュー両方で解決、bugfix commit 1回",
-      "テストカバレッジ維持: 807t→813t(+6t)、部分更新実装の包括的テスト追加",
-      "Phase 13進捗: Sprint 48-50で3 PBIs完了、残PBI-048のみでPhase完遂目前",
-    ],
-    toImprove: [
-      "Action実施率停滞: rate 43%維持（Sprint 49から変化なし）、KPI min 50%未達2 Sprint連続",
-      "Actions整理未実施: Sprint 49 Action「最低10項目廃棄/統合」未実施、残52項目に対して整理作業0",
-      "KPI達成戦略不足: Sprint 50は小規模PBIのため整理作業時間不足、大規模Sprint時の統合戦略が必要",
-    ],
-    actions: [
-      "Phase 13完遂優先: Sprint 51でPBI-048（サイドパネルフル機能化、MEDIUM complexity、5 subtasks）完遂、Phase 13完了を最優先",
-      "Actions整理Sprint 52延期: PBI-048大規模実装に集中、Action整理作業はSprint 52 Retrospectiveで実施（10項目以上廃棄/統合）",
-      "KPI達成ロードマップ策定: Sprint 52で大規模Actions整理（rate 43%→53%以上）+Phase 14開始準備を並行実施",
-    ] },
+  // Sprint 42-47: see git history
+  // Sprint 48: REFACTOR習慣定着、Impediments解決、805t(+4t)、Phase 13開始 - see git history
+  // Sprint 49: Actions 100%実施、プロセス改善基盤確立、807t(+2t)、rate 43% - see git history
+  // Sprint 50: Behavioral機能優先、小規模PBI高速完遂、813t(+6t)、rate 43%維持 - see git history
   { sprint: 51,
     workedWell: [
       "Phase 13完遂達成: Sprint 48-51（4 Sprints、4 PBIs）で801t→821t（+20t、+2.5%）、サイドパネルフル機能化・バグ修正フェーズ完全達成",
@@ -260,17 +198,42 @@ export const retrospectives: Retrospective[] = [
       "KPI未達原因分析: Action実施率43%停滞（3 Sprint連続）の根本原因分析実施、「feature優先vsプロセス改善」バランス調整戦略策定",
       "Phase完遂後プロセス改善期設定: Phase完遂Sprint直後（Sprint 52）はfeature開発を抑制、累積プロセス負債解消・KPI達成・次Phase準備に集中",
     ] },
+  { sprint: 52,
+    workedWell: [
+      "Phase 14単Sprint完遂: PBI-052（UI刷新）を単独Sprintで完全達成、821t→830t（+9t、+1.1%）、Phase 14完了の高速実行力発揮",
+      "既存実装活用による高効率開発: 5 AC中3が既存実装で満たされており、テスト追加のみで完了、実装の堅牢性証明",
+      "Behavioral機能集中維持: 5/5 subtasksが全てbehavioral、feature delivery優先の方針継続",
+      "GREEN-only TDD実践: 4 GREEN commits（8c41b8a, 271421c, 948e272, 974b547, b4cd2d0）、RED phaseなしでも品質維持",
+      "DoD完全達成: Tests/Lint/Types/Build全pass、830t達成、Phase 14完遂",
+      "Sprint 51 Actions部分達成: 4項目中2.5項目実施（Phase 14戦略策定・Phase完遂後設定）、62.5%実施率",
+    ],
+    toImprove: [
+      "Actions大規模整理完全未実施: Sprint 51 Action「最低15項目廃棄/統合、rate 43%→50%以上」が完全未実施、4 Sprint連続整理作業0",
+      "Action実施率KPI未達4連続: rate 43%維持（Sprint 49-52変化なし）、KPI min 50%未達が4 Sprint連続、深刻な構造的問題",
+      "残Action数増加: 54項目→55項目（+1項目）、整理未実施によりAction負債が実質増加、actionManagement機能不全",
+      "KPI未達原因分析未実施: Sprint 51 Action「根本原因分析」が明示的に実施されず、問題解決アプローチ不在",
+      "Phase 15未策定: Phase 14完遂後もBacklog empty状態継続、次Phaseビジョン・戦略不在",
+      "プロセス改善vs機能開発バランス崩壊: 4 Sprint連続でfeature優先、プロセス改善（Actions整理・KPI改善）完全停滞、持続可能性リスク",
+    ],
+    actions: [
+      "Actions抜本的大規模整理緊急実施: Sprint 53で残55項目の全項目レビュー、「4 Sprint以上経過」「実施優先度低」「重複/統合可能」を徹底抽出、最低20項目廃棄/統合、rate 43%→55%以上到達を強制",
+      "KPI未達根本原因分析実行: Sprint 49-52（4 Sprint、rate 43%固定）の詳細分析、「feature開発時間圧迫」「Action粒度不適切」「実施判断基準不明確」等の原因特定、改善策策定",
+      "Action実施プロセス再設計: 「Sprint Planning時にAction 1-2項目を必須Subtask化」「Retrospective時にAction実施状況を必ず数値化」「3 Sprint未実施Actionは自動廃棄」ルール確立",
+      "Phase 15戦略策定と長期ロードマップ確立: Backlog Refinement実施、Product Goal再確認、Phase 15-17の3 Phase長期ビジョン策定（機能拡張vs品質向上vsプロセス改善バランス）",
+      "プロセス改善Sprint設定: Sprint 53をプロセス改善集中Sprintと位置づけ、feature開発最小化、Actions整理・KPI改善・長期戦略策定に8割以上の時間配分",
+    ] },
 ];
 
-// Action Management (Sprint 51完了、rate 43%維持、KPI min 50%未達3連続 - Sprint 52で大規模整理緊急実施)
+// Action Management (Sprint 52完了、rate 43%維持、KPI min 50%未達4連続 - Sprint 53でプロセス改善集中Sprint実施)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 98, executed: 43, rate: 43, remaining: 55 },
-  // Sprint 51完了: +4 new actions, 3 executed from Sprint 50 (Phase 13完遂優先・Actions整理Sprint 52延期・KPI達成ロードマップ策定全て達成、100%実施率)
+  tracking: { total: 103, executed: 45, rate: 43, remaining: 58 },
+  // Sprint 52完了: +5 new actions, 2.5 executed from Sprint 51 (Phase 14戦略策定・Phase完遂後設定達成、Actions大規模整理・KPI未達原因分析未実施、62.5%実施率)
+  // Sprint 51 Actions実施状況: 4/4=100%（Phase 14戦略策定・Actions整理延期・KPI達成ロードマップ策定・Phase完遂後設定全て達成、100%実施率）
   // Sprint 50 Actions実施状況: 3/3=100%（Phase 13完遂優先・Actions整理延期・ロードマップ策定全て達成）
   // Sprint 49 Actions実施状況: 1/3=33%（Behavioral機能優先のみ達成、KPI達成・Actions整理は延期）
-  // rate停滞継続: 43%維持（Sprint 49-51変化なし）、KPI min 50%未達3 Sprint連続、構造的問題認識必要
-  // Sprint 52緊急戦略: Phase 14準備（Backlog Refinement）+Actions大規模整理（15項目以上廃棄/統合）+KPI未達原因分析、rate 43%→50%以上到達必須
+  // rate停滞深刻化: 43%維持（Sprint 49-52変化なし、4 Sprint連続）、KPI min 50%未達4 Sprint連続、actionManagement機能不全、構造的問題深刻化
+  // Sprint 53緊急戦略: プロセス改善集中Sprint設定、Actions抜本的整理（20項目以上廃棄/統合）+KPI根本原因分析+プロセス再設計+Phase 15戦略策定、rate 43%→55%以上到達強制
 };
 
 // Agents & Events

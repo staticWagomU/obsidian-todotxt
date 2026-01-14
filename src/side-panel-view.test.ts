@@ -250,10 +250,10 @@ describe("TodoSidePanelView", () => {
 			view.app = mockPlugin.app;
 			await view.onOpen();
 
-			// Check that AI button is displayed (now with ✨ emoji)
+			// Check that AI button is displayed (with text for footer button style)
 			const aiButton = view.contentEl.querySelector(".ai-add-task-button");
 			expect(aiButton).not.toBeNull();
-			expect(aiButton?.textContent).toBe("✨");
+			expect(aiButton?.textContent).toBe("✨ AIタスク追加");
 		});
 
 		it("should open AITaskInputDialog when AI button is clicked", async () => {

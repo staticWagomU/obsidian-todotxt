@@ -133,14 +133,14 @@ export function renderTaskList(
 	// Add todotxt-view class for styling
 	contentEl.classList.add("todotxt-view");
 
+	// Add FAB container (AI add button + task add button)
+	renderFabContainer(contentEl, onAddTask, onAIAdd);
+
 	// Add control bar with priority filter, search box, and archive button
 	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings, onArchive);
 
 	// Render task list section
 	renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete);
-
-	// Add footer buttons (AI add button + task add button) at the end
-	renderFooterButtons(contentEl, onAddTask, onAIAdd);
 }
 
 /**
@@ -254,19 +254,17 @@ function applyStatusFilter(todos: Todo[], statusValue: string): Todo[] {
 }
 
 /**
- * Render footer buttons (fixed at bottom) with AI and main add buttons
- * AI button on the left, main add button on the right
- * This replaces the FAB (Floating Action Button) design
+ * Render FAB container with AI add button and task add button
  */
-function renderFooterButtons(contentEl: HTMLElement, onAddTask: () => void, onAIAdd?: () => void): void {
-	const footer = contentEl.createEl("div");
-	footer.classList.add("footer-buttons");
+function renderFabContainer(contentEl: HTMLElement, onAddTask: () => void, onAIAdd?: () => void): void {
+	const fabContainer = contentEl.createEl("div");
+	fabContainer.classList.add("fab-container");
 
 	// AI add button (left side)
 	if (onAIAdd) {
-		const aiButton = footer.createEl("button");
+		const aiButton = fabContainer.createEl("button");
 		aiButton.classList.add("ai-add-task-button");
-		aiButton.textContent = "✨ AIタスク追加";
+		aiButton.textContent = "✨";
 		aiButton.setAttribute("aria-label", "AIでタスクを追加");
 		aiButton.setAttribute("title", "AIでタスクを追加");
 		aiButton.addEventListener("click", () => {
@@ -275,9 +273,9 @@ function renderFooterButtons(contentEl: HTMLElement, onAddTask: () => void, onAI
 	}
 
 	// Main add button (right side)
-	const addButton = footer.createEl("button");
+	const addButton = fabContainer.createEl("button");
 	addButton.classList.add("add-task-button");
-	addButton.textContent = "+ タスク追加";
+	addButton.textContent = "+";
 	addButton.setAttribute("aria-label", "タスクを追加");
 	addButton.addEventListener("click", () => {
 		onAddTask();

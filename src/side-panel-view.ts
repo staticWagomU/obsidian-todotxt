@@ -115,37 +115,38 @@ export class TodoSidePanelView extends ItemView {
 		this.contentEl.classList.add("todotxt-view");
 		this.contentEl.classList.add("todotxt-sidepanel-compact");
 
-		// Render FAB container
-		this.renderFabContainer();
-
 		// Render control bar
 		this.renderControlBar();
 
 		// Render task list
 		this.renderTaskList();
+
+		// Render footer buttons at the end (for side panel UI)
+		this.renderFooterButtons();
 	}
 
 	/**
-	 * Render FAB container with AI add button and task add button
+	 * Render footer buttons (fixed at bottom) with AI and main add buttons
+	 * Side panel specific: uses footer-buttons class instead of fab-container
 	 */
-	renderFabContainer(): void {
-		const fabContainer = this.contentEl.createEl("div");
-		fabContainer.classList.add("fab-container");
+	renderFooterButtons(): void {
+		const footer = this.contentEl.createEl("div");
+		footer.classList.add("footer-buttons");
 
-		// AI add button
-		const aiButton = fabContainer.createEl("button");
+		// AI add button (left side)
+		const aiButton = footer.createEl("button");
 		aiButton.classList.add("ai-add-task-button");
-		aiButton.textContent = "✨";
+		aiButton.textContent = "✨ AIタスク追加";
 		aiButton.setAttribute("aria-label", "AIでタスクを追加");
 		aiButton.setAttribute("title", "AIでタスクを追加");
 		aiButton.addEventListener("click", () => {
 			this.openAITaskDialog();
 		});
 
-		// Main add button
-		const addButton = fabContainer.createEl("button");
+		// Main add button (right side)
+		const addButton = footer.createEl("button");
 		addButton.classList.add("add-task-button");
-		addButton.textContent = "+";
+		addButton.textContent = "+ タスク追加";
 		addButton.setAttribute("aria-label", "タスクを追加");
 		addButton.addEventListener("click", () => {
 			this.openAddTaskDialog();

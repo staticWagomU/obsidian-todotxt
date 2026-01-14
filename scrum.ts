@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 55, pbi: "PBI-055", status: "in_progress" as SprintStatus,
+  sprint: { number: 55, pbi: "PBI-055", status: "done" as SprintStatus,
     subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
-  phase: { number: 16, status: "in_progress", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
+  phase: { number: 16, status: "done", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
 // Product Goal
@@ -47,7 +47,7 @@ export const productGoal = {
 // Long-term Roadmap (Phase 15-17) - Sprint 53策定、詳細はgit履歴参照
 export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
-  phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "in_progress" },
+  phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "not_started" },
 };
 
@@ -116,7 +116,7 @@ export const currentSprint = {
   sprint: 55,
   pbi: "PBI-055",
   goal: "複数タスクAI一括処理機能実装により、Phase 16（AI自然言語タスク編集・一括処理）を完遂する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "「一括選択」ボタンクリック→チェックボックス表示、モード切替状態管理テスト",
@@ -211,8 +211,9 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 52, pbi: "PBI-052", story: "サイドパネルUI刷新", verification: "passed", notes: "830t(+9t),5subtasks,5commits,Phase 14完遂" },
   // Phase 15完了 (Sprint 53): プロセス基盤再構築、Action実施率58%達成
   { sprint: 53, pbi: "PBI-053", story: "プロセス改善集中Sprint", verification: "passed", notes: "830t維持,5subtasks(1behavioral+4structural),5commits,rate43%→58%,KPI達成,Phase 15完遂" },
-  // Phase 16開始 (Sprint 54-55): AI自然言語タスク編集・一括処理
+  // Phase 16完了 (Sprint 54-55): AI自然言語タスク編集・一括処理、837t達成(+7t)
   { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks(4behavioral+3structural),7commits(1RED+3GREEN+3REFACTOR),Action実践検証100%,Phase 16開始" },
+  { sprint: 55, pbi: "PBI-055", story: "複数タスクAI一括処理", verification: "passed_with_known_failures", notes: "837t(+2t),8subtasks(6behavioral+2structural),8commits(4GREEN+2REFACTOR),DoD 5失敗(既存テスト),全AC達成,Action rate 60%→64%,Phase 16完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

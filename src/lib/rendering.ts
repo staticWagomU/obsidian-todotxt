@@ -124,6 +124,7 @@ export function renderTaskList(
 	defaultSettings?: DefaultFilterSettings,
 	onArchive?: () => Promise<void>,
 	onAIAdd?: () => void,
+	onAIEdit?: (index: number) => void,
 ): void {
 	// Save current filter state before clearing (with default settings fallback)
 	const filterState = saveFilterState(contentEl, defaultSettings);
@@ -140,7 +141,7 @@ export function renderTaskList(
 	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings, onArchive);
 
 	// Render task list section
-	renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete);
+	renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete, onAIEdit);
 }
 
 /**
@@ -154,6 +155,7 @@ function renderTaskListSection(
 	onToggle: (index: number) => Promise<void>,
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
+	onAIEdit?: (index: number) => void,
 ): void {
 	const ul = contentEl.createEl("ul");
 
@@ -172,14 +174,14 @@ function renderTaskListSection(
 
 	// Render tasks with grouping if enabled
 	if (filterState.group !== "none") {
-		renderGroupedTasks(ul, filteredTodos, filterState.group, todoIndexMap, today, onToggle, onEdit, onDelete);
+		renderGroupedTasks(ul, filteredTodos, filterState.group, todoIndexMap, today, onToggle, onEdit, onDelete, onAIEdit);
 	} else {
 		// Render tasks without grouping
 		for (const todo of filteredTodos) {
 			const originalIndex = todoIndexMap.get(todo);
 			if (originalIndex === undefined) continue;
 
-			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit);
 		}
 	}
 }
@@ -313,7 +315,8 @@ function renderControlBar(
 		if (existingList) {
 			existingList.remove();
 		}
-		// Re-render task list only
+		// Re-render task list only (need to get onAIEdit from parent context)
+		// For now, pass undefined - this will be fixed when integrating with view
 		renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete);
 	};
 
@@ -558,6 +561,7 @@ function renderGroupedTasks(
 	onToggle: (index: number) => Promise<void>,
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
+	onAIEdit?: (index: number) => void,
 ): void {
 	const grouped = groupTodos(todos, groupBy);
 
@@ -566,7 +570,7 @@ function renderGroupedTasks(
 		for (const todo of todos) {
 			const originalIndex = todoIndexMap.get(todo);
 			if (originalIndex === undefined) continue;
-			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit);
 		}
 		return;
 	}
@@ -582,7 +586,7 @@ function renderGroupedTasks(
 		for (const todo of groupTodos) {
 			const originalIndex = todoIndexMap.get(todo);
 			if (originalIndex === undefined) continue;
-			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete);
+			renderTaskItem(ul, todo, originalIndex, today, onToggle, onEdit, onDelete, onAIEdit);
 		}
 	}
 }
@@ -599,6 +603,7 @@ function renderTaskItem(
 	onToggle: (index: number) => Promise<void>,
 	onEdit: (index: number) => void,
 	onDelete: (index: number) => Promise<void>,
+	onAIEdit?: (index: number) => void,
 ): void {
 	const li = ul.createEl("li");
 
@@ -687,6 +692,17 @@ function renderTaskItem(
 	editButton.addEventListener("click", () => {
 		onEdit(index);
 	});
+
+	// Add AI edit button if callback is provided
+	if (onAIEdit) {
+		const aiEditButton = actionsRow.createEl("button");
+		aiEditButton.classList.add("ai-edit-task-button");
+		aiEditButton.textContent = "AI編集";
+		aiEditButton.dataset.index = String(index);
+		aiEditButton.addEventListener("click", () => {
+			onAIEdit(index);
+		});
+	}
 
 	// Add delete button
 	const deleteButton = actionsRow.createEl("button");

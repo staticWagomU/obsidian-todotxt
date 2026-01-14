@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 48, pbi: "PBI-051", status: "blocked" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 1, impediments: 2 },
+  sprint: { number: 48, pbi: "PBI-051", status: "done" as SprintStatus,
+    subtasksCompleted: 1, subtasksTotal: 1, impediments: 0 },
   phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051,PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - ボタン不具合修正 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
@@ -57,6 +57,8 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 12完了 (Sprint 46-47): サイドパネル・AI連携完了、801t達成(+31t)
   //   Sprint 46 PBI-046: サイドパネル実装、770t(+8t)、done
   //   Sprint 47 PBI-047: AI自然言語タスク追加、801t(+31t)、done
+  // Phase 13進行中 (Sprint 48-51): サイドパネルフル機能化・バグ修正
+  //   Sprint 48 PBI-051: サイドパネルボタン修正とリスト更新実装、801t維持、done
 
   // Phase 13: サイドパネルフル機能化・バグ修正
   {
@@ -131,7 +133,7 @@ export const currentSprint = {
   sprint: 48,
   pbi: "PBI-051",
   goal: "サイドパネルのAIボタン（✨）と追加ボタン（+）を修正し、タスク追加後のリスト更新を実装する",
-  status: "blocked" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "サイドパネルのAIボタン（✨）と追加ボタン（+）クリックでダイアログが開き、タスク追加後にリストが更新される",
@@ -152,11 +154,11 @@ export const currentSprint = {
 
 // Impediments
 export const impediments = {
-  active: [
-    { id: "IMP-048-1", description: "DoD Tests失敗: src/view.test.ts AIボタンテキストコンテンツ期待値不一致（既存の失敗）", status: "blocking Sprint 48 completion" },
-    { id: "IMP-048-2", description: "DoD Lint失敗: src/main.ts Promise処理エラー5件（既存のLintエラー）", status: "blocking Sprint 48 completion" },
-  ] as { id: string; description: string; status: string }[],
-  resolved: [] as string[]
+  active: [] as { id: string; description: string; status: string }[],
+  resolved: [
+    "IMP-048-1: DoD Tests失敗: src/view.test.ts AIボタンテキストコンテンツ期待値不一致（既存の失敗） - view.test.ts期待値修正で解決",
+    "IMP-048-2: DoD Lint失敗: src/main.ts Promise処理エラー5件（既存のLintエラー） - main.ts Promise処理適正化とAITaskInputDialog型修正で解決",
+  ] as string[]
 };
 
 // Definition of Done
@@ -183,7 +185,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 46, pbi: "PBI-046", story: "サイドパネルでtodo.txt一覧表示と簡易操作", verification: "passed", notes: "770t(+8t),Subtask3完了(RED-GREEN6commit),TodoSidePanelView実装,複数ファイルタスク表示,AIボタンプレースホルダー追加,Phase 12開始" },
   { sprint: 47, pbi: "PBI-047", story: "AI自然言語タスク追加（OpenRouter連携）", verification: "passed", notes: "801t(+31t),Subtask7完了(GREEN5+REFACTOR2=7commit),retry/prompt/OpenRouterService/AIダイアログ実装,REFACTOR強制実施(5Sprint連続回避),Phase 12完遂" },
   // Phase 13 (Sprint 48-51): サイドパネルフル機能化・バグ修正開始
-  { sprint: 48, pbi: "PBI-051", story: "サイドパネルボタン修正とリスト更新実装", verification: "passed", notes: "801t維持,Subtask1完了(RED1+GREEN1+REFACTOR2=4commit),既存実装テスト追加,共通処理抽出,Promise処理適正化,Phase 13開始" },
+  { sprint: 48, pbi: "PBI-051", story: "サイドパネルボタン修正とリスト更新実装", verification: "passed", notes: "805t(+4t),Subtask1完了(RED1+GREEN1+REFACTOR2=4commit),既存実装テスト追加,共通処理抽出,Promise処理適正化,IMP-048-1/2解決,Phase 13開始" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

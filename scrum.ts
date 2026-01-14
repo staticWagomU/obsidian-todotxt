@@ -74,7 +74,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "AIで生成したタスクがtodo.txtファイルに追加される", verification: "pnpm vitest run src/view.test.ts -- --grep 'AI.*add'" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
     complexity: { functions: 1, estimatedTests: 3, externalDependencies: 0, score: "LOW", subtasks: 1 },
   },
   {

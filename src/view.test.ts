@@ -2449,3 +2449,80 @@ describe("side panel search box pill design", () => {
 		expect(searchBox?.type).toBe("text");
 	});
 });
+
+describe("side panel filter sort dropdowns", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("グループ化ドロップダウン（なし/プロジェクト/コンテキスト）とソートドロップダウン（デフォルト/完了状態）が横並びで表示される", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load tasks and render
+		view.setViewData("Task 1 +Project1 @context1\nTask 2 +Project2 @context2\nTask 3", false);
+		view.renderTaskList();
+
+		// Verify: Group selector exists (filter dropdown)
+		const groupSelector = container.querySelector("select.group-selector") as HTMLSelectElement;
+		expect(groupSelector).not.toBeNull();
+
+		// Verify: Group selector has options (none/project/context)
+		const groupOptions = groupSelector?.querySelectorAll("option");
+		expect(groupOptions?.length).toBeGreaterThanOrEqual(3); // At least "なし", "プロジェクト", "コンテキスト"
+
+		// Verify: Sort selector exists
+		const sortSelector = container.querySelector("select.sort-selector") as HTMLSelectElement;
+		expect(sortSelector).not.toBeNull();
+
+		// Verify: Sort selector has options (default/completion)
+		const sortOptions = sortSelector?.querySelectorAll("option");
+		expect(sortOptions?.length).toBeGreaterThanOrEqual(2); // At least 2 options
+
+		// Verify: Both selectors are in the same control bar (horizontal layout)
+		const controlBar = container.querySelector(".control-bar");
+		expect(controlBar).not.toBeNull();
+		expect(controlBar?.contains(groupSelector)).toBe(true);
+		expect(controlBar?.contains(sortSelector)).toBe(true);
+	});
+});

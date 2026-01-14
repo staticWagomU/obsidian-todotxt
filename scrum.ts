@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 47, pbi: "PBI-047", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 4, subtasksTotal: 7, impediments: 0 },
   phase: { number: 12, status: "in_progress", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
 };
 
@@ -144,8 +144,11 @@ export const currentSprint = {
       test: "settings.tsにOpenRouter設定（apiKey, model, retryConfig, customContexts）が追加され、UIで編集可能かテスト",
       implementation: "settings.tsを拡張してOpenRouter関連設定を追加、設定UI実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(settings): add OpenRouter settings tests" },
+        { phase: "green" as CommitPhase, message: "feat(settings): add OpenRouter configuration with UI" },
+      ],
     },
     {
       test: "AITaskInputDialogが開き、自然言語入力と生成ボタンが機能するかテスト",

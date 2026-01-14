@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 45, pbi: "PBI-045", status: "in_progress" as SprintStatus,
+  sprint: { number: 45, pbi: "PBI-045", status: "done" as SprintStatus,
     subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 11, status: "in_progress", sprints: "Sprint 45", pbis: "PBI-045", goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する" },
 };
@@ -132,7 +132,7 @@ export const currentSprint = {
   sprint: 45,
   pbi: "PBI-045",
   goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "archiveCompletedTasks関数、getArchiveFilePath関数、appendToArchiveFile関数のテストを実装（完了タスク抽出、done.txtパス生成、ファイル追記処理の検証）",

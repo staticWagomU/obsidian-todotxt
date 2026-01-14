@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 55, pbi: "PBI-055", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 16, status: "in_progress", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
+  sprint: { number: 55, pbi: "PBI-055", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 8, impediments: 0 },
+  phase: { number: 16, status: "in_progress", sprints: "54-55", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
 // Product Goal
@@ -115,9 +115,66 @@ export const definitionOfReady = {
 export const currentSprint = {
   sprint: 55,
   pbi: "PBI-055",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  goal: "複数タスクAI一括処理機能実装により、Phase 16（AI自然言語タスク編集・一括処理）を完遂する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "「一括選択」ボタンクリック→チェックボックス表示、モード切替状態管理テスト",
+      implementation: "SelectionModeButton、selectionMode state、TodoItemにcheckbox表示",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "チェックボックスクリック→selectedTodoIds配列更新、全選択/全解除テスト",
+      implementation: "selectedTodoIds state、handleSelectTodo、handleSelectAll関数",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "複数選択状態で「AI一括処理」ボタンクリック→ダイアログ表示テスト",
+      implementation: "BulkAIProcessDialog、selectedTodoIds渡し、ダイアログopen/close制御",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "自然言語入力→OpenRouter呼び出し→複数Todo更新プレビュー生成テスト",
+      implementation: "bulkProcessWithAI関数、OpenRouter batch request、プレビューデータ生成",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "プレビュー確認→一括保存→ファイル更新→リスト再描画テスト",
+      implementation: "handleBulkSave関数、複数Todo更新、file write、リスト更新",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "一括保存後→チェックボックス非表示、selectedTodoIds空配列、通常モード復帰テスト",
+      implementation: "resetSelectionMode関数、state初期化",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "N/A (プロセス改善)",
+      implementation: "retrospectives配列から未実施Actions抽出、優先度再評価、廃棄/統合/継続判定、actionManagement.tracking更新（total削減、rate 60%→65%）",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "N/A (ドキュメント整備)",
+      implementation: "CLAUDE.mdにAction Management Process計算式セクション追加（executed加算ルール、remaining減算ルール、廃棄Actions扱い3項目明記）",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    }
+  ] as Subtask[],
 };
 // Sprint 54: PBI-054完了 - 7 subtasks (4 behavioral + 3 structural), 7 commits (1 RED + 3 GREEN + 3 REFACTOR), Phase 16開始, see git history
 // Sprint 53: PBI-053完了 - 5 subtasks (1 behavioral + 4 structural), 5 commits (1 GREEN + 4 REFACTOR), Phase 15完遂, see git history

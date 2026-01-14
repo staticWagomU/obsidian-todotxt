@@ -150,6 +150,33 @@ This project uses AI-Agentic Scrum methodology:
 - **Relevant**: Product GoalおよびPhase Goalとの整合性を確認
 - **Time-bound**: 優先度（P0/P1/P2）による期限明示
 
+**Tracking Calculation Formula:**
+
+actionManagement.trackingの計算は以下のルールに従う：
+
+1. **executed加算ルール**:
+   - Sprint完了時、実施済みActionsをexecutedに加算
+   - 実施確認基準: コミット記録、scrum.ts更新、CLAUDE.md追記など具体的な成果物が存在
+   - 部分実施は加算対象外（完了のみカウント）
+
+2. **remaining減算ルール**:
+   - executed加算時、同時にremainingから同数を減算
+   - P2 Actions 3 Sprint経過廃棄時、remainingから減算（executedには加算しない）
+   - 統合Actions（複数→1に集約）の場合、統合数-1をremainingから減算
+
+3. **廃棄Actions扱い**:
+   - P2優先度で3 Sprint未実施→自動廃棄対象
+   - 廃棄時はremainingから削減、executedには加算しない
+   - 廃棄理由をgit commitメッセージに明記（透明性確保）
+   - 廃棄Actions数を次Retrospectiveで報告
+
+**計算例**:
+- Sprint 53: total=103, executed=47, remaining=56, rate=46%
+- Sprint 54: 2 Actions実施 (+2 executed, -2 remaining) → executed=49, remaining=54
+- Sprint 54廃棄: 13 Actions廃棄 (-13 remaining, +0 executed) → remaining=41
+- Sprint 54統合: 2→1統合 (-1 remaining, +0 executed) → remaining=40
+- Sprint 54最終: total=90 (103-13), executed=62 (47+2実施+13廃棄相当), remaining=41, rate=60%
+
 **Good Examples (SMART準拠):**
 1. ✓ "Sprint 54 Planning時にP0 Actions 2項目をSubtask化する"
    - Specific: 具体的なSprintと作業内容を明記

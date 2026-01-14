@@ -38,6 +38,7 @@ export interface FilterState {
 	search: string;
 	group: string;
 	sort: string;
+	status: string;
 }
 
 /**
@@ -48,6 +49,7 @@ export const DEFAULT_FILTER_STATE: FilterState = {
 	search: "",
 	group: "none",
 	sort: "default",
+	status: "all",
 };
 
 /**
@@ -191,6 +193,7 @@ function saveFilterState(contentEl: HTMLElement, defaultSettings?: DefaultFilter
 	const previousSearchBox = contentEl.querySelector("input.search-box");
 	const previousGroupSelector = contentEl.querySelector("select.group-selector");
 	const previousSortSelector = contentEl.querySelector("select.sort-selector");
+	const previousStatusFilter = contentEl.querySelector("select.status-filter");
 
 	// Use DOM value if exists, otherwise fall back to default settings, then to hardcoded defaults
 	const defaultSort = defaultSettings?.sort || "default";
@@ -201,6 +204,7 @@ function saveFilterState(contentEl: HTMLElement, defaultSettings?: DefaultFilter
 		search: (previousSearchBox instanceof HTMLInputElement ? previousSearchBox.value : null) || "",
 		group: (previousGroupSelector instanceof HTMLSelectElement ? previousGroupSelector.value : null) || defaultGroup,
 		sort: (previousSortSelector instanceof HTMLSelectElement ? previousSortSelector.value : null) || defaultSort,
+		status: (previousStatusFilter instanceof HTMLSelectElement ? previousStatusFilter.value : null) || "all",
 	};
 }
 
@@ -209,6 +213,7 @@ function saveFilterState(contentEl: HTMLElement, defaultSettings?: DefaultFilter
  */
 function applyFilters(todos: Todo[], filterState: FilterState): Todo[] {
 	let filtered = applyPriorityFilter(todos, filterState.priority);
+	filtered = applyStatusFilter(filtered, filterState.status);
 	filtered = filterBySearch(filtered, filterState.search);
 
 	// Apply sorting if enabled
@@ -230,6 +235,22 @@ function applyPriorityFilter(todos: Todo[], priorityValue: string): Todo[] {
 		return filterByPriority(todos, null);
 	}
 	return filterByPriority(todos, priorityValue);
+}
+
+/**
+ * Apply status filter to todos
+ */
+function applyStatusFilter(todos: Todo[], statusValue: string): Todo[] {
+	if (statusValue === "all") {
+		return todos;
+	}
+	if (statusValue === "active") {
+		return todos.filter(todo => !todo.completed);
+	}
+	if (statusValue === "completed") {
+		return todos.filter(todo => todo.completed);
+	}
+	return todos;
 }
 
 /**
@@ -296,6 +317,12 @@ function renderControlBar(
 		renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete);
 	};
 
+	// Render status filter dropdown (全て/未完了/完了)
+	renderStatusFilterDropdown(controlBar, filterState.status, onFilterChange);
+
+	// Render progress bar
+	renderProgressBar(controlBar, data);
+
 	// Render priority filter dropdown
 	renderPriorityFilterDropdown(controlBar, filterState.priority, onFilterChange);
 
@@ -312,6 +339,63 @@ function renderControlBar(
 	if (onArchive) {
 		renderArchiveButton(controlBar, data, onArchive);
 	}
+}
+
+/**
+ * Render status filter dropdown (全て/未完了/完了)
+ */
+function renderStatusFilterDropdown(
+	container: HTMLElement,
+	currentValue: string,
+	onChange: () => void,
+): void {
+	const statusFilter = container.createEl("select");
+	statusFilter.classList.add("status-filter");
+	statusFilter.setAttribute("aria-label", "ステータスフィルタ");
+
+	// Add "all" option
+	const allOption = statusFilter.createEl("option");
+	allOption.value = "all";
+	allOption.textContent = "全て";
+
+	// Add "active" option
+	const activeOption = statusFilter.createEl("option");
+	activeOption.value = "active";
+	activeOption.textContent = "未完了";
+
+	// Add "completed" option
+	const completedOption = statusFilter.createEl("option");
+	completedOption.value = "completed";
+	completedOption.textContent = "完了";
+
+	// Set current value
+	statusFilter.value = currentValue;
+
+	// Add change event listener
+	statusFilter.addEventListener("change", onChange);
+}
+
+/**
+ * Render progress bar showing task completion rate
+ */
+function renderProgressBar(container: HTMLElement, data: string): void {
+	const todos = parseTodoTxt(data);
+	const totalTasks = todos.length;
+	const completedTasks = todos.filter(todo => todo.completed).length;
+	const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+	const progressBarContainer = container.createEl("div");
+	progressBarContainer.classList.add("progress-bar");
+
+	// Progress fill (colored bar showing completion percentage)
+	const progressFill = progressBarContainer.createEl("div");
+	progressFill.classList.add("progress-fill");
+	progressFill.style.width = `${percentage}%`;
+
+	// Progress text (e.g., "3/10")
+	const progressText = progressBarContainer.createEl("span");
+	progressText.classList.add("progress-text");
+	progressText.textContent = `${completedTasks}/${totalTasks}`;
 }
 
 /**

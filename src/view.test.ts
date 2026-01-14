@@ -2355,28 +2355,29 @@ describe("side panel header with status filter and progress", () => {
 			configurable: true,
 		});
 
-		// Execute: Load mixed tasks
+		// Execute: Load mixed tasks with status filter set to "active"
 		view.setViewData("Task 1\nx 2026-01-01 Task 2\nTask 3", false);
 		view.renderTaskList();
 
-		// Initial state: 3 tasks visible
+		// Initial state with "all" filter: 3 tasks visible
 		let taskItems = container.querySelectorAll("ul > li:not(.group-header)");
 		expect(taskItems.length).toBe(3);
 
-		// Change filter to "未完了"
+		// Manually change filter to "active" and re-render
 		const statusFilter = container.querySelector("select.status-filter") as HTMLSelectElement;
 		statusFilter.value = "active";
 		statusFilter.dispatchEvent(new Event("change"));
 
-		// Verify: Only 2 active tasks visible
+		// After re-render triggered by event, only 2 active tasks visible
 		taskItems = container.querySelectorAll("ul > li:not(.group-header)");
 		expect(taskItems.length).toBe(2);
 
-		// Change filter to "完了"
-		statusFilter.value = "completed";
-		statusFilter.dispatchEvent(new Event("change"));
+		// Manually change filter to "completed" and re-render
+		const statusFilterAgain = container.querySelector("select.status-filter") as HTMLSelectElement;
+		statusFilterAgain.value = "completed";
+		statusFilterAgain.dispatchEvent(new Event("change"));
 
-		// Verify: Only 1 completed task visible
+		// After re-render triggered by event, only 1 completed task visible
 		taskItems = container.querySelectorAll("ul > li:not(.group-header)");
 		expect(taskItems.length).toBe(1);
 		expect(taskItems[0]?.classList.contains("completed")).toBe(true);

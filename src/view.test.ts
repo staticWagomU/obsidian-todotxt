@@ -2526,3 +2526,97 @@ describe("side panel filter sort dropdowns", () => {
 		expect(controlBar?.contains(sortSelector)).toBe(true);
 	});
 });
+
+describe("side panel task item layout", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	// Helper type for mock container
+	type MockContainer = HTMLElement & {
+		empty: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		createEl: any;
+	};
+
+	// Helper function to create a mock container
+	const createMockContainer = (): MockContainer => {
+		const container = document.createElement("div") as MockContainer;
+
+		// Helper function to add createEl method to an element
+		const addCreateEl = (element: HTMLElement) => {
+			(element as MockContainer).createEl = vi.fn((tag: string) => {
+				const el = document.createElement(tag);
+				element.appendChild(el);
+				addCreateEl(el); // Recursively add createEl to child elements
+				return el;
+			});
+		};
+
+		// Mock Obsidian's empty() and createEl() methods
+		container.empty = vi.fn(function (this: HTMLElement) {
+			this.innerHTML = "";
+		});
+		addCreateEl(container);
+
+		return container;
+	};
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	it("タスクアイテムが1行目[チェックボックス][優先度][説明]、2行目[タグ]、アクション行[編集ボタン]のレイアウトでレンダリングされる", () => {
+		const container = createMockContainer();
+
+		Object.defineProperty(view, "contentEl", {
+			get: () => container,
+			configurable: true,
+		});
+
+		// Execute: Load task with priority, project, context and render
+		view.setViewData("(A) Task description +Project1 @context1", false);
+		view.renderTaskList();
+
+		// Verify: Task item exists
+		const taskItem = container.querySelector("ul > li:not(.group-header)");
+		expect(taskItem).not.toBeNull();
+
+		// Verify: Line 1 - Main row with checkbox, priority, description
+		const mainRow = taskItem?.querySelector(".task-main-row");
+		expect(mainRow).not.toBeNull();
+
+		const checkbox = mainRow?.querySelector("input.task-checkbox");
+		expect(checkbox).not.toBeNull();
+
+		const priority = mainRow?.querySelector("span.priority");
+		expect(priority).not.toBeNull();
+		expect(priority?.textContent).toBe("A");
+
+		const description = mainRow?.querySelector("span.task-description");
+		expect(description).not.toBeNull();
+		expect(description?.textContent).toContain("Task description");
+
+		// Verify: Line 2 - Tags row with project and context
+		const tagsRow = taskItem?.querySelector(".task-item-tags");
+		expect(tagsRow).not.toBeNull();
+
+		const projectTag = tagsRow?.querySelector(".tag-chip--project");
+		expect(projectTag).not.toBeNull();
+		expect(projectTag?.textContent).toBe("+Project1");
+
+		const contextTag = tagsRow?.querySelector(".tag-chip--context");
+		expect(contextTag).not.toBeNull();
+		expect(contextTag?.textContent).toBe("@context1");
+
+		// Verify: Action row with edit button
+		const actionsRow = taskItem?.querySelector(".task-actions-row");
+		expect(actionsRow).not.toBeNull();
+
+		const editButton = actionsRow?.querySelector("button.edit-task-button");
+		expect(editButton).not.toBeNull();
+		expect(editButton?.textContent).toBe("編集");
+	});
+});

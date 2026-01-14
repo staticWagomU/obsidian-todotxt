@@ -1,4 +1,4 @@
-import { TextFileView, type TFile, type WorkspaceLeaf, Modal } from "obsidian";
+import { TextFileView, TFile, type WorkspaceLeaf, Modal, type App } from "obsidian";
 import { parseTodoTxt } from "./lib/parser";
 import { type Todo } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
@@ -177,8 +177,8 @@ export class TodotxtView extends TextFileView {
 		const readArchive = async (): Promise<string> => {
 			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
-			if (archiveFile && 'stat' in archiveFile) {
-				return await this.app.vault.read(archiveFile as TFile);
+			if (archiveFile instanceof TFile) {
+				return await this.app.vault.read(archiveFile);
 			}
 			return "";
 		};
@@ -186,8 +186,8 @@ export class TodotxtView extends TextFileView {
 		const writeArchive = async (data: string): Promise<void> => {
 			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
-			if (archiveFile && 'stat' in archiveFile) {
-				await this.app.vault.modify(archiveFile as TFile, data);
+			if (archiveFile instanceof TFile) {
+				await this.app.vault.modify(archiveFile, data);
 			} else {
 				// Create new file
 				await this.app.vault.create(archivePath, data);
@@ -235,9 +235,8 @@ export class TodotxtView extends TextFileView {
 class ArchiveConfirmationModal extends Modal {
 	onConfirm: (confirmed: boolean) => void;
 
-	constructor(app: unknown, onConfirm: (confirmed: boolean) => void) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		super(app as any);
+	constructor(app: App, onConfirm: (confirmed: boolean) => void) {
+		super(app);
 		this.onConfirm = onConfirm;
 	}
 

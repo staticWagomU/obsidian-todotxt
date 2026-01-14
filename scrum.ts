@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 45, pbi: "PBI-045", status: "done" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
-  phase: { number: 11, status: "in_progress", sprints: "Sprint 45", pbis: "PBI-045", goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する" },
+  sprint: { number: 46, pbi: "PBI-046", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 11, status: "done", sprints: "Sprint 45", pbis: "PBI-045", goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する" },
 };
 
 // Product Goal
@@ -52,30 +52,8 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 10完了 (Sprint 43-44): パーサー堅牢化・設定強化、738t達成(+112t)
   //   Sprint 43 PBI-043: パーサー堅牢化（エッジケース対応）、740t(+114t)、done
   //   Sprint 44 PBI-044: 設定ベースのファイルパス管理、738t(-2t統合化)、done
-  {
-    id: "PBI-045",
-    story: {
-      role: "todo.txtユーザー",
-      capability: "完了したタスクをdone.txtファイルにアーカイブできる",
-      benefit: "メインのtodo.txtファイルをスリムに保ちつつ、完了履歴を保持できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "UIに「アーカイブ」ボタンが存在し、クリックで完了タスクをdone.txtに移動する", verification: "pnpm build && 手動確認: アーカイブボタンが機能する" },
-      { criterion: "done.txtはtodo.txtと同じディレクトリに作成される", verification: "pnpm vitest run -- -t 'archive same directory'" },
-      { criterion: "アーカイブ後、元ファイルから完了タスクが削除される", verification: "pnpm vitest run -- -t 'archive removes completed'" },
-      { criterion: "done.txtが既に存在する場合は末尾に追記される", verification: "pnpm vitest run -- -t 'archive append'" },
-      { criterion: "完了タスクがない場合はアーカイブボタンが無効化される", verification: "pnpm vitest run -- -t 'archive disabled'" },
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: {
-      functions: 5,
-      estimatedTests: 10,
-      externalDependencies: 0,
-      score: "LOW",
-      subtasks: 3,
-    },
-  },
+  // Phase 11完了 (Sprint 45): アーカイブ機能実装、762t達成(+24t)
+  //   Sprint 45 PBI-045: 完了タスクアーカイブ機能、762t(+24t)、done
   {
     id: "PBI-046",
     story: {
@@ -189,6 +167,8 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 10 (Sprint 43-44): パーサー堅牢化・設定強化完了、738t達成(+112t)
   { sprint: 43, pbi: "PBI-043", story: "パーサー堅牢化（エッジケース対応）", verification: "passed", notes: "740t(+114t),70エッジケーステスト追加,プロジェクト/コンテキスト前スペース必須化,タグ最初コロン分割対応,Phase 10開始" },
   { sprint: 44, pbi: "PBI-044", story: "設定ベースのファイルパス管理", verification: "passed", notes: "738t(-2t統合化),Subtask3完了(RED-GREEN6commit),todotxtFilePaths設定追加,file-matcher実装,設定UIテキストエリア追加,Phase 10完遂" },
+  // Phase 11 (Sprint 45): アーカイブ機能実装完了、762t達成(+24t)
+  { sprint: 45, pbi: "PBI-045", story: "完了タスクアーカイブ機能", verification: "passed", notes: "762t(+24t),Subtask3完了(RED-GREEN6commit),アーカイブボタンUI追加,done.txt自動生成,確認モーダル実装,Phase 11完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

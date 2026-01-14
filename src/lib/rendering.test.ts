@@ -162,6 +162,7 @@ describe("PBI-031: 内部/外部リンククリック可能表示", () => {
 			container.createEl = function (this: HTMLElement, tag: string): any {
 				const el = document.createElement(tag) as MockContainer;
 				el.empty = function (this: HTMLElement) { this.innerHTML = ""; };
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				el.createEl = container.createEl;
 				this.appendChild(el);
 				return el;

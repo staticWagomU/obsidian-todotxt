@@ -28,7 +28,18 @@ vi.mock("obsidian", () => {
 		return el;
 	}
 
+	// Mock TFile class
+	class TFile {
+		path: string;
+		stat: { mtime: number };
+		constructor(path: string) {
+			this.path = path;
+			this.stat = { mtime: Date.now() };
+		}
+	}
+
 	return {
+		TFile,
 		TextFileView: class {
 			data = "";
 			leaf: unknown;

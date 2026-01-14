@@ -112,6 +112,40 @@ export const productBacklog: ProductBacklogItem[] = [
     dependencies: [],
     status: "draft" as PBIStatus,
   },
+  {
+    id: "PBI-046",
+    story: {
+      role: "Obsidianユーザー",
+      capability: "サイドパネルでtodo.txtタスクの一覧表示と簡易操作ができる",
+      benefit: "メインエディタを開かずにタスクを俯瞰・追加できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "サイドパネル（Obsidian Leaf）にタスク一覧が表示される", verification: "pnpm build && 手動確認: サイドパネルにタスク一覧が表示される" },
+      { criterion: "タスク追加ボタンがあり、クリックで新規タスクを追加できる", verification: "pnpm build && 手動確認: 追加ボタンでタスクが追加される" },
+      { criterion: "サイドパネルのタスクをクリックすると該当todo.txtが開く", verification: "pnpm build && 手動確認: タスククリックでファイルが開く" },
+      { criterion: "AI用タスク追加ボタンがサイドパネルに表示される", verification: "pnpm build && 手動確認: AIボタンがサイドパネルに存在する" },
+      { criterion: "AI用タスク追加ボタンがtodo.txtメインビューにも表示される", verification: "pnpm build && 手動確認: AIボタンがメインビューに存在する" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
+  {
+    id: "PBI-047",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "自然言語でタスクを説明するとtodo.txt形式に変換して追加できる",
+      benefit: "形式を覚えなくても自然な文章でタスクを追加できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "AI追加ボタンクリックで自然言語入力ダイアログが開く", verification: "pnpm build && 手動確認: ダイアログが開く" },
+      { criterion: "入力された自然言語がtodo.txt形式に変換される", verification: "pnpm vitest run -- -t 'natural language to todotxt'" },
+      { criterion: "変換結果をプレビュー表示し、編集・確認できる", verification: "pnpm build && 手動確認: プレビューが編集可能" },
+      { criterion: "確認後にタスクがtodo.txtに追加される", verification: "pnpm build && 手動確認: タスクが追加される" },
+      { criterion: "LLMプロバイダー（Claude/OpenAI等）の設定が可能", verification: "pnpm build && 手動確認: 設定画面にLLMプロバイダー設定がある" },
+    ],
+    dependencies: ["PBI-046"],
+    status: "draft" as PBIStatus,
+  },
 ];
 
 // Definition of Ready

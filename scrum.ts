@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 54, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 16, status: "not_started", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
+  sprint: { number: 54, pbi: "PBI-054", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+  phase: { number: 16, status: "in_progress", sprints: "54-55（見積もり）", pbis: "PBI-054, PBI-055", goal: "Phase 16: AI自然言語処理タスク編集・一括処理機能" },
 };
 
 // Product Goal
@@ -125,13 +125,65 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - None (Sprint 54 not started yet)
+// Current Sprint
 export const currentSprint = {
   sprint: 54,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-054",
+  goal: "既存タスクをAI自然言語入力で編集可能にし、メインビュー・サイドパネル両方でシームレスに利用できる機能を提供、併せてAction Management Process実践検証を完遂する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Feature開発 Subtasks (60%)
+    {
+      test: "AI編集ボタンがTodoItemにレンダリング、クリックでAIEditDialogが表示される",
+      implementation: "TodoItemコンポーネントにAI編集ボタン追加、AIEditDialog基本構造実装、ダイアログ表示ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "AIEditDialogに既存Todo内容がプレフィル表示、自然言語入力フィールドがレンダリングされる",
+      implementation: "AIEditDialogにTodoプレフィル表示ロジック、自然言語入力textarea実装、UI構成完成",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "自然言語入力→OpenRouter API呼び出し→解析結果プレビュー表示が動作する",
+      implementation: "OpenRouter API統合、プロンプト設計、レスポンス解析、プレビューエリア実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "プレビュー確認後保存→ファイル更新→TodosList再描画、メインビュー・サイドパネル両方で動作する",
+      implementation: "保存処理実装、ファイル書き込みロジック、リスト再描画トリガー、サイドパネル統合",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    // プロセス改善 Subtasks (40%)
+    {
+      test: "Sprint 54でプロセス再設計ルール3項目（Planning時Subtask化・Retrospective時数値化・3 Sprint自動廃棄）遵守率100%を確認",
+      implementation: "Planning時P0 Action 1-2項目をSubtask化、Feature/Process時間配分6:4実践、Review時P0 Action状況報告フォーマット準備",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "CLAUDE.mdにSMART基準良い例・悪い例3-5セット追加完了を確認",
+      implementation: "過去Sprint ActionsからSMART基準適合/不適合事例抽出、良い例・悪い例を3-5セット作成、CLAUDE.md Action Management Processセクションに追記",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    },
+    {
+      test: "DoD全項目（Tests/Lint/Types/Build）がpassし、Phase 16開始が宣言される",
+      implementation: "DoD実行、Phase 16ステータス更新、Sprint完了確認",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: []
+    }
+  ] as Subtask[],
 };
 // Sprint 53: PBI-053完了 - 5 subtasks (1 behavioral + 4 structural), 5 commits (1 GREEN + 4 REFACTOR), Phase 15完遂, see git history
 // Sprint 52: PBI-052完了 - 5 subtasks (5 behavioral), 5 commits (5 GREEN), see git history

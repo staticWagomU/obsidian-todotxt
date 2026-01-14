@@ -148,7 +148,7 @@ export const currentSprint = {
       test: "getArchiveHandler関数、アーカイブボタンのレンダリング、無効化状態のテストを実装（完了タスク0件時の無効化検証）",
       implementation: "アーカイブボタンUI、ハンドラー統合、完了タスク0件時の無効化処理を実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
+      status: "red" as SubtaskStatus,
       commits: [],
     },
     {

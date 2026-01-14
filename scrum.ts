@@ -76,7 +76,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "メインビュー（rendering.ts）の検索ボックスでも同様にフォーカスが維持される", verification: "pnpm vitest run src/lib/rendering.test.ts -- --grep 'search focus'" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: { functions: 2, estimatedTests: 6, externalDependencies: 0, score: "LOW", subtasks: 2 },
   },
   {

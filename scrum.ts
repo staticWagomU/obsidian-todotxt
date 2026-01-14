@@ -53,23 +53,9 @@ export const roadmap = {
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
-  // Phase 1-14完了 (Sprint 1-52): 基本機能+UI実装+サイドパネル+AI連携、830t達成
-  // Phase 15完了 (Sprint 53): プロセス基盤再構築、Action実施率58%達成、ロードマップ策定
-  // Phase 16開始: AI自然言語タスク編集・一括処理
-  {
-    id: "PBI-054",
-    story: { role: "ユーザー", capability: "既存タスクを選択し、AI自然言語入力で内容を更新できる", benefit: "タスク編集時にAIの支援を受け、編集効率が向上する" },
-    acceptanceCriteria: [
-      { criterion: "タスクアイテムに「AI編集」ボタンが表示され、クリックでAI編集ダイアログが開く", verification: "テストでAI編集ボタンレンダリング、クリックでダイアログ表示を確認" },
-      { criterion: "AI編集ダイアログに既存タスク内容がプレフィル表示、自然言語入力フィールドを提供", verification: "テストで既存Todo表示、入力フィールドレンダリングを確認" },
-      { criterion: "自然言語入力をOpenRouter APIで解析し、更新プレビューを表示", verification: "テストでAI編集→OpenRouter応答→プレビュー表示を確認" },
-      { criterion: "プレビュー確認後、保存でファイル更新、リストに反映", verification: "テストでプレビュー→保存→ファイル更新→リスト再描画を確認" },
-      { criterion: "メインビュー・サイドパネル両方で利用可能", verification: "テストで両ビューでAI編集ダイアログ動作を確認" }
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: { functions: 4, estimatedTests: 20, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 5 }
-  },
+  // Phase 1-15完了 (Sprint 1-53): 基本機能+UI+サイドパネル+AI連携+プロセス基盤、830t達成
+  // Phase 16進行中 (Sprint 54-55): AI自然言語タスク編集・一括処理
+  //   Sprint 54 PBI-054: AI自然言語タスク編集、835t(+5t)、done
   {
     id: "PBI-055",
     story: { role: "ユーザー", capability: "複数タスクを一括選択し、AI自然言語でバッチ処理できる", benefit: "類似タスクの一括更新で生産性が向上する" },
@@ -174,33 +160,36 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-52: see git history
-  { sprint: 53,
+  // Sprint 42-53: see git history
+  { sprint: 54,
     workedWell: [
-      "Phase 15完遂: rate 43%→58%(+15%)、KPI min 50%達成、4 Sprint連続未達から脱却",
-      "Actions大規模整理成功: 15項目廃棄/統合、remaining 58→43、負債26%削減",
-      "KPI未達根本原因分析完遂: 3軸分析（Feature時間圧迫・粒度不適切・判断基準不明確）",
-      "プロセス再設計ルール3項目確立: Planning時Subtask化・Retrospective時数値化・3 Sprint自動廃棄",
-      "長期ロードマップ策定: Phase 15-17（Sprint 53-57）戦略確定",
-      "Sprint 52 Actions 100%達成: 5項目全て完全実施",
+      "Action Management Process実践検証100%達成: Sprint 53策定3ルール全実践、ルール遵守率100%達成",
+      "SMART基準ガイドライン大幅強化: CLAUDE.mdに具体例8セット追加（良例3+悪例5）、実践可能レベルに具体化",
+      "P0 Actions 100%達成: 前Sprint P0 2項目を確実実施、プロセス改善高コミットメント実証",
+      "Feature/Process配分6:4達成: 新設計ルール初Sprint適用成功、持続可能な改善サイクル確立",
+      "AI編集機能完全実装: メインビュー・サイドパネル両対応、7 subtasks完遂、+5t増加、Phase 16開始",
+      "rate 58%→60%向上: 2 Sprint連続KPI min 50%達成、着実な改善継続",
     ],
     toImprove: [
-      "Action Management Process実践未検証: CLAUDE.md追記の3ルールがSprint 54で機能するか未確認",
-      "Action粒度ガイドライン抽象的: SMART基準記載したが具体例不在",
-      "残43項目Action棚卸し未実施: 整理後の優先度・粒度・実施計画不在",
+      "P1 Actions実施率0%: 全体実施率50%（2/4）、P0は100%だがP1全未着手",
+      "Action棚卸し2 Sprint連続未実施: Sprint 53からの継続課題「残41項目Action棚卸し」未着手、負債蓄積リスク",
+      "実施率計算式未確立: executed/total計算に廃棄Actions扱い不明確、要定義",
+      "Commit数報告差異: ユーザー報告8 commits vs scrum.ts記載7 commits、実績トラッキング精度要改善",
     ],
     actions: [
-      "P0: Sprint 54でAction Management Process実践検証（ルール遵守率100%目標）",
-      "P0: Action粒度ガイドライン具体例追加（SMART基準良い例・悪い例3-5セット）",
-      "P1: 残43項目Action棚卸しレビュー（Sprint 54-55、rate 65%目標）",
-      "P1: Phase 16 PBI詳細化（PBI-054/055のBacklog Refinement）",
+      "P0: Sprint 55 Planning時にP1 Actions 2項目をSubtaskとして組み込み、Feature/Process配分6:4維持",
+      "P0: actionManagement.tracking計算式をCLAUDE.mdに明文化（executed加算・remaining減算ルール3項目）",
+      "P1: 残41項目Action棚卸し実施、優先度再評価とrate 65%達成",
+      "P1: Sprint実績トラッキング精度改善（commit数検証プロセス追加）",
+      "P2: Action Management KPI healthy (70%)達成に向けたロードマップ策定",
     ] },
 ];
 
-// Action Management (Sprint 53完了: rate 43%→58%、KPI min 50%達成、詳細はgit履歴参照)
+// Action Management (Sprint 54完了: rate 58%→60%(+2%)、2 Sprint連続KPI min 50%達成、詳細はgit履歴参照)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 103, executed: 60, rate: 58, remaining: 43 },
+  tracking: { total: 103, executed: 62, rate: 60, remaining: 41 },
+  // Sprint 54: P0 Actions 2項目実施（Process実践検証・SMART具体例8セット追加）、P1 2項目継続（棚卸し・トラッキング精度）
   // Sprint 53: 15項目廃棄/統合、根本原因3軸分析完了、プロセス再設計ルール3項目確立（CLAUDE.md追記）
 };
 

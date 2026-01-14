@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 44, pbi: "PBI-044", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 3, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 3, impediments: 0 },
   phase: { number: 10, status: "done", sprints: "43", pbis: "PBI-043", goal: "パーサー堅牢化完了（unified-test-cases.md準拠、740t達成、+114t）" },
 };
 
@@ -195,8 +195,12 @@ export const currentSprint = {
       test: "設定画面でファイルパス入力欄が存在するテストを記述（UI要素検証）",
       implementation: "SettingTab.tsにテキストエリア追加、複数パス入力（改行区切り）をサポート、保存/読み込み処理実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(settings): add UI tests for file paths textarea" },
+        { phase: "green" as CommitPhase, message: "feat(settings): add file paths textarea to settings UI" },
+        { phase: "green" as CommitPhase, message: "test(main): add integration tests for file path matching" },
+      ],
     },
   ] as Subtask[],
 };

@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 47, pbi: "PBI-047", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 7, impediments: 0 },
   phase: { number: 12, status: "in_progress", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
 };
 
@@ -124,8 +124,11 @@ export const currentSprint = {
       test: "buildSystemPrompt関数が現在日付とカスタムコンテキストを使用してプロンプトを生成するかテスト",
       implementation: "prompt.tsにbuildSystemPrompt関数を実装（プロジェクト/コンテキスト/優先度/期限のルール埋め込み）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test(ai): add prompt generation tests for buildSystemPrompt" },
+        { phase: "green" as CommitPhase, message: "feat(ai): implement prompt generation with buildSystemPrompt" },
+      ],
     },
     {
       test: "OpenRouterService.convertToTodotxt()がAPI呼び出しとレスポンスパースを行うかテスト、エラーハンドリング含む",

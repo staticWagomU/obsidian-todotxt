@@ -330,7 +330,10 @@ describe("TodoSidePanelView", () => {
 			expect(initialTasks.length).toBe(1);
 
 			// Simulate task addition by modifying file content
-			await mockPlugin.app.vault.modify({}, "Buy milk\nWrite report");
+			const mockFile = new TFile();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(mockFile as any).path = "vault/todo.txt";
+			await mockPlugin.app.vault.modify(mockFile, "Buy milk\nWrite report");
 
 			// Manually trigger the refresh callback that AI dialog would call
 			await view.loadTasks();
@@ -418,7 +421,10 @@ describe("TodoSidePanelView", () => {
 			expect(initialTasks.length).toBe(1);
 
 			// Simulate task addition by modifying file content
-			await mockPlugin.app.vault.modify({}, "Buy milk\nFix bug");
+			const mockFile = new TFile();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(mockFile as any).path = "vault/todo.txt";
+			await mockPlugin.app.vault.modify(mockFile, "Buy milk\nFix bug");
 
 			// Manually trigger the refresh that AddTaskModal callback would call
 			await view.loadTasks();

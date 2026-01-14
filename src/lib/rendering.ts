@@ -137,6 +137,22 @@ export function renderTaskList(
 	// Add control bar with priority filter, search box, and archive button
 	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings, onArchive);
 
+	// Render task list section
+	renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete);
+}
+
+/**
+ * Render task list section only (without FAB and control bar)
+ * Used for search input to maintain focus
+ */
+function renderTaskListSection(
+	contentEl: HTMLElement,
+	data: string,
+	filterState: FilterState,
+	onToggle: (index: number) => Promise<void>,
+	onEdit: (index: number) => void,
+	onDelete: (index: number) => Promise<void>,
+): void {
 	const ul = contentEl.createEl("ul");
 
 	const todos = parseTodoTxt(data);
@@ -264,11 +280,22 @@ function renderControlBar(
 
 	const onFilterChange = () => renderTaskList(contentEl, data, onAddTask, onToggle, onEdit, onDelete, defaultSettings, onArchive);
 
+	// For search, only update task list to maintain focus
+	const onSearchInput = () => {
+		// Remove existing task list
+		const existingList = contentEl.querySelector("ul");
+		if (existingList) {
+			existingList.remove();
+		}
+		// Re-render task list only
+		renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete);
+	};
+
 	// Render priority filter dropdown
 	renderPriorityFilterDropdown(controlBar, filterState.priority, onFilterChange);
 
-	// Render search box
-	renderSearchBox(controlBar, filterState.search, onFilterChange);
+	// Render search box with special handler
+	renderSearchBox(controlBar, filterState.search, onSearchInput);
 
 	// Render group selector
 	renderGroupSelector(controlBar, filterState.group, onFilterChange);

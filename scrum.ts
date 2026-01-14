@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 47, pbi: "PBI-047", status: "done" as SprintStatus,
-    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 12, status: "done", sprints: "Sprint 46-47", pbis: "PBI-046,PBI-047", goal: "サイドパネルとAI連携でtodo.txt管理を強化" },
+  sprint: { number: 48, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 13, status: "not_started", sprints: "", pbis: "", goal: "TBD - Product Backlog空、新PBI作成待ち" },
 };
 
 // Product Goal
@@ -70,86 +70,16 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (No active sprint - Phase 12 complete, Product Backlog empty)
 export const currentSprint = {
-  sprint: 47,
-  pbi: "PBI-047",
-  goal: "自然言語からtodo.txt形式への変換機能を実装し、直感的なタスク追加を可能にする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "withRetry関数が指定回数リトライし、exponential backoffを適用するかテスト",
-      implementation: "retry.tsにwithRetry, isRetryableError関数を実装（ネットワークエラー、429、5xxが対象）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(ai): add retry logic tests for withRetry and isRetryableError" },
-        { phase: "green" as CommitPhase, message: "feat(ai): implement retry logic with exponential backoff" },
-      ],
-    },
-    {
-      test: "buildSystemPrompt関数が現在日付とカスタムコンテキストを使用してプロンプトを生成するかテスト",
-      implementation: "prompt.tsにbuildSystemPrompt関数を実装（プロジェクト/コンテキスト/優先度/期限のルール埋め込み）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(ai): add prompt generation tests for buildSystemPrompt" },
-        { phase: "green" as CommitPhase, message: "feat(ai): implement prompt generation with buildSystemPrompt" },
-      ],
-    },
-    {
-      test: "OpenRouterService.convertToTodotxt()がAPI呼び出しとレスポンスパースを行うかテスト、エラーハンドリング含む",
-      implementation: "openrouter.tsにOpenRouterServiceクラスとconvertToTodotxt実装（API client + retry統合）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(ai): add OpenRouter API client tests for convertToTodotxt" },
-        { phase: "green" as CommitPhase, message: "feat(ai): implement OpenRouter API client with retry support" },
-      ],
-    },
-    {
-      test: "settings.tsにOpenRouter設定（apiKey, model, retryConfig, customContexts）が追加され、UIで編集可能かテスト",
-      implementation: "settings.tsを拡張してOpenRouter関連設定を追加、設定UI実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(settings): add OpenRouter settings tests" },
-        { phase: "green" as CommitPhase, message: "feat(settings): add OpenRouter configuration with UI" },
-      ],
-    },
-    {
-      test: "AITaskInputDialogが開き、自然言語入力と生成ボタンが機能するかテスト",
-      implementation: "ui/dialogs/AITaskInputDialog.tsを実装（Modal継承、OpenRouterService呼び出し）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(ai): implement AITaskInputDialog for natural language task input" },
-      ],
-    },
-    {
-      test: "AITaskPreviewDialogがプレビュー表示、編集、再生成、追加機能を提供するかテスト",
-      implementation: "ui/dialogs/AITaskPreviewDialog.tsを実装（todo.txt編集可能、ファイル追記処理）",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(ai): implement AITaskPreviewDialog for task preview and file appending" },
-      ],
-    },
-    {
-      test: "サイドパネルとメインビューのAIボタンがAITaskInputDialogを開くかテスト",
-      implementation: "TodoSidePanelView/TodosViewのAIボタンをAITaskInputDialogに接続 + REFACTOR実施（エラーハンドリング整理、プロンプト分割）",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(ai): integrate AI task input dialog with side panel view" },
-        { phase: "refactor" as CommitPhase, message: "refactor(ai): organize error handling by HTTP status code and split prompt sections" },
-        { phase: "refactor" as CommitPhase, message: "fix(types): add type guards for TypeScript strict checks" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 47: PBI-047完了 - 7 subtasks, 11 commits (4 RED, 5 GREEN, 2 REFACTOR), see git history
 // Sprint 46: PBI-046完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
-// Sprint 45: PBI-045完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 
 // Impediments
 export const impediments = { active: [] as { id: string; description: string; status: string }[], resolved: [] as string[] };
@@ -185,35 +115,39 @@ export const retrospectives: Retrospective[] = [
   // Sprint 43: 740t(+114t)、70エッジケーステスト追加、Phase 10開始 - see git history
   // Sprint 44: 738t(-2t統合化)、Phase 10完遂、Actions 5項目未消化 - see git history
   // Sprint 45: 762t(+24t)、アーカイブ機能実装、REFACTOR 3連続未実施 - see git history
-  { sprint: 46,
+  // Sprint 46: 770t(+8t)、サイドパネル実装、REFACTOR 4連続未実施、Action実施率0% - see git history
+  { sprint: 47,
     workedWell: [
-      "完璧なTDD継続: RED-GREEN 6 commits、4 Sprint連続でテストファースト徹底",
-      "新View実装成功: ItemView使用のTodoSidePanelView実装、複数ファイル対応実現",
+      "REFACTOR復活成功: 4 Sprint連続未実施の負債を解消、2 refactor commits実施（エラーハンドリング整理+型ガード追加）",
+      "完璧なTDD維持: 7 Subtasks全てテストファースト徹底、4 RED + 5 GREEN + 2 REFACTOR = 11 commits",
+      "AI機能完全実装: OpenRouter API統合成功、retry/prompt/dialog全て実装、8 AC全達成",
+      "Phase 12完遂: 2 PBI（PBI-046,047）完了、サイドパネル+AI連携の目標達成",
+      "テスト大幅増加: 770t→801t(+31t, 4.0%増)、AI機能に対する包括的テストカバレッジ確保",
       "DoD完全クリア: Tests/Lint/Types/Build全てpass、品質基準維持",
-      "Phase 12開始: サイドパネル・AI連携の基盤構築、PBI-047への橋渡し完了",
-      "効率的なテスト追加: 762t→770t(+8t, 1.05%増)、機能に対する適切なテストカバレッジ",
     ],
     toImprove: [
-      "REFACTOR phase未実施深刻化: 4 Sprint連続未実施（Sprint 43-46）、技術的負債蓄積リスク増大",
-      "Sprint 45 Actions全滅: 4項目全て未実施（0/4 = 0%実施率）、Action機能不全状態",
-      "Action累積危機的: execution rate 47%維持も実質的改善なし、累積Actions 39項目に増加",
-      "REFACTOR判断プロセス欠如: GREEN完了後のREFACTOR要否判断が完全にスキップされている",
+      "Sprint 46 Actions実施率0%: 5項目中0項目実施、REFACTOR以外のAction項目が未着手",
+      "Action累積継続: total 78項目中executed 34項目（44%）、依然としてKPI min 50%未達",
+      "REFACTOR判断の形骸化: Subtask 7でREFACTOR実施したが、判断プロセスの明示的記録なし",
+      "技術的負債可視化未実施: Sprint 47 Planning時の累積Actions選定・Subtask化が行われず",
     ],
     actions: [
-      "REFACTOR強制実行: Sprint 47で必ずREFACTOR phase実施、Subtask 1つをREFACTOR専用に割当",
-      "Action実施KPI厳格化: Sprint 47で最低2 Actions実施必須（50%以上実施率）、未達成時はSprint失敗扱い",
-      "GREEN後REFACTOR判断義務化: 各Subtask GREEN完了時、REFACTOR要否4項目チェック（重複/複雑度/命名/構造）必須記録",
-      "技術的負債可視化: Sprint 47 Planning時、累積未実施Actions 39項目から緊急対処項目2つ選定・Subtask化",
-      "retrospective action追跡: Sprint 47で過去4 Sprintの未実施Actions実施状況を明示的にレビュー",
+      "Action実施最優先化: Sprint 48で最低3 Actions実施必須（60%以上の実施率目標）、Planning時に明示的選定",
+      "REFACTOR判断の可視化: 各GREEN完了時、4項目チェック（重複/複雑度/命名/構造）結果をscrum.tsに記録",
+      "累積Action整理: Sprint 48 Planning前に過去5 Sprintの未実施Actions棚卸し、廃棄/統合/実施判断実施",
+      "Action execution tracking強化: 各Sprint終了時、前Sprint Actions実施状況を数値で明示（例: 5項目中2項目実施=40%）",
+      "GREEN-REFACTOR習慣定着: REFACTOR phase実施は成功、次Sprint以降も継続維持、各Phaseで最低1 REFACTOR commit目標",
     ] },
 ];
 
-// Action Management (Sprint 46完了、rate 44% critical below KPI min)
+// Action Management (Sprint 47完了、rate 42% critical - REFACTOR復活も他Actions未着手)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 78, executed: 34, rate: 44, remaining: 44 },
-  // Sprint 46: +5 actions, 0 executed from Sprint 45 backlog (累積未実施21項目: Sprint 43残3+Sprint 44残3+Sprint 45残4+Sprint 46新5+過去6)
-  // 危機的状況: 4 Sprint連続でAction実施率0%、KPI min 50%を大きく下回る44%に悪化
+  tracking: { total: 83, executed: 35, rate: 42, remaining: 48 },
+  // Sprint 47: +5 actions, 1 executed from Sprint 46 backlog (REFACTOR強制実行のみ達成、他4項目未実施)
+  // Sprint 46 Actions実施状況: 5項目中1項目実施=20%（REFACTOR成功、KPI厳格化/判断義務化/負債可視化/action追跡は未実施）
+  // 累積未実施増加: Sprint 43残3+Sprint 44残3+Sprint 45残4+Sprint 46残4+Sprint 47新5+過去6=25項目
+  // 危機的状況継続: rate 44%→42%に悪化、KPI min 50%を大きく下回る
 };
 
 // Agents & Events

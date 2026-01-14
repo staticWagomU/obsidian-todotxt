@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 46, pbi: "PBI-046", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 11, status: "done", sprints: "Sprint 45", pbis: "PBI-045", goal: "完了タスクのアーカイブ機能を実装し、todo.txtファイルのスリム化を実現する" },
+  sprint: { number: 46, pbi: "PBI-046", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 3, impediments: 0 },
+  phase: { number: 12, status: "in_progress", sprints: "Sprint 46", pbis: "PBI-046", goal: "サイドパネルにtodo.txt一覧ビューを実装し、タスク俯瞰と簡易操作を可能にする" },
 };
 
 // Product Goal
@@ -116,13 +116,35 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (No active sprint)
+// Current Sprint
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 46,
+  pbi: "PBI-046",
+  goal: "サイドパネルにtodo.txt一覧ビューを実装し、タスク俯瞰と簡易操作を可能にする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "TodoSidePanelViewがItemViewを継承し、getViewType/getDisplayText/getIconを実装することをテストする",
+      implementation: "TodoSidePanelViewクラスを実装し、プラグインにVIEW_TYPE_TODO_SIDEPANELを登録する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "サイドパネルが設定からtodo.txtファイルパスを読み込み、全タスクをレンダリングし、タスククリックで該当ファイルを開くことをテストする",
+      implementation: "renderTaskListを拡張し、複数ファイル対応、タスククリック時のファイルオープン処理を実装する",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "サイドパネルとメインビュー（TodotxtView）の両方にAIタスク追加ボタンが表示されることをテストする",
+      implementation: "renderAddButtonを拡張し、AIボタンUIを両ビューに追加する（PBI-047のプレースホルダーとして）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 45: PBI-045完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 

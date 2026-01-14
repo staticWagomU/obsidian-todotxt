@@ -87,7 +87,7 @@ describe("OpenRouterService", () => {
 			);
 
 			const callArgs = vi.mocked(requestUrl).mock.calls[0]?.[0];
-			if (!callArgs?.body) return;
+			if (typeof callArgs === "string" || !callArgs?.body) return;
 			const body = JSON.parse(callArgs.body as string) as { model: string };
 			expect(body.model).toBe("anthropic/claude-3-haiku");
 		});
@@ -110,7 +110,7 @@ describe("OpenRouterService", () => {
 			await service.convertToTodotxt("テストタスク", "2026-01-14", customContexts);
 
 			const callArgs = vi.mocked(requestUrl).mock.calls[0]?.[0];
-			if (!callArgs?.body) return;
+			if (typeof callArgs === "string" || !callArgs?.body) return;
 			const body = JSON.parse(callArgs.body as string) as {
 				messages: Array<{ role: string; content: string }>;
 			};

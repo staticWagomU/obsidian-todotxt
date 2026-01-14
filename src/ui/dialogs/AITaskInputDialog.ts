@@ -85,7 +85,7 @@ export class AITaskInputDialog extends Modal {
 				retryConfig: this.settings.retryConfig,
 			});
 
-			const currentDate = new Date().toISOString().split("T")[0];
+			const currentDate = new Date().toISOString().split("T")[0] || "";
 			const result = await service.convertToTodotxt(
 				naturalLanguage,
 				currentDate,

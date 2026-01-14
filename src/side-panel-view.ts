@@ -102,6 +102,11 @@ export class TodoSidePanelView extends ItemView {
 		}
 
 		const targetPath = filePaths[0];
+		if (!targetPath) {
+			console.warn("Invalid todo.txt file path");
+			return;
+		}
+
 		const dialog = new AITaskInputDialog(
 			this.app,
 			this.plugin.settings.openRouter,

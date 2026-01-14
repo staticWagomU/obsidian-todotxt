@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 52, pbi: "PBI-052", status: "not_started" as SprintStatus,
+  sprint: { number: 52, pbi: "PBI-052", status: "in_progress" as SprintStatus,
     subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 14, status: "planning", sprints: "52-", pbis: "PBI-052", goal: "Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化" },
+  phase: { number: 14, status: "in_progress", sprints: "52-", pbis: "PBI-052", goal: "Phase 14: サイドパネルUI刷新 - Apple-likeモダンデザイン強化" },
 };
 
 // Product Goal
@@ -121,8 +121,44 @@ export const currentSprint = {
   sprint: 52,
   pbi: "PBI-052",
   goal: "サイドパネルUI刷新: Apple-likeモダンデザイン強化（プログレスバー・フィルター・フッターボタン）",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "サイドパネルヘッダーに「全て/完了/未完了」のフィルターボタンと完了率表示プログレスバーをレンダリング、フィルター切り替えでタスクリスト更新を検証",
+      implementation: "TodoSidePanelViewにステータスフィルター（filterStatus: 'all' | 'completed' | 'incomplete'）とプログレスバー（完了タスク数/総タスク数%）をヘッダーに追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    {
+      test: "検索ボックスが角丸20px、プレースホルダー「タスク検索...」、Apple-styleのピル型スタイルでレンダリングされることを検証",
+      implementation: "検索ボックスにCSSクラス`.search-box-pill`を追加、スタイルに`border-radius: 20px`、padding/背景色/プレースホルダーを設定",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    {
+      test: "フィルタードロップダウン（なし/+project/@context）とソートドロップダウン（デフォルト/優先度/日付）が横並びでレンダリングされ、選択値が反映されることを検証",
+      implementation: "TodoSidePanelViewにfilterType（'none' | 'project' | 'context'）とsortType（'default' | 'priority' | 'date'）のドロップダウンを追加、flexboxで横並び配置",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    {
+      test: "タスクアイテムが1行目に[チェックボックス][優先度][説明]、2行目に[プロジェクト/コンテキストタグ]、右端に[編集アイコン]のレイアウトでレンダリングされることを検証",
+      implementation: "TodoItemコンポーネントに2行レイアウトCSS追加、1行目にチェックボックス+優先度+説明、2行目にタグ、右端にeditアイコンボタン配置",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    {
+      test: "フッターに「AIタスク追加」「タスク追加」の2ボタンが横並びで固定表示され、FABではなくフッターボタン形式でレンダリングされることを検証",
+      implementation: "TodoSidePanelViewにフッター領域追加、AIボタン+追加ボタンをflexboxで横並び配置、position: stickyでフッター固定、FABスタイル削除",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+  ] as Subtask[],
 };
 // Sprint 51: PBI-048完了 - 5 subtasks (4 behavioral + 1 structural), 6 commits (2 GREEN-only, 1 GREEN+REFACTOR, 1 lint fix), Phase 13完遂, see git history
 // Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), see git history

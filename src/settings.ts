@@ -72,5 +72,22 @@ export class TodotxtSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
+
+		new Setting(containerEl)
+			.setName("Todo.txtファイルパス")
+			.setDesc("Todo.txtとして扱うファイルのパスを指定します（複数行で指定可能）。未指定の場合は.txt/.todotxt拡張子のファイルをすべて対象とします")
+			.addTextArea((text) =>
+				text
+					.setPlaceholder("vault/todo.txt\nvault/tasks.txt")
+					.setValue(this.plugin.settings.todotxtFilePaths.join("\n"))
+					.onChange(async (value) => {
+						// Split by newline and filter empty lines
+						this.plugin.settings.todotxtFilePaths = value
+							.split("\n")
+							.map((line) => line.trim())
+							.filter((line) => line.length > 0);
+						await this.plugin.saveSettings();
+					})
+			);
 	}
 }

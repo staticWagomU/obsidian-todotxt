@@ -141,7 +141,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "入力された自然言語がtodo.txt形式に変換される", verification: "pnpm vitest run -- -t 'natural language to todotxt'" },
       { criterion: "変換結果をプレビュー表示し、編集・確認できる", verification: "pnpm build && 手動確認: プレビューが編集可能" },
       { criterion: "確認後にタスクがtodo.txtに追加される", verification: "pnpm build && 手動確認: タスクが追加される" },
-      { criterion: "LLMプロバイダー（Claude/OpenAI等）の設定が可能", verification: "pnpm build && 手動確認: 設定画面にLLMプロバイダー設定がある" },
+      { criterion: "OpenRouterのAPIキー設定が可能", verification: "pnpm build && 手動確認: 設定画面にOpenRouter APIキー入力欄がある" },
     ],
     dependencies: ["PBI-046"],
     status: "draft" as PBIStatus,

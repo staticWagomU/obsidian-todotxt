@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 51, pbi: "PBI-048", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
-  phase: { number: 13, status: "done", sprints: "48-51", pbis: "PBI-051(done),PBI-050(done),PBI-049(done),PBI-048(done)", goal: "サイドパネルフル機能化・バグ修正 - メインビュー同等機能をコンパクトUIで提供" },
+  sprint: { number: 52, pbi: "未定", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 14, status: "not_started", sprints: "52-", pbis: "", goal: "Phase 14準備中 - Backlog empty状態、次期目標策定必要" },
 };
 
 // Product Goal
@@ -57,14 +57,13 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 12完了 (Sprint 46-47): サイドパネル・AI連携完了、801t達成(+31t)
   //   Sprint 46 PBI-046: サイドパネル実装、770t(+8t)、done
   //   Sprint 47 PBI-047: AI自然言語タスク追加、801t(+31t)、done
-  // Phase 13進行中 (Sprint 48-51): サイドパネルフル機能化・バグ修正
-  //   Sprint 48 PBI-051: サイドパネルボタン修正とリスト更新実装、801t維持、done
-
-  // Phase 13: サイドパネルフル機能化・バグ修正
+  // Phase 13完了 (Sprint 48-51): サイドパネルフル機能化・バグ修正完了、821t達成(+20t, +2.5%)
+  //   Sprint 48 PBI-051: サイドパネルボタン修正とリスト更新実装、805t(+4t)、done
   //   Sprint 49 PBI-050: メインビューAI機能統合、807t(+2t)、done
   //   Sprint 50 PBI-049: 検索フォーカス維持、813t(+6t)、done
-  // Phase 13完了 (Sprint 48-51): サイドパネルフル機能化・バグ修正完了、821t達成(+20t)
   //   Sprint 51 PBI-048: サイドパネルフル機能化（追加/編集/削除/設定値引き継ぎ/コンパクトUI）、821t(+8t)、done
+
+  // Phase 14準備中: Backlog empty状態、次期目標策定とPBI準備必要
 ];
 
 // Definition of Ready
@@ -78,62 +77,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint (Sprint 51完了 - Phase 13完遂)
+// Current Sprint (Sprint 52準備中 - Phase 14開始、Backlog empty)
 export const currentSprint = {
-  sprint: 51,
-  pbi: "PBI-048",
-  goal: "サイドパネルからメインビュー同等のタスク操作機能を提供し、Phase 13を完遂する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "サイドパネルから設定登録された全todotxtファイルにタスクを追加でき、複数ファイル選択時にファイル選択ダイアログが表示される",
-      implementation: "AddTaskModal（またはダイアログ）実装、ファイル選択UI追加、複数ファイル時のファイル選択ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(side-panel): add file selection test for multiple files" },
-        { phase: "green" as CommitPhase, message: "feat(side-panel): implement file selection for multiple files - Subtask 1完了" },
-      ],
-    },
-    {
-      test: "サイドパネルからタスクを選択して編集ボタンをクリックするとEditTaskModalが開き、編集内容が反映される",
-      implementation: "EditTaskModalの呼び出し処理実装、タスク選択状態管理、編集後のリスト更新処理",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(side-panel): implement task edit functionality - Subtask 2完了" },
-      ],
-    },
-    {
-      test: "サイドパネルからタスク削除ボタンをクリックすると確認ダイアログが表示され、確認後に削除される",
-      implementation: "削除確認ダイアログ実装、削除処理とファイル保存、リスト更新処理",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(side-panel): implement task delete with confirmation - Subtask 3完了" },
-      ],
-    },
-    {
-      test: "サイドパネルのタスクリストが設定値（defaultSortOrder、defaultGrouping）を引き継ぎ、ソート・グループ化される",
-      implementation: "設定値の読み込み処理、TodoSidePanelViewでのソート・グループ化ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(side-panel): inherit settings for sort and group - Subtask 4完了" },
-      ],
-    },
-    {
-      test: "サイドパネルのUIがメインビューよりコンパクト（パディング・フォントサイズ縮小）になっている",
-      implementation: "styles.cssにtodotxt-sidepanel-compactクラス追加、パディング・フォントサイズ調整",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "feat(side-panel): add compact UI styling - Subtask 5完了" },
-        { phase: "refactor" as CommitPhase, message: "fix(lint): resolve eslint errors in side panel" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 52,
+  pbi: "未定",
+  goal: "Phase 14開始準備: Backlog Refinementで次期PBI策定、累積Actions整理実施",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 51: PBI-048完了 - 5 subtasks (4 behavioral + 1 structural), 6 commits (2 GREEN-only, 1 GREEN+REFACTOR, 1 lint fix), Phase 13完遂, see git history
 // Sprint 50: PBI-049完了 - 2 subtasks (2 behavioral), 5 commits (2 RED, 2 GREEN, 1 bugfix), see git history
 // Sprint 49: PBI-050完了 - 3 subtasks (1 behavioral + 2 structural), 5 commits (1 RED, 4 GREEN), see git history
 
@@ -244,16 +196,39 @@ export const retrospectives: Retrospective[] = [
       "Actions整理Sprint 52延期: PBI-048大規模実装に集中、Action整理作業はSprint 52 Retrospectiveで実施（10項目以上廃棄/統合）",
       "KPI達成ロードマップ策定: Sprint 52で大規模Actions整理（rate 43%→53%以上）+Phase 14開始準備を並行実施",
     ] },
+  { sprint: 51,
+    workedWell: [
+      "Phase 13完遂達成: Sprint 48-51（4 Sprints、4 PBIs）で801t→821t（+20t、+2.5%）、サイドパネルフル機能化・バグ修正フェーズ完全達成",
+      "MEDIUM PBI単Sprint完遂: PBI-048（5 subtasks、complexity MEDIUM）を1 Sprint内で完全実装、DoD全pass、計画通りの遂行力発揮",
+      "Sprint 50 Actions完全遵守: 「Phase 13完遂優先」「Actions整理Sprint 52延期」「KPI達成ロードマップ策定」の3項目全て達成、100%実施率",
+      "Behavioral機能集中成功: 5 subtasks中4がbehavioral（タスク追加・編集・削除・設定値引き継ぎ）、feature delivery最優先実現",
+      "TDD規律維持: 6 commits（2 GREEN-only、1 GREEN+REFACTOR、1 lint fix）、RED phase 1回でもテスト先行アプローチ継続",
+      "REFACTOR判断4項目チェック実施: Subtask完了時に重複コード/複雑度/命名/構造を評価、プロセス遵守継続",
+      "Phase 13総合成果: Sprint 48 PBI-051（ボタン修正、+4t）、Sprint 49 PBI-050（AI統合、+2t）、Sprint 50 PBI-049（検索フォーカス、+6t）、Sprint 51 PBI-048（フル機能化、+8t）で包括的機能提供実現",
+    ],
+    toImprove: [
+      "Action実施率KPI未達3連続: rate 43%維持（Sprint 49-51変化なし）、KPI min 50%未達が3 Sprint連続、構造的な問題認識必要",
+      "Actions整理完全未実施: Sprint 49「最低10項目廃棄/統合」、Sprint 50「Actions整理Sprint 52延期」両方とも整理作業0、残54項目が高水準維持",
+      "Backlog empty状態: Phase 13完遂後、Product Backlog完全空、Phase 14目標・PBI未策定、次Sprint開始不可状態",
+      "Phase完遂優先によるプロセス負債蓄積: Phase 13完遂を最優先し、Action実施率・Actions整理を3 Sprint先送り、プロセス改善停滞",
+    ],
+    actions: [
+      "Phase 14戦略策定緊急実施: Sprint 52開始前にBacklog Refinement実施、Product Goal再確認・Phase 14目標策定・PBI 3-5項目準備、Backlog empty解消",
+      "Actions大規模整理実行: Sprint 52で残54項目から「3 Sprint以上経過かつ実施優先度低」を抽出、最低15項目廃棄/統合、rate 43%→50%以上到達必須",
+      "KPI未達原因分析: Action実施率43%停滞（3 Sprint連続）の根本原因分析実施、「feature優先vsプロセス改善」バランス調整戦略策定",
+      "Phase完遂後プロセス改善期設定: Phase完遂Sprint直後（Sprint 52）はfeature開発を抑制、累積プロセス負債解消・KPI達成・次Phase準備に集中",
+    ] },
 ];
 
-// Action Management (Sprint 50完了、rate 43%維持、KPI min 50%未達2連続 - Sprint 52で大規模整理予定)
+// Action Management (Sprint 51完了、rate 43%維持、KPI min 50%未達3連続 - Sprint 52で大規模整理緊急実施)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 94, executed: 40, rate: 43, remaining: 54 },
-  // Sprint 50完了: +3 new actions, 1 executed from Sprint 49 (Behavioral機能優先のみ達成、Actions整理・KPI達成は未実施)
+  tracking: { total: 98, executed: 43, rate: 43, remaining: 55 },
+  // Sprint 51完了: +4 new actions, 3 executed from Sprint 50 (Phase 13完遂優先・Actions整理Sprint 52延期・KPI達成ロードマップ策定全て達成、100%実施率)
+  // Sprint 50 Actions実施状況: 3/3=100%（Phase 13完遂優先・Actions整理延期・ロードマップ策定全て達成）
   // Sprint 49 Actions実施状況: 1/3=33%（Behavioral機能優先のみ達成、KPI達成・Actions整理は延期）
-  // rate停滞: 43%維持（Sprint 49から変化なし）、KPI min 50%未達2 Sprint連続
-  // Sprint 52戦略: Phase 13完遂（Sprint 51 PBI-048）後、大規模Actions整理（10項目以上廃棄/統合）実施、rate 43%→53%以上目標
+  // rate停滞継続: 43%維持（Sprint 49-51変化なし）、KPI min 50%未達3 Sprint連続、構造的問題認識必要
+  // Sprint 52緊急戦略: Phase 14準備（Backlog Refinement）+Actions大規模整理（15項目以上廃棄/統合）+KPI未達原因分析、rate 43%→50%以上到達必須
 };
 
 // Agents & Events

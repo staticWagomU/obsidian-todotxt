@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 48, pbi: "PBI-051", status: "done" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 1, impediments: 0 },
-  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-051,PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - ボタン不具合修正 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
+  sprint: { number: 49, pbi: "PBI-050", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 1, impediments: 0 },
+  phase: { number: 13, status: "in_progress", sprints: "48-51", pbis: "PBI-050,PBI-049,PBI-048", goal: "サイドパネルフル機能化・バグ修正 - メインビューAI機能 + 検索フォーカス問題解消 + メインビュー同等機能をコンパクトUIで提供" },
 };
 
 // Product Goal
@@ -128,29 +128,16 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint
+// Current Sprint (Sprint 48完了、次Sprint待機中)
 export const currentSprint = {
-  sprint: 48,
-  pbi: "PBI-051",
-  goal: "サイドパネルのAIボタン（✨）と追加ボタン（+）を修正し、タスク追加後のリスト更新を実装する",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "サイドパネルのAIボタン（✨）と追加ボタン（+）クリックでダイアログが開き、タスク追加後にリストが更新される",
-      implementation: "既存実装の動作確認テスト追加、共通処理抽出によるリファクタリング、Promise処理適正化",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test(side-panel): add comprehensive tests for AI and add button interactions" },
-        { phase: "refactor" as CommitPhase, message: "refactor(side-panel): extract common file path validation and refresh logic" },
-        { phase: "refactor" as CommitPhase, message: "refactor(side-panel): fix lint warnings for Promise handling" },
-        { phase: "green" as CommitPhase, message: "fix(test): correct TFile mock usage in side panel tests" },
-      ],
-    },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 48: PBI-051完了 - 1 subtask, 4 commits (1 RED, 1 GREEN, 2 REFACTOR) + 1 fix, see git history
 // Sprint 47: PBI-047完了 - 7 subtasks, 11 commits (4 RED, 5 GREEN, 2 REFACTOR), see git history
-// Sprint 46: PBI-046完了 - 3 subtasks, 6 commits (3 RED, 3 GREEN), see git history
 
 // Impediments
 export const impediments = {
@@ -195,38 +182,39 @@ export const retrospectives: Retrospective[] = [
   // Sprint 44: 738t(-2t統合化)、Phase 10完遂、Actions 5項目未消化 - see git history
   // Sprint 45: 762t(+24t)、アーカイブ機能実装、REFACTOR 3連続未実施 - see git history
   // Sprint 46: 770t(+8t)、サイドパネル実装、REFACTOR 4連続未実施、Action実施率0% - see git history
-  { sprint: 47,
+  // Sprint 47: 801t(+31t)、AI連携実装、REFACTOR復活、Action実施率0% - see git history
+  { sprint: 48,
     workedWell: [
-      "REFACTOR復活成功: 4 Sprint連続未実施の負債を解消、2 refactor commits実施（エラーハンドリング整理+型ガード追加）",
-      "完璧なTDD維持: 7 Subtasks全てテストファースト徹底、4 RED + 5 GREEN + 2 REFACTOR = 11 commits",
-      "AI機能完全実装: OpenRouter API統合成功、retry/prompt/dialog全て実装、8 AC全達成",
-      "Phase 12完遂: 2 PBI（PBI-046,047）完了、サイドパネル+AI連携の目標達成",
-      "テスト大幅増加: 770t→801t(+31t, 4.0%増)、AI機能に対する包括的テストカバレッジ確保",
-      "DoD完全クリア: Tests/Lint/Types/Build全てpass、品質基準維持",
+      "REFACTOR習慣定着継続: 2 Sprint連続で2 REFACTOR commits実施（共通処理抽出+Promise処理適正化）、習慣化の兆し",
+      "Impediments迅速解決: IMP-048-1（テスト期待値不一致）+IMP-048-2（Lintエラー5件）を同一Sprint内で完全解消",
+      "既存負債クリーンアップ: Sprint開始前から存在していた技術負債（view.test.ts期待値、main.ts Promise処理）を体系的に解決",
+      "DoD完全達成: Impediments解決後、Tests/Lint/Types/Build全てpass、品質基準維持",
+      "テストカバレッジ向上: 801t→805t(+4t, 0.5%増)、サイドパネルボタン操作の包括的テスト追加",
+      "Phase 13開始: サイドパネルフル機能化・バグ修正フェーズのキックオフ成功",
     ],
     toImprove: [
-      "Sprint 46 Actions実施率0%: 5項目中0項目実施、REFACTOR以外のAction項目が未着手",
-      "Action累積継続: total 78項目中executed 34項目（44%）、依然としてKPI min 50%未達",
-      "REFACTOR判断の形骸化: Subtask 7でREFACTOR実施したが、判断プロセスの明示的記録なし",
-      "技術的負債可視化未実施: Sprint 47 Planning時の累積Actions選定・Subtask化が行われず",
+      "Sprint 47 Actions実施率20%: 5項目中1項目のみ実施（REFACTOR習慣のみ達成）、目標60%に対して大幅未達",
+      "Actions優先順位付け不足: Action実施最優先化・REFACTOR判断可視化・累積Actions整理が全て未実施",
+      "既存負債によるSprint妨害: DoD Tests/Lintが既存負債で失敗、新規実装以外の修正作業が発生",
+      "Action execution tracking未実施: Sprint 47 Actions実施状況の数値化が行われず、進捗可視化が不十分",
     ],
     actions: [
-      "Action実施最優先化: Sprint 48で最低3 Actions実施必須（60%以上の実施率目標）、Planning時に明示的選定",
-      "REFACTOR判断の可視化: 各GREEN完了時、4項目チェック（重複/複雑度/命名/構造）結果をscrum.tsに記録",
-      "累積Action整理: Sprint 48 Planning前に過去5 Sprintの未実施Actions棚卸し、廃棄/統合/実施判断実施",
-      "Action execution tracking強化: 各Sprint終了時、前Sprint Actions実施状況を数値で明示（例: 5項目中2項目実施=40%）",
-      "GREEN-REFACTOR習慣定着: REFACTOR phase実施は成功、次Sprint以降も継続維持、各Phaseで最低1 REFACTOR commit目標",
+      "Sprint開始前DoD実行義務化: Planning開始前にDoD 4項目（Tests/Lint/Types/Build）実行、既存負債を事前に可視化しImpedimentsとして記録",
+      "Action実施Subtask化: Sprint 49 Planningで過去未実施Actions（Sprint 47-48累積）から最低2項目選定、明示的にSubtaskとして組み込み",
+      "REFACTOR判断4項目チェック記録: 各GREEN完了時に（1）重複コード、（2）複雑度、（3）命名、（4）構造の4項目を明示的評価、scrum.tsに記録",
+      "Action実施率トラッキング厳格化: Retrospective時に前Sprint Actions実施状況を必ず数値化（例: 5項目中1項目実施=20%）、actionManagementに反映",
+      "累積Actions整理プロセス確立: 5 Sprint以上経過したActionsは「廃棄/統合/実施」判断を実施、actionManagement.trackingから削除または明示的に再計画",
     ] },
 ];
 
-// Action Management (Sprint 47完了、rate 42% critical - REFACTOR復活も他Actions未着手)
+// Action Management (Sprint 48完了、rate 41% critical - REFACTOR習慣継続も他Actions未実施継続)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 83, executed: 35, rate: 42, remaining: 48 },
-  // Sprint 47: +5 actions, 1 executed from Sprint 46 backlog (REFACTOR強制実行のみ達成、他4項目未実施)
-  // Sprint 46 Actions実施状況: 5項目中1項目実施=20%（REFACTOR成功、KPI厳格化/判断義務化/負債可視化/action追跡は未実施）
-  // 累積未実施増加: Sprint 43残3+Sprint 44残3+Sprint 45残4+Sprint 46残4+Sprint 47新5+過去6=25項目
-  // 危機的状況継続: rate 44%→42%に悪化、KPI min 50%を大きく下回る
+  tracking: { total: 88, executed: 36, rate: 41, remaining: 52 },
+  // Sprint 48: +5 actions, 1 executed from Sprint 47 backlog (REFACTOR習慣のみ達成、他4項目未実施)
+  // Sprint 47 Actions実施状況: 5項目中1項目実施=20%（REFACTOR継続成功、Action実施最優先化/REFACTOR判断可視化/累積Action整理/tracking強化は未実施）
+  // 累積未実施増加: Sprint 43残3+Sprint 44残3+Sprint 45残4+Sprint 46残4+Sprint 47残4+Sprint 48新5+過去6=29項目
+  // 危機的状況継続: rate 42%→41%に悪化、KPI min 50%を3 Sprint連続で大きく下回る
 };
 
 // Agents & Events

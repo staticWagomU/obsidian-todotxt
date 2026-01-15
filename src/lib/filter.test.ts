@@ -948,4 +948,112 @@ describe("filterByAdvancedSearch", () => {
 			expect(resultContext[0]?.contexts).toContain("home");
 		});
 	});
+
+	describe("regex search (/pattern/)", () => {
+		it("should match tasks using regex pattern", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries" }),
+				createTodo({ description: "Buy laptop" }),
+				createTodo({ description: "Read book" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "/^Buy/");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Buy groceries");
+			expect(result[1]?.description).toBe("Buy laptop");
+		});
+
+		it("should match tasks with complex regex patterns", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1" }),
+				createTodo({ description: "Task 2" }),
+				createTodo({ description: "Task 10" }),
+				createTodo({ description: "Other thing" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "/Task \\d$/");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Task 1");
+			expect(result[1]?.description).toBe("Task 2");
+		});
+
+		it("should be case-insensitive for regex by default", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "BUY groceries" }),
+				createTodo({ description: "buy laptop" }),
+				createTodo({ description: "read book" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "/buy/");
+
+			expect(result).toHaveLength(2);
+		});
+
+		it("should handle regex with special characters", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Fix bug (urgent)" }),
+				createTodo({ description: "Fix bug [low]" }),
+				createTodo({ description: "Review PR" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "/\\(urgent\\)/");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Fix bug (urgent)");
+		});
+
+		it("should return all tasks for invalid regex", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1" }),
+				createTodo({ description: "Task 2" }),
+			];
+
+			// Invalid regex should fall back to literal search or return all
+			const result = filterByAdvancedSearch(todos, "/[invalid/");
+
+			// Invalid regex is treated as literal match
+			expect(result).toHaveLength(0);
+		});
+
+		it("should combine regex with other operators", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries at store" }),
+				createTodo({ description: "Buy laptop online" }),
+				createTodo({ description: "Sell phone" }),
+			];
+
+			// Regex AND regular term
+			const result = filterByAdvancedSearch(todos, "/^Buy/ store");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Buy groceries at store");
+		});
+
+		it("should handle regex in NOT expressions", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1" }),
+				createTodo({ description: "Task 2" }),
+				createTodo({ description: "Other thing" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "-/Task \\d/");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Other thing");
+		});
+
+		it("should search regex in projects and contexts", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task", projects: ["project-123"], contexts: [] }),
+				createTodo({ description: "Task", projects: ["project-abc"], contexts: [] }),
+				createTodo({ description: "Task", projects: [], contexts: ["work-456"] }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "/\\d{3}/");
+
+			expect(result).toHaveLength(2);
+		});
+	});
 });

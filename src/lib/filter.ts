@@ -8,10 +8,56 @@ function isNullOrUndefined(value: unknown): value is null | undefined {
 }
 
 /**
+ * Check if a term is a regex pattern (enclosed in /.../)
+ * Handles both /pattern/ and -/pattern/ (NOT regex)
+ */
+function isRegexPattern(term: string): boolean {
+	const pattern = term.startsWith("-") ? term.slice(1) : term;
+	return pattern.startsWith("/") && pattern.endsWith("/") && pattern.length > 2;
+}
+
+/**
+ * Parse a regex pattern from /pattern/ format
+ * Handles both /pattern/ and -/pattern/ (NOT regex - extracts just the pattern)
+ * Returns null if invalid regex
+ */
+function parseRegexPattern(term: string): RegExp | null {
+	// Remove NOT prefix if present
+	const regexPart = term.startsWith("-") ? term.slice(1) : term;
+	if (!isRegexPattern(regexPart)) return null;
+
+	const pattern = regexPart.slice(1, -1);
+	try {
+		return new RegExp(pattern, "i"); // case-insensitive by default
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Check if a todo matches a regex pattern
+ */
+function matchesRegex(todo: Todo, regex: RegExp): boolean {
+	return (
+		regex.test(todo.description) ||
+		todo.projects.some(project => regex.test(project)) ||
+		todo.contexts.some(context => regex.test(context))
+	);
+}
+
+/**
  * Check if a todo matches a simple term (in description, projects, or contexts)
+ * Supports both literal terms and regex patterns (/pattern/)
  * Case-insensitive matching
  */
 function matchesTerm(todo: Todo, term: string): boolean {
+	// Check if it's a regex pattern
+	const regex = parseRegexPattern(term);
+	if (regex) {
+		return matchesRegex(todo, regex);
+	}
+
+	// Regular case-insensitive string matching
 	const lowerTerm = term.toLowerCase();
 	return (
 		todo.description.toLowerCase().includes(lowerTerm) ||
@@ -39,13 +85,88 @@ interface ParsedQuery {
 	notTerms: string[];  // Terms that must NOT match
 }
 
+/**
+ * Tokenize query string, preserving regex patterns (including spaces within them)
+ * and NOT prefixes
+ */
+function tokenizeQuery(query: string): string[] {
+	const tokens: string[] = [];
+	let current = "";
+	let inRegex = false;
+	let prefix = ""; // Store NOT prefix (-) before regex
+	let i = 0;
+
+	while (i < query.length) {
+		const char = query[i];
+
+		if (char === "/" && !inRegex) {
+			// Start of regex pattern
+			if (current.trim()) {
+				// Check if current ends with - (NOT prefix for regex)
+				const trimmed = current.trim();
+				if (trimmed === "-") {
+					prefix = "-";
+				} else if (trimmed.endsWith(" -") || trimmed.endsWith("\t-")) {
+					// Push previous tokens except the trailing -
+					const withoutMinus = trimmed.slice(0, -1).trim();
+					for (const t of withoutMinus.split(/\s+/)) {
+						if (t) tokens.push(t);
+					}
+					prefix = "-";
+				} else {
+					// Push any accumulated non-regex content as separate tokens
+					for (const t of trimmed.split(/\s+/)) {
+						if (t) tokens.push(t);
+					}
+				}
+				current = "";
+			}
+			inRegex = true;
+			current = prefix + "/";
+			prefix = "";
+		} else if (char === "/" && inRegex) {
+			// End of regex pattern
+			current += "/";
+			tokens.push(current);
+			current = "";
+			inRegex = false;
+		} else if (inRegex) {
+			// Inside regex - preserve everything including spaces
+			current += char;
+		} else if (char === " " || char === "\t") {
+			// Whitespace outside regex - split token
+			if (current.trim()) {
+				tokens.push(current.trim());
+			}
+			current = "";
+		} else {
+			current += char;
+		}
+		i++;
+	}
+
+	// Handle remaining content
+	if (current.trim()) {
+		if (inRegex) {
+			// Unclosed regex - treat as literal
+			for (const t of current.trim().split(/\s+/)) {
+				if (t) tokens.push(t);
+			}
+		} else {
+			tokens.push(current.trim());
+		}
+	}
+
+	return tokens;
+}
+
 function parseAdvancedQuery(query: string): ParsedQuery {
 	const trimmed = query.trim();
 	if (trimmed === "") {
 		return { andTerms: [], notTerms: [] };
 	}
 
-	const tokens = trimmed.split(/\s+/);
+	const tokens = tokenizeQuery(trimmed);
 	const andTerms: string[] = [];
 	const notTerms: string[] = [];
 

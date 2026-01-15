@@ -179,6 +179,8 @@ actionManagement.trackingの計算は以下のルールに従う：
 - Sprint 55: P0 Actions 2項目実施 (+2 executed, -2 remaining) → executed=64, remaining=39
 - Sprint 55廃棄: P2 Action 1項目廃棄（3 Sprint経過）(-3 remaining, +0 executed) → remaining=36
 - Sprint 55最終: total=100 (103-3), executed=64, remaining=36, rate=64%
+- Sprint 56: P0 Actions 2項目実施 (+2 executed, -2 remaining) → executed=66, remaining=34
+- Sprint 56最終: total=100 (変更なし), executed=66, remaining=34, rate=66%
 
 **Good Examples (SMART準拠):**
 1. ✓ "Sprint 54 Planning時にP0 Actions 2項目をSubtask化する"

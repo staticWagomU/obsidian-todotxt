@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 56, pbi: "PBI-056", status: "done" as SprintStatus,
-    subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
+  sprint: { number: 57, pbi: "PBI-057", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
   phase: { number: 17, status: "in_progress", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
 };
 
@@ -84,13 +84,23 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 56完了、次Sprint待機
+// Current Sprint - Sprint 57開始
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 57,
+  pbi: "PBI-057",
+  goal: "高度検索機能でタスク検索UXを完成させ、Phase 17を完遂する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Behavioral Subtasks (5): PBI-057 Acceptance Criteria対応
+    { test: "AC1: AND検索（空白）、OR検索（|）、NOT検索（-）フィルタリングを確認", implementation: "parseAdvancedQuery関数にAND/OR/NOT論理演算子サポート追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "AC2: 正規表現検索（/pattern/）でパターンマッチフィルタリングを確認", implementation: "parseAdvancedQuery関数に正規表現サポート追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "AC3: 特殊構文（project:/context:/due:/priority:）検索フィルタリングを確認", implementation: "parseAdvancedQuery関数に特殊構文パーサー追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "AC4: 日付範囲検索（due:YYYY-MM-DD..YYYY-MM-DD）フィルタリングを確認", implementation: "日付範囲パーサーとフィルタロジック実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "AC5: 検索ヘルプアイコンクリックでヘルプモーダル表示を確認", implementation: "SearchHelpModal ReactコンポーネントとトリガーUI実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    // Structural Subtasks (2): P0/P1 Actions対応
+    { test: "P1 Action: rate 66%→70%ロードマップ策定完了を確認", implementation: "Sprint 57-58 Actions計画をscrum.tsに文書化（+4%改善、具体的Actions 3項目）", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "P0 Action: actionManagement.tracking更新完了を確認", implementation: "Sprint 57完了時にtracking値を更新", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+  ] as Subtask[],
 };
 // Sprint 56: PBI-056完了 - 8 subtasks (6 behavioral + 2 structural), 6 commits, DoD全pass, Phase 17開始, see git history
 // Sprint 49-55: see git history

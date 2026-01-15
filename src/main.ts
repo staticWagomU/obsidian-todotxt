@@ -2,6 +2,7 @@ import { Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, TodotxtPluginSettings, TodotxtSettingTab } from "./settings";
 import { TodotxtView, VIEW_TYPE_TODOTXT } from "./view";
 import { TodoSidePanelView, VIEW_TYPE_TODO_SIDEPANEL } from "./side-panel-view";
+import { COMMANDS } from "./lib/commands";
 
 export default class TodotxtPlugin extends Plugin {
 	settings: TodotxtPluginSettings;
@@ -25,10 +26,28 @@ export default class TodotxtPlugin extends Plugin {
 
 		// Add command to open side panel
 		this.addCommand({
-			id: "open-todotxt-side-panel",
-			name: "サイドパネルを開く",
+			id: COMMANDS.openSidePanel.id,
+			name: COMMANDS.openSidePanel.name,
 			callback: () => {
 				void this.openSidePanel();
+			},
+		});
+
+		// Add command for new task (Ctrl+N / Cmd+N)
+		this.addCommand({
+			id: COMMANDS.newTask.id,
+			name: COMMANDS.newTask.name,
+			callback: () => {
+				void this.openNewTaskDialog();
+			},
+		});
+
+		// Add command for focus search (Ctrl+F / Cmd+F)
+		this.addCommand({
+			id: COMMANDS.focusSearch.id,
+			name: COMMANDS.focusSearch.name,
+			callback: () => {
+				void this.focusSearchBox();
 			},
 		});
 
@@ -59,6 +78,74 @@ export default class TodotxtPlugin extends Plugin {
 	}
 
 	onunload() {}
+
+	/**
+	 * Open new task dialog in active view
+	 * Called by keyboard shortcut (Ctrl+N / Cmd+N)
+	 */
+	async openNewTaskDialog(): Promise<void> {
+		const { workspace } = this.app;
+
+		// Try to find active TodotxtView or TodoSidePanelView
+		const activeView = workspace.getActiveViewOfType(TodotxtView);
+		if (activeView) {
+			activeView.openAddTaskModal();
+			return;
+		}
+
+		// If no active TodotxtView, try side panel
+		const sidePanelLeaf = workspace.getLeavesOfType(VIEW_TYPE_TODO_SIDEPANEL)[0];
+		if (sidePanelLeaf?.view instanceof TodoSidePanelView) {
+			sidePanelLeaf.view.openAddTaskDialog();
+			return;
+		}
+
+		// If neither is available, open side panel first
+		await this.openSidePanel();
+		// Then try to open dialog in side panel after a short delay
+		const newSidePanelLeaf = workspace.getLeavesOfType(VIEW_TYPE_TODO_SIDEPANEL)[0];
+		if (newSidePanelLeaf?.view instanceof TodoSidePanelView) {
+			newSidePanelLeaf.view.openAddTaskDialog();
+		}
+	}
+
+	/**
+	 * Focus search box in active view
+	 * Called by keyboard shortcut (Ctrl+F / Cmd+F)
+	 */
+	async focusSearchBox(): Promise<void> {
+		const { workspace } = this.app;
+
+		// Try to find active TodotxtView
+		const activeView = workspace.getActiveViewOfType(TodotxtView);
+		if (activeView) {
+			const searchBox = activeView.contentEl.querySelector<HTMLInputElement>("input.search-box");
+			if (searchBox) {
+				searchBox.focus();
+				return;
+			}
+		}
+
+		// If no active TodotxtView, try side panel
+		const sidePanelLeaf = workspace.getLeavesOfType(VIEW_TYPE_TODO_SIDEPANEL)[0];
+		if (sidePanelLeaf?.view instanceof TodoSidePanelView) {
+			const searchBox = sidePanelLeaf.view.contentEl.querySelector<HTMLInputElement>("input.search-box");
+			if (searchBox) {
+				searchBox.focus();
+				return;
+			}
+		}
+
+		// If neither is available, open side panel first then focus
+		await this.openSidePanel();
+		const newSidePanelLeaf = workspace.getLeavesOfType(VIEW_TYPE_TODO_SIDEPANEL)[0];
+		if (newSidePanelLeaf?.view instanceof TodoSidePanelView) {
+			const searchBox = newSidePanelLeaf.view.contentEl.querySelector<HTMLInputElement>("input.search-box");
+			if (searchBox) {
+				searchBox.focus();
+			}
+		}
+	}
 
 	async loadSettings() {
 		this.settings = Object.assign(

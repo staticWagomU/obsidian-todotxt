@@ -582,14 +582,18 @@ function renderPriorityFilterDropdown(
 }
 
 /**
- * Render search box
+ * Render search box with help button
  */
 function renderSearchBox(
 	container: HTMLElement,
 	currentValue: string,
 	onInput: () => void,
 ): void {
-	const searchBox = container.createEl("input");
+	// Create search container for search box and help button
+	const searchContainer = container.createEl("div");
+	searchContainer.classList.add("search-container");
+
+	const searchBox = searchContainer.createEl("input");
 	searchBox.type = "text";
 	searchBox.classList.add("search-box");
 	searchBox.placeholder = "タスク検索...";
@@ -600,6 +604,13 @@ function renderSearchBox(
 
 	// Add input event listener
 	searchBox.addEventListener("input", onInput);
+
+	// Add help button
+	const helpButton = searchContainer.createEl("button");
+	helpButton.classList.add("search-help-button");
+	helpButton.textContent = "?";
+	helpButton.setAttribute("aria-label", "検索ヘルプ");
+	helpButton.setAttribute("title", "検索構文のヘルプを表示");
 }
 
 /**

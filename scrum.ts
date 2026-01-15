@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 57, pbi: "PBI-057", status: "in_progress" as SprintStatus,
+  sprint: { number: 57, pbi: "PBI-057", status: "done" as SprintStatus,
     subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 17, status: "in_progress", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
+  phase: { number: 17, status: "done", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
 };
 
 // Product Goal
@@ -48,29 +48,16 @@ export const productGoal = {
 export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
-  phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "in_progress" },
+  phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
 export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-15完了 (Sprint 1-53): 基本機能+UI+サイドパネル+AI連携+プロセス基盤、830t達成
   // Phase 16完了 (Sprint 54-55): AI自然言語タスク編集・一括処理、837t達成(+7t)
-  // Phase 17進行中 (Sprint 56-57): キーボードショートカット・高度検索
+  // Phase 17完了 (Sprint 56-57): キーボードショートカット・高度検索、929t達成(+92t)
   //   Sprint 56 PBI-056: キーボードショートカット、879t(+42t)、Phase 17開始
-  {
-    id: "PBI-057",
-    story: { role: "ユーザー", capability: "高度検索機能でタスクを絞り込める", benefit: "大量タスクから目的タスクを素早く見つけられる" },
-    acceptanceCriteria: [
-      { criterion: "AND検索（空白）、OR検索（|）、NOT検索（-）が動作", verification: "テストでAND/OR/NOT検索クエリが正しくフィルタリングを確認" },
-      { criterion: "正規表現検索（/pattern/）が動作", verification: "テストで正規表現クエリフィルタリングを確認" },
-      { criterion: "特殊構文（project:、context:、due:、priority:）検索が動作", verification: "テストで特殊構文クエリフィルタリングを確認" },
-      { criterion: "日付範囲検索（due:YYYY-MM-DD..YYYY-MM-DD）が動作", verification: "テストで範囲クエリフィルタリングを確認" },
-      { criterion: "検索ヘルプアイコンで構文ヘルプモーダル表示", verification: "テストでヘルプアイコンクリック→モーダル表示を確認" }
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 4, estimatedTests: 20, externalDependencies: 0, score: "MEDIUM" as const, subtasks: 5 }
-  },
+  //   Sprint 57 PBI-057: 高度検索機能、929t(+50t)、Phase 17完遂
 ];
 
 // Definition of Ready
@@ -84,24 +71,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 57進行中
+// Current Sprint - Sprint 57完了済み（次Sprint未開始）
 export const currentSprint = {
-  sprint: 57,
-  pbi: "PBI-057",
-  goal: "高度検索機能でタスク検索UXを完成させ、Phase 17を完遂する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    // Behavioral Subtasks (5): PBI-057 Acceptance Criteria対応
-    { test: "AC1: AND検索（空白）、OR検索（|）、NOT検索（-）フィルタリングを確認", implementation: "parseAdvancedQuery関数にAND/OR/NOT論理演算子サポート追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add filterByAdvancedSearch tests for AND/OR/NOT operators" }, { phase: "green" as CommitPhase, message: "feat: implement filterByAdvancedSearch with AND/OR/NOT support" }] },
-    { test: "AC2: 正規表現検索（/pattern/）でパターンマッチフィルタリングを確認", implementation: "parseAdvancedQuery関数に正規表現サポート追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add regex search tests for /pattern/ syntax" }, { phase: "green" as CommitPhase, message: "feat: implement regex search with /pattern/ syntax" }] },
-    { test: "AC3: 特殊構文（project:/context:/due:/priority:）検索フィルタリングを確認", implementation: "parseAdvancedQuery関数に特殊構文パーサー追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add special syntax search tests" }, { phase: "green" as CommitPhase, message: "feat: implement special syntax search (project:/context:/due:/priority:)" }] },
-    { test: "AC4: 日付範囲検索（due:YYYY-MM-DD..YYYY-MM-DD）フィルタリングを確認", implementation: "日付範囲パーサーとフィルタロジック実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add date range search tests" }, { phase: "green" as CommitPhase, message: "feat: implement date range search (due:YYYY-MM-DD..YYYY-MM-DD)" }] },
-    { test: "AC5: 検索ヘルプアイコンクリックでヘルプモーダル表示を確認", implementation: "SearchHelpModal コンポーネントとトリガーUI実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add search help button and modal tests" }, { phase: "green" as CommitPhase, message: "feat: implement search help button and modal" }] },
-    // Structural Subtasks (2): P0/P1 Actions対応
-    { test: "P1 Action: rate 66%→70%ロードマップ策定完了を確認", implementation: "Sprint 57-58 Actions計画をscrum.tsに文書化（+4%改善、具体的Actions 3項目）", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "chore(scrum): add rate 66%→70% improvement roadmap" }] },
-    { test: "P0 Action: actionManagement.tracking更新完了を確認", implementation: "Sprint 57完了時にtracking値を更新", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "chore(scrum): update actionManagement tracking for Sprint 57" }] },
-  ] as Subtask[],
+  sprint: null,
+  pbi: null,
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 57: PBI-057完了 - 7 subtasks (5 behavioral + 2 structural), 10 commits, DoD全pass, 929t(+50), Phase 17完遂, see git history
 // Sprint 56: PBI-056完了 - 8 subtasks (6 behavioral + 2 structural), 6 commits, DoD全pass, Phase 17開始, see git history
 // Sprint 49-55: see git history
 
@@ -128,9 +106,11 @@ export const definitionOfDone = {
 export const completedSprints: CompletedSprint[] = [
   // Phase 1-15完了 (Sprint 1-53): 基本機能+サイドパネル+AI連携+プロセス基盤、830t達成
   // Phase 16完了 (Sprint 54-55): AI自然言語タスク編集・一括処理、837t達成(+7t)
+  // Phase 17完了 (Sprint 56-57): キーボードショートカット・高度検索、929t達成(+92t)
   { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks,7commits,Phase 16開始" },
   { sprint: 55, pbi: "PBI-055", story: "複数タスクAI一括処理", verification: "passed", notes: "837t(+2t),8subtasks,8commits,DoD 5失敗(既存),rate64%,Phase 16完遂" },
   { sprint: 56, pbi: "PBI-056", story: "キーボードショートカット機能", verification: "passed", notes: "879t(+42t),8subtasks,6commits,DoD全pass,Phase 17開始" },
+  { sprint: 57, pbi: "PBI-057", story: "高度検索機能", verification: "passed", notes: "929t(+50t),7subtasks,10commits,DoD全pass,AC全達成,Phase 17完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

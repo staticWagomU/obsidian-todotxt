@@ -1879,11 +1879,8 @@ button:active {
 		transform: scale(0.95);
 	}
 
-	/* より大きなタップ領域 */
+	/* より大きなタップ領域 - 視覚的サイズは変えずに::beforeでタップ領域を拡大 */
 	.task-checkbox {
-		min-width: 44px;
-		min-height: 44px;
-		/* 視覚的サイズは変えずにタップ領域を拡大 */
 		position: relative;
 	}
 

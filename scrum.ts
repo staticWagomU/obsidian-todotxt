@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 56, pbi: "PBI-056", status: "in_progress" as SprintStatus,
+  sprint: { number: 56, pbi: "PBI-056", status: "done" as SprintStatus,
     subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
   phase: { number: 17, status: "in_progress", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
 };
@@ -68,7 +68,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "設定画面にショートカット一覧表示", verification: "設定UIにショートカット一覧セクション表示を確認" }
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: { functions: 3, estimatedTests: 15, externalDependencies: 0, score: "MEDIUM" as const, subtasks: 5 }
   },
   {
@@ -98,12 +98,12 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 56進行中
+// Current Sprint - Sprint 56完了
 export const currentSprint = {
   sprint: 56,
   pbi: "PBI-056",
   goal: "キーボードショートカット機能を実装し、既存テスト5件の技術的負債を解消して、ユーザーがキーボード中心のワークフローで効率的にタスク操作できるようにする",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     // Behavioral Subtasks (6件 - Feature開発)
     { test: "addCommand呼び出し、コマンドパレット表示を確認", implementation: "ショートカットコマンド基盤とObsidianコマンドパレット登録", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 1 - keyboard shortcut command infrastructure" }] },
@@ -145,6 +145,7 @@ export const completedSprints: CompletedSprint[] = [
   // Phase 16完了 (Sprint 54-55): AI自然言語タスク編集・一括処理、837t達成(+7t)
   { sprint: 54, pbi: "PBI-054", story: "AI自然言語タスク編集", verification: "passed", notes: "835t(+5t),7subtasks,7commits,Phase 16開始" },
   { sprint: 55, pbi: "PBI-055", story: "複数タスクAI一括処理", verification: "passed", notes: "837t(+2t),8subtasks,8commits,DoD 5失敗(既存),rate64%,Phase 16完遂" },
+  { sprint: 56, pbi: "PBI-056", story: "キーボードショートカット機能", verification: "passed", notes: "879t(+42t),8subtasks,6commits,DoD全pass,Phase 17開始" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

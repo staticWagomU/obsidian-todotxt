@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 57, pbi: "PBI-057", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
   phase: { number: 17, status: "in_progress", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
 };
 
@@ -84,7 +84,7 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 57開始
+// Current Sprint - Sprint 57進行中
 export const currentSprint = {
   sprint: 57,
   pbi: "PBI-057",
@@ -92,14 +92,14 @@ export const currentSprint = {
   status: "in_progress" as SprintStatus,
   subtasks: [
     // Behavioral Subtasks (5): PBI-057 Acceptance Criteria対応
-    { test: "AC1: AND検索（空白）、OR検索（|）、NOT検索（-）フィルタリングを確認", implementation: "parseAdvancedQuery関数にAND/OR/NOT論理演算子サポート追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "AC2: 正規表現検索（/pattern/）でパターンマッチフィルタリングを確認", implementation: "parseAdvancedQuery関数に正規表現サポート追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "AC3: 特殊構文（project:/context:/due:/priority:）検索フィルタリングを確認", implementation: "parseAdvancedQuery関数に特殊構文パーサー追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "AC4: 日付範囲検索（due:YYYY-MM-DD..YYYY-MM-DD）フィルタリングを確認", implementation: "日付範囲パーサーとフィルタロジック実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "AC5: 検索ヘルプアイコンクリックでヘルプモーダル表示を確認", implementation: "SearchHelpModal ReactコンポーネントとトリガーUI実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "AC1: AND検索（空白）、OR検索（|）、NOT検索（-）フィルタリングを確認", implementation: "parseAdvancedQuery関数にAND/OR/NOT論理演算子サポート追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add filterByAdvancedSearch tests for AND/OR/NOT operators" }, { phase: "green" as CommitPhase, message: "feat: implement filterByAdvancedSearch with AND/OR/NOT support" }] },
+    { test: "AC2: 正規表現検索（/pattern/）でパターンマッチフィルタリングを確認", implementation: "parseAdvancedQuery関数に正規表現サポート追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add regex search tests for /pattern/ syntax" }, { phase: "green" as CommitPhase, message: "feat: implement regex search with /pattern/ syntax" }] },
+    { test: "AC3: 特殊構文（project:/context:/due:/priority:）検索フィルタリングを確認", implementation: "parseAdvancedQuery関数に特殊構文パーサー追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add special syntax search tests" }, { phase: "green" as CommitPhase, message: "feat: implement special syntax search (project:/context:/due:/priority:)" }] },
+    { test: "AC4: 日付範囲検索（due:YYYY-MM-DD..YYYY-MM-DD）フィルタリングを確認", implementation: "日付範囲パーサーとフィルタロジック実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add date range search tests" }, { phase: "green" as CommitPhase, message: "feat: implement date range search (due:YYYY-MM-DD..YYYY-MM-DD)" }] },
+    { test: "AC5: 検索ヘルプアイコンクリックでヘルプモーダル表示を確認", implementation: "SearchHelpModal コンポーネントとトリガーUI実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add search help button and modal tests" }, { phase: "green" as CommitPhase, message: "feat: implement search help button and modal" }] },
     // Structural Subtasks (2): P0/P1 Actions対応
-    { test: "P1 Action: rate 66%→70%ロードマップ策定完了を確認", implementation: "Sprint 57-58 Actions計画をscrum.tsに文書化（+4%改善、具体的Actions 3項目）", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
-    { test: "P0 Action: actionManagement.tracking更新完了を確認", implementation: "Sprint 57完了時にtracking値を更新", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "P1 Action: rate 66%→70%ロードマップ策定完了を確認", implementation: "Sprint 57-58 Actions計画をscrum.tsに文書化（+4%改善、具体的Actions 3項目）", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "chore(scrum): add rate 66%→70% improvement roadmap" }] },
+    { test: "P0 Action: actionManagement.tracking更新完了を確認", implementation: "Sprint 57完了時にtracking値を更新", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "chore(scrum): update actionManagement tracking for Sprint 57" }] },
   ] as Subtask[],
 };
 // Sprint 56: PBI-056完了 - 8 subtasks (6 behavioral + 2 structural), 6 commits, DoD全pass, Phase 17開始, see git history
@@ -162,10 +162,11 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 56完了: rate 64%→66%(+2%)、P0 Actions 2項目実施100%、Actions実施率40%)
+// Action Management (Sprint 57進行中: rate 66%→68%目標、P0 Actions 2項目実施予定)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 100, executed: 66, rate: 66, remaining: 34 },
+  tracking: { total: 100, executed: 68, rate: 68, remaining: 32 },
+  // Sprint 57実績: P0 2項目実施（tracking更新・rate目標ロードマップ）→executed +2、remaining -2
   // Sprint 56完了: P0 Actions 2/2実施(100%)、P1 0/2実施(0%)、P2 0/1実施(0%)、Actions実施率40% (2/5)
   //   実施: P0 2項目（P1 Actions 1項目Subtask化・DoD既存テスト失敗5件修正完了→技術的負債完全解消）
   //   繰越: P1 2項目（トラッキング精度改善・rate目標ロードマップ）→Sprint 57へ2 Sprint連続繰越

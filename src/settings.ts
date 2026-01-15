@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import type TodotxtPlugin from "./main";
 import type { RetryConfig } from "./ai/retry";
+import { KEYBOARD_SHORTCUTS, formatShortcutKey } from "./lib/shortcuts";
 
 export type SortOrder = "completion" | "priority" | "date" | "alphabetical";
 export type Grouping = "none" | "project" | "context";
@@ -203,5 +204,37 @@ export class TodotxtSettingTab extends PluginSettingTab {
 						}
 					})
 			);
+
+		// Keyboard shortcuts section
+		new Setting(containerEl).setName("Keyboard shortcuts").setHeading();
+
+		// Group shortcuts by category
+		const navigationShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "navigation");
+		const actionShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "action");
+		const globalShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "global");
+
+		// Navigation shortcuts
+		new Setting(containerEl).setName("ナビゲーション").setHeading();
+		for (const shortcut of navigationShortcuts) {
+			new Setting(containerEl)
+				.setName(formatShortcutKey(shortcut.key))
+				.setDesc(shortcut.description);
+		}
+
+		// Action shortcuts
+		new Setting(containerEl).setName("アクション").setHeading();
+		for (const shortcut of actionShortcuts) {
+			new Setting(containerEl)
+				.setName(formatShortcutKey(shortcut.key))
+				.setDesc(shortcut.description);
+		}
+
+		// Global shortcuts
+		new Setting(containerEl).setName("グローバル（コマンドパレット）").setHeading();
+		for (const shortcut of globalShortcuts) {
+			new Setting(containerEl)
+				.setName(formatShortcutKey(shortcut.key))
+				.setDesc(shortcut.description);
+		}
 	}
 }

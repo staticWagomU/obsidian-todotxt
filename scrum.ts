@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 56, pbi: "PBI-056", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 7, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
   phase: { number: 17, status: "in_progress", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
 };
 
@@ -111,7 +111,7 @@ export const currentSprint = {
     { test: "Enter/E/Deleteキーで操作実行を確認", implementation: "選択タスクのキーボード操作（Enter完了切替、E編集、Delete削除）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 3 - KeyboardActionHandler" }] },
     { test: "Ctrl+N→ダイアログ表示を確認", implementation: "新規タスクダイアログショートカット（Ctrl+N / Cmd+N）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 4-5 - new task dialog and search focus shortcuts" }] },
     { test: "Ctrl+F→検索ボックスフォーカスを確認", implementation: "検索フォーカス移動ショートカット（Ctrl+F / Cmd+F）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 4-5 - new task dialog and search focus shortcuts" }] },
-    { test: "設定UIにショートカット一覧セクション表示を確認", implementation: "設定画面にショートカット一覧セクション追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "設定UIにショートカット一覧セクション表示を確認", implementation: "設定画面にショートカット一覧セクション追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 6 - keyboard shortcuts section in settings" }] },
     // Structural Subtasks (2件 - P0 Actions対応: DoD既存テスト失敗5件修正)
     { test: "view.test.ts プログレスバー3件テスト pass", implementation: "DoD既存テスト失敗修正（view.test.ts 3件）", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "fix: Sprint 56 Subtask 7-8 - resolve 5 failing tests" }] },
     { test: "side-panel-view.test.ts 2件テスト pass", implementation: "DoD既存テスト失敗修正（side-panel-view.test.ts 2件）", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "fix: Sprint 56 Subtask 7-8 - resolve 5 failing tests" }] },

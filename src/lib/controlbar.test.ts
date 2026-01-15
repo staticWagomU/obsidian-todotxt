@@ -140,14 +140,13 @@ describe("FilterState type", () => {
 		const view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 		view.setViewData("Task 1", false);
 
-		// Verify: Control bar has row, search box, and progress bar
+		// Verify: Control bar has row and search box
 		const controlBar = view.contentEl.querySelector("div.control-bar");
 		const children = Array.from(controlBar?.children || []);
 
-		expect(children.length).toBe(3);
+		expect(children.length).toBe(2);
 		expect(children[0]?.classList.contains("control-bar-row")).toBe(true);
 		expect(children[1]?.classList.contains("search-container")).toBe(true);
-		expect(children[2]?.classList.contains("progress-bar")).toBe(true);
 
 		// Verify: Row contains all filter elements in correct order
 		const row = children[0] as HTMLElement;
@@ -883,54 +882,3 @@ describe("integration: CRUD operations with filter state", () => {
 	});
 });
 
-describe("search help button", () => {
-	let view: TodotxtView;
-	let mockLeaf: { view: null };
-
-	beforeEach(() => {
-		mockLeaf = {
-			view: null,
-		};
-		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
-	});
-
-	it("検索ボックスの横にヘルプボタンが表示される", () => {
-		// Setup
-		view.setViewData("Task 1", false);
-
-		// Verify: Help button exists near search box
-		const helpButton = view.contentEl.querySelector("button.search-help-button");
-		expect(helpButton).not.toBeNull();
-	});
-
-	it("ヘルプボタンにaria-labelが設定されている", () => {
-		// Setup
-		view.setViewData("Task 1", false);
-
-		// Verify: aria-label is set for accessibility
-		const helpButton = view.contentEl.querySelector("button.search-help-button") as HTMLButtonElement;
-		expect(helpButton).not.toBeNull();
-		expect(helpButton.getAttribute("aria-label")).toBe("検索ヘルプ");
-	});
-
-	it("ヘルプボタンに「?」アイコンが表示される", () => {
-		// Setup
-		view.setViewData("Task 1", false);
-
-		// Verify: Button shows help icon
-		const helpButton = view.contentEl.querySelector("button.search-help-button") as HTMLButtonElement;
-		expect(helpButton).not.toBeNull();
-		expect(helpButton.textContent).toBe("?");
-	});
-
-	it("検索ボックスとヘルプボタンが同じ行に表示される", () => {
-		// Setup
-		view.setViewData("Task 1", false);
-
-		// Verify: Search container contains both search box and help button
-		const searchContainer = view.contentEl.querySelector("div.search-container");
-		expect(searchContainer).not.toBeNull();
-		expect(searchContainer?.querySelector("input.search-box")).not.toBeNull();
-		expect(searchContainer?.querySelector("button.search-help-button")).not.toBeNull();
-	});
-});

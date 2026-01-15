@@ -115,66 +115,60 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-55: see git history
-  { sprint: 56,
+  // Sprint 42-56: see git history
+  { sprint: 57,
     workedWell: [
-      "テスト大幅増加: 837t→879t(+42件)、過去最大増加幅（Sprint 54: +5、Sprint 55: +2）、品質向上加速",
-      "技術的負債完全解消: DoD既存テスト失敗5件→0件、DoD全pass達成、Sprint 55のpassed_with_known_failures解消",
-      "P0 Actions 100%継続達成: 3 Sprint連続100%実施（Sprint 54-56）、プロセス改善コミットメント定着強化",
-      "Feature/Process配分6:4継続: 6 behavioral + 2 structural subtasks、2 Sprint連続計画配分遵守、持続可能性実証",
-      "Phase 17開始: キーボードショートカット機能実装完了、Phase 17: キーボードショートカット・高度検索へ前進",
-      "DoD全pass達成: Tests/Lint/Types/Build全項目pass、2 Sprint振りDoD完全達成（Sprint 55は5件失敗）",
-      "rate 64%→66%向上: 4 Sprint連続KPI min 50%超、+2%改善、healthy 70%へ+4%接近",
-      "Subtask完遂: 8 subtasks全完了、6 commits、TDD基盤での安定開発継続",
+      "Phase 17完遂: Sprint 56-57でPhase 17完了、テスト837t→929t(+92件)、キーボードショートカット・高度検索機能実装完遂",
+      "テスト大幅増加継続: 879t→929t(+50件)、2 Sprint連続大幅増加（Sprint 56: +42、Sprint 57: +50）、合計+92件品質基盤強化",
+      "P0 Actions 100%達成: 2項目完全実施（tracking更新・rate目標ロードマップ策定）、4 Sprint連続100%達成（Sprint 54-57）",
+      "rate 66%→68%向上: 5 Sprint連続KPI min 50%超、+2%改善、healthy 70%へ+2%接近",
+      "Feature/Process配分6:4維持: 5 behavioral + 2 structural subtasks、3 Sprint連続計画配分遵守、持続可能性確立",
+      "DoD全pass継続達成: Tests/Lint/Types/Build全項目pass、2 Sprint連続DoD完全達成（Sprint 56-57）",
+      "高度検索機能完全実装: AC全達成、10 commits、TDD基盤での安定開発継続",
+      "rate目標ロードマップ策定完了: Sprint 57-58の2 Sprint計画、healthy 70%達成への具体的道筋明確化",
     ],
     toImprove: [
-      "P1 Actions 0%実施: P1 2項目とも未実施（トラッキング精度改善、rate目標ロードマップ）、2 Sprint連続繰越",
-      "Actions実施率40%低下: Sprint 55の60%から-20%減少、P1/P2 Actions全未実施",
-      "P2 Action進捗なし: テストカバレッジ可視化ツール、1 Sprint経過、残り2 Sprint",
-      "KPI healthy達成計画未策定: rate 66%、healthy 70%へ+4%必要、具体策未策定",
+      "P1 Actions 0%実施: P1 1項目未実施（トラッキング精度改善）、3 Sprint連続繰越、P2→P1昇格したが実施なし",
+      "Actions実施率40%継続: Sprint 56の40%から横這い、2 Sprint連続40%、P1/P2 Actions全未実施",
+      "P2 Action進捗なし: テストカバレッジ可視化ツール、2 Sprint経過、残り1 Sprint、期限間近",
+      "P1 Action滞留: トラッキング精度改善、3 Sprint繰越（Sprint 55-57）、実施障壁の分析不足",
     ],
     actions: [
-      "P0: Sprint 57 Planning時にP1 Actions 1-2項目をSubtaskとして組み込み、Feature/Process配分6:4維持",
-      "P0: actionManagement.tracking更新（Sprint 56実績: P0 2項目実施→executed+2, remaining-2、rate再計算）",
-      "P1: Sprint実績トラッキング精度改善（commit数とscrum.ts記録の自動検証スクリプト作成、初版実装）",
-      "P1: rate 64%→70%達成ロードマップ策定（+6%改善、Sprint 57-58の2 Sprint計画、具体的Actions 3-5項目明記）",
-      "P2: テストカバレッジ可視化ツール導入検討（候補ツール3種比較、推奨ツール1種選定）",
+      "P0: Sprint 58 Planning時にP1 Action 1項目（トラッキング精度改善）を必ずSubtaskとして組み込み、3 Sprint滞留解消",
+      "P0: actionManagement.tracking更新（Sprint 57実績: P0 2項目実施→executed+2, remaining-2、rate 68%達成確認）",
+      "P1: P2 Actions棚卸し実施（テストカバレッジ可視化ツール含む、期限超過Actions 5-10項目抽出・廃棄判定）",
+      "P1: トラッキング精度改善Subtask化時の障壁分析（3 Sprint滞留原因3軸分析: 技術的難易度・工数見積もり・優先度設定）",
+      "P2: Phase 18 Goal策定（Phase 17完遂後の次フェーズ方向性、PBI候補3-5項目リストアップ）",
     ] },
 ];
 
-// Action Management (Sprint 57進行中: rate 66%→68%目標、P0 Actions 2項目実施予定)
+// Action Management (Sprint 57完了: rate 68%達成、healthy 70%へ+2%、P0 Actions 4 Sprint連続100%)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
   tracking: { total: 100, executed: 68, rate: 68, remaining: 32 },
-  // Sprint 57実績: P0 2項目実施（tracking更新・rate目標ロードマップ）→executed +2、remaining -2
-  // Sprint 56完了: P0 Actions 2/2実施(100%)、P1 0/2実施(0%)、P2 0/1実施(0%)、Actions実施率40% (2/5)
-  //   実施: P0 2項目（P1 Actions 1項目Subtask化・DoD既存テスト失敗5件修正完了→技術的負債完全解消）
-  //   繰越: P1 2項目（トラッキング精度改善・rate目標ロードマップ）→Sprint 57へ2 Sprint連続繰越
-  //   継続: P2 1項目（テストカバレッジ可視化ツール）→1 Sprint経過、残り2 Sprint
-  //   新規: Sprint 56 Actions 5項目策定（P0 2項目、P1 2項目、P2 1項目）
-  //   計算: executed 64→66 (+2 P0実施)、remaining 36→34 (-2)、rate 64%→66% (+2%)
-  // Sprint 55完了: P0 Actions 2/2実施(100%)、Actions実施率60% (3/5)
-  // Sprint 54完了: P0 Actions 2項目実施、Actions実施率50% (2/4)
+  // Sprint 57完了: P0 Actions 2/2実施(100%)、P1 0/1実施(0%)、P2 0/1実施(0%)、Actions実施率40% (2/5)
+  //   実施: P0 2項目（tracking更新・rate目標ロードマップ策定完了）
+  //   繰越: P1 1項目（トラッキング精度改善）→Sprint 58へ3 Sprint連続繰越、P0昇格候補
+  //   継続: P2 1項目（テストカバレッジ可視化ツール）→2 Sprint経過、残り1 Sprint、期限間近
+  //   新規: Sprint 57 Actions 5項目策定（P0 2項目、P1 2項目、P2 1項目）
+  //   計算: executed 66→68 (+2 P0実施)、remaining 34→32 (-2)、rate 66%→68% (+2%)
+  // Sprint 56完了: P0 Actions 2/2実施(100%)、Actions実施率40% (2/5)、rate 64%→66%
+  // Sprint 55完了: P0 Actions 2/2実施(100%)、Actions実施率60% (3/5)、rate 62%→64%
+  // Sprint 54完了: P0 Actions 2/2実施(100%)、Actions実施率50% (2/4)、rate 60%→62%
   // Sprint 53完了: 15項目廃棄/統合、根本原因3軸分析、プロセス再設計ルール3項目確立
   //
-  // ===== rate 66%→70% ロードマップ (Sprint 57-58) =====
-  // 目標: +4% 改善 (healthy KPI 70%達成)
-  // 現状: remaining 34項目中、+4 executed必要
-  //
-  // Sprint 57 Actions (2項目):
-  //   1. P0: actionManagement.tracking更新（Sprint 57実績反映）
-  //   2. P1: rate 66%→70%ロードマップ策定（本項目）
-  // Sprint 57期待効果: +2 executed → rate 68%
+  // ===== rate 68%→70% ロードマップ (Sprint 58) =====
+  // 目標: +2% 改善 (healthy KPI 70%達成)
+  // 現状: remaining 32項目中、+2 executed必要
   //
   // Sprint 58 Actions (2項目提案):
-  //   1. P0: 残Actions棚卸し（P2超過Actions廃棄判定、10項目目標）
-  //   2. P1: トラッキング精度改善（commit数とscrum.ts記録の自動検証）
+  //   1. P0: トラッキング精度改善Subtask化（3 Sprint滞留解消、Feature/Process配分6:4維持）
+  //   2. P0: P2超過Actions棚卸し（廃棄判定5-10項目、remaining削減効果、rate向上）
   // Sprint 58期待効果: +2 executed → rate 70%達成
   //
-  // 具体的Actions 3項目:
-  //   1. Sprint 57 P0: tracking値更新（+2 executed見込み）
-  //   2. Sprint 58 P0: P2超過Actions廃棄（remaining -10、rate上昇）
-  //   3. Sprint 58 P1: トラッキング精度改善（継続的rate改善基盤）
+  // 具体的Actions 2項目:
+  //   1. Sprint 58 P0: トラッキング精度改善（commit数とscrum.ts記録の自動検証スクリプト初版）
+  //   2. Sprint 58 P0: P2超過Actions廃棄（5-10項目、remaining削減、rate向上基盤）
   // ===================================================
 };
 

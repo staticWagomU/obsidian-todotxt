@@ -95,3 +95,75 @@ export class KeyboardNavigator {
 		}
 	}
 }
+
+/**
+ * Action type for keyboard actions
+ */
+export type KeyboardAction = "moveDown" | "moveUp" | "toggle" | "edit" | "delete";
+
+/**
+ * Callbacks for keyboard actions
+ */
+export interface KeyboardActionCallbacks {
+	onToggle: (index: number) => void;
+	onEdit: (index: number) => void;
+	onDelete: (index: number) => void;
+}
+
+/**
+ * KeyboardActionHandler handles keyboard action execution
+ * Maps key presses to actions and executes callbacks
+ */
+export class KeyboardActionHandler {
+	private callbacks: KeyboardActionCallbacks;
+
+	constructor(callbacks: KeyboardActionCallbacks) {
+		this.callbacks = callbacks;
+	}
+
+	/**
+	 * Handle Enter key - toggle task completion
+	 */
+	handleEnter(selectedIndex: number): void {
+		if (selectedIndex < 0) return;
+		this.callbacks.onToggle(selectedIndex);
+	}
+
+	/**
+	 * Handle E key - edit task
+	 */
+	handleEdit(selectedIndex: number): void {
+		if (selectedIndex < 0) return;
+		this.callbacks.onEdit(selectedIndex);
+	}
+
+	/**
+	 * Handle Delete/Backspace key - delete task
+	 */
+	handleDelete(selectedIndex: number): void {
+		if (selectedIndex < 0) return;
+		this.callbacks.onDelete(selectedIndex);
+	}
+
+	/**
+	 * Get action type for a given key
+	 */
+	getActionForKey(key: string): KeyboardAction | null {
+		switch (key) {
+			case "ArrowDown":
+				return "moveDown";
+			case "ArrowUp":
+				return "moveUp";
+			case "Enter":
+				return "toggle";
+			case "e":
+			case "E":
+				return "edit";
+			case "Delete":
+			case "Backspace":
+				return "delete";
+			default:
+				return null;
+		}
+	}
+}

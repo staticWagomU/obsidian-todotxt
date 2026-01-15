@@ -175,6 +175,26 @@ export const actionManagement = {
   // Sprint 55完了: P0 Actions 2/2実施(100%)、Actions実施率60% (3/5)
   // Sprint 54完了: P0 Actions 2項目実施、Actions実施率50% (2/4)
   // Sprint 53完了: 15項目廃棄/統合、根本原因3軸分析、プロセス再設計ルール3項目確立
+  //
+  // ===== rate 66%→70% ロードマップ (Sprint 57-58) =====
+  // 目標: +4% 改善 (healthy KPI 70%達成)
+  // 現状: remaining 34項目中、+4 executed必要
+  //
+  // Sprint 57 Actions (2項目):
+  //   1. P0: actionManagement.tracking更新（Sprint 57実績反映）
+  //   2. P1: rate 66%→70%ロードマップ策定（本項目）
+  // Sprint 57期待効果: +2 executed → rate 68%
+  //
+  // Sprint 58 Actions (2項目提案):
+  //   1. P0: 残Actions棚卸し（P2超過Actions廃棄判定、10項目目標）
+  //   2. P1: トラッキング精度改善（commit数とscrum.ts記録の自動検証）
+  // Sprint 58期待効果: +2 executed → rate 70%達成
+  //
+  // 具体的Actions 3項目:
+  //   1. Sprint 57 P0: tracking値更新（+2 executed見込み）
+  //   2. Sprint 58 P0: P2超過Actions廃棄（remaining -10、rate上昇）
+  //   3. Sprint 58 P1: トラッキング精度改善（継続的rate改善基盤）
+  // ===================================================
 };
 
 // Agents & Events

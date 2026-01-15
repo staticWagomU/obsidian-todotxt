@@ -55,22 +55,8 @@ export const roadmap = {
 export const productBacklog: ProductBacklogItem[] = [
   // Phase 1-15完了 (Sprint 1-53): 基本機能+UI+サイドパネル+AI連携+プロセス基盤、830t達成
   // Phase 16完了 (Sprint 54-55): AI自然言語タスク編集・一括処理、837t達成(+7t)
-  //   Sprint 54 PBI-054: AI自然言語タスク編集、835t(+5t)
-  //   Sprint 55 PBI-055: 複数タスクAI一括処理、837t(+2t)、Phase 16完遂
-  {
-    id: "PBI-056",
-    story: { role: "ユーザー", capability: "キーボードショートカットでタスク操作を高速実行できる", benefit: "キーボード中心のワークフローで作業効率が向上する" },
-    acceptanceCriteria: [
-      { criterion: "Obsidianコマンドパレットにショートカットコマンド登録、設定で変更可能", verification: "テストでaddCommand呼び出し、コマンドパレット表示を確認" },
-      { criterion: "上下矢印キーで選択、Enter完了切替、E編集、Delete削除", verification: "テストでキーボードイベント処理、操作実行を確認" },
-      { criterion: "Ctrl+N（Cmd+N）で新規タスクダイアログ", verification: "テストでCtrl+N→ダイアログ表示を確認" },
-      { criterion: "Ctrl+F（Cmd+F）で検索フォーカス移動", verification: "テストでCtrl+F→検索ボックスフォーカスを確認" },
-      { criterion: "設定画面にショートカット一覧表示", verification: "設定UIにショートカット一覧セクション表示を確認" }
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: { functions: 3, estimatedTests: 15, externalDependencies: 0, score: "MEDIUM" as const, subtasks: 5 }
-  },
+  // Phase 17進行中 (Sprint 56-57): キーボードショートカット・高度検索
+  //   Sprint 56 PBI-056: キーボードショートカット、879t(+42t)、Phase 17開始
   {
     id: "PBI-057",
     story: { role: "ユーザー", capability: "高度検索機能でタスクを絞り込める", benefit: "大量タスクから目的タスクを素早く見つけられる" },
@@ -98,27 +84,16 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 56完了
+// Current Sprint - Sprint 56完了、次Sprint待機
 export const currentSprint = {
-  sprint: 56,
-  pbi: "PBI-056",
-  goal: "キーボードショートカット機能を実装し、既存テスト5件の技術的負債を解消して、ユーザーがキーボード中心のワークフローで効率的にタスク操作できるようにする",
-  status: "done" as SprintStatus,
-  subtasks: [
-    // Behavioral Subtasks (6件 - Feature開発)
-    { test: "addCommand呼び出し、コマンドパレット表示を確認", implementation: "ショートカットコマンド基盤とObsidianコマンドパレット登録", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 1 - keyboard shortcut command infrastructure" }] },
-    { test: "上下キーでフォーカス移動を確認", implementation: "選択タスクのキーボードナビゲーション（上下矢印キー）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 2 - KeyboardNavigator class" }] },
-    { test: "Enter/E/Deleteキーで操作実行を確認", implementation: "選択タスクのキーボード操作（Enter完了切替、E編集、Delete削除）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 3 - KeyboardActionHandler" }] },
-    { test: "Ctrl+N→ダイアログ表示を確認", implementation: "新規タスクダイアログショートカット（Ctrl+N / Cmd+N）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 4-5 - new task dialog and search focus shortcuts" }] },
-    { test: "Ctrl+F→検索ボックスフォーカスを確認", implementation: "検索フォーカス移動ショートカット（Ctrl+F / Cmd+F）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 4-5 - new task dialog and search focus shortcuts" }] },
-    { test: "設定UIにショートカット一覧セクション表示を確認", implementation: "設定画面にショートカット一覧セクション追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 6 - keyboard shortcuts section in settings" }] },
-    // Structural Subtasks (2件 - P0 Actions対応: DoD既存テスト失敗5件修正)
-    { test: "view.test.ts プログレスバー3件テスト pass", implementation: "DoD既存テスト失敗修正（view.test.ts 3件）", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "fix: Sprint 56 Subtask 7-8 - resolve 5 failing tests" }] },
-    { test: "side-panel-view.test.ts 2件テスト pass", implementation: "DoD既存テスト失敗修正（side-panel-view.test.ts 2件）", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "fix: Sprint 56 Subtask 7-8 - resolve 5 failing tests" }] },
-  ] as Subtask[],
+  sprint: 0,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
-// Sprint 55: PBI-055完了 - 8 subtasks (6 behavioral + 2 structural), 8 commits (4 GREEN + 2 REFACTOR), Phase 16完遂, see git history
-// Sprint 49-54: see git history
+// Sprint 56: PBI-056完了 - 8 subtasks (6 behavioral + 2 structural), 6 commits, DoD全pass, Phase 17開始, see git history
+// Sprint 49-55: see git history
 
 // Impediments
 export const impediments = {
@@ -150,40 +125,44 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-54: see git history
-  { sprint: 55,
+  // Sprint 42-55: see git history
+  { sprint: 56,
     workedWell: [
-      "Phase 16完遂: AI一括処理機能実装完了、6 behavioral subtasks達成、Sprint 54-55の2 Sprint計画通り完遂",
-      "P0 Actions 100%継続達成: 2 Sprint連続でP0 Actions完全実施、プロセス改善コミットメント定着",
-      "Action棚卸し完了: P2 Action 1項目廃棄、remaining 41→36削減、計算式ドキュメント化完了",
-      "rate 60%→64%向上: 3 Sprint連続KPI min 50%超、+4%改善、健全な上昇トレンド継続",
-      "Feature/Process配分6:4継続: 6 behavioral + 2 structural subtasks、計画配分遵守、持続可能性実証",
-      "Actions実施率60%達成: Sprint 54の50%から+10%向上、全体実施率改善",
+      "テスト大幅増加: 837t→879t(+42件)、過去最大増加幅（Sprint 54: +5、Sprint 55: +2）、品質向上加速",
+      "技術的負債完全解消: DoD既存テスト失敗5件→0件、DoD全pass達成、Sprint 55のpassed_with_known_failures解消",
+      "P0 Actions 100%継続達成: 3 Sprint連続100%実施（Sprint 54-56）、プロセス改善コミットメント定着強化",
+      "Feature/Process配分6:4継続: 6 behavioral + 2 structural subtasks、2 Sprint連続計画配分遵守、持続可能性実証",
+      "Phase 17開始: キーボードショートカット機能実装完了、Phase 17: キーボードショートカット・高度検索へ前進",
+      "DoD全pass達成: Tests/Lint/Types/Build全項目pass、2 Sprint振りDoD完全達成（Sprint 55は5件失敗）",
+      "rate 64%→66%向上: 4 Sprint連続KPI min 50%超、+2%改善、healthy 70%へ+4%接近",
+      "Subtask完遂: 8 subtasks全完了、6 commits、TDD基盤での安定開発継続",
     ],
     toImprove: [
-      "既存テスト失敗5件継続: DoD Tests 5件失敗（既存の失敗）、verification: passed_with_known_failures、技術的負債未解消",
-      "P1 Actions実施率50%: 2項目中1項目のみ実施（棚卸し部分達成）、トラッキング精度改善未着手",
-      "rate目標未達: 目標65%に対し64%達成、+1%差で目標未達成",
-      "KPI healthy (70%)への道筋不明: rate 64%→70%へ+6%必要、具体的な改善施策未策定",
+      "P1 Actions 0%実施: P1 2項目とも未実施（トラッキング精度改善、rate目標ロードマップ）、2 Sprint連続繰越",
+      "Actions実施率40%低下: Sprint 55の60%から-20%減少、P1/P2 Actions全未実施",
+      "P2 Action進捗なし: テストカバレッジ可視化ツール、1 Sprint経過、残り2 Sprint",
+      "KPI healthy達成計画未策定: rate 66%、healthy 70%へ+4%必要、具体策未策定",
     ],
     actions: [
-      "P0: Sprint 56 Planning時にP1 Actions 1項目をSubtaskとして組み込み、Feature/Process配分6:4維持",
-      "P0: DoD既存テスト失敗5件の根本原因分析、修正計画策定（技術的負債解消着手）",
-      "P1: Sprint実績トラッキング精度改善（commit数検証プロセス追加、scrum.ts自動検証スクリプト検討）",
-      "P1: rate 64%→70%達成ロードマップ策定（+6%改善、2-3 Sprint計画）",
-      "P2: テストカバレッジ可視化ツール導入検討（品質指標拡充）",
+      "P0: Sprint 57 Planning時にP1 Actions 1-2項目をSubtaskとして組み込み、Feature/Process配分6:4維持",
+      "P0: actionManagement.tracking更新（Sprint 56実績: P0 2項目実施→executed+2, remaining-2、rate再計算）",
+      "P1: Sprint実績トラッキング精度改善（commit数とscrum.ts記録の自動検証スクリプト作成、初版実装）",
+      "P1: rate 64%→70%達成ロードマップ策定（+6%改善、Sprint 57-58の2 Sprint計画、具体的Actions 3-5項目明記）",
+      "P2: テストカバレッジ可視化ツール導入検討（候補ツール3種比較、推奨ツール1種選定）",
     ] },
 ];
 
-// Action Management (Sprint 55完了: rate 60%→64%(+4%)、P0 Actions 2項目実施100%、Actions実施率60%)
+// Action Management (Sprint 56完了: rate 64%→66%(+2%)、P0 Actions 2項目実施100%、Actions実施率40%)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 100, executed: 64, rate: 64, remaining: 36 },
-  // Sprint 55完了: P0 Actions 2/2実施(100%)、P1 1/2実施(50%)、Actions実施率60% (3/5)
-  //   実施: P0 2項目（P1 Actions Subtask化・CLAUDE.md計算式追加）、P1 1項目（棚卸し部分達成）
-  //   棚卸し: P2 1項目廃棄（ロードマップ策定→3 Sprint経過）、total 103→100 (-3)
-  //   繰越: P1 1項目（トラッキング精度改善）→Sprint 56へ
-  //   新規: Sprint 55 Actions 5項目策定（P0 2項目、P1 2項目、P2 1項目）
+  tracking: { total: 100, executed: 66, rate: 66, remaining: 34 },
+  // Sprint 56完了: P0 Actions 2/2実施(100%)、P1 0/2実施(0%)、P2 0/1実施(0%)、Actions実施率40% (2/5)
+  //   実施: P0 2項目（P1 Actions 1項目Subtask化・DoD既存テスト失敗5件修正完了→技術的負債完全解消）
+  //   繰越: P1 2項目（トラッキング精度改善・rate目標ロードマップ）→Sprint 57へ2 Sprint連続繰越
+  //   継続: P2 1項目（テストカバレッジ可視化ツール）→1 Sprint経過、残り2 Sprint
+  //   新規: Sprint 56 Actions 5項目策定（P0 2項目、P1 2項目、P2 1項目）
+  //   計算: executed 64→66 (+2 P0実施)、remaining 36→34 (-2)、rate 64%→66% (+2%)
+  // Sprint 55完了: P0 Actions 2/2実施(100%)、Actions実施率60% (3/5)
   // Sprint 54完了: P0 Actions 2項目実施、Actions実施率50% (2/4)
   // Sprint 53完了: 15項目廃棄/統合、根本原因3軸分析、プロセス再設計ルール3項目確立
 };

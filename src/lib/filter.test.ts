@@ -1174,4 +1174,97 @@ describe("filterByAdvancedSearch", () => {
 			expect(result[1]?.priority).toBeUndefined();
 		});
 	});
+
+	describe("date range search (due:YYYY-MM-DD..YYYY-MM-DD)", () => {
+		it("should filter tasks within date range", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", tags: { due: "2026-01-10" } }),
+				createTodo({ description: "Task 2", tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Task 3", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Task 4", tags: { due: "2026-01-25" } }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "due:2026-01-12..2026-01-22");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.tags.due).toBe("2026-01-15");
+			expect(result[1]?.tags.due).toBe("2026-01-20");
+		});
+
+		it("should include boundary dates in range", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Task 2", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Task 3", tags: { due: "2026-01-25" } }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "due:2026-01-15..2026-01-20");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.tags.due).toBe("2026-01-15");
+			expect(result[1]?.tags.due).toBe("2026-01-20");
+		});
+
+		it("should exclude tasks without due date in range search", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Task 2", tags: {} }),
+				createTodo({ description: "Task 3", tags: { t: "2026-01-10" } }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "due:2026-01-10..2026-01-20");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.tags.due).toBe("2026-01-15");
+		});
+
+		it("should return empty for tasks outside date range", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", tags: { due: "2026-01-01" } }),
+				createTodo({ description: "Task 2", tags: { due: "2026-01-31" } }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "due:2026-01-10..2026-01-20");
+
+			expect(result).toHaveLength(0);
+		});
+
+		it("should combine date range with other filters", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries", projects: ["shopping"], tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Buy laptop", projects: ["work"], tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Read book", projects: ["home"], tags: { due: "2026-01-15" } }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "due:2026-01-10..2026-01-20 project:shopping");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Buy groceries");
+		});
+
+		it("should handle NOT with date range", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Task 2", tags: { due: "2026-01-25" } }),
+				createTodo({ description: "Task 3", tags: {} }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "-due:2026-01-10..2026-01-20");
+
+			expect(result).toHaveLength(2);
+		});
+
+		it("should handle single date with .. as exact match", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Task 2", tags: { due: "2026-01-20" } }),
+			];
+
+			// Single date (exact match)
+			const result = filterByAdvancedSearch(todos, "due:2026-01-15");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.tags.due).toBe("2026-01-15");
+		});
+	});
 });

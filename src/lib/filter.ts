@@ -51,10 +51,12 @@ function matchesRegex(todo: Todo, regex: RegExp): boolean {
 type SpecialSyntax = {
 	type: "project" | "context" | "priority" | "due";
 	value: string;
+	startDate?: string;  // For date range: due:2026-01-01..2026-01-31
+	endDate?: string;
 };
 
 /**
- * Parse special syntax from a term (e.g., "project:work", "context:home")
+ * Parse special syntax from a term (e.g., "project:work", "context:home", "due:2026-01-01..2026-01-31")
  * Returns null if not a special syntax term
  */
 function parseSpecialSyntax(term: string): SpecialSyntax | null {
@@ -67,10 +69,25 @@ function parseSpecialSyntax(term: string): SpecialSyntax | null {
 	if (value === "") return null;
 
 	if (prefix === "project" || prefix === "context" || prefix === "priority" || prefix === "due") {
+		// Check for date range syntax (due:YYYY-MM-DD..YYYY-MM-DD)
+		if (prefix === "due" && value.includes("..")) {
+			const [startDate, endDate] = value.split("..");
+			if (startDate && endDate) {
+				return { type: "due", value, startDate, endDate };
+			}
+		}
 		return { type: prefix, value };
 	}
 
 	return null;
+}
+
+/**
+ * Check if a date is within a range (inclusive)
+ */
+function isDateInRange(date: string, startDate: string, endDate: string): boolean {
+	// Simple string comparison works for YYYY-MM-DD format
+	return date >= startDate && date <= endDate;
 }
 
 /**
@@ -90,6 +107,13 @@ function matchesSpecialSyntax(todo: Todo, syntax: SpecialSyntax): boolean {
 			}
 			return todo.priority?.toLowerCase() === lowerValue;
 		case "due":
+			// Date range search
+			if (syntax.startDate && syntax.endDate) {
+				const dueDate = todo.tags.due;
+				if (!dueDate) return false;
+				return isDateInRange(dueDate, syntax.startDate, syntax.endDate);
+			}
+			// Exact date match
 			return todo.tags.due === syntax.value;
 		default:
 			return false;

@@ -1056,4 +1056,122 @@ describe("filterByAdvancedSearch", () => {
 			expect(result).toHaveLength(2);
 		});
 	});
+
+	describe("special syntax search (project:/context:/due:/priority:)", () => {
+		it("should filter by project: syntax", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", projects: ["work", "urgent"], contexts: [] }),
+				createTodo({ description: "Task 2", projects: ["home"], contexts: [] }),
+				createTodo({ description: "Task 3", projects: [], contexts: [] }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "project:work");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.projects).toContain("work");
+		});
+
+		it("should filter by context: syntax", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", projects: [], contexts: ["office", "morning"] }),
+				createTodo({ description: "Task 2", projects: [], contexts: ["home"] }),
+				createTodo({ description: "Task 3", projects: [], contexts: [] }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "context:office");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.contexts).toContain("office");
+		});
+
+		it("should filter by priority: syntax", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "High priority", priority: "A" }),
+				createTodo({ description: "Medium priority", priority: "B" }),
+				createTodo({ description: "No priority" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "priority:A");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.priority).toBe("A");
+		});
+
+		it("should filter by due: syntax for exact date", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", tags: { due: "2026-01-15" } }),
+				createTodo({ description: "Task 2", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Task 3", tags: {} }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "due:2026-01-15");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.tags.due).toBe("2026-01-15");
+		});
+
+		it("should be case-insensitive for special syntax values", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task", projects: ["WorkProject"], contexts: [] }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "project:workproject");
+
+			expect(result).toHaveLength(1);
+		});
+
+		it("should combine special syntax with regular search", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries", projects: ["shopping"], contexts: [] }),
+				createTodo({ description: "Buy laptop", projects: ["work"], contexts: [] }),
+				createTodo({ description: "Read book", projects: ["home"], contexts: [] }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "Buy project:shopping");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Buy groceries");
+		});
+
+		it("should combine multiple special syntax filters", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task A", projects: ["work"], contexts: ["office"], priority: "A" }),
+				createTodo({ description: "Task B", projects: ["work"], contexts: ["home"], priority: "A" }),
+				createTodo({ description: "Task C", projects: ["home"], contexts: ["office"], priority: "B" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "project:work context:office");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Task A");
+		});
+
+		it("should support NOT with special syntax", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1", projects: ["work"], contexts: [] }),
+				createTodo({ description: "Task 2", projects: ["home"], contexts: [] }),
+				createTodo({ description: "Task 3", projects: ["personal"], contexts: [] }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "-project:work");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.projects).toContain("home");
+			expect(result[1]?.projects).toContain("personal");
+		});
+
+		it("should handle priority:none for tasks without priority", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "High priority", priority: "A" }),
+				createTodo({ description: "No priority 1" }),
+				createTodo({ description: "No priority 2" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "priority:none");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.priority).toBeUndefined();
+			expect(result[1]?.priority).toBeUndefined();
+		});
+	});
 });

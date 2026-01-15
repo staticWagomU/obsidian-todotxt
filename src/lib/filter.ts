@@ -46,15 +46,74 @@ function matchesRegex(todo: Todo, regex: RegExp): boolean {
 }
 
 /**
+ * Special syntax patterns for advanced search
+ */
+type SpecialSyntax = {
+	type: "project" | "context" | "priority" | "due";
+	value: string;
+};
+
+/**
+ * Parse special syntax from a term (e.g., "project:work", "context:home")
+ * Returns null if not a special syntax term
+ */
+function parseSpecialSyntax(term: string): SpecialSyntax | null {
+	const colonIndex = term.indexOf(":");
+	if (colonIndex === -1) return null;
+
+	const prefix = term.slice(0, colonIndex).toLowerCase();
+	const value = term.slice(colonIndex + 1);
+
+	if (value === "") return null;
+
+	if (prefix === "project" || prefix === "context" || prefix === "priority" || prefix === "due") {
+		return { type: prefix, value };
+	}
+
+	return null;
+}
+
+/**
+ * Check if a todo matches a special syntax filter
+ */
+function matchesSpecialSyntax(todo: Todo, syntax: SpecialSyntax): boolean {
+	const lowerValue = syntax.value.toLowerCase();
+
+	switch (syntax.type) {
+		case "project":
+			return todo.projects.some(p => p.toLowerCase() === lowerValue);
+		case "context":
+			return todo.contexts.some(c => c.toLowerCase() === lowerValue);
+		case "priority":
+			if (lowerValue === "none") {
+				return todo.priority === undefined || todo.priority === null;
+			}
+			return todo.priority?.toLowerCase() === lowerValue;
+		case "due":
+			return todo.tags.due === syntax.value;
+		default:
+			return false;
+	}
+}
+
+/**
  * Check if a todo matches a simple term (in description, projects, or contexts)
- * Supports both literal terms and regex patterns (/pattern/)
- * Case-insensitive matching
+ * Supports:
+ * - Literal terms (case-insensitive)
+ * - Regex patterns (/pattern/)
+ * - Special syntax (project:, context:, priority:, due:)
  */
 function matchesTerm(todo: Todo, term: string): boolean {
 	// Check if it's a regex pattern
 	const regex = parseRegexPattern(term);
 	if (regex) {
 		return matchesRegex(todo, regex);
+	}
+
+	// Check if it's special syntax
+	const specialSyntax = parseSpecialSyntax(term);
+	if (specialSyntax) {
+		return matchesSpecialSyntax(todo, specialSyntax);
 	}
 
 	// Regular case-insensitive string matching

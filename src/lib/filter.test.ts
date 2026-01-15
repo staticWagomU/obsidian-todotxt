@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Todo } from "./todo";
-import { filterByPriority, filterBySearch } from "./filter";
+import { filterByPriority, filterBySearch, filterByAdvancedSearch } from "./filter";
 
 describe("filterByPriority", () => {
 	describe("filter by specific priority", () => {
@@ -737,6 +737,215 @@ describe("filterBySearch", () => {
 			// Should be immutable (different array instance)
 			expect(result).not.toBe(todos);
 			expect(result).toEqual(todos);
+		});
+	});
+});
+
+describe("filterByAdvancedSearch", () => {
+	// Helper function to create test todos
+	const createTodo = (opts: Partial<Todo> & { description: string }): Todo => ({
+		completed: false,
+		projects: [],
+		contexts: [],
+		tags: {},
+		raw: opts.description,
+		...opts,
+	});
+
+	describe("AND search (space-separated terms)", () => {
+		it("should return tasks matching all space-separated terms", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries at store" }),
+				createTodo({ description: "Buy laptop online" }),
+				createTodo({ description: "Read a book at home" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "Buy store");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Buy groceries at store");
+		});
+
+		it("should return empty array when not all terms match", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries" }),
+				createTodo({ description: "Read book" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "Buy book");
+
+			expect(result).toHaveLength(0);
+		});
+
+		it("should be case-insensitive for AND search", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy GROCERIES at Store" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "buy groceries store");
+
+			expect(result).toHaveLength(1);
+		});
+	});
+
+	describe("OR search (pipe-separated terms)", () => {
+		it("should return tasks matching any pipe-separated term", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries" }),
+				createTodo({ description: "Buy laptop" }),
+				createTodo({ description: "Read book" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "groceries|book");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Buy groceries");
+			expect(result[1]?.description).toBe("Read book");
+		});
+
+		it("should return all matching tasks for multiple OR terms", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task A" }),
+				createTodo({ description: "Task B" }),
+				createTodo({ description: "Task C" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "A|B|C");
+
+			expect(result).toHaveLength(3);
+		});
+
+		it("should be case-insensitive for OR search", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "GROCERIES" }),
+				createTodo({ description: "laptop" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "groceries|LAPTOP");
+
+			expect(result).toHaveLength(2);
+		});
+	});
+
+	describe("NOT search (hyphen prefix)", () => {
+		it("should exclude tasks matching the negated term", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries" }),
+				createTodo({ description: "Buy laptop" }),
+				createTodo({ description: "Read book" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "-groceries");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Buy laptop");
+			expect(result[1]?.description).toBe("Read book");
+		});
+
+		it("should combine NOT with AND (exclude term from results)", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries at store" }),
+				createTodo({ description: "Buy laptop online" }),
+				createTodo({ description: "Read book at store" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "store -groceries");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("Read book at store");
+		});
+
+		it("should be case-insensitive for NOT search", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "GROCERIES task" }),
+				createTodo({ description: "laptop task" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "-groceries");
+
+			expect(result).toHaveLength(1);
+			expect(result[0]?.description).toBe("laptop task");
+		});
+	});
+
+	describe("combined operators", () => {
+		it("should handle AND with OR correctly", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries at store" }),
+				createTodo({ description: "Buy laptop online" }),
+				createTodo({ description: "Read book at library" }),
+				createTodo({ description: "Return book to store" }),
+			];
+
+			// "Buy" AND ("store" OR "online")
+			const result = filterByAdvancedSearch(todos, "Buy store|online");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Buy groceries at store");
+			expect(result[1]?.description).toBe("Buy laptop online");
+		});
+
+		it("should handle AND, OR, and NOT together", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Buy groceries at store" }),
+				createTodo({ description: "Buy laptop at store" }),
+				createTodo({ description: "Buy phone online" }),
+				createTodo({ description: "Read book" }),
+			];
+
+			// "Buy" AND ("store" OR "online") NOT "groceries"
+			const result = filterByAdvancedSearch(todos, "Buy store|online -groceries");
+
+			expect(result).toHaveLength(2);
+			expect(result[0]?.description).toBe("Buy laptop at store");
+			expect(result[1]?.description).toBe("Buy phone online");
+		});
+	});
+
+	describe("edge cases", () => {
+		it("should return all tasks for empty query", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1" }),
+				createTodo({ description: "Task 2" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "");
+
+			expect(result).toHaveLength(2);
+		});
+
+		it("should handle whitespace-only query as empty", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task 1" }),
+			];
+
+			const result = filterByAdvancedSearch(todos, "   ");
+
+			expect(result).toHaveLength(1);
+		});
+
+		it("should return empty array for empty input todos", () => {
+			const todos: Todo[] = [];
+
+			const result = filterByAdvancedSearch(todos, "test");
+
+			expect(result).toHaveLength(0);
+		});
+
+		it("should search in projects and contexts as well", () => {
+			const todos: Todo[] = [
+				createTodo({ description: "Task", projects: ["work"], contexts: [] }),
+				createTodo({ description: "Task", projects: [], contexts: ["home"] }),
+				createTodo({ description: "Task", projects: [], contexts: [] }),
+			];
+
+			const resultProject = filterByAdvancedSearch(todos, "work");
+			const resultContext = filterByAdvancedSearch(todos, "home");
+
+			expect(resultProject).toHaveLength(1);
+			expect(resultProject[0]?.projects).toContain("work");
+			expect(resultContext).toHaveLength(1);
+			expect(resultContext[0]?.contexts).toContain("home");
 		});
 	});
 });

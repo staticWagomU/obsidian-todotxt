@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 56, pbi: "PBI-056", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 5, subtasksTotal: 8, impediments: 0 },
   phase: { number: 17, status: "in_progress", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
 };
 
@@ -108,7 +108,7 @@ export const currentSprint = {
     // Behavioral Subtasks (6件 - Feature開発)
     { test: "addCommand呼び出し、コマンドパレット表示を確認", implementation: "ショートカットコマンド基盤とObsidianコマンドパレット登録", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 1 - keyboard shortcut command infrastructure" }] },
     { test: "上下キーでフォーカス移動を確認", implementation: "選択タスクのキーボードナビゲーション（上下矢印キー）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 2 - KeyboardNavigator class" }] },
-    { test: "Enter/E/Deleteキーで操作実行を確認", implementation: "選択タスクのキーボード操作（Enter完了切替、E編集、Delete削除）", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
+    { test: "Enter/E/Deleteキーで操作実行を確認", implementation: "選択タスクのキーボード操作（Enter完了切替、E編集、Delete削除）", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: Sprint 56 Subtask 3 - KeyboardActionHandler" }] },
     { test: "Ctrl+N→ダイアログ表示を確認", implementation: "新規タスクダイアログショートカット（Ctrl+N / Cmd+N）", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
     { test: "Ctrl+F→検索ボックスフォーカスを確認", implementation: "検索フォーカス移動ショートカット（Ctrl+F / Cmd+F）", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },
     { test: "設定UIにショートカット一覧セクション表示を確認", implementation: "設定画面にショートカット一覧セクション追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [] },

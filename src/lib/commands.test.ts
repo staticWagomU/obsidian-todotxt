@@ -48,4 +48,20 @@ describe("keyboard shortcut commands", () => {
 			}
 		});
 	});
+
+	describe("shortcut command usage", () => {
+		it("newTask command (Ctrl+N) should be available for dialog opening", () => {
+			// Verify command exists and has correct properties
+			const cmd = COMMANDS.newTask;
+			expect(cmd.id).toBe("todotxt-new-task");
+			expect(cmd.name).toContain("タスク");
+		});
+
+		it("focusSearch command (Ctrl+F) should be available for search focus", () => {
+			// Verify command exists and has correct properties
+			const cmd = COMMANDS.focusSearch;
+			expect(cmd.id).toBe("todotxt-focus-search");
+			expect(cmd.name).toContain("検索");
+		});
+	});
 });

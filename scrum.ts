@@ -44,11 +44,12 @@ export const productGoal = {
   owner: "@scrum-team-product-owner",
 };
 
-// Long-term Roadmap (Phase 15-17) - Sprint 53策定、詳細はgit履歴参照
+// Long-term Roadmap (Phase 15-18) - Sprint 53策定、詳細はgit履歴参照
 export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
+  phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-64", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "planned" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -58,6 +59,140 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 17完了 (Sprint 56-57): キーボードショートカット・高度検索、929t達成(+92t)
   //   Sprint 56 PBI-056: キーボードショートカット、879t(+42t)、Phase 17開始
   //   Sprint 57 PBI-057: 高度検索機能、929t(+50t)、Phase 17完遂
+
+  // Phase 18: UX強化・パフォーマンス最適化
+  {
+    id: "PBI-064",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "タスクリスト上部のインライン入力欄にデスクリプションを入力してEnterで即追加",
+      benefit: "モーダルを開く手間なく、思いついたタスクを素早く記録できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "コントロールバー下にインライン入力欄が常時表示される", verification: "手動テスト: 画面表示確認" },
+      { criterion: "入力欄にテキストを入力してEnterキーで即座にタスクが追加される", verification: "pnpm vitest run: Enterキーでの追加処理テスト" },
+      { criterion: "追加されたタスクに今日の日付が作成日として自動設定される", verification: "pnpm vitest run: 作成日自動設定テスト" },
+      { criterion: "追加後は入力欄がクリアされ、連続入力が可能", verification: "pnpm vitest run: 入力欄クリアテスト" },
+      { criterion: "空文字での追加は無視される", verification: "pnpm vitest run: バリデーションテスト" },
+    ],
+    dependencies: [],
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 4,
+      estimatedTests: 10,
+      externalDependencies: 1,
+      score: "LOW" as const,
+      subtasks: 5,
+    },
+    // Subtask計画 (TDD形式):
+    // 1. [behavioral] インライン入力欄UI表示テスト → renderInlineTaskInput実装
+    // 2. [behavioral] Enterキーでのタスク追加テスト → Enterキーハンドラ実装
+    // 3. [behavioral] 作成日自動設定テスト → 既存getAddHandler流用確認
+    // 4. [behavioral] 入力欄クリアテスト → クリア処理実装
+    // 5. [behavioral] 空文字バリデーションテスト → バリデーション実装
+    // Sprint 58 P0 Action統合: トラッキング精度改善をSubtask 6として組み込み可能
+  },
+  {
+    id: "PBI-058",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "タスクをダブルクリックまたはEnterキーで直接編集",
+      benefit: "モーダルダイアログを開くことなく、素早くタスク内容を修正できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "タスクのダブルクリックで編集モードに移行する", verification: "手動テスト: タスクをダブルクリックして編集モードになることを確認" },
+      { criterion: "フォーカス中のタスクでEnterキーを押すと編集モードに移行する", verification: "手動テスト: キーボード操作で編集モード移行を確認" },
+      { criterion: "編集中にEscキーで変更を破棄してキャンセルできる", verification: "pnpm vitest run: Escキーでのキャンセル処理テスト" },
+      { criterion: "編集中にEnter/Cmd+Enterで変更を保存できる", verification: "pnpm vitest run: 保存処理テスト" },
+      { criterion: "編集中に外部クリックで自動保存される", verification: "pnpm vitest run: blur時の自動保存テスト" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
+  {
+    id: "PBI-059",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "直近の操作を取り消し（Undo）・やり直し（Redo）",
+      benefit: "誤操作からすぐに復帰でき、安心してタスク管理できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "Cmd/Ctrl+Zで直近の操作を取り消せる", verification: "pnpm vitest run: Undoショートカットテスト" },
+      { criterion: "Cmd/Ctrl+Shift+Zで取り消した操作をやり直せる", verification: "pnpm vitest run: Redoショートカットテスト" },
+      { criterion: "タスク追加・編集・削除・完了状態変更が取り消し対象となる", verification: "pnpm vitest run: 各操作タイプのUndo/Redoテスト" },
+      { criterion: "取り消し後にトースト通知で「元に戻しました」と表示される", verification: "手動テスト: 通知表示確認" },
+      { criterion: "履歴は最大20件まで保持される", verification: "pnpm vitest run: 履歴上限テスト" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
+  {
+    id: "PBI-060",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "フィルター状態を保存し、名前を付けて呼び出す",
+      benefit: "よく使うフィルター組み合わせに素早くアクセスでき、作業効率が向上する",
+    },
+    acceptanceCriteria: [
+      { criterion: "現在のフィルター状態を名前を付けて保存できる", verification: "手動テスト: フィルター保存操作確認" },
+      { criterion: "保存済みフィルターをドロップダウンから選択して適用できる", verification: "手動テスト: フィルター選択・適用確認" },
+      { criterion: "保存済みフィルターを編集・削除できる", verification: "pnpm vitest run: フィルター編集・削除テスト" },
+      { criterion: "フィルター設定はObsidianの設定に永続化される", verification: "pnpm vitest run: 設定永続化テスト" },
+      { criterion: "ファイルごとにデフォルトフィルターを設定できる", verification: "pnpm vitest run: ファイル別デフォルトフィルターテスト" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
+  {
+    id: "PBI-061",
+    story: {
+      role: "todo.txtユーザー",
+      capability: "タスクを右クリックしてコンテキストメニューからアクションを実行",
+      benefit: "マウス操作で素早くタスクの編集・削除・優先度変更などができる",
+    },
+    acceptanceCriteria: [
+      { criterion: "タスク右クリックでコンテキストメニューが表示される", verification: "手動テスト: 右クリックメニュー表示確認" },
+      { criterion: "メニューから編集・削除・複製を実行できる", verification: "pnpm vitest run: 基本アクションテスト" },
+      { criterion: "優先度変更のサブメニューでA-Zまたは優先度なしを選択できる", verification: "pnpm vitest run: 優先度変更テスト" },
+      { criterion: "プロジェクト・コンテキストの追加/削除ができる", verification: "pnpm vitest run: タグ変更テスト" },
+      { criterion: "モバイルではロングプレスでメニューが表示される", verification: "手動テスト: モバイルでのロングプレス確認" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
+  {
+    id: "PBI-062",
+    story: {
+      role: "パワーユーザー",
+      capability: "キーボードショートカットを自分好みにカスタマイズ",
+      benefit: "慣れ親しんだキー操作で効率的にタスク管理できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "設定画面でショートカットキーを変更できる", verification: "手動テスト: 設定画面でのキー変更操作確認" },
+      { criterion: "キーの競合を検出して警告を表示する", verification: "pnpm vitest run: キー競合検出テスト" },
+      { criterion: "デフォルトに戻すボタンで初期設定に復元できる", verification: "pnpm vitest run: デフォルト復元テスト" },
+      { criterion: "カスタマイズした設定がObsidian設定に永続化される", verification: "pnpm vitest run: 設定永続化テスト" },
+    ],
+    dependencies: ["PBI-056"],
+    status: "draft" as PBIStatus,
+  },
+  {
+    id: "PBI-063",
+    story: {
+      role: "大量タスクを持つユーザー",
+      capability: "1000件以上のタスクでも滑らかにスクロール・操作",
+      benefit: "大規模なtodo.txtファイルでもストレスなく使用できる",
+    },
+    acceptanceCriteria: [
+      { criterion: "仮想スクロールにより表示範囲のみDOMをレンダリングする", verification: "pnpm vitest run: 仮想スクロール実装テスト" },
+      { criterion: "1000件のタスクでも初期表示が500ms以内に完了する", verification: "パフォーマンステスト: 1000件タスク読み込み計測" },
+      { criterion: "スクロール時のFPSが50fps以上を維持する", verification: "パフォーマンステスト: スクロールFPS計測" },
+      { criterion: "フィルタリング・ソート処理がUIをブロックしない", verification: "pnpm vitest run: 非同期処理テスト" },
+      { criterion: "メモリ使用量が100件と1000件で2倍以内の増加に抑える", verification: "パフォーマンステスト: メモリ使用量比較" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+  },
 ];
 
 // Definition of Ready
@@ -142,15 +277,21 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 57完了: rate 68%達成、healthy 70%へ+2%、P0 Actions 4 Sprint連続100%)
+// Action Management (Sprint 58準備: rate 68%維持、healthy 70%へ+2%目標、P0 Actions 5 Sprint連続100%目標)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
   tracking: { total: 100, executed: 68, rate: 68, remaining: 32 },
+  // Sprint 58 Backlog Refinement完了 (2026-01-19):
+  //   PBI-064 Refinement完了: draft→ready、complexity追加、DoR全項目達成
+  //   P0 Actions Sprint 58計画:
+  //     1. トラッキング精度改善Subtask化（3 Sprint滞留解消、Sprint 58 Subtask 6として組込予定）
+  //     2. actionManagement.tracking更新（本Refinementで確認完了）
+  //   期待効果: rate 70%達成（+2 executed → executed=70, remaining=30）
+  //
   // Sprint 57完了: P0 Actions 2/2実施(100%)、P1 0/1実施(0%)、P2 0/1実施(0%)、Actions実施率40% (2/5)
   //   実施: P0 2項目（tracking更新・rate目標ロードマップ策定完了）
-  //   繰越: P1 1項目（トラッキング精度改善）→Sprint 58へ3 Sprint連続繰越、P0昇格候補
+  //   繰越: P1 1項目（トラッキング精度改善）→Sprint 58へ3 Sprint連続繰越、P0昇格済
   //   継続: P2 1項目（テストカバレッジ可視化ツール）→2 Sprint経過、残り1 Sprint、期限間近
-  //   新規: Sprint 57 Actions 5項目策定（P0 2項目、P1 2項目、P2 1項目）
   //   計算: executed 66→68 (+2 P0実施)、remaining 34→32 (-2)、rate 66%→68% (+2%)
   // Sprint 56完了: P0 Actions 2/2実施(100%)、Actions実施率40% (2/5)、rate 64%→66%
   // Sprint 55完了: P0 Actions 2/2実施(100%)、Actions実施率60% (3/5)、rate 62%→64%

@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 57, pbi: "PBI-057", status: "done" as SprintStatus,
-    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 17, status: "done", sprints: "56-57", pbis: "PBI-056, PBI-057", goal: "Phase 17: キーボードショートカット・高度検索" },
+  sprint: { number: 58, pbi: "PBI-064", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 8, impediments: 0 },
+  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-064", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
 // Product Goal
@@ -49,7 +49,7 @@ export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
-  phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-64", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "planned" },
+  phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-64", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "in_progress" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -206,13 +206,72 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 57完了済み（次Sprint未開始）
+// Current Sprint - Sprint 58
 export const currentSprint = {
-  sprint: null,
-  pbi: null,
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 58,
+  pbi: "PBI-064",
+  goal: "タスクリスト上部にインライン入力欄を実装し、Enterキーで素早くタスク追加できるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Feature Subtasks (6) - インライン入力欄機能実装
+    {
+      test: "インライン入力欄がコントロールバー下に表示されることを検証",
+      implementation: "renderInlineTaskInput関数をrendering.tsに追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "Enterキー押下でタスクが追加されることを検証",
+      implementation: "keydownイベントハンドラ実装、onAddTaskコールバック呼び出し",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "追加されたタスクに今日の日付が作成日として設定されることを検証",
+      implementation: "既存getAddHandler連携、createTask関数のcreationDate自動設定確認",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "タスク追加後に入力欄がクリアされることを検証",
+      implementation: "追加成功後にinput.value = ''実行",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "空文字入力でEnterを押した場合にタスクが追加されないことを検証",
+      implementation: "trim()で空文字判定、空の場合は早期return",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "rendering.tsへのインライン入力欄統合の構造改善",
+      implementation: "renderControlBar後にrenderInlineTaskInputを呼び出し、適切な位置に配置",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Process Subtasks (2) - P0 Actions実行
+    {
+      test: "トラッキング精度改善: commit数とscrum.ts記録の整合性を確認",
+      implementation: "3 Sprint滞留P1→P0昇格Action消化、手動検証スクリプト初版作成",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    {
+      test: "P2超過Actions棚卸し: 5-10項目抽出・廃棄判定実施",
+      implementation: "P2 Actions期限確認、3 Sprint超過項目廃棄、remaining更新",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 57: PBI-057完了 - 7 subtasks (5 behavioral + 2 structural), 10 commits, DoD全pass, 929t(+50), Phase 17完遂, see git history
 // Sprint 56: PBI-056完了 - 8 subtasks (6 behavioral + 2 structural), 6 commits, DoD全pass, Phase 17開始, see git history
@@ -277,10 +336,17 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 58準備: rate 68%維持、healthy 70%へ+2%目標、P0 Actions 5 Sprint連続100%目標)
+// Action Management (Sprint 58開始: rate 68%→70%目標、healthy KPI達成、P0 Actions 5 Sprint連続100%目標)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
   tracking: { total: 100, executed: 68, rate: 68, remaining: 32 },
+  // Sprint 58 Planning完了 (2026-01-19):
+  //   PBI-064選択、8 subtasks設定 (6 Feature + 2 Process)
+  //   Feature/Process配分 = 6:2 (75%:25%) ※Process 2項目はP0 Actions消化
+  //   P0 Actions Sprint 58計画:
+  //     1. トラッキング精度改善（3 Sprint滞留解消、Subtask 7）
+  //     2. P2超過Actions棚卸し（5-10項目抽出・廃棄判定、Subtask 8）
+  //   期待効果: rate 70%達成（+2 executed → executed=70, remaining=30）
   // Sprint 58 Backlog Refinement完了 (2026-01-19):
   //   PBI-064 Refinement完了: draft→ready、complexity追加、DoR全項目達成
   //   P0 Actions Sprint 58計画:

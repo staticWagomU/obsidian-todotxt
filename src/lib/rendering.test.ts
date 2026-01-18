@@ -152,4 +152,44 @@ describe("renderInlineTaskInput", () => {
 			expect(inputElement.value).toBe("");
 		});
 	});
+
+	describe("空文字バリデーション", () => {
+		it("空文字入力でEnterを押した場合、onAddTaskが呼ばれない", async () => {
+			const { renderInlineTaskInput } = await import("./rendering");
+
+			const onAddTask = vi.fn();
+			renderInlineTaskInput(container as any, onAddTask);
+
+			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
+			inputElement.value = "";
+
+			// Dispatch Enter keydown event
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				bubbles: true,
+			});
+			inputElement.dispatchEvent(enterEvent);
+
+			expect(onAddTask).not.toHaveBeenCalled();
+		});
+
+		it("空白のみの入力でEnterを押した場合、onAddTaskが呼ばれない", async () => {
+			const { renderInlineTaskInput } = await import("./rendering");
+
+			const onAddTask = vi.fn();
+			renderInlineTaskInput(container as any, onAddTask);
+
+			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
+			inputElement.value = "   ";
+
+			// Dispatch Enter keydown event
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				bubbles: true,
+			});
+			inputElement.dispatchEvent(enterEvent);
+
+			expect(onAddTask).not.toHaveBeenCalled();
+		});
+	});
 });

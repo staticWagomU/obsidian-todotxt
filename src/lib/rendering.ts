@@ -889,6 +889,8 @@ export function renderInlineTaskInput(
 		if (event.key === "Enter") {
 			const description = inputElement.value;
 			onAddTask(description);
+			// Clear input after adding task
+			inputElement.value = "";
 		}
 	});
 }

@@ -887,7 +887,11 @@ export function renderInlineTaskInput(
 	// Handle Enter key to add task
 	inputElement.addEventListener("keydown", (event: KeyboardEvent) => {
 		if (event.key === "Enter") {
-			const description = inputElement.value;
+			const description = inputElement.value.trim();
+			// Skip empty input
+			if (description === "") {
+				return;
+			}
 			onAddTask(description);
 			// Clear input after adding task
 			inputElement.value = "";

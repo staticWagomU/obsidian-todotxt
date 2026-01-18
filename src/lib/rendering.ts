@@ -129,6 +129,7 @@ export function renderTaskList(
 	onArchive?: () => Promise<void>,
 	onAIAdd?: () => void,
 	onAIEdit?: (index: number) => void,
+	onInlineAdd?: (description: string) => void,
 ): void {
 	// Save current filter state before clearing (with default settings fallback)
 	const filterState = saveFilterState(contentEl, defaultSettings);
@@ -143,6 +144,11 @@ export function renderTaskList(
 
 	// Add control bar with priority filter, search box, and archive button
 	renderControlBar(contentEl, data, filterState, onAddTask, onToggle, onEdit, onDelete, defaultSettings, onArchive);
+
+	// Add inline task input below control bar
+	if (onInlineAdd) {
+		renderInlineTaskInput(contentEl, onInlineAdd);
+	}
 
 	// Render task list section
 	renderTaskListSection(contentEl, data, filterState, onToggle, onEdit, onDelete, onAIEdit);

@@ -130,4 +130,26 @@ describe("renderInlineTaskInput", () => {
 			expect(savedData).toContain("New inline task");
 		});
 	});
+
+	describe("入力欄クリア", () => {
+		it("タスク追加後に入力欄がクリアされる", async () => {
+			const { renderInlineTaskInput } = await import("./rendering");
+
+			const onAddTask = vi.fn();
+			renderInlineTaskInput(container as any, onAddTask);
+
+			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
+			inputElement.value = "New task";
+
+			// Dispatch Enter keydown event
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				bubbles: true,
+			});
+			inputElement.dispatchEvent(enterEvent);
+
+			// Input should be cleared after adding task
+			expect(inputElement.value).toBe("");
+		});
+	});
 });

@@ -866,3 +866,21 @@ function renderTaskItem(
 		li.classList.add("completed");
 	}
 }
+
+/**
+ * Render inline task input field
+ * Allows quick task addition without opening a modal
+ */
+export function renderInlineTaskInput(
+	container: HTMLElement,
+	onAddTask: (description: string) => void,
+): void {
+	const inputContainer = container.createEl("div");
+	inputContainer.classList.add("inline-task-input-container");
+
+	const inputElement = inputContainer.createEl("input");
+	inputElement.type = "text";
+	inputElement.classList.add("inline-task-input");
+	inputElement.placeholder = "タスクを追加...";
+	inputElement.setAttribute("aria-label", "インラインタスク入力");
+}

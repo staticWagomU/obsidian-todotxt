@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // Helper to extend HTMLElement with createEl method (Obsidian-like API)
 function addCreateElHelper(element: HTMLElement): void {
@@ -102,6 +102,32 @@ describe("renderInlineTaskInput", () => {
 			inputElement.dispatchEvent(tabEvent);
 
 			expect(onAddTask).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("作成日自動設定", () => {
+		beforeEach(() => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-01-19"));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it("getAddHandlerを使用した場合、作成日が今日の日付に設定される", async () => {
+			const { getAddHandler } = await import("./handlers");
+
+			let savedData = "";
+			const getData = () => "";
+			const setViewData = (data: string) => { savedData = data; };
+
+			const addHandler = getAddHandler(getData, setViewData);
+			await addHandler("New inline task");
+
+			// Should contain today's date as creation date
+			expect(savedData).toContain("2026-01-19");
+			expect(savedData).toContain("New inline task");
 		});
 	});
 });

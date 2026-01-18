@@ -883,4 +883,12 @@ export function renderInlineTaskInput(
 	inputElement.classList.add("inline-task-input");
 	inputElement.placeholder = "タスクを追加...";
 	inputElement.setAttribute("aria-label", "インラインタスク入力");
+
+	// Handle Enter key to add task
+	inputElement.addEventListener("keydown", (event: KeyboardEvent) => {
+		if (event.key === "Enter") {
+			const description = inputElement.value;
+			onAddTask(description);
+		}
+	});
 }

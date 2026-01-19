@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 63, pbi: "PBI-061", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 63, pbi: "PBI-061", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-061, PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -174,13 +174,70 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 63: 未着手
+// Current Sprint - Sprint 63: コンテキストメニュー実装
 export const currentSprint = {
   sprint: 63,
   pbi: "PBI-061",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  goal: "タスクの右クリックコンテキストメニューを実装し、マウス操作での素早いタスク操作を可能にする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Subtask 1: コンテキストメニュー基盤 - AC1対応
+    {
+      test: "TaskContextMenu.test.ts: コンテキストメニュー表示テスト、メニュー項目存在確認、閉じる動作テスト",
+      implementation: "TaskContextMenu.ts: Obsidian Menu APIを使用したコンテキストメニュー基盤クラス実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 2: 基本アクション（編集・削除・複製） - AC2対応
+    {
+      test: "context-menu-handlers.test.ts: 編集アクション呼び出しテスト、削除アクション呼び出しテスト、複製アクション呼び出しテスト",
+      implementation: "context-menu-handlers.ts: handleEdit/handleDelete/handleDuplicate関数実装、todo.tsにduplicateTask関数追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 3: 優先度変更サブメニュー - AC3対応
+    {
+      test: "context-menu-handlers.test.ts: 優先度A-Z選択テスト、優先度なし選択テスト、サブメニュー構築テスト",
+      implementation: "TaskContextMenu.ts: 優先度サブメニュー追加、context-menu-handlers.ts: handlePriorityChange関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 4: プロジェクト・コンテキスト変更 - AC4対応
+    {
+      test: "context-menu-handlers.test.ts: プロジェクト追加/削除テスト、コンテキスト追加/削除テスト",
+      implementation: "TaskContextMenu.ts: プロジェクト/コンテキストサブメニュー追加、handleProjectChange/handleContextChange関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 5: モバイル対応（ロングプレス） - AC5対応
+    {
+      test: "rendering.test.ts: ロングプレスイベント登録テスト、タイマー動作テスト、キャンセル動作テスト",
+      implementation: "rendering.ts: renderTaskItemにロングプレスイベントハンドラー追加（touchstart/touchend/touchmove）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 6: コード整理・リファクタリング
+    {
+      test: "既存テストがパスすることを確認",
+      implementation: "styles.css整理、コードフォーマット統一、不要コード削除、型定義整理",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 7: E2E統合テスト - Sprint 60教訓適用
+    {
+      test: "view.test.ts: コンテキストメニュー統合テスト、右クリック→メニュー表示→アクション実行フロー確認",
+      implementation: "view.ts: コンテキストメニューコールバック統合、rendering.ts連携確認",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 62: PBI-060完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1076t(+68t), 史上最大テスト増加, see git history
 // Sprint 61: PBI-059完了 - 7 subtasks (6 behavioral + 1 structural), 6 commits, DoD全pass, AC全達成, 1008t(+34t), MILESTONE: 1000t達成, see git history

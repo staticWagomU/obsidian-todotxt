@@ -3555,3 +3555,218 @@ describe("Default filter application on file load", () => {
 		expect(filterState).toBeUndefined();
 	});
 });
+
+// ============================================
+// Sprint 63 - PBI-061: コンテキストメニュー統合テスト
+// ============================================
+
+describe("Context Menu Integration (Sprint 63 - PBI-061)", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, {
+			settings: { ...DEFAULT_SETTINGS },
+		} as TodotxtPlugin);
+	});
+
+	describe("タスク複製 - AC2対応", () => {
+		it("handleDuplicateTaskでタスクが複製される", () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-01-19"));
+
+			const initialData = "(A) Original task +project @context";
+			view.setViewData(initialData, false);
+
+			view.handleDuplicateTask(0);
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos).toHaveLength(2);
+			expect(todos[0]?.description).toContain("Original task");
+			expect(todos[1]?.description).toContain("Original task");
+			expect(todos[1]?.creationDate).toBe("2026-01-19");
+			expect(todos[1]?.completed).toBe(false);
+
+			vi.useRealTimers();
+		});
+
+		it("完了済みタスクを複製すると未完了の状態で複製される", () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-01-19"));
+
+			const initialData = "x 2026-01-18 Completed task +project";
+			view.setViewData(initialData, false);
+
+			view.handleDuplicateTask(0);
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos).toHaveLength(2);
+			expect(todos[1]?.completed).toBe(false);
+			expect(todos[1]?.completionDate).toBeUndefined();
+
+			vi.useRealTimers();
+		});
+	});
+
+	describe("優先度変更 - AC3対応", () => {
+		it("handlePriorityChangeで優先度を変更できる", () => {
+			const initialData = "(A) Task with priority";
+			view.setViewData(initialData, false);
+
+			view.handlePriorityChange(0, "B");
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos[0]?.priority).toBe("B");
+		});
+
+		it("handlePriorityChangeで優先度を削除できる", () => {
+			const initialData = "(A) Task with priority";
+			view.setViewData(initialData, false);
+
+			view.handlePriorityChange(0, undefined);
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos[0]?.priority).toBeUndefined();
+		});
+
+		it("優先度なしタスクに優先度を追加できる", () => {
+			const initialData = "Task without priority";
+			view.setViewData(initialData, false);
+
+			view.handlePriorityChange(0, "C");
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos[0]?.priority).toBe("C");
+		});
+	});
+
+	describe("プロジェクト変更 - AC4対応", () => {
+		it("handleProjectChangeでプロジェクトを追加できる", () => {
+			const initialData = "Task without project";
+			view.setViewData(initialData, false);
+
+			view.handleProjectChange(0, "newproject", "add");
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos[0]?.projects).toContain("newproject");
+		});
+
+		it("handleProjectChangeでプロジェクトを削除できる", () => {
+			const initialData = "Task +existing @context";
+			view.setViewData(initialData, false);
+
+			view.handleProjectChange(0, "existing", "remove");
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos[0]?.projects).not.toContain("existing");
+		});
+
+		it("既存のプロジェクトを再度追加しても重複しない", () => {
+			const initialData = "Task +existing";
+			view.setViewData(initialData, false);
+
+			view.handleProjectChange(0, "existing", "add");
+
+			const updatedData = view.getViewData();
+			const matches = updatedData.match(/\+existing/g);
+
+			expect(matches).toHaveLength(1);
+		});
+	});
+
+	describe("コンテキスト変更 - AC4対応", () => {
+		it("handleContextChangeでコンテキストを追加できる", () => {
+			const initialData = "Task without context";
+			view.setViewData(initialData, false);
+
+			view.handleContextChange(0, "newcontext", "add");
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos[0]?.contexts).toContain("newcontext");
+		});
+
+		it("handleContextChangeでコンテキストを削除できる", () => {
+			const initialData = "Task @existing +project";
+			view.setViewData(initialData, false);
+
+			view.handleContextChange(0, "existing", "remove");
+
+			const updatedData = view.getViewData();
+			const todos = parseTodoTxt(updatedData);
+
+			expect(todos[0]?.contexts).not.toContain("existing");
+		});
+
+		it("既存のコンテキストを再度追加しても重複しない", () => {
+			const initialData = "Task @existing";
+			view.setViewData(initialData, false);
+
+			view.handleContextChange(0, "existing", "add");
+
+			const updatedData = view.getViewData();
+			const matches = updatedData.match(/@existing/g);
+
+			expect(matches).toHaveLength(1);
+		});
+	});
+
+	describe("collectAllProjects/collectAllContexts", () => {
+		it("collectAllProjectsで全プロジェクトを収集できる", () => {
+			const initialData = "Task1 +projectA\nTask2 +projectB\nTask3 +projectA +projectC";
+			view.setViewData(initialData, false);
+
+			const todos = parseTodoTxt(view.getViewData());
+			const projects = view.collectAllProjects(todos);
+
+			expect(projects).toHaveLength(3);
+			expect(projects).toContain("projectA");
+			expect(projects).toContain("projectB");
+			expect(projects).toContain("projectC");
+		});
+
+		it("collectAllContextsで全コンテキストを収集できる", () => {
+			const initialData = "Task1 @home\nTask2 @work\nTask3 @home @phone";
+			view.setViewData(initialData, false);
+
+			const todos = parseTodoTxt(view.getViewData());
+			const contexts = view.collectAllContexts(todos);
+
+			expect(contexts).toHaveLength(3);
+			expect(contexts).toContain("home");
+			expect(contexts).toContain("work");
+			expect(contexts).toContain("phone");
+		});
+	});
+
+	describe("getContextMenuCallbacks", () => {
+		it("コールバックオブジェクトが正しく生成される", () => {
+			const callbacks = view.getContextMenuCallbacks();
+
+			expect(callbacks).toHaveProperty("onEdit");
+			expect(callbacks).toHaveProperty("onDelete");
+			expect(callbacks).toHaveProperty("onDuplicate");
+			expect(callbacks).toHaveProperty("onPriorityChange");
+			expect(callbacks).toHaveProperty("onProjectChange");
+			expect(callbacks).toHaveProperty("onContextChange");
+		});
+	});
+});

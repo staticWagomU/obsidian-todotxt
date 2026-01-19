@@ -1,6 +1,6 @@
 import { TextFileView, TFile, type WorkspaceLeaf, Modal, type App } from "obsidian";
-import { parseTodoTxt } from "./lib/parser";
-import { type Todo } from "./lib/todo";
+import { parseTodoTxt, appendTaskToFile, updateTaskAtLine } from "./lib/parser";
+import { type Todo, duplicateTask, editTask } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
@@ -10,6 +10,7 @@ import { renderTaskList, type DefaultFilterSettings, type FilterState } from "./
 import { getDefaultFilterForFile } from "./settings";
 import { InlineEditState } from "./lib/inline-edit";
 import { UndoRedoHistory, createSnapshot } from "./lib/undo-redo";
+import { TaskContextMenu, type ContextMenuCallbacks } from "./ui/TaskContextMenu";
 import type TodotxtPlugin from "./main";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
@@ -535,6 +536,158 @@ export class TodotxtView extends TextFileView {
 	 */
 	clearHistory(): void {
 		this.undoRedoHistory.clear();
+	}
+
+	// ================================
+	// Context Menu Methods (Sprint 63 - PBI-061)
+	// ================================
+
+	/**
+	 * Show context menu at specified position
+	 * Sprint 63 - PBI-061: AC1, AC5対応
+	 * Public for testing compatibility
+	 */
+	showContextMenu(index: number, position: { x: number; y: number }): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		// Collect all projects and contexts for submenu options
+		const allProjects = this.collectAllProjects(todos);
+		const allContexts = this.collectAllContexts(todos);
+
+		const callbacks = this.getContextMenuCallbacks();
+		const menu = new TaskContextMenu(todo, index, callbacks, allProjects, allContexts);
+		menu.showAtPosition(position);
+	}
+
+	/**
+	 * Get context menu callbacks
+	 * Sprint 63 - PBI-061: AC2, AC3, AC4対応
+	 * Public for testing compatibility
+	 */
+	getContextMenuCallbacks(): ContextMenuCallbacks {
+		return {
+			onEdit: (index) => this.openEditTaskModal(index),
+			onDelete: async (index) => {
+				const deleteHandler = this.getDeleteHandler();
+				await deleteHandler(index);
+			},
+			onDuplicate: (index) => this.handleDuplicateTask(index),
+			onPriorityChange: (index, priority) => this.handlePriorityChange(index, priority),
+			onProjectChange: (index, project, action) => this.handleProjectChange(index, project, action),
+			onContextChange: (index, context, action) => this.handleContextChange(index, context, action),
+		};
+	}
+
+	/**
+	 * Handle task duplication
+	 * Sprint 63 - PBI-061: AC2対応
+	 * Public for testing compatibility
+	 */
+	handleDuplicateTask(index: number): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		const duplicated = duplicateTask(todo);
+		const newData = appendTaskToFile(this.data, duplicated);
+		this.setViewDataWithSnapshot(newData, false);
+	}
+
+	/**
+	 * Handle priority change
+	 * Sprint 63 - PBI-061: AC3対応
+	 * Public for testing compatibility
+	 */
+	handlePriorityChange(index: number, priority: string | undefined): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		const updated = editTask(todo, { priority });
+		const newData = updateTaskAtLine(this.data, index, updated);
+		this.setViewDataWithSnapshot(newData, false);
+	}
+
+	/**
+	 * Handle project change (add or remove)
+	 * Sprint 63 - PBI-061: AC4対応
+	 * Public for testing compatibility
+	 */
+	handleProjectChange(index: number, project: string, action: "add" | "remove"): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		let newDescription = todo.description;
+		if (action === "add") {
+			// Add project tag if not already present
+			if (!todo.projects.includes(project)) {
+				newDescription = `${todo.description} +${project}`;
+			}
+		} else {
+			// Remove project tag
+			newDescription = todo.description.replace(new RegExp(`\\s*\\+${project}(?=\\s|$)`, "g"), "");
+		}
+
+		const updated = editTask(todo, { description: newDescription });
+		const newData = updateTaskAtLine(this.data, index, updated);
+		this.setViewDataWithSnapshot(newData, false);
+	}
+
+	/**
+	 * Handle context change (add or remove)
+	 * Sprint 63 - PBI-061: AC4対応
+	 * Public for testing compatibility
+	 */
+	handleContextChange(index: number, context: string, action: "add" | "remove"): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		let newDescription = todo.description;
+		if (action === "add") {
+			// Add context tag if not already present
+			if (!todo.contexts.includes(context)) {
+				newDescription = `${todo.description} @${context}`;
+			}
+		} else {
+			// Remove context tag
+			newDescription = todo.description.replace(new RegExp(`\\s*@${context}(?=\\s|$)`, "g"), "");
+		}
+
+		const updated = editTask(todo, { description: newDescription });
+		const newData = updateTaskAtLine(this.data, index, updated);
+		this.setViewDataWithSnapshot(newData, false);
+	}
+
+	/**
+	 * Collect all unique projects from todos
+	 * Public for testing compatibility
+	 */
+	collectAllProjects(todos: Todo[]): string[] {
+		const projects = new Set<string>();
+		for (const todo of todos) {
+			for (const project of todo.projects) {
+				projects.add(project);
+			}
+		}
+		return Array.from(projects).sort();
+	}
+
+	/**
+	 * Collect all unique contexts from todos
+	 * Public for testing compatibility
+	 */
+	collectAllContexts(todos: Todo[]): string[] {
+		const contexts = new Set<string>();
+		for (const todo of todos) {
+			for (const context of todo.contexts) {
+				contexts.add(context);
+			}
+		}
+		return Array.from(contexts).sort();
 	}
 }
 

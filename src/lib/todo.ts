@@ -296,3 +296,37 @@ export function removeTaskFromList(todos: Todo[], index: number): Todo[] {
 export function deleteAndRemoveTask(content: string, lineIndex: number): string {
 	return deleteTaskAtLine(content, lineIndex);
 }
+
+/**
+ * Duplicate a task
+ * Creates a new task with the same content but:
+ * - Always incomplete (completed = false)
+ * - No completion date
+ * - Today's date as creation date
+ * Sprint 63 - PBI-061: AC2対応
+ */
+export function duplicateTask(todo: Todo): Todo {
+	const today = new Date().toISOString().split("T")[0]!;
+
+	// Create duplicated task
+	const duplicated: Todo = {
+		completed: false,
+		priority: todo.priority,
+		creationDate: today,
+		completionDate: undefined,
+		description: todo.description,
+		projects: [...todo.projects],
+		contexts: [...todo.contexts],
+		tags: { ...todo.tags },
+		raw: "", // Will be regenerated when saved
+	};
+
+	// Remove pri: tag if present (used for storing priority on completion)
+	if (duplicated.tags.pri) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { pri: _pri, ...restTags } = duplicated.tags;
+		duplicated.tags = restTags;
+	}
+
+	return duplicated;
+}

@@ -945,3 +945,166 @@ export function renderInlineEditInput(
 		}
 	});
 }
+
+/**
+ * Render single task item with inline edit support
+ * Adds dblclick and Enter key handlers for inline editing (AC1, AC2)
+ */
+export function renderTaskItemWithInlineEdit(
+	ul: HTMLUListElement,
+	todo: Todo,
+	index: number,
+	today: Date,
+	onToggle: (index: number) => Promise<void>,
+	onEdit: (index: number) => void,
+	onDelete: (index: number) => Promise<void>,
+	onInlineEdit: (index: number, description: string) => void,
+	onAIEdit?: (index: number) => void,
+	filterState?: FilterState,
+): void {
+	const li = ul.createEl("li");
+
+	// Apply threshold date grayout style if t: tag exists
+	const thresholdStyle = getThresholdDateStyle(todo, today);
+	Object.assign(li.style, thresholdStyle);
+
+	// Make li focusable for keyboard navigation
+	li.setAttribute("tabindex", "0");
+
+	// メインコンテンツ行: チェックボックス + 優先度 + 説明
+	const mainRow = li.createEl("div");
+	mainRow.classList.add("task-main-row");
+
+	// Add selection checkbox if in selection mode
+	if (filterState?.selectionMode) {
+		const selectionCheckbox = mainRow.createEl("input");
+		selectionCheckbox.type = "checkbox";
+		selectionCheckbox.classList.add("task-selection-checkbox");
+		selectionCheckbox.dataset.index = String(index);
+		// Check if this task is selected
+		if (filterState.selectedTodoIds?.includes(index)) {
+			selectionCheckbox.checked = true;
+		}
+		// Update AI bulk process button state when checkbox changes
+		selectionCheckbox.addEventListener("change", () => {
+			const controlBar = ul.closest(".todotxt-view")?.querySelector(".control-bar-row");
+			if (controlBar) {
+				updateAIBulkProcessButtonState(controlBar as HTMLElement);
+			}
+		});
+	}
+
+	// Add checkbox
+	const checkbox = mainRow.createEl("input");
+	checkbox.type = "checkbox";
+	checkbox.classList.add("task-checkbox");
+	checkbox.checked = todo.completed;
+	checkbox.dataset.index = String(index);
+
+	// Add click handler
+	checkbox.addEventListener("click", () => {
+		void onToggle(index);
+	});
+
+	// Add priority badge if priority exists
+	if (todo.priority) {
+		const badge = mainRow.createEl("span");
+		badge.classList.add("priority");
+		badge.classList.add(`priority-${todo.priority}`);
+		badge.textContent = todo.priority;
+	}
+
+	// Render description without projects/contexts (they will be shown as badges)
+	const cleanDescription = removeProjectsAndContextsFromDescription(todo.description);
+	const descSpan = mainRow.createEl("span");
+	descSpan.classList.add("task-description");
+	descSpan.textContent = cleanDescription;
+
+	// Add dblclick handler for inline edit (AC1)
+	descSpan.addEventListener("dblclick", () => {
+		onInlineEdit(index, todo.description);
+	});
+
+	// Add Enter key handler for inline edit (AC2)
+	li.addEventListener("keydown", (event: KeyboardEvent) => {
+		if (event.key === "Enter") {
+			onInlineEdit(index, todo.description);
+		}
+	});
+
+	// タグ行: プロジェクト + コンテキスト + 繰り返し + 日付
+	const hasMetaInfo = todo.projects.length > 0 || todo.contexts.length > 0 || todo.tags.rec || getDueDateFromTodo(todo);
+	if (hasMetaInfo) {
+		const tagsRow = li.createEl("div");
+		tagsRow.classList.add("task-item-tags");
+
+		// Add project badges
+		for (const project of todo.projects) {
+			const badge = tagsRow.createEl("span");
+			badge.classList.add("tag-chip", "tag-chip--project");
+			badge.textContent = `+${project}`;
+		}
+
+		// Add context badges
+		for (const context of todo.contexts) {
+			const badge = tagsRow.createEl("span");
+			badge.classList.add("tag-chip", "tag-chip--context");
+			badge.textContent = `@${context}`;
+		}
+
+		// Add recurrence icon if rec: tag exists
+		const recIcon = renderRecurrenceIcon(todo);
+		if (recIcon) {
+			tagsRow.appendChild(recIcon);
+		}
+
+		// Add due date badge if due: tag exists
+		const dueDate = getDueDateFromTodo(todo);
+		if (dueDate) {
+			const dueBadge = tagsRow.createEl("span");
+			dueBadge.classList.add("due-date");
+			dueBadge.textContent = `${dueDate.toISOString().split("T")[0]!}`;
+
+			// Apply style based on due date status
+			const dueDateStyle = getDueDateStyle(dueDate, today);
+			Object.assign(dueBadge.style, dueDateStyle);
+		}
+	}
+
+	// アクションボタン行
+	const actionsRow = li.createEl("div");
+	actionsRow.classList.add("task-actions-row");
+
+	// Add edit button
+	const editButton = actionsRow.createEl("button");
+	editButton.classList.add("edit-task-button");
+	editButton.textContent = "編集";
+	editButton.dataset.index = String(index);
+	editButton.addEventListener("click", () => {
+		onEdit(index);
+	});
+
+	// Add AI edit button if callback is provided
+	if (onAIEdit) {
+		const aiEditButton = actionsRow.createEl("button");
+		aiEditButton.classList.add("ai-edit-task-button");
+		aiEditButton.textContent = "AI編集";
+		aiEditButton.dataset.index = String(index);
+		aiEditButton.addEventListener("click", () => {
+			onAIEdit(index);
+		});
+	}
+
+	// Add delete button
+	const deleteButton = actionsRow.createEl("button");
+	deleteButton.classList.add("delete-task-button");
+	deleteButton.textContent = "削除";
+	deleteButton.dataset.index = String(index);
+	deleteButton.addEventListener("click", () => {
+		void onDelete(index);
+	});
+
+	if (todo.completed) {
+		li.classList.add("completed");
+	}
+}

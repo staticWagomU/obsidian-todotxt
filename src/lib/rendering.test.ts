@@ -317,3 +317,105 @@ describe("renderInlineEditInput - インライン編集用入力UI", () => {
 		});
 	});
 });
+
+describe("renderTaskItem - ダブルクリック・Enterキーで編集モード開始 (AC1, AC2)", () => {
+	let ul: HTMLUListElement;
+
+	beforeEach(() => {
+		const div = addCreateElHelper(document.createElement("div"));
+		ul = div.createEl("ul") as HTMLUListElement;
+	});
+
+	describe("ダブルクリックで編集モード開始 (AC1)", () => {
+		it("タスク説明部分をダブルクリックするとonInlineEditコールバックが呼ばれる", async () => {
+			const { renderTaskItemWithInlineEdit } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onInlineEdit = vi.fn();
+
+			renderTaskItemWithInlineEdit(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onInlineEdit);
+
+			const descSpan = ul.querySelector(".task-description");
+			expect(descSpan).not.toBeNull();
+
+			const dblclickEvent = new MouseEvent("dblclick", { bubbles: true });
+			descSpan!.dispatchEvent(dblclickEvent);
+
+			expect(onInlineEdit).toHaveBeenCalledWith(0, "Test task");
+		});
+	});
+
+	describe("Enterキーで編集モード開始 (AC2)", () => {
+		it("フォーカス中のタスクでEnterキーを押すとonInlineEditコールバックが呼ばれる", async () => {
+			const { renderTaskItemWithInlineEdit } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task for Enter",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task for Enter",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onInlineEdit = vi.fn();
+
+			renderTaskItemWithInlineEdit(ul, todo, 1, new Date(), onToggle, onEdit, onDelete, onInlineEdit);
+
+			const li = ul.querySelector("li");
+			expect(li).not.toBeNull();
+
+			// Ensure li is focusable
+			li!.setAttribute("tabindex", "0");
+
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				bubbles: true,
+			});
+			li!.dispatchEvent(enterEvent);
+
+			expect(onInlineEdit).toHaveBeenCalledWith(1, "Test task for Enter");
+		});
+
+		it("他のキーを押してもonInlineEditコールバックが呼ばれない", async () => {
+			const { renderTaskItemWithInlineEdit } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onInlineEdit = vi.fn();
+
+			renderTaskItemWithInlineEdit(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onInlineEdit);
+
+			const li = ul.querySelector("li");
+
+			const spaceEvent = new KeyboardEvent("keydown", {
+				key: " ",
+				bubbles: true,
+			});
+			li!.dispatchEvent(spaceEvent);
+
+			expect(onInlineEdit).not.toHaveBeenCalled();
+		});
+	});
+});

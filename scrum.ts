@@ -44,12 +44,13 @@ export const productGoal = {
   owner: "@scrum-team-product-owner",
 };
 
-// Long-term Roadmap (Phase 15-18) - Sprint 53策定、詳細はgit履歴参照
+// Long-term Roadmap (Phase 15-19) - Sprint 53策定、詳細はgit履歴参照
 export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
   phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-65", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "done" },
+  phase19: { number: 19, goal: "生産性向上・Obsidian統合", sprints: "66-69", pbis: ["PBI-065", "PBI-066", "PBI-067", "PBI-068"], status: "not_started" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -68,6 +69,82 @@ export const productBacklog: ProductBacklogItem[] = [
   // PBI-061: コンテキストメニュー機能 - Sprint 63完了、1140t(+64t)、Phase 18で2番目テスト増加、see git history
   // PBI-063: パフォーマンス最適化 - Sprint 64完了、1220t(+80t)、see git history
   // PBI-062: キーボードショートカットカスタマイズ - Sprint 65完了、1287t(+67t)、Phase 18完遂、see git history
+
+  // Phase 19: 生産性向上・Obsidian統合
+  {
+    id: "PBI-065",
+    story: {
+      role: "タスク管理ユーザー",
+      capability: "今日やるべきタスク（due:today以前、t:today以前）を専用ビューで一覧表示し、AIが今日取り組むべきタスクを提案",
+      benefit: "今日集中すべきタスクが明確になり、AIの提案で優先順位付けが効率化される"
+    },
+    acceptanceCriteria: [
+      { criterion: "due:が今日以前のタスクがフォーカスビューに表示される", verification: "vitest" },
+      { criterion: "t:が今日以前のタスクがフォーカスビューに表示される", verification: "vitest" },
+      { criterion: "完了済みタスクはフォーカスビューに表示されない", verification: "vitest" },
+      { criterion: "優先度順にソートされている", verification: "vitest" },
+      { criterion: "コマンドパレットからフォーカスビューを開ける", verification: "manual" },
+      { criterion: "AIが今日取り組むべきタスクの優先順位を提案する", verification: "manual" },
+      { criterion: "AI提案の理由が表示される", verification: "manual" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 5, estimatedTests: 18, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 6 },
+  },
+  {
+    id: "PBI-066",
+    story: {
+      role: "定型作業が多いユーザー",
+      capability: "事前登録したタスクテンプレートをワンクリックでtodo.txtに追加",
+      benefit: "繰り返し入力の手間が省け、入力ミスも防げる"
+    },
+    acceptanceCriteria: [
+      { criterion: "設定画面でテンプレートを登録できる", verification: "manual" },
+      { criterion: "コマンドパレットからテンプレートを選択して追加できる", verification: "manual" },
+      { criterion: "{{today}}プレースホルダーが今日の日付に展開される", verification: "vitest" },
+      { criterion: "{{tomorrow}}プレースホルダーが明日の日付に展開される", verification: "vitest" },
+      { criterion: "複数行のテンプレートが一度に追加される", verification: "vitest" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 4, estimatedTests: 12, externalDependencies: 0, score: "LOW" as const, subtasks: 5 },
+  },
+  {
+    id: "PBI-067",
+    story: {
+      role: "大きなタスクを抱えるユーザー",
+      capability: "既存タスクをAIで実行可能なサブタスクに分解",
+      benefit: "タスクの具体化が容易になり、着手しやすくなる"
+    },
+    acceptanceCriteria: [
+      { criterion: "コンテキストメニューから「AIで分解」を選択できる", verification: "manual" },
+      { criterion: "AIが3-7個のサブタスクを生成する", verification: "vitest" },
+      { criterion: "サブタスクが親タスクのプロジェクト/コンテキストを継承する", verification: "vitest" },
+      { criterion: "プレビュー画面で編集してから追加できる", verification: "manual" },
+      { criterion: "カスタム指示を入力してAIの分解方針を調整できる", verification: "manual" },
+    ],
+    dependencies: [],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 5, estimatedTests: 18, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 6 },
+  },
+  {
+    id: "PBI-068",
+    story: {
+      role: "Obsidianデイリーノートユーザー",
+      capability: "今日のタスクをデイリーノートに挿入、デイリーノートからタスクをインポート",
+      benefit: "日次レビューとタスク管理が統合され、ワークフローが効率化される"
+    },
+    acceptanceCriteria: [
+      { criterion: "今日のタスクをデイリーノートに挿入できる", verification: "manual" },
+      { criterion: "デイリーノートのチェックボックスからタスクをインポートできる", verification: "manual" },
+      { criterion: "挿入位置（見出し後/先頭/末尾）を設定で選択できる", verification: "vitest" },
+      { criterion: "Daily Notesプラグインが無効時は適切なエラーメッセージを表示", verification: "vitest" },
+      { criterion: "タスクの完了状態が双方向同期される（オプション）", verification: "manual" },
+    ],
+    dependencies: ["obsidian-daily-notes-interface"],
+    status: "draft" as PBIStatus,
+    complexity: { functions: 6, estimatedTests: 20, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 7 },
+  },
 ];
 
 // Definition of Ready

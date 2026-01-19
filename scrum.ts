@@ -209,22 +209,7 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-57: see git history
-  { sprint: 58,
-    workedWell: [
-      "healthy KPI 70%初達成: rate 68%→72%(+4%)、5 Sprint連続P0 100%",
-      "DoD全pass継続: 3 Sprint連続、Tests 931t(+2t)、TDD 13 commits",
-      "3 Sprint滞留Action解消: トラッキング精度改善・P2棚卸し完遂",
-    ],
-    toImprove: [
-      "AC検証タイミング遅延: IMP-058-1発覚遅れ、view.ts統合欠落",
-      "E2E視点不足: 個別テストのみでAC達成判断、手動テスト計画欠如",
-    ],
-    actions: [
-      "P0: Sprint 59でIMP-058-1解決（view.ts統合）",
-      "P1: AC検証チェックリスト策定、E2E Subtask明示化",
-      "P2: DoDへのAC検証追加検討",
-    ] },
+  // Sprint 42-58: see git history
   { sprint: 59,
     workedWell: [
       "迅速なImpediment解決: IMP-058-1を1 Sprint完全解決、AC全達成",
@@ -239,12 +224,26 @@ export const retrospectives: Retrospective[] = [
       "P1: AC検証チェックリスト策定、E2E Subtask明示化（継続）",
       "P2: DoDへのAC検証追加検討（継続）",
     ] },
+  { sprint: 60,
+    workedWell: [
+      "Sprint 58教訓の適用成功: E2E統合テストをSubtask 7として明示化、AC全達成",
+      "DoD全pass継続: 5 Sprint連続、Tests 974t(+43t)、TDD 7 commits",
+      "テスト大幅増加: +43t（931t→974t）、AC3-5がviewテストで検証済み",
+    ],
+    toImprove: [
+      "さらなるプロセス改善余地の検討",
+    ],
+    actions: [
+      "P1: AC検証チェックリスト策定（Sprint 59からの継続、実績により優先度維持）",
+      "P2: DoDへのAC検証追加検討（継続）",
+    ] },
 ];
 
-// Action Management (Sprint 59完了: rate 73%、P0 Action IMP-058-1解決)
+// Action Management (Sprint 60完了: rate 76%、P1 Action部分実施)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 98, executed: 73, rate: 73, remaining: 25 },
+  tracking: { total: 98, executed: 74, rate: 76, remaining: 24 },
+  // Sprint 60: P1 Action 1項目実施（E2E Subtask明示化実践）、rate 73%→76%(+3%)、healthy KPI 3 Sprint連続
   // Sprint 59: P0 Action 1項目完遂（IMP-058-1解決）、rate 72%→73%(+1%)、healthy KPI 2 Sprint連続
   // Sprint 58: P0 Action 2項目 + P2棚卸し13項目廃棄、rate 68%→72%(+4%)、healthy KPI初達成
 };

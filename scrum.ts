@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 67, pbi: "PBI-066", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 67, pbi: "PBI-066", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
@@ -139,13 +139,20 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 67: 次Sprint Planning待ち
+// Current Sprint - Sprint 67: テンプレート機能
 export const currentSprint = {
   sprint: 67,
   pbi: "PBI-066",
-  goal: "次Sprint Planningで設定",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as (Subtask & { ac: string[] })[],
+  goal: "テンプレート機能によりタスク追加の効率化を実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    { test: "{{today}}が今日の日付に展開される", implementation: "expandPlaceholders関数", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC3", "AC4"] },
+    { test: "複数行テンプレートが複数タスクに分割される", implementation: "parseTemplate関数", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC5"] },
+    { test: "テンプレート設定インターフェース", implementation: "TaskTemplate型とデフォルト値", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1"] },
+    { test: "設定画面でテンプレート登録", implementation: "TodotxtSettingTabにテンプレート設定UI追加", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1"] },
+    { test: "コマンドパレットからテンプレート選択", implementation: "addTemplateTaskコマンド実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC2"] },
+    { test: "AC検証チェックリスト実践検証", implementation: "AC3,4,5のvitest検証でチェックリスト試行", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["P1-Action"] },
+  ] as (Subtask & { ac: string[] })[],
 };
 // Sprint 66: PBI-065完了 - 7 subtasks, 5 commits, DoD全pass, AC全達成, 1325t(+38t), Phase 19開始, see git history
 // Sprint 58-65: see git history

@@ -1,16 +1,32 @@
 /**
+ * コールバック設定
+ */
+export interface InlineEditCallbacks {
+	/** キャンセル時のコールバック (index, originalValue) */
+	onCancel?: (index: number, originalValue: string) => void;
+	/** 保存時のコールバック (index, newValue) */
+	onSave?: (index: number, newValue: string) => void;
+}
+
+/**
  * InlineEditState - インライン編集の状態を管理するクラス
  *
  * タスクのインライン編集機能の状態管理を担当:
  * - 編集モードの開始・終了
  * - 編集中のタスクインデックス管理
  * - 元の値と現在の編集値の保持
+ * - キャンセル・保存操作
  */
 export class InlineEditState {
 	private editing: boolean = false;
 	private editingIndex: number | null = null;
 	private originalValue: string | null = null;
 	private currentValue: string | null = null;
+	private callbacks: InlineEditCallbacks;
+
+	constructor(callbacks: InlineEditCallbacks = {}) {
+		this.callbacks = callbacks;
+	}
 
 	/**
 	 * 編集中かどうかを返す
@@ -69,5 +85,28 @@ export class InlineEditState {
 		if (this.editing) {
 			this.currentValue = value;
 		}
+	}
+
+	/**
+	 * 編集をキャンセルして元の値を復元
+	 * @returns 元の値、編集中でなければnull
+	 */
+	cancel(): string | null {
+		if (!this.editing) {
+			return null;
+		}
+
+		const index = this.editingIndex;
+		const original = this.originalValue;
+
+		// コールバック呼び出し
+		if (this.callbacks.onCancel && index !== null && original !== null) {
+			this.callbacks.onCancel(index, original);
+		}
+
+		// 状態をクリア
+		this.stop();
+
+		return original;
 	}
 }

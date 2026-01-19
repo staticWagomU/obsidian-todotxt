@@ -92,4 +92,52 @@ describe("InlineEditState", () => {
 			expect(state.getCurrentValue()).toBeNull();
 		});
 	});
+
+	describe("cancel() - Escキーでキャンセル (AC3)", () => {
+		it("cancel()で編集モードが終了する", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Modified task");
+			state.cancel();
+			expect(state.isEditing()).toBe(false);
+		});
+
+		it("cancel()で元の値を復元して返す", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Modified task");
+			const restored = state.cancel();
+			expect(restored).toBe("Original task");
+		});
+
+		it("cancel()で編集していない状態だとnullを返す", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			const restored = state.cancel();
+			expect(restored).toBeNull();
+		});
+
+		it("cancel()後に状態がクリアされる", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Modified task");
+			state.cancel();
+			expect(state.getEditingIndex()).toBeNull();
+			expect(state.getOriginalValue()).toBeNull();
+			expect(state.getCurrentValue()).toBeNull();
+		});
+
+		it("cancel()でonCancelコールバックが呼ばれる", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const onCancel = vi.fn();
+			const state = new InlineEditState({ onCancel });
+			state.start(0, "Original task");
+			state.setCurrentValue("Modified task");
+			state.cancel();
+			expect(onCancel).toHaveBeenCalledWith(0, "Original task");
+		});
+	});
 });

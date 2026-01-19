@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { KeyboardNavigator, KeyboardActionHandler } from "./keyboard-navigation";
+import { KeyboardNavigator, KeyboardActionHandler, createKeyMappings } from "./keyboard-navigation";
+import { ShortcutManager } from "./shortcuts";
 
 describe("keyboard navigation", () => {
 	let navigator: KeyboardNavigator;
@@ -223,6 +224,69 @@ describe("keyboard action handler", () => {
 		it("should return null for Z without modifier", () => {
 			const result = handler.getActionForModifiedKey("z", { ctrlKey: false, metaKey: false, shiftKey: false });
 			expect(result).toBeNull();
+		});
+	});
+
+	describe("custom key mappings with ShortcutManager", () => {
+		it("should use custom key mapping from ShortcutManager", () => {
+			const shortcutManager = new ShortcutManager({ "action-edit": "F2" });
+			const mappings = createKeyMappings(shortcutManager);
+			const handlerWithMappings = new KeyboardActionHandler({
+				onToggle: mockOnToggle,
+				onEdit: mockOnEdit,
+				onDelete: mockOnDelete,
+			}, mappings);
+
+			// F2 should now map to edit
+			expect(handlerWithMappings.getActionForKey("F2")).toBe("edit");
+			// Original E key should not map to edit anymore (custom key overrides)
+			expect(handlerWithMappings.getActionForKey("E")).toBeNull();
+		});
+
+		it("should use default key mapping when no custom keys", () => {
+			const shortcutManager = new ShortcutManager();
+			const mappings = createKeyMappings(shortcutManager);
+			const handlerWithMappings = new KeyboardActionHandler({
+				onToggle: mockOnToggle,
+				onEdit: mockOnEdit,
+				onDelete: mockOnDelete,
+			}, mappings);
+
+			expect(handlerWithMappings.getActionForKey("E")).toBe("edit");
+			expect(handlerWithMappings.getActionForKey("Enter")).toBe("toggle");
+			expect(handlerWithMappings.getActionForKey("Delete")).toBe("delete");
+		});
+
+		it("should handle multiple custom key mappings", () => {
+			const shortcutManager = new ShortcutManager({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+				"action-delete": "Backspace",
+			});
+			const mappings = createKeyMappings(shortcutManager);
+			const handlerWithMappings = new KeyboardActionHandler({
+				onToggle: mockOnToggle,
+				onEdit: mockOnEdit,
+				onDelete: mockOnDelete,
+			}, mappings);
+
+			expect(handlerWithMappings.getActionForKey("F2")).toBe("edit");
+			expect(handlerWithMappings.getActionForKey("Space")).toBe("toggle");
+			expect(handlerWithMappings.getActionForKey("Backspace")).toBe("delete");
+		});
+
+		it("should handle case-insensitive key mappings", () => {
+			const shortcutManager = new ShortcutManager({ "action-edit": "F" });
+			const mappings = createKeyMappings(shortcutManager);
+			const handlerWithMappings = new KeyboardActionHandler({
+				onToggle: mockOnToggle,
+				onEdit: mockOnEdit,
+				onDelete: mockOnDelete,
+			}, mappings);
+
+			// Both F and f should work
+			expect(handlerWithMappings.getActionForKey("F")).toBe("edit");
+			expect(handlerWithMappings.getActionForKey("f")).toBe("edit");
 		});
 	});
 });

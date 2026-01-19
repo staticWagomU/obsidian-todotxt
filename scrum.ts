@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 64, pbi: "PBI-063", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 8, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -121,7 +121,7 @@ export const currentSprint = {
   status: "in_progress" as SprintStatus,
   // P0 Action適用: 各Subtask完了コミット + scrum.ts更新を1コミットにまとめる
   subtasks: [
-    { test: "VirtualScroller基本クラステスト（visibleRange計算）", implementation: "VirtualScrollerクラス実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1"] },
+    { test: "VirtualScroller基本クラステスト（visibleRange計算）", implementation: "VirtualScrollerクラス実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add VirtualScroller basic class tests" }, { phase: "green" as CommitPhase, message: "feat: implement VirtualScroller class with visibleRange calculation" }], ac: ["AC1"] },
     { test: "表示範囲計算テスト（スクロール位置→表示インデックス）", implementation: "calculateVisibleRange関数実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1"] },
     { test: "オーバースキャン（バッファ）ロジックテスト", implementation: "overscan設定とバッファDOM管理", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC5"] },
     { test: "非同期フィルタリングテスト", implementation: "filterTodosAsync関数実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC4"] },

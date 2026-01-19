@@ -3178,3 +3178,106 @@ describe("Inline Edit Integration - PBI-058 AC1-5", () => {
 		});
 	});
 });
+
+describe("Undo/Redo integration (AC1, AC2, AC4)", () => {
+	let view: TodotxtView;
+	let mockLeaf: WorkspaceLeaf;
+	let mockPlugin: TodotxtPlugin;
+
+	beforeEach(() => {
+		mockLeaf = {} as WorkspaceLeaf;
+		mockPlugin = createMockPlugin();
+		view = new TodotxtView(mockLeaf, mockPlugin);
+	});
+
+	describe("Undo/Redo履歴の初期化", () => {
+		it("UndoRedoHistoryが初期化される", () => {
+			expect(view.getUndoRedoHistory()).toBeDefined();
+		});
+
+		it("初期状態ではcanUndoとcanRedoがfalse", () => {
+			expect(view.canUndo()).toBe(false);
+			expect(view.canRedo()).toBe(false);
+		});
+	});
+
+	describe("タスク操作時のスナップショット作成 (AC3)", () => {
+		it("タスク追加時にスナップショットが作成される", async () => {
+			view.setViewData("Task 1\n", false);
+
+			const addHandler = view.getAddHandler();
+			await addHandler("New task");
+
+			// Undo should be possible after adding a task
+			expect(view.canUndo()).toBe(true);
+		});
+
+		it("タスク削除時にスナップショットが作成される", async () => {
+			view.setViewData("Task 1\nTask 2\n", false);
+
+			const deleteHandler = view.getDeleteHandler();
+			await deleteHandler(0);
+
+			expect(view.canUndo()).toBe(true);
+		});
+	});
+
+	describe("Undo操作 (AC1)", () => {
+		it("undoで前の状態に戻れる", async () => {
+			view.setViewData("Initial task\n", false);
+			const addHandler = view.getAddHandler();
+			await addHandler("New task");
+
+			expect(view.getViewData()).toContain("New task");
+
+			const undone = await view.undo();
+			expect(undone).toBe(true);
+			expect(view.getViewData()).not.toContain("New task");
+			expect(view.getViewData()).toContain("Initial task");
+		});
+
+		it("undo不可能な場合はfalseを返す", async () => {
+			view.setViewData("Task 1\n", false);
+
+			const undone = await view.undo();
+			expect(undone).toBe(false);
+		});
+	});
+
+	describe("Redo操作 (AC2)", () => {
+		it("redoで取り消した操作をやり直せる", async () => {
+			view.setViewData("Initial task\n", false);
+			const addHandler = view.getAddHandler();
+			await addHandler("New task");
+
+			await view.undo();
+			expect(view.getViewData()).not.toContain("New task");
+
+			const redone = await view.redo();
+			expect(redone).toBe(true);
+			expect(view.getViewData()).toContain("New task");
+		});
+
+		it("redo不可能な場合はfalseを返す", async () => {
+			view.setViewData("Task 1\n", false);
+
+			const redone = await view.redo();
+			expect(redone).toBe(false);
+		});
+	});
+
+	describe("履歴のクリア", () => {
+		it("clearHistoryで履歴がクリアされる", async () => {
+			view.setViewData("Initial\n", false);
+			const addHandler = view.getAddHandler();
+			await addHandler("New task");
+
+			expect(view.canUndo()).toBe(true);
+
+			view.clearHistory();
+
+			expect(view.canUndo()).toBe(false);
+			expect(view.canRedo()).toBe(false);
+		});
+	});
+});

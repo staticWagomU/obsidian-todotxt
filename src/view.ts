@@ -5,9 +5,10 @@ import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
-import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler } from "./lib/handlers";
+import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./lib/handlers";
 import { renderTaskList, type DefaultFilterSettings } from "./lib/rendering";
 import { InlineEditState } from "./lib/inline-edit";
+import { UndoRedoHistory, createSnapshot } from "./lib/undo-redo";
 import type TodotxtPlugin from "./main";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
@@ -15,10 +16,13 @@ export const VIEW_TYPE_TODOTXT = "todotxt-view";
 export class TodotxtView extends TextFileView {
 	plugin: TodotxtPlugin;
 	private inlineEditState: InlineEditState;
+	private undoRedoHistory: UndoRedoHistory<string>;
 
 	constructor(leaf: WorkspaceLeaf, plugin: TodotxtPlugin) {
 		super(leaf);
 		this.plugin = plugin;
+		// Initialize undo/redo history (AC5: maxSize=20)
+		this.undoRedoHistory = new UndoRedoHistory<string>(20);
 		// Initialize inline edit state with callbacks
 		this.inlineEditState = new InlineEditState({
 			onSave: (index, newValue) => {
@@ -59,6 +63,18 @@ export class TodotxtView extends TextFileView {
 		this.renderTaskList();
 	}
 
+	/**
+	 * Set view data with snapshot for undo/redo (AC3)
+	 * Saves both current state and new state for proper undo/redo
+	 */
+	setViewDataWithSnapshot(data: string, clear: boolean): void {
+		// Save current state before change (AC3)
+		createSnapshot(this.undoRedoHistory, this.data);
+		// Save new state after change
+		createSnapshot(this.undoRedoHistory, data);
+		this.setViewData(data, clear);
+	}
+
 	clear(): void {
 		// Intentionally empty - data should never be cleared
 		// The 'data' field is managed through setViewData only
@@ -93,9 +109,9 @@ export class TodotxtView extends TextFileView {
 			this.contentEl,
 			this.data,
 			() => this.openAddTaskModal(),
-			getToggleHandler(() => this.data, (data, clear) => this.setViewData(data, clear)),
+			getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear)),
 			(index) => this.openEditTaskModal(index),
-			getDeleteHandler(() => this.data, (data, clear) => this.setViewData(data, clear)),
+			getDeleteHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear)),
 			this.getDefaultFilterSettings(),
 			() => this.openArchiveWithConfirmation(),
 			() => this.openAITaskDialog(),
@@ -130,7 +146,7 @@ export class TodotxtView extends TextFileView {
 	 * Public for testing compatibility
 	 */
 	getToggleHandler(): (index: number) => Promise<void> {
-		return getToggleHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		return getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
 	}
 
 	/**
@@ -138,7 +154,7 @@ export class TodotxtView extends TextFileView {
 	 * Public for testing compatibility
 	 */
 	getAddHandler(): (description: string, priority?: string) => Promise<void> {
-		return getAddHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		return getAddHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
 	}
 
 	/**
@@ -149,7 +165,7 @@ export class TodotxtView extends TextFileView {
 		lineIndex: number,
 		updates: Partial<Pick<Todo, "description" | "priority">>,
 	) => Promise<void> {
-		return getEditHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		return getEditHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
 	}
 
 	/**
@@ -157,7 +173,7 @@ export class TodotxtView extends TextFileView {
 	 * Public for testing compatibility
 	 */
 	getDeleteHandler(): (index: number) => Promise<void> {
-		return getDeleteHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		return getDeleteHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
 	}
 
 	/**
@@ -165,7 +181,7 @@ export class TodotxtView extends TextFileView {
 	 * Public for testing compatibility
 	 */
 	openAddTaskModal(): void {
-		const addHandler = getAddHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		const addHandler = getAddHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
 		const todos = parseTodoTxt(this.data);
 		const modal = new AddTaskModal(
 			this.app,
@@ -186,7 +202,7 @@ export class TodotxtView extends TextFileView {
 		const todo = todos[index];
 		if (!todo) return;
 
-		const editHandler = getEditHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		const editHandler = getEditHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
 		const modal = new EditTaskModal(
 			this.app,
 			todo.description,
@@ -256,7 +272,7 @@ export class TodotxtView extends TextFileView {
 
 		return getArchiveHandler(
 			() => this.data,
-			(data, clear) => this.setViewData(data, clear),
+			(data, clear) => this.setViewDataWithSnapshot(data, clear),
 			todoPath,
 			readArchive,
 			writeArchive,
@@ -387,7 +403,7 @@ export class TodotxtView extends TextFileView {
 	 * Updates the task description and re-renders
 	 */
 	private async handleInlineEditSave(index: number, newValue: string): Promise<void> {
-		const editHandler = getEditHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		const editHandler = getEditHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
 		await editHandler(index, { description: newValue });
 		// State is already cleared by save() method in InlineEditState
 	}
@@ -427,6 +443,58 @@ export class TodotxtView extends TextFileView {
 	 */
 	getInlineEditingIndex(): number | null {
 		return this.inlineEditState.getEditingIndex();
+	}
+
+	/**
+	 * Get undo/redo history instance
+	 * Public for testing compatibility
+	 */
+	getUndoRedoHistory(): UndoRedoHistory<string> {
+		return this.undoRedoHistory;
+	}
+
+	/**
+	 * Check if undo is possible
+	 * Public for testing compatibility
+	 */
+	canUndo(): boolean {
+		return this.undoRedoHistory.canUndo();
+	}
+
+	/**
+	 * Check if redo is possible
+	 * Public for testing compatibility
+	 */
+	canRedo(): boolean {
+		return this.undoRedoHistory.canRedo();
+	}
+
+	/**
+	 * Undo the last operation (AC1)
+	 * Returns true if undo was successful
+	 * Public for testing compatibility
+	 */
+	async undo(): Promise<boolean> {
+		const undoHandler = getUndoHandler(this.undoRedoHistory, (data, clear) => this.setViewData(data, clear));
+		return await undoHandler();
+	}
+
+	/**
+	 * Redo the last undone operation (AC2)
+	 * Returns true if redo was successful
+	 * Public for testing compatibility
+	 */
+	async redo(): Promise<boolean> {
+		const redoHandler = getRedoHandler(this.undoRedoHistory, (data, clear) => this.setViewData(data, clear));
+		return await redoHandler();
+	}
+
+	/**
+	 * Clear undo/redo history
+	 * Public for testing compatibility
+	 */
+	clearHistory(): void {
+		this.undoRedoHistory.clear();
 	}
 }
 

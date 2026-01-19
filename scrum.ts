@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 63, pbi: "PBI-061", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 4, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-061, PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
+  sprint: { number: 64, pbi: "", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
 // Product Goal
@@ -65,69 +65,7 @@ export const productBacklog: ProductBacklogItem[] = [
   // PBI-058: インライン編集機能 - Sprint 60完了、974t(+43t)、see git history
   // PBI-059: Undo/Redo機能 - Sprint 61完了、1008t(+34t)、see git history
   // PBI-060: フィルター保存機能 - Sprint 62完了、1076t(+68t)、史上最大テスト増加量、see git history
-  {
-    id: "PBI-060",
-    story: {
-      role: "todo.txtユーザー",
-      capability: "フィルター状態を保存し、名前を付けて呼び出す",
-      benefit: "よく使うフィルター組み合わせに素早くアクセスでき、作業効率が向上する",
-    },
-    acceptanceCriteria: [
-      { criterion: "現在のフィルター状態を名前を付けて保存できる", verification: "手動テスト: フィルター保存操作確認" },
-      { criterion: "保存済みフィルターをドロップダウンから選択して適用できる", verification: "手動テスト: フィルター選択・適用確認" },
-      { criterion: "保存済みフィルターを編集・削除できる", verification: "pnpm vitest run: フィルター編集・削除テスト" },
-      { criterion: "フィルター設定はObsidianの設定に永続化される", verification: "pnpm vitest run: 設定永続化テスト" },
-      { criterion: "ファイルごとにデフォルトフィルターを設定できる", verification: "pnpm vitest run: ファイル別デフォルトフィルターテスト" },
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: {
-      functions: 8,
-      estimatedTests: 28,
-      externalDependencies: 0,
-      score: "MEDIUM" as const,
-      subtasks: 6,
-    },
-    refactorChecklist: [
-      "FilterPreset型をsrc/lib/filter.tsに追加（既存filterモジュールとの整合性）",
-      "savedFilters設定をsrc/settings.tsに追加（既存パターン踏襲）",
-      "SaveFilterModal/ManageFiltersModalをsrc/ui/に追加（既存Modal継承）",
-      "rendering.ts内controlbar拡張（ドロップダウンUI）",
-      "view.ts内デフォルトフィルター適用ロジック追加",
-    ],
-  }, // PBI-060完了: Sprint 62、see git history
-  {
-    id: "PBI-061",
-    story: {
-      role: "todo.txtユーザー",
-      capability: "タスクを右クリックしてコンテキストメニューからアクションを実行",
-      benefit: "マウス操作で素早くタスクの編集・削除・優先度変更などができる",
-    },
-    acceptanceCriteria: [
-      { criterion: "タスク右クリックでコンテキストメニューが表示される", verification: "手動テスト: 右クリックメニュー表示確認" },
-      { criterion: "メニューから編集・削除・複製を実行できる", verification: "pnpm vitest run: 基本アクションテスト" },
-      { criterion: "優先度変更のサブメニューでA-Zまたは優先度なしを選択できる", verification: "pnpm vitest run: 優先度変更テスト" },
-      { criterion: "プロジェクト・コンテキストの追加/削除ができる", verification: "pnpm vitest run: タグ変更テスト" },
-      { criterion: "モバイルではロングプレスでメニューが表示される", verification: "手動テスト: モバイルでのロングプレス確認" },
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: {
-      functions: 10,
-      estimatedTests: 35,
-      externalDependencies: 0,
-      score: "MEDIUM" as const,
-      subtasks: 7,
-    },
-    refactorChecklist: [
-      "TaskContextMenu.tsをsrc/ui/に追加（既存Modal継承パターン準拠）",
-      "context-menu-handlers.tsをsrc/lib/に追加（既存handlers.tsパターン踏襲）",
-      "rendering.tsのrenderTaskItem拡張（右クリック/ロングプレスイベント追加）",
-      "view.tsにコンテキストメニューコールバック統合（既存onEdit/onDelete統合パターン踏襲）",
-      "todo.tsにduplicateTask関数追加（既存editTask関数パターン準拠）",
-      "styles.cssにコンテキストメニュースタイル追加（既存モーダルスタイル整合性確保）",
-    ],
-  },
+  // PBI-061: コンテキストメニュー機能 - Sprint 63完了、1140t(+64t)、Phase 18で2番目テスト増加、see git history
   {
     id: "PBI-062",
     story: {
@@ -174,71 +112,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 63: コンテキストメニュー実装
+// Current Sprint - Sprint 64: 次Sprint
 export const currentSprint = {
-  sprint: 63,
-  pbi: "PBI-061",
-  goal: "タスクの右クリックコンテキストメニューを実装し、マウス操作での素早いタスク操作を可能にする",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    // Subtask 1: コンテキストメニュー基盤 - AC1対応
-    {
-      test: "TaskContextMenu.test.ts: コンテキストメニュー表示テスト、メニュー項目存在確認、閉じる動作テスト",
-      implementation: "TaskContextMenu.ts: Obsidian Menu APIを使用したコンテキストメニュー基盤クラス実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: add TaskContextMenu base class for context menu functionality" }],
-    },
-    // Subtask 2: 基本アクション（編集・削除・複製） - AC2対応
-    {
-      test: "context-menu-handlers.test.ts: 編集アクション呼び出しテスト、削除アクション呼び出しテスト、複製アクション呼び出しテスト",
-      implementation: "context-menu-handlers.ts: handleEdit/handleDelete/handleDuplicate関数実装、todo.tsにduplicateTask関数追加",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: add context menu handlers for edit/delete/duplicate actions" }],
-    },
-    // Subtask 3: 優先度変更サブメニュー - AC3対応
-    {
-      test: "context-menu-handlers.test.ts: 優先度A-Z選択テスト、優先度なし選択テスト、サブメニュー構築テスト",
-      implementation: "TaskContextMenu.ts: 優先度サブメニュー追加、context-menu-handlers.ts: handlePriorityChange関数実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: add handlePriorityChange for priority submenu (AC3)" }],
-    },
-    // Subtask 4: プロジェクト・コンテキスト変更 - AC4対応
-    {
-      test: "context-menu-handlers.test.ts: プロジェクト追加/削除テスト、コンテキスト追加/削除テスト",
-      implementation: "TaskContextMenu.ts: プロジェクト/コンテキストサブメニュー追加、handleProjectChange/handleContextChange関数実装",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: add handleProjectChange/handleContextChange for tag submenus (AC4)" }],
-    },
-    // Subtask 5: モバイル対応（ロングプレス） - AC5対応
-    {
-      test: "rendering.test.ts: ロングプレスイベント登録テスト、タイマー動作テスト、キャンセル動作テスト",
-      implementation: "rendering.ts: renderTaskItemにロングプレスイベントハンドラー追加（touchstart/touchend/touchmove）",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    // Subtask 6: コード整理・リファクタリング
-    {
-      test: "既存テストがパスすることを確認",
-      implementation: "styles.css整理、コードフォーマット統一、不要コード削除、型定義整理",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-    // Subtask 7: E2E統合テスト - Sprint 60教訓適用
-    {
-      test: "view.test.ts: コンテキストメニュー統合テスト、右クリック→メニュー表示→アクション実行フロー確認",
-      implementation: "view.ts: コンテキストメニューコールバック統合、rendering.ts連携確認",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
-    },
-  ] as Subtask[],
+  sprint: 64,
+  pbi: "",
+  goal: "",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 63: PBI-061完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1140t(+64t), Phase 18で2番目テスト増加, see git history
 // Sprint 62: PBI-060完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1076t(+68t), 史上最大テスト増加, see git history
 // Sprint 61: PBI-059完了 - 7 subtasks (6 behavioral + 1 structural), 6 commits, DoD全pass, AC全達成, 1008t(+34t), MILESTONE: 1000t達成, see git history
 // Sprint 60: PBI-058完了 - 7 subtasks (5 behavioral + 2 structural), 7 commits, DoD全pass, AC全達成, 974t(+43t), see git history
@@ -278,24 +160,13 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 59, pbi: "PBI-064", story: "インライン入力欄でタスク追加(IMP-058-1解決)", verification: "passed", notes: "931t(維持),1subtask,1commit,DoD全pass,AC全達成,IMP-058-1解決,rate72%→73%" },
   { sprint: 60, pbi: "PBI-058", story: "インライン編集機能", verification: "passed", notes: "974t(+43t),7subtasks,7commits,DoD全pass,AC全達成(AC1-2手動,AC3-5vitest),E2E統合成功" },
   { sprint: 61, pbi: "PBI-059", story: "Undo/Redo機能", verification: "passed", notes: "1008t(+34t),7subtasks,6commits,DoD全pass,AC全達成(AC1-3,AC5vitest,AC4手動),MILESTONE:1000t達成" },
+  { sprint: 62, pbi: "PBI-060", story: "フィルター保存機能", verification: "passed", notes: "1076t(+68t),7subtasks,7commits,DoD全pass,AC全達成(AC1-2手動,AC3-5vitest),史上最大テスト増加" },
+  { sprint: 63, pbi: "PBI-061", story: "コンテキストメニュー機能", verification: "passed", notes: "1140t(+64t),7subtasks,7commits,DoD全pass,AC全達成(AC1手動,AC2-5vitest),Phase 18で2番目テスト増加" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-59: see git history
-  { sprint: 60,
-    workedWell: [
-      "Sprint 58教訓の適用成功: E2E統合テストをSubtask 7として明示化、AC全達成",
-      "DoD全pass継続: 5 Sprint連続、Tests 974t(+43t)、TDD 7 commits",
-      "テスト大幅増加: +43t（931t→974t）、AC3-5がviewテストで検証済み",
-    ],
-    toImprove: [
-      "さらなるプロセス改善余地の検討",
-    ],
-    actions: [
-      "P1: AC検証チェックリスト策定（Sprint 59からの継続、実績により優先度維持）",
-      "P2: DoDへのAC検証追加検討（継続）",
-    ] },
+  // Sprint 42-60: see git history
   { sprint: 61,
     workedWell: [
       "MILESTONE達成: 1000テスト突破（974t→1008t、+34t）、プロジェクト史上初",
@@ -324,12 +195,31 @@ export const retrospectives: Retrospective[] = [
       "P1: AC検証チェックリスト策定（Sprint 59からの継続、3 Sprint実績により優先度維持）",
       "P2: DoDへのAC検証追加検討（継続）",
     ] },
+  { sprint: 63,
+    workedWell: [
+      "DoD全pass 8 Sprint連続達成: テスト品質維持継続（1076t→1140t、+64t）",
+      "+64テスト増加: Phase 18で2番目の大規模増加（1位はSprint 62の+68t）",
+      "AC全達成: AC1-5すべて達成、AC5（モバイル対応ロングプレス）も実装完了",
+      "E2E統合明示化継続: Subtask 7でE2E統合テスト実践（Sprint 60教訓適用、4 Sprint連続）",
+      "TDD実践成功: 7 Subtask、7コミット、Red-Green-Refactorサイクル遵守",
+    ],
+    toImprove: [
+      "scrum.ts更新遅延: Subtask 5-7完了後もscrum.tsのstatus更新が遅れた",
+      "進捗状況把握の不十分さ: Sprint Review時にSubtask 5の実装状況把握が不十分だった",
+    ],
+    actions: [
+      "P0: Sprint実施中のscrum.ts即時更新ルール確立（Subtask完了コミット + scrum.ts更新を1コミットにまとめる）",
+      "P1: AC検証チェックリスト策定（Sprint 59からの継続、4 Sprint実績により優先度維持）",
+      "P1: 進捗可視化ツール検討（scrum.ts status更新自動化スクリプト、手動更新忘れ防止）",
+      "P2: DoDへのAC検証追加検討（継続）",
+    ] },
 ];
 
-// Action Management (Sprint 62完了: rate 78%、P1 Action部分実施)
+// Action Management (Sprint 63完了: rate 76%、P1 Action部分実施、P0 Action 1項目追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 98, executed: 76, rate: 78, remaining: 22 },
+  tracking: { total: 101, executed: 77, rate: 76, remaining: 24 },
+  // Sprint 63: P1 Action 1項目実施（E2E統合明示化継続）、P0/P1/P2 Action計3項目追加、rate 78%→76%(-2%)、healthy KPI 6 Sprint連続
   // Sprint 62: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 77%→78%(+1%)、healthy KPI 5 Sprint連続
   // Sprint 61: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 76%→77%(+1%)、healthy KPI 4 Sprint連続
   // Sprint 60: P1 Action 1項目実施（E2E Subtask明示化実践）、rate 73%→76%(+3%)、healthy KPI 3 Sprint連続

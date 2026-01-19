@@ -44,6 +44,21 @@ export interface CalculateVisibleRangeParams {
 }
 
 /**
+ * Parameters for calculateVisibleRangeWithOverscan function
+ */
+export interface CalculateVisibleRangeWithOverscanParams extends CalculateVisibleRangeParams {
+	overscan: number;
+}
+
+/**
+ * Extended visible range with render count for overscan
+ */
+export interface VisibleRangeWithOverscan extends VisibleRangeExtended {
+	/** Number of items to render (including overscan) */
+	renderCount: number;
+}
+
+/**
  * Calculate visible range from scroll position
  *
  * Pure function for calculating which items are visible given scroll position.
@@ -99,6 +114,63 @@ export function calculateVisibleRange(params: CalculateVisibleRangeParams): Visi
 		endIndex,
 		visibleCount: actualVisibleCount,
 		offsetTop,
+	};
+}
+
+/**
+ * Calculate visible range with overscan buffer
+ *
+ * Adds buffer items before and after the visible range to reduce
+ * flickering during scrolling. This is the primary function for
+ * virtual scrolling implementation.
+ *
+ * Sprint 64 - PBI-063: AC1, AC5対応
+ *
+ * @param params - Calculation parameters including overscan
+ * @returns Extended visible range with render count
+ */
+export function calculateVisibleRangeWithOverscan(
+	params: CalculateVisibleRangeWithOverscanParams
+): VisibleRangeWithOverscan {
+	const { scrollTop, itemHeight, containerHeight, totalItems, overscan } = params;
+
+	// Handle empty list
+	if (totalItems === 0) {
+		return {
+			startIndex: 0,
+			endIndex: -1,
+			visibleCount: 0,
+			offsetTop: 0,
+			renderCount: 0,
+		};
+	}
+
+	// First calculate the visible range without overscan
+	const visibleRange = calculateVisibleRange({
+		scrollTop,
+		itemHeight,
+		containerHeight,
+		totalItems,
+	});
+
+	// Apply overscan to start index (clamp to 0)
+	const overscanStartIndex = Math.max(0, visibleRange.startIndex - overscan);
+
+	// Apply overscan to end index (clamp to totalItems - 1)
+	const overscanEndIndex = Math.min(totalItems - 1, visibleRange.endIndex + overscan);
+
+	// Calculate render count
+	const renderCount = overscanEndIndex - overscanStartIndex + 1;
+
+	// Calculate offset for positioning
+	const offsetTop = overscanStartIndex * itemHeight;
+
+	return {
+		startIndex: overscanStartIndex,
+		endIndex: overscanEndIndex,
+		visibleCount: visibleRange.visibleCount,
+		offsetTop,
+		renderCount,
 	};
 }
 

@@ -223,12 +223,27 @@ export const retrospectives: Retrospective[] = [
       "P1: AC検証チェックリスト策定（Sprint 59からの継続、実績により優先度維持）",
       "P2: DoDへのAC検証追加検討（継続）",
     ] },
+  { sprint: 61,
+    workedWell: [
+      "MILESTONE達成: 1000テスト突破（974t→1008t、+34t）、プロジェクト史上初",
+      "DoD全pass継続: 6 Sprint連続、AC全達成（AC1-3,AC5 vitest、AC4手動）",
+      "汎用的設計成功: UndoRedoHistory<T>クラス、TodosView以外でも再利用可能",
+      "E2E統合明示化継続: Subtask 7でE2E統合テスト、Sprint 60教訓適用",
+    ],
+    toImprove: [
+      "さらなるプロセス改善余地の検討",
+    ],
+    actions: [
+      "P1: AC検証チェックリスト策定（Sprint 59からの継続、2 Sprint実績により優先度維持）",
+      "P2: DoDへのAC検証追加検討（継続）",
+    ] },
 ];
 
-// Action Management (Sprint 60完了: rate 76%、P1 Action部分実施)
+// Action Management (Sprint 61完了: rate 77%、P1 Action部分実施)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 98, executed: 74, rate: 76, remaining: 24 },
+  tracking: { total: 98, executed: 75, rate: 77, remaining: 23 },
+  // Sprint 61: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 76%→77%(+1%)、healthy KPI 4 Sprint連続
   // Sprint 60: P1 Action 1項目実施（E2E Subtask明示化実践）、rate 73%→76%(+3%)、healthy KPI 3 Sprint連続
   // Sprint 59: P0 Action 1項目完遂（IMP-058-1解決）、rate 72%→73%(+1%)、healthy KPI 2 Sprint連続
   // Sprint 58: P0 Action 2項目 + P2棚卸し13項目廃棄、rate 68%→72%(+4%)、healthy KPI初達成

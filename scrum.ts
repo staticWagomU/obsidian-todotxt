@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 60, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-064", goal: "Phase 18: UX強化・パフォーマンス最適化" },
+  sprint: { number: 60, pbi: "PBI-058", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-058", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
 // Product Goal
@@ -186,10 +186,67 @@ export const definitionOfReady = {
 // Current Sprint - Sprint 60
 export const currentSprint = {
   sprint: 60,
-  pbi: "TBD",
-  goal: "TBD",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-058",
+  goal: "タスクをダブルクリックまたはEnterキーで直接編集できるようにし、モーダルレスの高速編集体験を実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Subtask 1: インライン編集状態管理クラス (behavioral)
+    {
+      test: "InlineEditStateクラス: 編集中状態の開始・終了、編集対象インデックス管理、元の値保持",
+      implementation: "src/lib/inline-edit.ts: InlineEditState class with start/stop/getValue methods",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 2: Escキーでキャンセル処理 (behavioral) - AC3
+    {
+      test: "InlineEditState.cancel(): 編集中にEscキーで変更を破棄、元の値を復元",
+      implementation: "src/lib/inline-edit.ts: cancel() method restores original value",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 3: Enter/Cmd+Enterで保存処理 (behavioral) - AC4
+    {
+      test: "InlineEditState.save(): Enter/Cmd+Enterで編集内容を保存、コールバック呼び出し",
+      implementation: "src/lib/inline-edit.ts: save() method commits changes via callback",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 4: blur時の自動保存 (behavioral) - AC5
+    {
+      test: "InlineEditState.handleBlur(): 外部クリック時に自動保存、編集モード終了",
+      implementation: "src/lib/inline-edit.ts: handleBlur() auto-saves on focus loss",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 5: インライン編集UIレンダリング (structural)
+    {
+      test: "renderInlineEditInput(): 編集モード時にinput要素をレンダリング、通常モードとの切り替え",
+      implementation: "src/lib/rendering.ts: renderInlineEditInput function for edit mode UI",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 6: ダブルクリック・Enterキーでの編集モード開始 (structural) - AC1, AC2
+    {
+      test: "renderTaskItem: ダブルクリックイベントとキーボードEnterで編集モードに移行",
+      implementation: "src/lib/rendering.ts: add dblclick handler and keyboard Enter trigger",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+    // Subtask 7: E2E統合テスト・view.ts統合 (behavioral) - Sprint 58教訓
+    {
+      test: "E2E: view.tsでインライン編集機能統合、AC1-5全項目の動作確認",
+      implementation: "src/view.ts integration, manual test verification for AC1-2",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+    },
+  ] as Subtask[],
 };
 // Sprint 59: PBI-064完了(IMP-058-1解決) - 1 subtask (1 behavioral), 1 commit, DoD全pass, AC全達成, 931t(維持), rate 72%→73%, see git history
 // Sprint 58: PBI-064 FAILED - 8 subtasks (6 behavioral + 2 structural), 13 commits, DoD全pass, AC未達成(view.ts統合欠落), 931t(+2), rate 68%→72%, healthy KPI初達成, see git history

@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 64, pbi: "PBI-063", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 8, impediments: 0 },
+    subtasksCompleted: 6, subtasksTotal: 8, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -126,7 +126,7 @@ export const currentSprint = {
     { test: "オーバースキャン（バッファ）ロジックテスト", implementation: "overscan設定とバッファDOM管理", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add overscan buffer logic tests" }, { phase: "green" as CommitPhase, message: "feat: implement calculateVisibleRangeWithOverscan function" }], ac: ["AC1", "AC5"] },
     { test: "非同期フィルタリングテスト", implementation: "filterTodosAsync関数実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: implement filterTodosAsync for non-blocking filtering (AC4)" }], ac: ["AC4"] },
     { test: "パフォーマンス計測ユーティリティテスト", implementation: "PerformanceMetrics計測関数群", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: implement PerformanceMetrics utilities (AC2, AC3)" }], ac: ["AC2", "AC3"] },
-    { test: "1000件初期表示パフォーマンステスト（AC2検証）", implementation: "統合パフォーマンステスト", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC2", "AC5"] },
+    { test: "1000件初期表示パフォーマンステスト（AC2検証）", implementation: "統合パフォーマンステスト", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add performance tests for 1000 items (AC2, AC5)" }], ac: ["AC2", "AC5"] },
     { test: "rendering.ts仮想スクロール統合リファクタリング", implementation: "renderTaskListを仮想スクロール対応", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC2", "AC3", "AC4", "AC5"] },
     { test: "E2E統合テスト（AC1-5網羅）", implementation: "view.tsとの統合、全AC検証", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC2", "AC3", "AC4", "AC5"] },
   ] as (Subtask & { ac: string[] })[],

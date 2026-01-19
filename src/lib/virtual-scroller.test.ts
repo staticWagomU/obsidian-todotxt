@@ -437,3 +437,196 @@ describe("calculateVisibleRangeWithOverscan", () => {
 		expect(range.offsetTop).toBe(280);
 	});
 });
+
+/**
+ * Sprint 64 - Subtask 6: 1000件初期表示パフォーマンステスト (AC2, AC5)
+ *
+ * AC2: 1000件のタスクでも初期表示が500ms以内に完了する
+ * AC5: メモリ使用量が100件と1000件で2倍以内の増加に抑える（DOMノード数制限）
+ */
+describe("Performance Tests (AC2, AC5)", () => {
+	describe("AC2: Initial render performance", () => {
+		it("should calculate visible range for 1000 items within 1ms", () => {
+			const start = performance.now();
+
+			// Simulate initial render calculation for 1000 items
+			const range = calculateVisibleRangeWithOverscan({
+				scrollTop: 0,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 1000,
+				overscan: 3,
+			});
+
+			const elapsed = performance.now() - start;
+
+			// Calculation should be extremely fast (< 1ms)
+			expect(elapsed).toBeLessThan(1);
+			expect(range.renderCount).toBeLessThan(30); // Only ~20 items to render
+		});
+
+		it("should handle 1000 scroll position calculations efficiently", () => {
+			const start = performance.now();
+
+			// Simulate scrolling through entire list
+			for (let scrollTop = 0; scrollTop < 40000; scrollTop += 40) {
+				calculateVisibleRangeWithOverscan({
+					scrollTop,
+					itemHeight: 40,
+					containerHeight: 600,
+					totalItems: 1000,
+					overscan: 3,
+				});
+			}
+
+			const elapsed = performance.now() - start;
+
+			// 1000 calculations should complete within 50ms
+			expect(elapsed).toBeLessThan(50);
+		});
+
+		it("should complete VirtualScroller initialization for 1000 items within 1ms", () => {
+			const start = performance.now();
+
+			const scroller = new VirtualScroller({
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 1000,
+				overscan: 3,
+			});
+
+			const elapsed = performance.now() - start;
+
+			expect(elapsed).toBeLessThan(1);
+			expect(scroller.getTotalHeight()).toBe(40000);
+		});
+	});
+
+	describe("AC5: Memory efficiency (DOM node count)", () => {
+		it("should render same number of DOM nodes for 100 and 1000 items (virtual scroll)", () => {
+			// With 100 items
+			const range100 = calculateVisibleRangeWithOverscan({
+				scrollTop: 0,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 100,
+				overscan: 3,
+			});
+
+			// With 1000 items
+			const range1000 = calculateVisibleRangeWithOverscan({
+				scrollTop: 0,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 1000,
+				overscan: 3,
+			});
+
+			// Same number of rendered items (limited by container height + overscan)
+			expect(range100.renderCount).toBe(range1000.renderCount);
+		});
+
+		it("should maintain constant render count at different scroll positions", () => {
+			const scrollPositions = [0, 1000, 5000, 10000, 39000];
+			const renderCounts: number[] = [];
+
+			for (const scrollTop of scrollPositions) {
+				const range = calculateVisibleRangeWithOverscan({
+					scrollTop,
+					itemHeight: 40,
+					containerHeight: 600,
+					totalItems: 1000,
+					overscan: 3,
+				});
+				renderCounts.push(range.renderCount);
+			}
+
+			// All render counts should be nearly the same
+			// Allows up to 3 items difference due to boundary conditions
+			// (e.g., partial items at scroll boundaries, end-of-list clamping)
+			const maxCount = Math.max(...renderCounts);
+			const minCount = Math.min(...renderCounts);
+			expect(maxCount - minCount).toBeLessThanOrEqual(3);
+		});
+
+		it("should render less than 2x visible items even with overscan", () => {
+			const range = calculateVisibleRangeWithOverscan({
+				scrollTop: 500,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 1000,
+				overscan: 3,
+			});
+
+			// visibleCount ≈ 15 (600/40), renderCount should be < 30
+			expect(range.renderCount).toBeLessThan(range.visibleCount * 2);
+		});
+
+		it("should not exceed 30 rendered items for typical viewport", () => {
+			// Typical case: 600px container, 40px items, 3 overscan
+			const range = calculateVisibleRangeWithOverscan({
+				scrollTop: 2000,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 1000,
+				overscan: 3,
+			});
+
+			// 15 visible + 6 overscan = 21, should never exceed 30
+			expect(range.renderCount).toBeLessThanOrEqual(30);
+		});
+	});
+
+	describe("Combined AC2+AC5: Large dataset handling", () => {
+		it("should handle 10000 items efficiently", () => {
+			const start = performance.now();
+
+			const scroller = new VirtualScroller({
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 10000,
+				overscan: 3,
+			});
+
+			// Multiple operations
+			scroller.getVisibleRange(0);
+			scroller.getVisibleRange(100000);
+			scroller.getVisibleRange(200000);
+			scroller.getVisibleRange(396000);
+
+			const elapsed = performance.now() - start;
+
+			expect(elapsed).toBeLessThan(5); // All operations under 5ms
+			expect(scroller.getTotalHeight()).toBe(400000);
+		});
+
+		it("should provide O(1) visible range calculation regardless of total items", () => {
+			const itemCounts = [100, 1000, 10000, 100000];
+			const times: number[] = [];
+
+			for (const totalItems of itemCounts) {
+				const start = performance.now();
+
+				for (let i = 0; i < 1000; i++) {
+					calculateVisibleRangeWithOverscan({
+						scrollTop: Math.random() * totalItems * 40,
+						itemHeight: 40,
+						containerHeight: 600,
+						totalItems,
+						overscan: 3,
+					});
+				}
+
+				times.push(performance.now() - start);
+			}
+
+			// Time should be roughly constant regardless of item count
+			// All should complete 1000 calculations in similar time
+			const maxTime = Math.max(...times);
+			const minTime = Math.min(...times);
+
+			// Max time should not be more than 3x min time (accounting for variance)
+			expect(maxTime / minTime).toBeLessThan(3);
+		});
+	});
+});

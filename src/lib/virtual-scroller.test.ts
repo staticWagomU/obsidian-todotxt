@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { VirtualScroller, type VirtualScrollerConfig } from "./virtual-scroller";
+import { VirtualScroller, calculateVisibleRange, type VirtualScrollerConfig } from "./virtual-scroller";
 
 describe("VirtualScroller", () => {
 	describe("constructor", () => {
@@ -153,9 +153,9 @@ describe("VirtualScroller", () => {
 				containerHeight: 400,
 				totalItems: 100,
 			});
-			
+
 			scroller.updateConfig({ totalItems: 200 });
-			
+
 			expect(scroller.getConfig().totalItems).toBe(200);
 		});
 
@@ -165,10 +165,145 @@ describe("VirtualScroller", () => {
 				containerHeight: 400,
 				totalItems: 100,
 			});
-			
+
 			scroller.updateConfig({ containerHeight: 600 });
-			
+
 			expect(scroller.getConfig().containerHeight).toBe(600);
 		});
+	});
+});
+
+describe("calculateVisibleRange", () => {
+	it("should calculate range from scroll position at top", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 0,
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 100,
+		});
+
+		// 400 / 40 = 10 visible items
+		expect(range.startIndex).toBe(0);
+		expect(range.endIndex).toBe(9);
+		expect(range.visibleCount).toBe(10);
+	});
+
+	it("should calculate range from scroll position in middle", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 400,
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 100,
+		});
+
+		// scrollTop 400 / itemHeight 40 = index 10
+		expect(range.startIndex).toBe(10);
+		expect(range.endIndex).toBe(19);
+		expect(range.visibleCount).toBe(10);
+	});
+
+	it("should handle scroll position at end of list", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 3800, // Near end: 3800/40 = 95
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 100,
+		});
+
+		// Start at index 95, but only 5 items remain (95-99)
+		expect(range.startIndex).toBe(95);
+		expect(range.endIndex).toBe(99);
+		expect(range.visibleCount).toBe(5);
+	});
+
+	it("should handle partial scroll position (not aligned to item)", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 50, // Partial: 50/40 = 1.25
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 100,
+		});
+
+		// Floor(50/40) = 1, visible from index 1
+		expect(range.startIndex).toBe(1);
+		// Ceil(400/40) = 10, so 10+1 = 11 items might be visible
+		expect(range.endIndex).toBe(11);
+	});
+
+	it("should handle negative scroll position (clamp to 0)", () => {
+		const range = calculateVisibleRange({
+			scrollTop: -100,
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 100,
+		});
+
+		expect(range.startIndex).toBe(0);
+		expect(range.endIndex).toBe(9);
+	});
+
+	it("should handle scroll position beyond list end", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 5000, // Beyond end
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 100,
+		});
+
+		// Should clamp to last possible visible items
+		expect(range.startIndex).toBeLessThanOrEqual(99);
+		expect(range.endIndex).toBe(99);
+	});
+
+	it("should handle single item list", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 0,
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 1,
+		});
+
+		expect(range.startIndex).toBe(0);
+		expect(range.endIndex).toBe(0);
+		expect(range.visibleCount).toBe(1);
+	});
+
+	it("should handle empty list", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 0,
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 0,
+		});
+
+		expect(range.startIndex).toBe(0);
+		expect(range.endIndex).toBe(-1);
+		expect(range.visibleCount).toBe(0);
+	});
+
+	it("should handle very small container (fewer items than itemHeight)", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 0,
+			itemHeight: 40,
+			containerHeight: 30, // Less than one item
+			totalItems: 100,
+		});
+
+		// At least 1 item should be visible
+		expect(range.startIndex).toBe(0);
+		expect(range.endIndex).toBe(0);
+		expect(range.visibleCount).toBe(1);
+	});
+
+	it("should calculate correct offset for start position", () => {
+		const range = calculateVisibleRange({
+			scrollTop: 200,
+			itemHeight: 40,
+			containerHeight: 400,
+			totalItems: 100,
+		});
+
+		// startIndex is 5, offset should be 5 * 40 = 200
+		expect(range.offsetTop).toBe(200);
 	});
 });

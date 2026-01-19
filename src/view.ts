@@ -6,7 +6,7 @@ import { EditTaskModal } from "./ui/EditTaskModal";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./lib/handlers";
-import { renderTaskList, type DefaultFilterSettings } from "./lib/rendering";
+import { renderTaskList, type DefaultFilterSettings, type FilterState } from "./lib/rendering";
 import { InlineEditState } from "./lib/inline-edit";
 import { UndoRedoHistory, createSnapshot } from "./lib/undo-redo";
 import type TodotxtPlugin from "./main";
@@ -97,7 +97,31 @@ export class TodotxtView extends TextFileView {
 		return {
 			sort: sortMapping[settings.defaultSortOrder] || "default",
 			group: settings.defaultGrouping,
+			savedFilters: settings.savedFilters,
+			onApplyPreset: (filterState) => this.applyPresetFilterState(filterState),
 		};
+	}
+
+	/**
+	 * Apply a preset filter state to the view
+	 * Updates all filter controls and re-renders
+	 */
+	private applyPresetFilterState(filterState: FilterState): void {
+		// Update filter controls in DOM before re-render
+		const priorityFilter = this.contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
+		const searchBox = this.contentEl.querySelector("input.search-box") as HTMLInputElement | null;
+		const groupSelector = this.contentEl.querySelector("select.group-selector") as HTMLSelectElement | null;
+		const sortSelector = this.contentEl.querySelector("select.sort-selector") as HTMLSelectElement | null;
+		const statusFilter = this.contentEl.querySelector("select.status-filter") as HTMLSelectElement | null;
+
+		if (priorityFilter) priorityFilter.value = filterState.priority;
+		if (searchBox) searchBox.value = filterState.search;
+		if (groupSelector) groupSelector.value = filterState.group;
+		if (sortSelector) sortSelector.value = filterState.sort;
+		if (statusFilter) statusFilter.value = filterState.status;
+
+		// Re-render task list with new filter state
+		this.renderTaskList();
 	}
 
 	/**

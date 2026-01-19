@@ -7,6 +7,7 @@ import { groupByProject, groupByContext } from "./group";
 import { sortTodos } from "./sort";
 import { extractInternalLinks } from "./internallink";
 import { extractExternalLinks } from "./externallink";
+import type { FilterPreset } from "./filter-preset";
 
 /**
  * Remove projects (+project), contexts (@context), and date tags (due:, t:) from description
@@ -113,6 +114,8 @@ export function renderRecurrenceIcon(todo: Todo): HTMLElement | null {
 export interface DefaultFilterSettings {
 	sort?: string;
 	group?: string;
+	savedFilters?: FilterPreset[];
+	onApplyPreset?: (filterState: FilterState) => void;
 }
 
 /**
@@ -351,6 +354,13 @@ function renderControlBar(
 
 	// Render sort selector
 	renderSortSelector(row1, filterState.sort, onFilterChange);
+
+	// Render filter preset dropdown
+	renderFilterPresetDropdown(
+		row1,
+		defaultSettings?.savedFilters || [],
+		defaultSettings?.onApplyPreset,
+	);
 
 	// Render archive button if onArchive is provided
 	if (onArchive) {
@@ -650,6 +660,46 @@ function renderSortSelector(
 
 	// Add change event listener
 	sortSelector.addEventListener("change", onChange);
+}
+
+/**
+ * Render filter preset dropdown
+ */
+function renderFilterPresetDropdown(
+	container: HTMLElement,
+	presets: FilterPreset[],
+	onApply?: (filterState: FilterState) => void,
+): void {
+	const presetDropdown = container.createEl("select");
+	presetDropdown.classList.add("filter-preset-dropdown");
+	presetDropdown.setAttribute("aria-label", "フィルタープリセット");
+
+	// Placeholder option
+	const placeholderOption = presetDropdown.createEl("option");
+	placeholderOption.value = "";
+	if (presets.length === 0) {
+		placeholderOption.textContent = "保存済みなし";
+	} else {
+		placeholderOption.textContent = "プリセット選択...";
+	}
+
+	// Add preset options
+	for (const preset of presets) {
+		const option = presetDropdown.createEl("option");
+		option.value = preset.id;
+		option.textContent = preset.name;
+	}
+
+	// Add change event listener
+	presetDropdown.addEventListener("change", () => {
+		const selectedId = presetDropdown.value;
+		if (!selectedId || !onApply) return;
+
+		const selectedPreset = presets.find(p => p.id === selectedId);
+		if (selectedPreset) {
+			onApply(selectedPreset.filterState);
+		}
+	});
 }
 
 /**

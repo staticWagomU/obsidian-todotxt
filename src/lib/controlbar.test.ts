@@ -4,7 +4,8 @@ import { TodotxtView } from "../view";
 import type { FilterState } from "../lib/rendering";
 import { DEFAULT_FILTER_STATE } from "../lib/rendering";
 import type TodotxtPlugin from "../main";
-import { DEFAULT_SETTINGS } from "../settings";
+import { DEFAULT_SETTINGS, type TodotxtPluginSettings } from "../settings";
+import type { FilterPreset } from "../lib/filter-preset";
 
 // Create mock plugin for tests
 function createMockPlugin(): TodotxtPlugin {
@@ -152,13 +153,14 @@ describe("FilterState type", () => {
 		const row = children[0] as HTMLElement;
 		const rowChildren = Array.from(row?.children || []);
 
-		expect(rowChildren.length).toBe(6); // status, priority, group, sort, archive, batch-selection
+		expect(rowChildren.length).toBe(7); // status, priority, group, sort, preset, archive, batch-selection
 		expect(rowChildren[0]?.classList.contains("status-filter")).toBe(true);
 		expect(rowChildren[1]?.classList.contains("priority-filter")).toBe(true);
 		expect(rowChildren[2]?.classList.contains("group-selector")).toBe(true);
 		expect(rowChildren[3]?.classList.contains("sort-selector")).toBe(true);
-		expect(rowChildren[4]?.classList.contains("archive-button")).toBe(true);
-		expect(rowChildren[5]?.classList.contains("batch-selection-button")).toBe(true);
+		expect(rowChildren[4]?.classList.contains("filter-preset-dropdown")).toBe(true);
+		expect(rowChildren[5]?.classList.contains("archive-button")).toBe(true);
+		expect(rowChildren[6]?.classList.contains("batch-selection-button")).toBe(true);
 	});
 });
 
@@ -882,3 +884,147 @@ describe("integration: CRUD operations with filter state", () => {
 	});
 });
 
+// Helper to create mock plugin with presets
+function createMockPluginWithPresets(presets: FilterPreset[]): TodotxtPlugin {
+	return {
+		settings: {
+			...DEFAULT_SETTINGS,
+			savedFilters: presets,
+		} as TodotxtPluginSettings,
+		saveSettings: vi.fn(),
+	} as unknown as TodotxtPlugin;
+}
+
+// Helper to create a filter preset
+function createTestPreset(id: string, name: string, filterState: Partial<FilterState>): FilterPreset {
+	return {
+		id,
+		name,
+		filterState: {
+			priority: "all",
+			search: "",
+			group: "none",
+			sort: "default",
+			status: "all",
+			...filterState,
+		},
+		createdAt: Date.now(),
+		updatedAt: Date.now(),
+	};
+}
+
+describe("filter preset dropdown", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+	let mockPlugin: TodotxtPlugin;
+
+	beforeEach(() => {
+		mockLeaf = { view: null };
+	});
+
+	it("フィルタープリセットドロップダウンが表示される", () => {
+		// Setup
+		mockPlugin = createMockPluginWithPresets([]);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, mockPlugin);
+		view.setViewData("Task 1", false);
+
+		// Verify: Filter preset dropdown exists
+		const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown");
+		expect(dropdown).not.toBeNull();
+	});
+
+	it("プリセットがない場合は「保存済みなし」オプションのみ表示される", () => {
+		// Setup
+		mockPlugin = createMockPluginWithPresets([]);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, mockPlugin);
+		view.setViewData("Task 1", false);
+
+		// Verify: Dropdown has only the placeholder option
+		const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+		expect(dropdown.options.length).toBe(1);
+		expect(dropdown.options[0]?.value).toBe("");
+		expect(dropdown.options[0]?.textContent).toContain("保存済みなし");
+	});
+
+	it("保存されたプリセットがドロップダウンオプションとして表示される", () => {
+		// Setup
+		const presets = [
+			createTestPreset("preset-1", "Work Filter", { priority: "A" }),
+			createTestPreset("preset-2", "Home Tasks", { search: "home" }),
+		];
+		mockPlugin = createMockPluginWithPresets(presets);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, mockPlugin);
+		view.setViewData("Task 1", false);
+
+		// Verify: Dropdown has presets as options
+		const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+		expect(dropdown.options.length).toBe(3); // placeholder + 2 presets
+
+		const optionValues = Array.from(dropdown.options).map(opt => opt.value);
+		expect(optionValues).toContain("preset-1");
+		expect(optionValues).toContain("preset-2");
+
+		const optionLabels = Array.from(dropdown.options).map(opt => opt.textContent);
+		expect(optionLabels).toContain("Work Filter");
+		expect(optionLabels).toContain("Home Tasks");
+	});
+
+	it("プリセットを選択するとフィルター状態が適用される", () => {
+		// Setup
+		const presets = [
+			createTestPreset("preset-1", "Priority A", { priority: "A", search: "", group: "none", sort: "default", status: "all" }),
+		];
+		mockPlugin = createMockPluginWithPresets(presets);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, mockPlugin);
+		view.setViewData("(A) Task A\n(B) Task B\nTask C", false);
+
+		// Execute: Select the preset
+		const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+		dropdown.value = "preset-1";
+		dropdown.dispatchEvent(new Event("change"));
+
+		// Verify: Priority filter is applied
+		const priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		expect(priorityFilter.value).toBe("A");
+
+		// Verify: Only priority A tasks are visible
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+		expect(liElements.length).toBe(1);
+		expect(liElements[0]?.textContent).toContain("Task A");
+	});
+
+	it("プリセット適用後のフィルター状態が保持される", () => {
+		// Setup
+		const presets = [
+			createTestPreset("preset-1", "Complex Filter", {
+				priority: "A",
+				search: "work",
+				group: "project",
+				sort: "completion",
+				status: "active",
+			}),
+		];
+		mockPlugin = createMockPluginWithPresets(presets);
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, mockPlugin);
+		view.setViewData("(A) Task work +Project", false);
+
+		// Execute: Select the preset
+		const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+		dropdown.value = "preset-1";
+		dropdown.dispatchEvent(new Event("change"));
+
+		// Verify: All filter controls have the preset values
+		const priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+		const searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+		const groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+		const sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+		const statusFilter = view.contentEl.querySelector("select.status-filter") as HTMLSelectElement;
+
+		expect(priorityFilter.value).toBe("A");
+		expect(searchBox.value).toBe("work");
+		expect(groupSelector.value).toBe("project");
+		expect(sortSelector.value).toBe("completion");
+		expect(statusFilter.value).toBe("active");
+	});
+});

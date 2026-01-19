@@ -235,6 +235,47 @@ actionManagement.trackingの計算は以下のルールに従う：
    - Achievable: ✗ スコープ未定義
    - Time-bound: ✗ 期限なし
 
+### AC検証チェックリスト (Sprint 66 策定)
+
+Sprint Review時のAC（Acceptance Criteria）検証を効率化・標準化するための手順。
+
+**検証手順:**
+
+1. **vitest検証AC（自動検証）**
+   - `pnpm vitest run` でテストスイート実行
+   - 関連テストファイルが存在し、全テストがパスしていることを確認
+   - 例: AC「due:今日以前のタスクがフォーカスビューに表示される」→ `focus-filter.test.ts` のAC1テスト群
+
+2. **manual検証AC（手動検証）**
+   - Obsidian開発環境でプラグインをロード
+   - 検証シナリオを実行（例: コマンドパレットで機能呼び出し）
+   - 期待結果と実際の動作を比較
+   - スクリーンショット/録画は任意だが、複雑なUIの場合推奨
+
+3. **検証結果の記録**
+   - scrum.ts completedSprints に verification: "passed" または "failed" を記録
+   - notes に AC達成状況のサマリーを記載
+   - 失敗時は impediments に詳細を追記
+
+**検証チェックリストテンプレート:**
+
+```
+AC検証チェックリスト - Sprint XX (PBI-XXX)
+-------------------------------------------
+[ ] AC1: [説明] - vitest/manual - pass/fail
+[ ] AC2: [説明] - vitest/manual - pass/fail
+[ ] AC3: [説明] - vitest/manual - pass/fail
+...
+-------------------------------------------
+DoD: Tests [ ] Lint [ ] Types [ ] Build [ ]
+Total: X/X AC passed
+```
+
+**検証の優先順位:**
+- vitest検証は自動化されているため即座に確認
+- manual検証は機能の重要度に応じて詳細度を調整
+- エッジケースよりもハッピーパスを優先
+
 ## References
 
 - [todo.txt format](https://github.com/todotxt/todo.txt)

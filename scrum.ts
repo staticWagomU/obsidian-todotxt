@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 64, pbi: "", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  sprint: { number: 64, pbi: "PBI-063", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 8, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -90,14 +90,15 @@ export const productBacklog: ProductBacklogItem[] = [
       benefit: "大規模なtodo.txtファイルでもストレスなく使用できる",
     },
     acceptanceCriteria: [
-      { criterion: "仮想スクロールにより表示範囲のみDOMをレンダリングする", verification: "pnpm vitest run: 仮想スクロール実装テスト" },
-      { criterion: "1000件のタスクでも初期表示が500ms以内に完了する", verification: "パフォーマンステスト: 1000件タスク読み込み計測" },
-      { criterion: "スクロール時のFPSが50fps以上を維持する", verification: "パフォーマンステスト: スクロールFPS計測" },
-      { criterion: "フィルタリング・ソート処理がUIをブロックしない", verification: "pnpm vitest run: 非同期処理テスト" },
-      { criterion: "メモリ使用量が100件と1000件で2倍以内の増加に抑える", verification: "パフォーマンステスト: メモリ使用量比較" },
+      { criterion: "仮想スクロールにより表示範囲のみDOMをレンダリングする", verification: "pnpm vitest run: VirtualScrollerテスト（DOMノード数検証）" },
+      { criterion: "1000件のタスクでも初期表示が500ms以内に完了する", verification: "pnpm vitest run: 1000件初期表示パフォーマンステスト" },
+      { criterion: "スクロール時のFPSが50fps以上を維持する", verification: "手動テスト + pnpm vitest run: スクロールハンドラ実行時間テスト" },
+      { criterion: "フィルタリング・ソート処理がUIをブロックしない", verification: "pnpm vitest run: 非同期フィルタリングテスト" },
+      { criterion: "メモリ使用量が100件と1000件で2倍以内の増加に抑える", verification: "pnpm vitest run: DOMノード数比較テスト" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: { functions: 12, estimatedTests: 45, externalDependencies: 0, score: "HIGH", subtasks: 8 },
   },
 ];
 
@@ -112,13 +113,23 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 64: 次Sprint
+// Current Sprint - Sprint 64: PBI-063 パフォーマンス最適化（仮想スクロール）
 export const currentSprint = {
   sprint: 64,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  pbi: "PBI-063",
+  goal: "大量タスク（1000件以上）でもストレスなく操作できるパフォーマンス最適化を実装する",
+  status: "in_progress" as SprintStatus,
+  // P0 Action適用: 各Subtask完了コミット + scrum.ts更新を1コミットにまとめる
+  subtasks: [
+    { test: "VirtualScroller基本クラステスト（visibleRange計算）", implementation: "VirtualScrollerクラス実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1"] },
+    { test: "表示範囲計算テスト（スクロール位置→表示インデックス）", implementation: "calculateVisibleRange関数実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1"] },
+    { test: "オーバースキャン（バッファ）ロジックテスト", implementation: "overscan設定とバッファDOM管理", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC5"] },
+    { test: "非同期フィルタリングテスト", implementation: "filterTodosAsync関数実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC4"] },
+    { test: "パフォーマンス計測ユーティリティテスト", implementation: "PerformanceMetrics計測関数群", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC2", "AC3"] },
+    { test: "1000件初期表示パフォーマンステスト（AC2検証）", implementation: "統合パフォーマンステスト", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC2", "AC5"] },
+    { test: "rendering.ts仮想スクロール統合リファクタリング", implementation: "renderTaskListを仮想スクロール対応", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC2", "AC3", "AC4", "AC5"] },
+    { test: "E2E統合テスト（AC1-5網羅）", implementation: "view.tsとの統合、全AC検証", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC2", "AC3", "AC4", "AC5"] },
+  ] as (Subtask & { ac: string[] })[],
 };
 // Sprint 63: PBI-061完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1140t(+64t), Phase 18で2番目テスト増加, see git history
 // Sprint 62: PBI-060完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1076t(+68t), 史上最大テスト増加, see git history

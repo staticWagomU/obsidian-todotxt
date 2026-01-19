@@ -147,6 +147,72 @@ describe("context-menu-handlers - 基本アクション", () => {
 	});
 });
 
+describe("handlePriorityChange - 優先度変更 (AC3)", () => {
+	describe("handlePriorityChange関数", () => {
+		it("handlePriorityChange関数が存在する", async () => {
+			const { handlePriorityChange } = await import("./context-menu-handlers");
+			expect(handlePriorityChange).toBeDefined();
+			expect(typeof handlePriorityChange).toBe("function");
+		});
+
+		it("handlePriorityChangeで優先度Aを設定できる", async () => {
+			const { handlePriorityChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handlePriorityChange(content, 0, "A");
+
+			expect(result).toContain("(A)");
+		});
+
+		it("handlePriorityChangeで優先度Bを設定できる", async () => {
+			const { handlePriorityChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handlePriorityChange(content, 0, "B");
+
+			expect(result).toContain("(B)");
+		});
+
+		it("handlePriorityChangeで優先度Zを設定できる", async () => {
+			const { handlePriorityChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handlePriorityChange(content, 0, "Z");
+
+			expect(result).toContain("(Z)");
+		});
+
+		it("handlePriorityChangeで優先度を削除できる", async () => {
+			const { handlePriorityChange } = await import("./context-menu-handlers");
+
+			const content = "(A) 2026-01-19 Test task";
+			const result = handlePriorityChange(content, 0, undefined);
+
+			expect(result).not.toContain("(A)");
+			expect(result).not.toContain("(B)");
+		});
+
+		it("handlePriorityChangeで既存の優先度を別の優先度に変更できる", async () => {
+			const { handlePriorityChange } = await import("./context-menu-handlers");
+
+			const content = "(A) 2026-01-19 Test task";
+			const result = handlePriorityChange(content, 0, "C");
+
+			expect(result).not.toContain("(A)");
+			expect(result).toContain("(C)");
+		});
+
+		it("handlePriorityChangeが無効なインデックスの場合は元のコンテンツを返す", async () => {
+			const { handlePriorityChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handlePriorityChange(content, 10, "A");
+
+			expect(result).toBe(content);
+		});
+	});
+});
+
 describe("duplicateTask - タスク複製関数", () => {
 	describe("duplicateTask関数", () => {
 		it("duplicateTask関数が存在する", async () => {

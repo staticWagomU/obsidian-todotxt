@@ -2,6 +2,7 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import type TodotxtPlugin from "./main";
 import type { RetryConfig } from "./ai/retry";
 import { KEYBOARD_SHORTCUTS, formatShortcutKey } from "./lib/shortcuts";
+import type { FilterPreset } from "./lib/filter-preset";
 
 export type SortOrder = "completion" | "priority" | "date" | "alphabetical";
 export type Grouping = "none" | "project" | "context";
@@ -20,6 +21,8 @@ export interface TodotxtPluginSettings {
 	showCompletedTasks: boolean;
 	todotxtFilePaths: string[];
 	openRouter: OpenRouterSettings;
+	/** Saved filter presets */
+	savedFilters: FilterPreset[];
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
@@ -38,6 +41,7 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 			initialDelayMs: 1000,
 		},
 	},
+	savedFilters: [],
 };
 
 export class TodotxtSettingTab extends PluginSettingTab {

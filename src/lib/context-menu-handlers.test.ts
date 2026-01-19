@@ -213,6 +213,100 @@ describe("handlePriorityChange - 優先度変更 (AC3)", () => {
 	});
 });
 
+describe("handleProjectChange - プロジェクト変更 (AC4)", () => {
+	describe("handleProjectChange関数", () => {
+		it("handleProjectChange関数が存在する", async () => {
+			const { handleProjectChange } = await import("./context-menu-handlers");
+			expect(handleProjectChange).toBeDefined();
+			expect(typeof handleProjectChange).toBe("function");
+		});
+
+		it("handleProjectChangeでプロジェクトを追加できる", async () => {
+			const { handleProjectChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handleProjectChange(content, 0, "work", "add");
+
+			expect(result).toContain("+work");
+		});
+
+		it("handleProjectChangeでプロジェクトを削除できる", async () => {
+			const { handleProjectChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task +work";
+			const result = handleProjectChange(content, 0, "work", "remove");
+
+			expect(result).not.toContain("+work");
+		});
+
+		it("handleProjectChangeで複数のプロジェクトから1つを削除できる", async () => {
+			const { handleProjectChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task +work +personal";
+			const result = handleProjectChange(content, 0, "work", "remove");
+
+			expect(result).not.toContain("+work");
+			expect(result).toContain("+personal");
+		});
+
+		it("handleProjectChangeが無効なインデックスの場合は元のコンテンツを返す", async () => {
+			const { handleProjectChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handleProjectChange(content, 10, "work", "add");
+
+			expect(result).toBe(content);
+		});
+	});
+});
+
+describe("handleContextChange - コンテキスト変更 (AC4)", () => {
+	describe("handleContextChange関数", () => {
+		it("handleContextChange関数が存在する", async () => {
+			const { handleContextChange } = await import("./context-menu-handlers");
+			expect(handleContextChange).toBeDefined();
+			expect(typeof handleContextChange).toBe("function");
+		});
+
+		it("handleContextChangeでコンテキストを追加できる", async () => {
+			const { handleContextChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handleContextChange(content, 0, "home", "add");
+
+			expect(result).toContain("@home");
+		});
+
+		it("handleContextChangeでコンテキストを削除できる", async () => {
+			const { handleContextChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task @home";
+			const result = handleContextChange(content, 0, "home", "remove");
+
+			expect(result).not.toContain("@home");
+		});
+
+		it("handleContextChangeで複数のコンテキストから1つを削除できる", async () => {
+			const { handleContextChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task @home @office";
+			const result = handleContextChange(content, 0, "home", "remove");
+
+			expect(result).not.toContain("@home");
+			expect(result).toContain("@office");
+		});
+
+		it("handleContextChangeが無効なインデックスの場合は元のコンテンツを返す", async () => {
+			const { handleContextChange } = await import("./context-menu-handlers");
+
+			const content = "2026-01-19 Test task";
+			const result = handleContextChange(content, 10, "home", "add");
+
+			expect(result).toBe(content);
+		});
+	});
+});
+
 describe("duplicateTask - タスク複製関数", () => {
 	describe("duplicateTask関数", () => {
 		it("duplicateTask関数が存在する", async () => {

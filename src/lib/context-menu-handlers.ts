@@ -76,3 +76,83 @@ export function handlePriorityChange(
 	const updatedTodo = editTask(todo, { priority });
 	return updateTaskAtLine(content, index, updatedTodo);
 }
+
+/**
+ * プロジェクト変更アクションハンドラー
+ * @param content 現在のファイル内容
+ * @param index 変更するタスクのインデックス
+ * @param project プロジェクト名（+なし）
+ * @param action "add" または "remove"
+ * @returns 更新されたファイル内容
+ * Sprint 63 - PBI-061: AC4対応
+ */
+export function handleProjectChange(
+	content: string,
+	index: number,
+	project: string,
+	action: "add" | "remove",
+): string {
+	const todos = parseTodoTxt(content);
+
+	if (index < 0 || index >= todos.length) {
+		return content;
+	}
+
+	const todo = todos[index];
+	if (!todo) {
+		return content;
+	}
+
+	let newDescription = todo.description;
+
+	if (action === "add") {
+		// Add project to description
+		newDescription = `${newDescription} +${project}`;
+	} else {
+		// Remove project from description
+		newDescription = newDescription.replace(new RegExp(`\\s*\\+${project}(?=\\s|$)`, "g"), "");
+	}
+
+	const updatedTodo = editTask(todo, { description: newDescription.trim() });
+	return updateTaskAtLine(content, index, updatedTodo);
+}
+
+/**
+ * コンテキスト変更アクションハンドラー
+ * @param content 現在のファイル内容
+ * @param index 変更するタスクのインデックス
+ * @param context コンテキスト名（@なし）
+ * @param action "add" または "remove"
+ * @returns 更新されたファイル内容
+ * Sprint 63 - PBI-061: AC4対応
+ */
+export function handleContextChange(
+	content: string,
+	index: number,
+	context: string,
+	action: "add" | "remove",
+): string {
+	const todos = parseTodoTxt(content);
+
+	if (index < 0 || index >= todos.length) {
+		return content;
+	}
+
+	const todo = todos[index];
+	if (!todo) {
+		return content;
+	}
+
+	let newDescription = todo.description;
+
+	if (action === "add") {
+		// Add context to description
+		newDescription = `${newDescription} @${context}`;
+	} else {
+		// Remove context from description
+		newDescription = newDescription.replace(new RegExp(`\\s*@${context}(?=\\s|$)`, "g"), "");
+	}
+
+	const updatedTodo = editTask(todo, { description: newDescription.trim() });
+	return updateTaskAtLine(content, index, updatedTodo);
+}

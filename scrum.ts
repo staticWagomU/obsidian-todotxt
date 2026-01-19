@@ -80,7 +80,13 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "カスタマイズした設定がObsidian設定に永続化される", verification: "pnpm vitest run: 設定永続化テスト" },
     ],
     dependencies: ["PBI-056"],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: { functions: 8, estimatedTests: 35, externalDependencies: 0, score: "MEDIUM", subtasks: 7 },
+    refactorChecklist: [
+      "ShortcutDefinitionの拡張: id追加、customKey対応",
+      "KeyboardActionHandlerのカスタムキー対応",
+      "設定画面UIのショートカットカスタマイズコンポーネント分離",
+    ],
   },
   {
     id: "PBI-063",

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 58, pbi: "PBI-064", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
+  sprint: { number: 59, pbi: "PBI-064", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 1, impediments: 1 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-064", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -76,7 +76,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "空文字での追加は無視される", verification: "pnpm vitest run: バリデーションテスト" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "in_progress" as PBIStatus,
     complexity: {
       functions: 4,
       estimatedTests: 10,
@@ -206,96 +206,32 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 58
+// Current Sprint - Sprint 59
 export const currentSprint = {
-  sprint: 58,
+  sprint: 59,
   pbi: "PBI-064",
-  goal: "タスクリスト上部にインライン入力欄を実装し、Enterキーで素早くタスク追加できるようにする",
-  status: "in_progress" as SprintStatus,
+  goal: "IMP-058-1解決: view.tsにonInlineAddコールバック統合し、インライン入力欄を実際に表示させる",
+  status: "not_started" as SprintStatus,
   subtasks: [
-    // Feature Subtasks (6) - インライン入力欄機能実装
     {
-      test: "インライン入力欄がコントロールバー下に表示されることを検証",
-      implementation: "renderInlineTaskInput関数をrendering.tsに追加",
+      test: "view.tsでonInlineAddコールバックをrenderTaskListに渡し、インライン入力欄が実際に表示されることを検証",
+      implementation: "view.ts renderTaskList呼び出し時に11番目のパラメータとしてonInlineAdd: (description) => getAddHandler()(description)を追加",
       type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add failing tests for inline task input UI display" },
-        { phase: "green" as CommitPhase, message: "feat: implement renderInlineTaskInput function" },
-      ],
-    },
-    {
-      test: "Enterキー押下でタスクが追加されることを検証",
-      implementation: "keydownイベントハンドラ実装、onAddTaskコールバック呼び出し",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add failing tests for Enter key task addition" },
-        { phase: "green" as CommitPhase, message: "feat: implement Enter key handler for inline task input" },
-      ],
-    },
-    {
-      test: "追加されたタスクに今日の日付が作成日として設定されることを検証",
-      implementation: "既存getAddHandler連携、createTask関数のcreationDate自動設定確認",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "green" as CommitPhase, message: "test: verify getAddHandler sets creation date automatically" },
-      ],
-    },
-    {
-      test: "タスク追加後に入力欄がクリアされることを検証",
-      implementation: "追加成功後にinput.value = ''実行",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add failing test for input field clearing after task add" },
-        { phase: "green" as CommitPhase, message: "feat: clear input field after task addition" },
-      ],
-    },
-    {
-      test: "空文字入力でEnterを押した場合にタスクが追加されないことを検証",
-      implementation: "trim()で空文字判定、空の場合は早期return",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "red" as CommitPhase, message: "test: add failing tests for empty string validation" },
-        { phase: "green" as CommitPhase, message: "feat: add empty string validation for inline task input" },
-      ],
-    },
-    {
-      test: "rendering.tsへのインライン入力欄統合の構造改善",
-      implementation: "renderControlBar後にrenderInlineTaskInputを呼び出し、適切な位置に配置",
-      type: "structural" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [
-        { phase: "refactor" as CommitPhase, message: "refactor: integrate renderInlineTaskInput into renderTaskList" },
-      ],
-    },
-    // Process Subtasks (2) - P0 Actions実行
-    {
-      test: "トラッキング精度改善: commit数とscrum.ts記録の整合性を確認",
-      implementation: "10 commits確認済み、scrum.ts subtask records更新完了",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [],
-    },
-    {
-      test: "P2超過Actions棚卸し: 5-10項目抽出・廃棄判定実施",
-      implementation: "テストカバレッジ可視化ツール廃棄、Phase18完了扱い、rate 68%→72%達成",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
+      status: "pending" as SubtaskStatus,
       commits: [],
     },
   ] as Subtask[],
 };
+// Sprint 58: PBI-064 FAILED - 8 subtasks (6 behavioral + 2 structural), 13 commits, DoD全pass, AC未達成(view.ts統合欠落), 931t(+2), rate 68%→72%, see git history
 // Sprint 57: PBI-057完了 - 7 subtasks (5 behavioral + 2 structural), 10 commits, DoD全pass, 929t(+50), Phase 17完遂, see git history
 // Sprint 56: PBI-056完了 - 8 subtasks (6 behavioral + 2 structural), 6 commits, DoD全pass, Phase 17開始, see git history
 // Sprint 49-55: see git history
 
 // Impediments
 export const impediments = {
-  active: [] as { id: string; description: string; status: string }[],
+  active: [
+    { id: "IMP-058-1", description: "AC未達成: view.tsでonInlineAddコールバックがrenderTaskListに渡されていない（インライン入力欄が実際には表示されない）", status: "blocking" },
+  ] as { id: string; description: string; status: string }[],
   resolved: [
     "IMP-048-1: DoD Tests失敗: src/view.test.ts AIボタンテキストコンテンツ期待値不一致（既存の失敗） - view.test.ts期待値修正で解決",
     "IMP-048-2: DoD Lint失敗: src/main.ts Promise処理エラー5件（既存のLintエラー） - main.ts Promise処理適正化とAITaskInputDialog型修正で解決",
@@ -321,6 +257,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 55, pbi: "PBI-055", story: "複数タスクAI一括処理", verification: "passed", notes: "837t(+2t),8subtasks,8commits,DoD 5失敗(既存),rate64%,Phase 16完遂" },
   { sprint: 56, pbi: "PBI-056", story: "キーボードショートカット機能", verification: "passed", notes: "879t(+42t),8subtasks,6commits,DoD全pass,Phase 17開始" },
   { sprint: 57, pbi: "PBI-057", story: "高度検索機能", verification: "passed", notes: "929t(+50t),7subtasks,10commits,DoD全pass,AC全達成,Phase 17完遂" },
+  { sprint: 58, pbi: "PBI-064", story: "インライン入力欄でタスク追加", verification: "failed", notes: "931t(+2t),8subtasks,13commits,DoD全pass,AC未達成(view.ts統合欠落),rate68%→72%" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

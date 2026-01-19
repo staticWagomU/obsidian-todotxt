@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import type TodotxtPlugin from "./main";
 import type { RetryConfig } from "./ai/retry";
-import { KEYBOARD_SHORTCUTS, formatShortcutKey } from "./lib/shortcuts";
+import { DEFAULT_SHORTCUTS, formatShortcutKey } from "./lib/shortcuts";
 import type { FilterPreset } from "./lib/filter-preset";
 import type { FilterState } from "./lib/rendering";
 
@@ -241,9 +241,9 @@ export class TodotxtSettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Keyboard shortcuts").setHeading();
 
 		// Group shortcuts by category
-		const navigationShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "navigation");
-		const actionShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "action");
-		const globalShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "global");
+		const navigationShortcuts = DEFAULT_SHORTCUTS.filter(s => s.category === "navigation");
+		const actionShortcuts = DEFAULT_SHORTCUTS.filter(s => s.category === "action");
+		const globalShortcuts = DEFAULT_SHORTCUTS.filter(s => s.category === "global");
 
 		// Navigation shortcuts
 		new Setting(containerEl).setName("ナビゲーション").setHeading();

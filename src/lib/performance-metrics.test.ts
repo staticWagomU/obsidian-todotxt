@@ -1,9 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import {
 	measureRenderTime,
 	measureScrollHandlerTime,
 	createPerformanceMonitor,
-	type PerformanceMetrics,
 } from "./performance-metrics";
 
 /**

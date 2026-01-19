@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_SETTINGS } from "./settings";
 import type { TodotxtPluginSettings } from "./settings";
-import { KEYBOARD_SHORTCUTS } from "./lib/shortcuts";
+import { DEFAULT_SHORTCUTS } from "./lib/shortcuts";
 
 describe("TodotxtSettingTab", () => {
 	describe("file paths setting", () => {
@@ -52,33 +52,33 @@ describe("TodotxtSettingTab", () => {
 
 	describe("keyboard shortcuts section", () => {
 		it("should have shortcut definitions for display", () => {
-			expect(KEYBOARD_SHORTCUTS).toBeDefined();
-			expect(Array.isArray(KEYBOARD_SHORTCUTS)).toBe(true);
+			expect(DEFAULT_SHORTCUTS).toBeDefined();
+			expect(Array.isArray(DEFAULT_SHORTCUTS)).toBe(true);
 		});
 
 		it("should include new task shortcut", () => {
-			const newTaskShortcut = KEYBOARD_SHORTCUTS.find(s => s.key.includes("N"));
+			const newTaskShortcut = DEFAULT_SHORTCUTS.find(s => s.key.includes("N"));
 			expect(newTaskShortcut).toBeDefined();
 			expect(newTaskShortcut?.description).toContain("タスク");
 		});
 
 		it("should include search focus shortcut", () => {
-			const searchShortcut = KEYBOARD_SHORTCUTS.find(s => s.key.includes("F"));
+			const searchShortcut = DEFAULT_SHORTCUTS.find(s => s.key.includes("F"));
 			expect(searchShortcut).toBeDefined();
 			expect(searchShortcut?.description).toContain("検索");
 		});
 
 		it("should include navigation shortcuts", () => {
-			const upShortcut = KEYBOARD_SHORTCUTS.find(s => s.key === "ArrowUp");
-			const downShortcut = KEYBOARD_SHORTCUTS.find(s => s.key === "ArrowDown");
+			const upShortcut = DEFAULT_SHORTCUTS.find(s => s.key === "ArrowUp");
+			const downShortcut = DEFAULT_SHORTCUTS.find(s => s.key === "ArrowDown");
 			expect(upShortcut).toBeDefined();
 			expect(downShortcut).toBeDefined();
 		});
 
 		it("should include action shortcuts", () => {
-			const enterShortcut = KEYBOARD_SHORTCUTS.find(s => s.key === "Enter");
-			const editShortcut = KEYBOARD_SHORTCUTS.find(s => s.key === "E");
-			const deleteShortcut = KEYBOARD_SHORTCUTS.find(s => s.key === "Delete");
+			const enterShortcut = DEFAULT_SHORTCUTS.find(s => s.key === "Enter");
+			const editShortcut = DEFAULT_SHORTCUTS.find(s => s.key === "E");
+			const deleteShortcut = DEFAULT_SHORTCUTS.find(s => s.key === "Delete");
 			expect(enterShortcut).toBeDefined();
 			expect(editShortcut).toBeDefined();
 			expect(deleteShortcut).toBeDefined();

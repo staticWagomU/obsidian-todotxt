@@ -1294,15 +1294,21 @@ describe("filterTodosAsync", () => {
 		const projects = ["+project1", "+project2", "+project3"];
 		const contexts = ["@home", "@work", "@office"];
 
-		return Array.from({ length: count }, (_, i) => ({
-			completed: i % 3 === 0,
-			priority: priorities[i % 4],
-			description: `Task ${i + 1} description`,
-			projects: [projects[i % 3] as string],
-			contexts: [contexts[i % 3] as string],
-			tags: i % 5 === 0 ? { due: "2026-01-15" } : {},
-			raw: `Task ${i + 1}`,
-		}));
+		return Array.from({ length: count }, (_, i): Todo => {
+			const baseTags: Record<string, string> = {};
+			if (i % 5 === 0) {
+				baseTags.due = "2026-01-15";
+			}
+			return {
+				completed: i % 3 === 0,
+				priority: priorities[i % 4],
+				description: `Task ${i + 1} description`,
+				projects: [projects[i % 3] as string],
+				contexts: [contexts[i % 3] as string],
+				tags: baseTags,
+				raw: `Task ${i + 1}`,
+			};
+		});
 	}
 
 	describe("basic async filtering", () => {

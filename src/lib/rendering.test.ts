@@ -670,10 +670,8 @@ describe("renderTaskItemWithContextMenu - ロングプレスでコンテキス�
  * AC5: メモリ使用量が100件と1000件で2倍以内の増加に抑える
  */
 describe("Virtual Scroll E2E Integration (AC1-5)", () => {
-	let container: HTMLElement;
-
 	beforeEach(() => {
-		container = addCreateElHelper(document.createElement("div"));
+		addCreateElHelper(document.createElement("div"));
 	});
 
 	describe("AC1: Virtual scroll module integration", () => {

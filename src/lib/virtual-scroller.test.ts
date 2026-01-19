@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { VirtualScroller, calculateVisibleRange, calculateVisibleRangeWithOverscan, type VirtualScrollerConfig } from "./virtual-scroller";
+import { VirtualScroller, calculateVisibleRange, calculateVisibleRangeWithOverscan } from "./virtual-scroller";
 
 describe("VirtualScroller", () => {
 	describe("constructor", () => {

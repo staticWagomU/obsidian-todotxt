@@ -88,3 +88,14 @@ export class UndoRedoHistory<T> {
 		return this.undoStack.length;
 	}
 }
+
+/**
+ * 現在の状態をスナップショットとして履歴に追加 (AC3)
+ * タスクの追加・編集・削除・完了状態変更時に呼び出す
+ */
+export function createSnapshot(
+	history: UndoRedoHistory<string>,
+	currentData: string,
+): void {
+	history.push(currentData);
+}

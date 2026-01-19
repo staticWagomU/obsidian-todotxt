@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { UndoRedoHistory } from "./undo-redo";
+import { UndoRedoHistory, createSnapshot } from "./undo-redo";
 
 describe("UndoRedoHistory", () => {
 	describe("基本動作", () => {
@@ -128,6 +128,62 @@ describe("UndoRedoHistory", () => {
 			}
 
 			expect(history.getHistoryLength()).toBe(5);
+		});
+	});
+
+	describe("createSnapshot (AC3)", () => {
+		it("タスク追加時にスナップショットが作成される", () => {
+			const history = new UndoRedoHistory<string>();
+			const initialData = "Task 1\nTask 2\n";
+
+			createSnapshot(history, initialData);
+			const afterAddData = "Task 1\nTask 2\nTask 3\n";
+			createSnapshot(history, afterAddData);
+
+			expect(history.getHistoryLength()).toBe(2);
+			expect(history.canUndo()).toBe(true);
+
+			const undoneState = history.undo();
+			expect(undoneState).toBe(initialData);
+		});
+
+		it("タスク編集時にスナップショットが作成される", () => {
+			const history = new UndoRedoHistory<string>();
+			const initialData = "Task 1\n";
+
+			createSnapshot(history, initialData);
+			const afterEditData = "Edited Task 1\n";
+			createSnapshot(history, afterEditData);
+
+			expect(history.getHistoryLength()).toBe(2);
+			const undoneState = history.undo();
+			expect(undoneState).toBe(initialData);
+		});
+
+		it("タスク削除時にスナップショットが作成される", () => {
+			const history = new UndoRedoHistory<string>();
+			const initialData = "Task 1\nTask 2\n";
+
+			createSnapshot(history, initialData);
+			const afterDeleteData = "Task 1\n";
+			createSnapshot(history, afterDeleteData);
+
+			expect(history.getHistoryLength()).toBe(2);
+			const undoneState = history.undo();
+			expect(undoneState).toBe(initialData);
+		});
+
+		it("タスク完了状態変更時にスナップショットが作成される", () => {
+			const history = new UndoRedoHistory<string>();
+			const initialData = "Task 1\n";
+
+			createSnapshot(history, initialData);
+			const afterToggleData = "x 2026-01-19 Task 1\n";
+			createSnapshot(history, afterToggleData);
+
+			expect(history.getHistoryLength()).toBe(2);
+			const undoneState = history.undo();
+			expect(undoneState).toBe(initialData);
 		});
 	});
 });

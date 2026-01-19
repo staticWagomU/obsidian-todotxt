@@ -26,6 +26,8 @@ export interface TodotxtPluginSettings {
 	savedFilters: FilterPreset[];
 	/** File path to preset id mapping for default filters */
 	fileDefaultFilters: Record<string, string>;
+	/** Custom keyboard shortcuts (shortcut id -> custom key) */
+	customShortcuts: Record<string, string>;
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
@@ -46,6 +48,7 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	},
 	savedFilters: [],
 	fileDefaultFilters: {},
+	customShortcuts: {},
 };
 
 /**

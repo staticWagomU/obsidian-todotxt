@@ -84,4 +84,40 @@ describe("TodotxtSettingTab", () => {
 			expect(deleteShortcut).toBeDefined();
 		});
 	});
+
+	describe("customShortcuts settings field", () => {
+		it("should include customShortcuts in settings interface", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				customShortcuts: { "action-edit": "F2" },
+			};
+
+			expect(settings.customShortcuts).toEqual({ "action-edit": "F2" });
+		});
+
+		it("should have empty customShortcuts in default settings", () => {
+			expect(DEFAULT_SETTINGS.customShortcuts).toEqual({});
+		});
+
+		it("should persist custom shortcuts through settings", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				customShortcuts: {
+					"action-edit": "F2",
+					"action-toggle": "Space",
+					"action-delete": "Backspace",
+				},
+			};
+
+			// Simulate save and load by serializing/deserializing
+			const serialized = JSON.stringify(settings);
+			const loaded = JSON.parse(serialized) as TodotxtPluginSettings;
+
+			expect(loaded.customShortcuts).toEqual({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+				"action-delete": "Backspace",
+			});
+		});
+	});
 });

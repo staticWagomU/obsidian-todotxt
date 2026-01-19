@@ -347,4 +347,47 @@ describe("ShortcutManager", () => {
 			expect(manager.getShortcutById("unknown-id")).toBeUndefined();
 		});
 	});
+
+	describe("loadFromSettings / saveToSettings", () => {
+		it("should load custom keys from settings", () => {
+			const manager = new ShortcutManager();
+			const customShortcuts = { "action-edit": "F2", "action-toggle": "Space" };
+
+			manager.loadFromSettings(customShortcuts);
+
+			expect(manager.getCustomKey("action-edit")).toBe("F2");
+			expect(manager.getCustomKey("action-toggle")).toBe("Space");
+		});
+
+		it("should save custom keys for settings persistence", () => {
+			const manager = new ShortcutManager();
+			manager.setCustomKey("action-edit", "F2");
+			manager.setCustomKey("action-delete", "Backspace");
+
+			const saved = manager.saveToSettings();
+
+			expect(saved).toEqual({
+				"action-edit": "F2",
+				"action-delete": "Backspace",
+			});
+		});
+
+		it("should replace existing custom keys on load", () => {
+			const manager = new ShortcutManager({ "action-edit": "F1" });
+			const newCustomShortcuts = { "action-edit": "F2" };
+
+			manager.loadFromSettings(newCustomShortcuts);
+
+			expect(manager.getCustomKey("action-edit")).toBe("F2");
+		});
+
+		it("should clear all custom keys when loading empty object", () => {
+			const manager = new ShortcutManager({ "action-edit": "F2" });
+
+			manager.loadFromSettings({});
+
+			expect(manager.getCustomKey("action-edit")).toBeUndefined();
+			expect(manager.getCustomKeys()).toEqual({});
+		});
+	});
 });

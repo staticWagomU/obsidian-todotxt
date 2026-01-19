@@ -198,4 +198,20 @@ export class ShortcutManager {
 	getShortcutById(id: string): ShortcutDefinition | undefined {
 		return this.shortcuts.find((s) => s.id === id);
 	}
+
+	/**
+	 * Load custom keys from settings
+	 * @param customShortcuts - Custom shortcuts from settings
+	 */
+	loadFromSettings(customShortcuts: Record<string, string>): void {
+		this.customKeys = { ...customShortcuts };
+	}
+
+	/**
+	 * Save custom keys for settings persistence
+	 * @returns Record of custom shortcuts to save to settings
+	 */
+	saveToSettings(): Record<string, string> {
+		return { ...this.customKeys };
+	}
 }

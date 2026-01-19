@@ -3,7 +3,7 @@ import type { WorkspaceLeaf } from "obsidian";
 import { TodotxtView } from "./view";
 import { parseTodoTxt } from "./lib/parser";
 import type TodotxtPlugin from "./main";
-import { DEFAULT_SETTINGS } from "./settings";
+import { DEFAULT_SETTINGS, getDefaultFilterForFile } from "./settings";
 
 // Create mock plugin for tests
 function createMockPlugin(): TodotxtPlugin {
@@ -3279,5 +3279,279 @@ describe("Undo/Redo integration (AC1, AC2, AC4)", () => {
 			expect(view.canUndo()).toBe(false);
 			expect(view.canRedo()).toBe(false);
 		});
+	});
+});
+
+describe("Filter preset E2E integration", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+	let mockPlugin: TodotxtPlugin;
+
+	beforeEach(() => {
+		mockLeaf = { view: null };
+		mockPlugin = {
+			settings: {
+				...DEFAULT_SETTINGS,
+				savedFilters: [
+					{
+						id: "preset-1",
+						name: "High Priority",
+						filterState: {
+							priority: "A",
+							search: "",
+							group: "none",
+							sort: "default",
+							status: "all",
+						},
+						createdAt: 1000,
+						updatedAt: 1000,
+					},
+					{
+						id: "preset-2",
+						name: "Work Tasks",
+						filterState: {
+							priority: "all",
+							search: "work",
+							group: "project",
+							sort: "completion",
+							status: "active",
+						},
+						createdAt: 2000,
+						updatedAt: 2000,
+					},
+				],
+				fileDefaultFilters: {},
+			},
+			saveSettings: vi.fn(),
+		} as unknown as TodotxtPlugin;
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, mockPlugin);
+	});
+
+	describe("フィルタープリセット適用", () => {
+		it("プリセット選択でフィルター状態が適用される", () => {
+			// Setup: Tasks with different priorities
+			view.setViewData("(A) Task A\n(B) Task B\nTask C", false);
+
+			// Execute: Select preset via dropdown
+			const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+			expect(dropdown).not.toBeNull();
+			dropdown.value = "preset-1";
+			dropdown.dispatchEvent(new Event("change"));
+
+			// Verify: Priority filter is applied
+			const priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+			expect(priorityFilter.value).toBe("A");
+
+			// Verify: Only priority A tasks are visible
+			const ul = view.contentEl.querySelector("ul");
+			const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+			expect(liElements.length).toBe(1);
+			expect(liElements[0]?.textContent).toContain("Task A");
+		});
+
+		it("複数フィールドを持つプリセットが正しく適用される", () => {
+			// Setup: Tasks for complex filter
+			view.setViewData("(A) Task A +work\n(B) Task B +home\nTask C work @office", false);
+
+			// Execute: Select complex preset
+			const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+			dropdown.value = "preset-2";
+			dropdown.dispatchEvent(new Event("change"));
+
+			// Verify: All filter controls are updated
+			const priorityFilter = view.contentEl.querySelector("select.priority-filter") as HTMLSelectElement;
+			const searchBox = view.contentEl.querySelector("input.search-box") as HTMLInputElement;
+			const groupSelector = view.contentEl.querySelector("select.group-selector") as HTMLSelectElement;
+			const sortSelector = view.contentEl.querySelector("select.sort-selector") as HTMLSelectElement;
+			const statusFilter = view.contentEl.querySelector("select.status-filter") as HTMLSelectElement;
+
+			expect(priorityFilter.value).toBe("all");
+			expect(searchBox.value).toBe("work");
+			expect(groupSelector.value).toBe("project");
+			expect(sortSelector.value).toBe("completion");
+			expect(statusFilter.value).toBe("active");
+		});
+	});
+
+	describe("プリセットリスト表示", () => {
+		it("保存されたプリセットがドロップダウンに表示される", () => {
+			view.setViewData("Task 1", false);
+
+			const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+			const options = Array.from(dropdown.options);
+
+			expect(options.length).toBe(3); // placeholder + 2 presets
+			expect(options.some(opt => opt.textContent === "High Priority")).toBe(true);
+			expect(options.some(opt => opt.textContent === "Work Tasks")).toBe(true);
+		});
+
+		it("プリセットがない場合は「保存済みなし」と表示される", () => {
+			// Setup: Plugin with no presets
+			const noPresetPlugin = {
+				settings: {
+					...DEFAULT_SETTINGS,
+					savedFilters: [],
+				},
+			} as unknown as TodotxtPlugin;
+			const noPresetView = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, noPresetPlugin);
+			noPresetView.setViewData("Task 1", false);
+
+			const dropdown = noPresetView.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+
+			expect(dropdown.options.length).toBe(1);
+			expect(dropdown.options[0]?.textContent).toContain("保存済みなし");
+		});
+	});
+
+	describe("プリセット適用後の操作", () => {
+		it("プリセット適用後もタスク追加が正常に動作する", async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-01-10"));
+
+			view.setViewData("(A) Task A", false);
+
+			// Apply preset
+			const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+			dropdown.value = "preset-1";
+			dropdown.dispatchEvent(new Event("change"));
+
+			// Add new task with priority A
+			const addHandler = view.getAddHandler();
+			await addHandler("New A Task", "A");
+
+			vi.useRealTimers();
+
+			// Verify: New task is visible (matches filter)
+			const ul = view.contentEl.querySelector("ul");
+			const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+			expect(liElements.length).toBe(2);
+		});
+
+		it("プリセット適用後もタスク編集が正常に動作する", async () => {
+			view.setViewData("(A) Task A\n(B) Task B", false);
+
+			// Apply preset
+			const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+			dropdown.value = "preset-1";
+			dropdown.dispatchEvent(new Event("change"));
+
+			// Edit task
+			const editHandler = view.getEditHandler();
+			await editHandler(0, { description: "Updated Task A" });
+
+			// Verify: Task is updated
+			expect(view.getViewData()).toContain("Updated Task A");
+		});
+
+		it("プリセット適用後もタスク完了トグルが正常に動作する", async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-01-10"));
+
+			view.setViewData("(A) Task A\n(B) Task B", false);
+
+			// Apply preset
+			const dropdown = view.contentEl.querySelector("select.filter-preset-dropdown") as HTMLSelectElement;
+			dropdown.value = "preset-1";
+			dropdown.dispatchEvent(new Event("change"));
+
+			// Toggle task
+			const toggleHandler = view.getToggleHandler();
+			await toggleHandler(0);
+
+			vi.useRealTimers();
+
+			// Verify: Task is completed
+			expect(view.getViewData()).toContain("x ");
+		});
+	});
+});
+
+describe("Default filter application on file load", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+	let mockPlugin: TodotxtPlugin;
+
+	beforeEach(() => {
+		mockLeaf = { view: null };
+	});
+
+	it("ファイルにデフォルトフィルターが設定されていない場合はフィルターが適用されない", async () => {
+		mockPlugin = {
+			settings: {
+				...DEFAULT_SETTINGS,
+				savedFilters: [
+					{
+						id: "preset-1",
+						name: "High Priority",
+						filterState: {
+							priority: "A",
+							search: "",
+							group: "none",
+							sort: "default",
+							status: "all",
+						},
+						createdAt: 1000,
+						updatedAt: 1000,
+					},
+				],
+				fileDefaultFilters: {}, // No default for this file
+			},
+		} as unknown as TodotxtPlugin;
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, mockPlugin);
+		view.setViewData("(A) Task A\n(B) Task B\nTask C", false);
+
+		// Verify: All tasks are visible (no filter applied)
+		const ul = view.contentEl.querySelector("ul");
+		const liElements = Array.from(ul?.children || []) as HTMLLIElement[];
+		expect(liElements.length).toBe(3);
+	});
+
+	it("getDefaultFilterForFileが正しいフィルター状態を返す", () => {
+		mockPlugin = {
+			settings: {
+				...DEFAULT_SETTINGS,
+				savedFilters: [
+					{
+						id: "preset-1",
+						name: "High Priority",
+						filterState: {
+							priority: "A",
+							search: "",
+							group: "none",
+							sort: "default",
+							status: "all",
+						},
+						createdAt: 1000,
+						updatedAt: 1000,
+					},
+				],
+				fileDefaultFilters: {
+					"vault/todo.txt": "preset-1",
+				},
+			},
+		} as unknown as TodotxtPlugin;
+
+		// Call getDefaultFilterForFile directly (imported at top of file)
+		const filterState = getDefaultFilterForFile(mockPlugin.settings, "vault/todo.txt");
+
+		expect(filterState).not.toBeUndefined();
+		expect(filterState?.priority).toBe("A");
+	});
+
+	it("存在しないプリセットIDの場合はundefinedを返す", () => {
+		mockPlugin = {
+			settings: {
+				...DEFAULT_SETTINGS,
+				savedFilters: [],
+				fileDefaultFilters: {
+					"vault/todo.txt": "nonexistent-preset",
+				},
+			},
+		} as unknown as TodotxtPlugin;
+
+		// Call getDefaultFilterForFile directly (imported at top of file)
+		const filterState = getDefaultFilterForFile(mockPlugin.settings, "vault/todo.txt");
+
+		expect(filterState).toBeUndefined();
 	});
 });

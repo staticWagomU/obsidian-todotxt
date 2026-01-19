@@ -7,6 +7,7 @@ import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./lib/handlers";
 import { renderTaskList, type DefaultFilterSettings, type FilterState } from "./lib/rendering";
+import { getDefaultFilterForFile } from "./settings";
 import { InlineEditState } from "./lib/inline-edit";
 import { UndoRedoHistory, createSnapshot } from "./lib/undo-redo";
 import type TodotxtPlugin from "./main";
@@ -44,8 +45,23 @@ export class TodotxtView extends TextFileView {
 	}
 
 	async onLoadFile(file: TFile): Promise<void> {
-		// To be implemented
 		await super.onLoadFile(file);
+
+		// Apply default filter for this file if one is set (AC5)
+		this.applyDefaultFilterForFile(file.path);
+	}
+
+	/**
+	 * Apply default filter for a specific file if one is configured
+	 */
+	private applyDefaultFilterForFile(filePath: string): void {
+		const defaultFilterState = getDefaultFilterForFile(this.plugin.settings, filePath);
+		if (defaultFilterState) {
+			// Defer filter application to after initial render
+			setTimeout(() => {
+				this.applyPresetFilterState(defaultFilterState);
+			}, 0);
+		}
 	}
 
 	async onUnloadFile(file: TFile): Promise<void> {
@@ -108,11 +124,11 @@ export class TodotxtView extends TextFileView {
 	 */
 	private applyPresetFilterState(filterState: FilterState): void {
 		// Update filter controls in DOM before re-render
-		const priorityFilter = this.contentEl.querySelector("select.priority-filter") as HTMLSelectElement | null;
-		const searchBox = this.contentEl.querySelector("input.search-box") as HTMLInputElement | null;
-		const groupSelector = this.contentEl.querySelector("select.group-selector") as HTMLSelectElement | null;
-		const sortSelector = this.contentEl.querySelector("select.sort-selector") as HTMLSelectElement | null;
-		const statusFilter = this.contentEl.querySelector("select.status-filter") as HTMLSelectElement | null;
+		const priorityFilter = this.contentEl.querySelector<HTMLSelectElement>("select.priority-filter");
+		const searchBox = this.contentEl.querySelector<HTMLInputElement>("input.search-box");
+		const groupSelector = this.contentEl.querySelector<HTMLSelectElement>("select.group-selector");
+		const sortSelector = this.contentEl.querySelector<HTMLSelectElement>("select.sort-selector");
+		const statusFilter = this.contentEl.querySelector<HTMLSelectElement>("select.status-filter");
 
 		if (priorityFilter) priorityFilter.value = filterState.priority;
 		if (searchBox) searchBox.value = filterState.search;

@@ -956,6 +956,190 @@ export function renderInlineTaskInput(
 }
 
 /**
+ * Long press duration for context menu trigger (in ms)
+ * Sprint 63 - PBI-061: AC5対応
+ */
+const LONG_PRESS_DURATION = 500;
+
+/**
+ * Render single task item with context menu support
+ * Adds right-click and long-press handlers for context menu
+ * Sprint 63 - PBI-061: AC1, AC5対応
+ */
+export function renderTaskItemWithContextMenu(
+	ul: HTMLUListElement,
+	todo: Todo,
+	index: number,
+	today: Date,
+	onToggle: (index: number) => Promise<void>,
+	onEdit: (index: number) => void,
+	onDelete: (index: number) => Promise<void>,
+	onContextMenu: (index: number, position: { x: number; y: number }) => void,
+	onAIEdit?: (index: number) => void,
+	filterState?: FilterState,
+): void {
+	const li = ul.createEl("li");
+
+	// Apply threshold date grayout style if t: tag exists
+	const thresholdStyle = getThresholdDateStyle(todo, today);
+	Object.assign(li.style, thresholdStyle);
+
+	// Context menu state for long press
+	let longPressTimer: number | null = null;
+	let touchStartPosition: { x: number; y: number } | null = null;
+
+	// Long press handler (AC5: モバイル対応)
+	li.addEventListener("touchstart", (event: TouchEvent) => {
+		const touch = event.touches[0];
+		if (!touch) return;
+
+		touchStartPosition = { x: touch.clientX, y: touch.clientY };
+
+		longPressTimer = window.setTimeout(() => {
+			if (touchStartPosition) {
+				onContextMenu(index, touchStartPosition);
+			}
+			longPressTimer = null;
+		}, LONG_PRESS_DURATION);
+	});
+
+	li.addEventListener("touchend", () => {
+		if (longPressTimer !== null) {
+			clearTimeout(longPressTimer);
+			longPressTimer = null;
+		}
+		touchStartPosition = null;
+	});
+
+	li.addEventListener("touchmove", () => {
+		if (longPressTimer !== null) {
+			clearTimeout(longPressTimer);
+			longPressTimer = null;
+		}
+		touchStartPosition = null;
+	});
+
+	// Right-click handler (AC1: 右クリックでコンテキストメニュー表示)
+	li.addEventListener("contextmenu", (event: MouseEvent) => {
+		event.preventDefault();
+		onContextMenu(index, { x: event.clientX, y: event.clientY });
+	});
+
+	// メインコンテンツ行: チェックボックス + 優先度 + 説明
+	const mainRow = li.createEl("div");
+	mainRow.classList.add("task-main-row");
+
+	// Add selection checkbox if in selection mode
+	if (filterState?.selectionMode) {
+		const selectionCheckbox = mainRow.createEl("input");
+		selectionCheckbox.type = "checkbox";
+		selectionCheckbox.classList.add("task-selection-checkbox");
+		selectionCheckbox.dataset.index = String(index);
+		if (filterState.selectedTodoIds?.includes(index)) {
+			selectionCheckbox.checked = true;
+		}
+		selectionCheckbox.addEventListener("change", () => {
+			const controlBar = ul.closest(".todotxt-view")?.querySelector(".control-bar-row");
+			if (controlBar) {
+				updateAIBulkProcessButtonState(controlBar as HTMLElement);
+			}
+		});
+	}
+
+	// Add checkbox
+	const checkbox = mainRow.createEl("input");
+	checkbox.type = "checkbox";
+	checkbox.classList.add("task-checkbox");
+	checkbox.checked = todo.completed;
+	checkbox.dataset.index = String(index);
+
+	checkbox.addEventListener("click", () => {
+		void onToggle(index);
+	});
+
+	// Add priority badge if priority exists
+	if (todo.priority) {
+		const badge = mainRow.createEl("span");
+		badge.classList.add("priority");
+		badge.classList.add(`priority-${todo.priority}`);
+		badge.textContent = todo.priority;
+	}
+
+	// Render description without projects/contexts
+	const cleanDescription = removeProjectsAndContextsFromDescription(todo.description);
+	const descSpan = mainRow.createEl("span");
+	descSpan.classList.add("task-description");
+	descSpan.textContent = cleanDescription;
+
+	// タグ行: プロジェクト + コンテキスト + 繰り返し + 日付
+	const hasMetaInfo = todo.projects.length > 0 || todo.contexts.length > 0 || todo.tags.rec || getDueDateFromTodo(todo);
+	if (hasMetaInfo) {
+		const tagsRow = li.createEl("div");
+		tagsRow.classList.add("task-item-tags");
+
+		for (const project of todo.projects) {
+			const badge = tagsRow.createEl("span");
+			badge.classList.add("tag-chip", "tag-chip--project");
+			badge.textContent = `+${project}`;
+		}
+
+		for (const context of todo.contexts) {
+			const badge = tagsRow.createEl("span");
+			badge.classList.add("tag-chip", "tag-chip--context");
+			badge.textContent = `@${context}`;
+		}
+
+		const recIcon = renderRecurrenceIcon(todo);
+		if (recIcon) {
+			tagsRow.appendChild(recIcon);
+		}
+
+		const dueDate = getDueDateFromTodo(todo);
+		if (dueDate) {
+			const dueBadge = tagsRow.createEl("span");
+			dueBadge.classList.add("due-date");
+			dueBadge.textContent = `🔥 ${dueDate.toISOString().split("T")[0]!}`;
+			const dueDateStyle = getDueDateStyle(dueDate, today);
+			Object.assign(dueBadge.style, dueDateStyle);
+		}
+	}
+
+	// アクションボタン行
+	const actionsRow = li.createEl("div");
+	actionsRow.classList.add("task-actions-row");
+
+	const editButton = actionsRow.createEl("button");
+	editButton.classList.add("edit-task-button");
+	editButton.textContent = "編集";
+	editButton.dataset.index = String(index);
+	editButton.addEventListener("click", () => {
+		onEdit(index);
+	});
+
+	if (onAIEdit) {
+		const aiEditButton = actionsRow.createEl("button");
+		aiEditButton.classList.add("ai-edit-task-button");
+		aiEditButton.textContent = "AI編集";
+		aiEditButton.dataset.index = String(index);
+		aiEditButton.addEventListener("click", () => {
+			onAIEdit(index);
+		});
+	}
+
+	const deleteButton = actionsRow.createEl("button");
+	deleteButton.classList.add("delete-task-button");
+	deleteButton.textContent = "削除";
+	deleteButton.dataset.index = String(index);
+	deleteButton.addEventListener("click", () => {
+		void onDelete(index);
+	});
+
+	if (todo.completed) {
+		li.classList.add("completed");
+	}
+}
+
+/**
  * Render inline edit input field for editing existing tasks
  * Supports Enter/Cmd+Enter to save, Esc to cancel, blur to auto-save
  */

@@ -419,3 +419,241 @@ describe("renderTaskItem - ダブルクリック・Enterキーで編集モード
 		});
 	});
 });
+
+describe("renderTaskItemWithContextMenu - ロングプレスでコンテキストメニュー表示 (AC5)", () => {
+	let ul: HTMLUListElement;
+
+	beforeEach(() => {
+		vi.useFakeTimers();
+		const div = addCreateElHelper(document.createElement("div"));
+		ul = div.createEl("ul");
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	describe("ロングプレスイベント登録", () => {
+		it("renderTaskItemWithContextMenuが存在する", async () => {
+			const { renderTaskItemWithContextMenu } = await import("./rendering");
+			expect(renderTaskItemWithContextMenu).toBeDefined();
+		});
+
+		it("タスク要素にtouchstartイベントハンドラーが設定される", async () => {
+			const { renderTaskItemWithContextMenu } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onContextMenu = vi.fn();
+
+			renderTaskItemWithContextMenu(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onContextMenu);
+
+			const li = ul.querySelector("li");
+			expect(li).not.toBeNull();
+
+			// touchstartイベントをディスパッチしてもエラーにならないことを確認
+			const touchStartEvent = new TouchEvent("touchstart", {
+				bubbles: true,
+				touches: [new Touch({ identifier: 0, target: li! })],
+			});
+			expect(() => li!.dispatchEvent(touchStartEvent)).not.toThrow();
+		});
+	});
+
+	describe("タイマー動作テスト", () => {
+		it("500ms以上のロングプレスでonContextMenuが呼ばれる", async () => {
+			const { renderTaskItemWithContextMenu } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onContextMenu = vi.fn();
+
+			renderTaskItemWithContextMenu(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onContextMenu);
+
+			const li = ul.querySelector("li")!;
+
+			// Start touch
+			const touchStartEvent = new TouchEvent("touchstart", {
+				bubbles: true,
+				touches: [new Touch({ identifier: 0, target: li, clientX: 100, clientY: 100 })],
+			});
+			li.dispatchEvent(touchStartEvent);
+
+			// Wait 500ms
+			vi.advanceTimersByTime(500);
+
+			expect(onContextMenu).toHaveBeenCalledTimes(1);
+			expect(onContextMenu).toHaveBeenCalledWith(0, expect.objectContaining({ x: 100, y: 100 }));
+		});
+
+		it("500ms未満のタッチではonContextMenuが呼ばれない", async () => {
+			const { renderTaskItemWithContextMenu } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onContextMenu = vi.fn();
+
+			renderTaskItemWithContextMenu(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onContextMenu);
+
+			const li = ul.querySelector("li")!;
+
+			// Start touch
+			const touchStartEvent = new TouchEvent("touchstart", {
+				bubbles: true,
+				touches: [new Touch({ identifier: 0, target: li, clientX: 100, clientY: 100 })],
+			});
+			li.dispatchEvent(touchStartEvent);
+
+			// Wait only 400ms
+			vi.advanceTimersByTime(400);
+
+			// End touch before 500ms
+			const touchEndEvent = new TouchEvent("touchend", { bubbles: true });
+			li.dispatchEvent(touchEndEvent);
+
+			expect(onContextMenu).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("キャンセル動作テスト", () => {
+		it("touchendでタイマーがキャンセルされる", async () => {
+			const { renderTaskItemWithContextMenu } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onContextMenu = vi.fn();
+
+			renderTaskItemWithContextMenu(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onContextMenu);
+
+			const li = ul.querySelector("li")!;
+
+			// Start touch
+			const touchStartEvent = new TouchEvent("touchstart", {
+				bubbles: true,
+				touches: [new Touch({ identifier: 0, target: li, clientX: 100, clientY: 100 })],
+			});
+			li.dispatchEvent(touchStartEvent);
+
+			// Wait 300ms then end touch
+			vi.advanceTimersByTime(300);
+			const touchEndEvent = new TouchEvent("touchend", { bubbles: true });
+			li.dispatchEvent(touchEndEvent);
+
+			// Wait more time - should not trigger
+			vi.advanceTimersByTime(300);
+
+			expect(onContextMenu).not.toHaveBeenCalled();
+		});
+
+		it("touchmoveでタイマーがキャンセルされる", async () => {
+			const { renderTaskItemWithContextMenu } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onContextMenu = vi.fn();
+
+			renderTaskItemWithContextMenu(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onContextMenu);
+
+			const li = ul.querySelector("li")!;
+
+			// Start touch
+			const touchStartEvent = new TouchEvent("touchstart", {
+				bubbles: true,
+				touches: [new Touch({ identifier: 0, target: li, clientX: 100, clientY: 100 })],
+			});
+			li.dispatchEvent(touchStartEvent);
+
+			// Wait 300ms then move
+			vi.advanceTimersByTime(300);
+			const touchMoveEvent = new TouchEvent("touchmove", {
+				bubbles: true,
+				touches: [new Touch({ identifier: 0, target: li, clientX: 150, clientY: 150 })],
+			});
+			li.dispatchEvent(touchMoveEvent);
+
+			// Wait more time - should not trigger
+			vi.advanceTimersByTime(300);
+
+			expect(onContextMenu).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("右クリックイベント", () => {
+		it("右クリックでonContextMenuが呼ばれる", async () => {
+			const { renderTaskItemWithContextMenu } = await import("./rendering");
+
+			const todo = {
+				completed: false,
+				description: "Test task",
+				projects: [],
+				contexts: [],
+				tags: {},
+				raw: "Test task",
+			};
+			const onToggle = vi.fn();
+			const onEdit = vi.fn();
+			const onDelete = vi.fn();
+			const onContextMenu = vi.fn();
+
+			renderTaskItemWithContextMenu(ul, todo, 0, new Date(), onToggle, onEdit, onDelete, onContextMenu);
+
+			const li = ul.querySelector("li")!;
+
+			// Right click
+			const contextMenuEvent = new MouseEvent("contextmenu", {
+				bubbles: true,
+				clientX: 200,
+				clientY: 200,
+			});
+			li.dispatchEvent(contextMenuEvent);
+
+			expect(onContextMenu).toHaveBeenCalledTimes(1);
+			expect(onContextMenu).toHaveBeenCalledWith(0, expect.objectContaining({ x: 200, y: 200 }));
+		});
+	});
+});

@@ -132,4 +132,17 @@ export class InlineEditState {
 
 		return current;
 	}
+
+	/**
+	 * フォーカスを失った時の処理（自動保存）
+	 * 編集中であれば現在の値を保存する
+	 */
+	handleBlur(): void {
+		if (!this.editing) {
+			return;
+		}
+
+		// 自動保存（save()を再利用）
+		this.save();
+	}
 }

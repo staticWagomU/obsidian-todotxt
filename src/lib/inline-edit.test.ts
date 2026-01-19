@@ -198,4 +198,44 @@ describe("InlineEditState", () => {
 			expect(onSave).toHaveBeenCalledWith(0, "Same task");
 		});
 	});
+
+	describe("handleBlur() - 外部クリック時の自動保存 (AC5)", () => {
+		it("handleBlur()で編集モードが終了する", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Updated task");
+			state.handleBlur();
+			expect(state.isEditing()).toBe(false);
+		});
+
+		it("handleBlur()で現在の値を自動保存する", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const onSave = vi.fn();
+			const state = new InlineEditState({ onSave });
+			state.start(1, "Original task");
+			state.setCurrentValue("Auto-saved task");
+			state.handleBlur();
+			expect(onSave).toHaveBeenCalledWith(1, "Auto-saved task");
+		});
+
+		it("handleBlur()で編集していない状態だと何もしない", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const onSave = vi.fn();
+			const state = new InlineEditState({ onSave });
+			state.handleBlur();
+			expect(onSave).not.toHaveBeenCalled();
+		});
+
+		it("handleBlur()後に状態がクリアされる", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Updated task");
+			state.handleBlur();
+			expect(state.getEditingIndex()).toBeNull();
+			expect(state.getOriginalValue()).toBeNull();
+			expect(state.getCurrentValue()).toBeNull();
+		});
+	});
 });

@@ -5,6 +5,7 @@
 
 import type { Todo } from "./todo";
 import { getDueDateFromTodo, getDueDateStatus } from "./due";
+import { getThresholdDateStatus } from "./threshold";
 
 /**
  * フォーカスビューに表示するタスクをフィルタリング
@@ -18,8 +19,17 @@ export function filterFocusTodos(todos: Todo[], today: Date): Todo[] {
 		const dueDate = getDueDateFromTodo(todo);
 		if (dueDate) {
 			const status = getDueDateStatus(dueDate, today);
-			return status === "today" || status === "overdue";
+			if (status === "today" || status === "overdue") {
+				return true;
+			}
 		}
+
+		// t:が今日以前かチェック（ready = 今日または過去）
+		const thresholdStatus = getThresholdDateStatus(todo, today);
+		if (thresholdStatus === "ready") {
+			return true;
+		}
+
 		return false;
 	});
 }

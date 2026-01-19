@@ -904,3 +904,44 @@ export function renderInlineTaskInput(
 		}
 	});
 }
+
+/**
+ * Render inline edit input field for editing existing tasks
+ * Supports Enter/Cmd+Enter to save, Esc to cancel, blur to auto-save
+ */
+export function renderInlineEditInput(
+	container: HTMLElement,
+	initialValue: string,
+	onSave: (value: string) => void,
+	onCancel: () => void,
+): void {
+	const editContainer = container.createEl("div");
+	editContainer.classList.add("inline-edit-container");
+
+	const inputElement = editContainer.createEl("input");
+	inputElement.type = "text";
+	inputElement.classList.add("inline-edit-input");
+	inputElement.value = initialValue;
+	inputElement.setAttribute("aria-label", "タスクを編集");
+
+	// Flag to prevent double-save on blur after Enter/Esc
+	let isCompleted = false;
+
+	// Handle keyboard events
+	inputElement.addEventListener("keydown", (event: KeyboardEvent) => {
+		if (event.key === "Enter") {
+			isCompleted = true;
+			onSave(inputElement.value);
+		} else if (event.key === "Escape") {
+			isCompleted = true;
+			onCancel();
+		}
+	});
+
+	// Handle blur for auto-save
+	inputElement.addEventListener("blur", () => {
+		if (!isCompleted) {
+			onSave(inputElement.value);
+		}
+	});
+}

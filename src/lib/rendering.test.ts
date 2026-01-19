@@ -192,3 +192,128 @@ describe("renderInlineTaskInput", () => {
 		});
 	});
 });
+
+describe("renderInlineEditInput - インライン編集用入力UI", () => {
+	let container: HTMLElement;
+
+	beforeEach(() => {
+		container = addCreateElHelper(document.createElement("div"));
+	});
+
+	describe("編集モード時のinput要素レンダリング", () => {
+		it("編集モード時にinput要素がレンダリングされる", async () => {
+			const { renderInlineEditInput } = await import("./rendering");
+
+			const onSave = vi.fn();
+			const onCancel = vi.fn();
+			renderInlineEditInput(container, "Task to edit", onSave, onCancel);
+
+			const input = container.querySelector("input.inline-edit-input") as HTMLInputElement;
+			expect(input).not.toBeNull();
+			expect(input.value).toBe("Task to edit");
+		});
+
+		it("入力欄にインライン編集用のスタイルクラスが設定される", async () => {
+			const { renderInlineEditInput } = await import("./rendering");
+
+			const onSave = vi.fn();
+			const onCancel = vi.fn();
+			renderInlineEditInput(container, "Task", onSave, onCancel);
+
+			const container_el = container.querySelector(".inline-edit-container");
+			expect(container_el).not.toBeNull();
+		});
+
+		it("input要素にaria-labelが設定される", async () => {
+			const { renderInlineEditInput } = await import("./rendering");
+
+			const onSave = vi.fn();
+			const onCancel = vi.fn();
+			renderInlineEditInput(container, "Task", onSave, onCancel);
+
+			const input = container.querySelector("input.inline-edit-input") as HTMLInputElement;
+			expect(input?.getAttribute("aria-label")).toBe("タスクを編集");
+		});
+	});
+
+	describe("Enterキーで保存", () => {
+		it("EnterキーでonSaveコールバックが呼ばれる", async () => {
+			const { renderInlineEditInput } = await import("./rendering");
+
+			const onSave = vi.fn();
+			const onCancel = vi.fn();
+			renderInlineEditInput(container, "Original", onSave, onCancel);
+
+			const input = container.querySelector("input.inline-edit-input") as HTMLInputElement;
+			input.value = "Updated";
+
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				bubbles: true,
+			});
+			input.dispatchEvent(enterEvent);
+
+			expect(onSave).toHaveBeenCalledWith("Updated");
+		});
+
+		it("Cmd+Enterでもonlyへコールバックが呼ばれる", async () => {
+			const { renderInlineEditInput } = await import("./rendering");
+
+			const onSave = vi.fn();
+			const onCancel = vi.fn();
+			renderInlineEditInput(container, "Original", onSave, onCancel);
+
+			const input = container.querySelector("input.inline-edit-input") as HTMLInputElement;
+			input.value = "Updated with Cmd";
+
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				metaKey: true,
+				bubbles: true,
+			});
+			input.dispatchEvent(enterEvent);
+
+			expect(onSave).toHaveBeenCalledWith("Updated with Cmd");
+		});
+	});
+
+	describe("Escキーでキャンセル", () => {
+		it("Escキーでonへコールバックが呼ばれる", async () => {
+			const { renderInlineEditInput } = await import("./rendering");
+
+			const onSave = vi.fn();
+			const onCancel = vi.fn();
+			renderInlineEditInput(container, "Original", onSave, onCancel);
+
+			const input = container.querySelector("input.inline-edit-input") as HTMLInputElement;
+			input.value = "Modified";
+
+			const escEvent = new KeyboardEvent("keydown", {
+				key: "Escape",
+				bubbles: true,
+			});
+			input.dispatchEvent(escEvent);
+
+			expect(onCancel).toHaveBeenCalled();
+			expect(onSave).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("blur時の自動保存", () => {
+		it("blur時にonSaveコールバックが呼ばれる", async () => {
+			const { renderInlineEditInput } = await import("./rendering");
+
+			const onSave = vi.fn();
+			const onCancel = vi.fn();
+			renderInlineEditInput(container, "Original", onSave, onCancel);
+
+			const input = container.querySelector("input.inline-edit-input") as HTMLInputElement;
+			input.value = "Auto-saved";
+
+			const blurEvent = new FocusEvent("blur", { bubbles: true });
+			input.dispatchEvent(blurEvent);
+
+			expect(onSave).toHaveBeenCalledWith("Auto-saved");
+		});
+	});
+});

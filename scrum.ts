@@ -79,7 +79,21 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "ファイルごとにデフォルトフィルターを設定できる", verification: "pnpm vitest run: ファイル別デフォルトフィルターテスト" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 8,
+      estimatedTests: 28,
+      externalDependencies: 0,
+      score: "MEDIUM" as const,
+      subtasks: 6,
+    },
+    refactorChecklist: [
+      "FilterPreset型をsrc/lib/filter.tsに追加（既存filterモジュールとの整合性）",
+      "savedFilters設定をsrc/settings.tsに追加（既存パターン踏襲）",
+      "SaveFilterModal/ManageFiltersModalをsrc/ui/に追加（既存Modal継承）",
+      "rendering.ts内controlbar拡張（ドロップダウンUI）",
+      "view.ts内デフォルトフィルター適用ロジック追加",
+    ],
   },
   {
     id: "PBI-061",

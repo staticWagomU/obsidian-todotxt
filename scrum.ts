@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 59, pbi: "PBI-064", status: "done" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 1, impediments: 0 },
+  sprint: { number: 60, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-064", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -61,37 +61,7 @@ export const productBacklog: ProductBacklogItem[] = [
   //   Sprint 57 PBI-057: 高度検索機能、929t(+50t)、Phase 17完遂
 
   // Phase 18: UX強化・パフォーマンス最適化
-  {
-    id: "PBI-064",
-    story: {
-      role: "todo.txtユーザー",
-      capability: "タスクリスト上部のインライン入力欄にデスクリプションを入力してEnterで即追加",
-      benefit: "モーダルを開く手間なく、思いついたタスクを素早く記録できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "コントロールバー下にインライン入力欄が常時表示される", verification: "手動テスト: 画面表示確認" },
-      { criterion: "入力欄にテキストを入力してEnterキーで即座にタスクが追加される", verification: "pnpm vitest run: Enterキーでの追加処理テスト" },
-      { criterion: "追加されたタスクに今日の日付が作成日として自動設定される", verification: "pnpm vitest run: 作成日自動設定テスト" },
-      { criterion: "追加後は入力欄がクリアされ、連続入力が可能", verification: "pnpm vitest run: 入力欄クリアテスト" },
-      { criterion: "空文字での追加は無視される", verification: "pnpm vitest run: バリデーションテスト" },
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: {
-      functions: 4,
-      estimatedTests: 10,
-      externalDependencies: 1,
-      score: "LOW" as const,
-      subtasks: 5,
-    },
-    // Subtask計画 (TDD形式):
-    // 1. [behavioral] インライン入力欄UI表示テスト → renderInlineTaskInput実装
-    // 2. [behavioral] Enterキーでのタスク追加テスト → Enterキーハンドラ実装
-    // 3. [behavioral] 作成日自動設定テスト → 既存getAddHandler流用確認
-    // 4. [behavioral] 入力欄クリアテスト → クリア処理実装
-    // 5. [behavioral] 空文字バリデーションテスト → バリデーション実装
-    // Sprint 58 P0 Action統合: トラッキング精度改善をSubtask 6として組み込み可能
-  },
+  // PBI-064: インライン入力欄でタスク追加 - Sprint 58-59完了、931t(+2t)、see git history
   {
     id: "PBI-058",
     story: {
@@ -206,23 +176,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 59
+// Current Sprint - Sprint 60
 export const currentSprint = {
-  sprint: 59,
-  pbi: "PBI-064",
-  goal: "IMP-058-1解決: view.tsにonInlineAddコールバック統合し、インライン入力欄を実際に表示させる",
-  status: "done" as SprintStatus,
-  subtasks: [
-    {
-      test: "view.tsでonInlineAddコールバックをrenderTaskListに渡し、インライン入力欄が実際に表示されることを検証",
-      implementation: "view.ts renderTaskList呼び出し時に11番目のパラメータとしてonInlineAdd: (description) => getAddHandler()(description)を追加",
-      type: "behavioral" as SubtaskType,
-      status: "completed" as SubtaskStatus,
-      commits: [{ phase: "green" as CommitPhase, message: "feat: pass onInlineAdd callback to renderTaskList in view.ts - resolves IMP-058-1" }],
-    },
-  ] as Subtask[],
-  // Sprint 59完了: P0 Action IMP-058-1解決、DoD全pass、AC全達成
+  sprint: 60,
+  pbi: "TBD",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 59: PBI-064完了(IMP-058-1解決) - 1 subtask (1 behavioral), 1 commit, DoD全pass, AC全達成, 931t(維持), rate 72%→73%, see git history
 // Sprint 58: PBI-064 FAILED - 8 subtasks (6 behavioral + 2 structural), 13 commits, DoD全pass, AC未達成(view.ts統合欠落), 931t(+2), rate 68%→72%, healthy KPI初達成, see git history
 // Sprint 57: PBI-057完了 - 7 subtasks (5 behavioral + 2 structural), 10 commits, DoD全pass, 929t(+50), Phase 17完遂, see git history
 // Sprint 56: PBI-056完了 - 8 subtasks (6 behavioral + 2 structural), 6 commits, DoD全pass, Phase 17開始, see git history
@@ -258,7 +220,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 56, pbi: "PBI-056", story: "キーボードショートカット機能", verification: "passed", notes: "879t(+42t),8subtasks,6commits,DoD全pass,Phase 17開始" },
   { sprint: 57, pbi: "PBI-057", story: "高度検索機能", verification: "passed", notes: "929t(+50t),7subtasks,10commits,DoD全pass,AC全達成,Phase 17完遂" },
   { sprint: 58, pbi: "PBI-064", story: "インライン入力欄でタスク追加", verification: "failed", notes: "931t(+2t),8subtasks,13commits,DoD全pass,AC未達成(view.ts統合欠落),rate68%→72%" },
-  { sprint: 59, pbi: "PBI-064", story: "インライン入力欄でタスク追加(IMP-058-1解決)", verification: "passed", notes: "931t,1subtask,1commit,DoD全pass,AC全達成,IMP-058-1解決,rate72%→73%" },
+  { sprint: 59, pbi: "PBI-064", story: "インライン入力欄でタスク追加(IMP-058-1解決)", verification: "passed", notes: "931t(維持),1subtask,1commit,DoD全pass,AC全達成,IMP-058-1解決,rate72%→73%" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
@@ -279,13 +241,28 @@ export const retrospectives: Retrospective[] = [
       "P1: AC検証チェックリスト策定、E2E Subtask明示化",
       "P2: DoDへのAC検証追加検討",
     ] },
+  { sprint: 59,
+    workedWell: [
+      "迅速なImpediment解決: IMP-058-1を1 Sprint完全解決、AC全達成",
+      "DoD全pass継続: 4 Sprint連続、Tests 931t維持、healthy KPI継続",
+      "P0 Action完遂: Sprint 58からの継続Action 100%実施",
+    ],
+    toImprove: [
+      "Quick Fix Sprintオーバーヘッド: 本来1 Sprintで完了すべきPBIが2 Sprintに",
+      "E2E視点改善継続: Sprint 58教訓の次Sprint適用が課題",
+    ],
+    actions: [
+      "P1: AC検証チェックリスト策定、E2E Subtask明示化（継続）",
+      "P2: DoDへのAC検証追加検討（継続）",
+    ] },
 ];
 
 // Action Management (Sprint 59完了: rate 73%、P0 Action IMP-058-1解決)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 98, executed: 72, rate: 73, remaining: 26 },
-  // Sprint 59: P0 Action 1項目実施（IMP-058-1解決）、rate 72%→73%(+1%)、healthy KPI継続
+  tracking: { total: 98, executed: 73, rate: 73, remaining: 25 },
+  // Sprint 59: P0 Action 1項目完遂（IMP-058-1解決）、rate 72%→73%(+1%)、healthy KPI 2 Sprint連続
+  // Sprint 58: P0 Action 2項目 + P2棚卸し13項目廃棄、rate 68%→72%(+4%)、healthy KPI初達成
 };
 
 // Agents & Events

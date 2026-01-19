@@ -149,8 +149,8 @@ export class ManageFiltersModal extends Modal {
 		const nameSection = itemEl.querySelector(".filter-manage-name-section");
 		if (!nameSection) return;
 
-		// Hide name element
-		nameEl.style.display = "none";
+		// Hide name element using CSS class
+		nameEl.classList.add("is-hidden");
 
 		// Create edit input
 		const editInput = nameSection.createEl("input", {
@@ -177,7 +177,7 @@ export class ManageFiltersModal extends Modal {
 
 			this.triggerUpdate(preset.id, newName);
 			nameEl.textContent = newName;
-			nameEl.style.display = "";
+			nameEl.classList.remove("is-hidden");
 			editInput.remove();
 			saveButton.remove();
 			errorEl.remove();
@@ -188,7 +188,7 @@ export class ManageFiltersModal extends Modal {
 			if (event.key === "Enter") {
 				handleSave();
 			} else if (event.key === "Escape") {
-				nameEl.style.display = "";
+				nameEl.classList.remove("is-hidden");
 				editInput.remove();
 				saveButton.remove();
 				errorEl.remove();

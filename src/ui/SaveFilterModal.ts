@@ -45,7 +45,14 @@ export class SaveFilterModal extends Modal {
 		const summaryContainer = contentEl.createEl("div", { cls: "filter-summary-container" });
 		summaryContainer.createEl("p", { cls: "filter-summary-label", text: "保存するフィルター:" });
 		const summaryEl = summaryContainer.createEl("div", { cls: "filter-summary" });
-		summaryEl.innerHTML = this.getFilterSummary().replace(/\n/g, "<br>");
+		// Use textContent with line breaks as separate elements to avoid innerHTML
+		const summaryLines = this.getFilterSummary().split("\n");
+		for (let i = 0; i < summaryLines.length; i++) {
+			if (i > 0) {
+				summaryEl.createEl("br");
+			}
+			summaryEl.appendText(summaryLines[i] || "");
+		}
 
 		// Name input section
 		const nameContainer = contentEl.createEl("div", { cls: "filter-name-container" });

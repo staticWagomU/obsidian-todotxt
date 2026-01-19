@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 61, pbi: "TBD", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
-  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-058", goal: "Phase 18: UX強化・パフォーマンス最適化" },
+  sprint: { number: 61, pbi: "PBI-059", status: "done" as SprintStatus,
+    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
+  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-060", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
 // Product Goal
@@ -63,30 +63,7 @@ export const productBacklog: ProductBacklogItem[] = [
   // Phase 18: UX強化・パフォーマンス最適化
   // PBI-064: インライン入力欄でタスク追加 - Sprint 58-59完了、931t(+2t)、see git history
   // PBI-058: インライン編集機能 - Sprint 60完了、974t(+43t)、see git history
-  {
-    id: "PBI-059",
-    story: {
-      role: "todo.txtユーザー",
-      capability: "直近の操作を取り消し（Undo）・やり直し（Redo）",
-      benefit: "誤操作からすぐに復帰でき、安心してタスク管理できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "Cmd/Ctrl+Zで直近の操作を取り消せる", verification: "pnpm vitest run: Undoショートカットテスト" },
-      { criterion: "Cmd/Ctrl+Shift+Zで取り消した操作をやり直せる", verification: "pnpm vitest run: Redoショートカットテスト" },
-      { criterion: "タスク追加・編集・削除・完了状態変更が取り消し対象となる", verification: "pnpm vitest run: 各操作タイプのUndo/Redoテスト" },
-      { criterion: "取り消し後にトースト通知で「元に戻しました」と表示される", verification: "手動テスト: 通知表示確認" },
-      { criterion: "履歴は最大20件まで保持される", verification: "pnpm vitest run: 履歴上限テスト" },
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: {
-      functions: 7,           // UndoRedoHistory class, createSnapshot, undo, redo, getUndoHandler, getRedoHandler, keyboard integration
-      estimatedTests: 25,     // History基本(5), 上限(3), 各操作Undo/Redo(8), ショートカット(4), 統合(5)
-      externalDependencies: 1, // Obsidian Notice API
-      score: "MEDIUM",        // functions 7 + estimatedTests 25 + externalDeps 1 = MEDIUM
-      subtasks: 6,            // Behavioral 5 (History class, handlers, shortcuts, notification, view integration) + Structural 1
-    },
-  },
+  // PBI-059: Undo/Redo機能 - Sprint 61完了、1008t(+34t)、see git history
   {
     id: "PBI-060",
     story: {
@@ -167,14 +144,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 61
+// Current Sprint - None (Sprint 61完了)
 export const currentSprint = {
-  sprint: 61,
-  pbi: "TBD",
-  goal: "TBD - Sprint Planning待ち",
+  sprint: 0,
+  pbi: "",
+  goal: "",
   status: "not_started" as SprintStatus,
   subtasks: [] as Subtask[],
 };
+// Sprint 61: PBI-059完了 - 7 subtasks (6 behavioral + 1 structural), 6 commits, DoD全pass, AC全達成, 1008t(+34t), MILESTONE: 1000t達成, see git history
 // Sprint 60: PBI-058完了 - 7 subtasks (5 behavioral + 2 structural), 7 commits, DoD全pass, AC全達成, 974t(+43t), see git history
 // Sprint 59: PBI-064完了(IMP-058-1解決) - 1 subtask (1 behavioral), 1 commit, DoD全pass, AC全達成, 931t(維持), rate 72%→73%, see git history
 // Sprint 58: PBI-064 FAILED - 8 subtasks (6 behavioral + 2 structural), 13 commits, DoD全pass, AC未達成(view.ts統合欠落), 931t(+2), rate 68%→72%, healthy KPI初達成, see git history
@@ -212,6 +190,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 58, pbi: "PBI-064", story: "インライン入力欄でタスク追加", verification: "failed", notes: "931t(+2t),8subtasks,13commits,DoD全pass,AC未達成(view.ts統合欠落),rate68%→72%" },
   { sprint: 59, pbi: "PBI-064", story: "インライン入力欄でタスク追加(IMP-058-1解決)", verification: "passed", notes: "931t(維持),1subtask,1commit,DoD全pass,AC全達成,IMP-058-1解決,rate72%→73%" },
   { sprint: 60, pbi: "PBI-058", story: "インライン編集機能", verification: "passed", notes: "974t(+43t),7subtasks,7commits,DoD全pass,AC全達成(AC1-2手動,AC3-5vitest),E2E統合成功" },
+  { sprint: 61, pbi: "PBI-059", story: "Undo/Redo機能", verification: "passed", notes: "1008t(+34t),7subtasks,6commits,DoD全pass,AC全達成(AC1-3,AC5vitest,AC4手動),MILESTONE:1000t達成" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

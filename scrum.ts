@@ -50,7 +50,7 @@ export const roadmap = {
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
   phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-65", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "done" },
-  phase19: { number: 19, goal: "生産性向上・Obsidian統合", sprints: "66-69", pbis: ["PBI-065", "PBI-066", "PBI-067", "PBI-068"], status: "not_started" },
+  phase19: { number: 19, goal: "生産性向上・Obsidian統合", sprints: "66-69", pbis: ["PBI-065", "PBI-066", "PBI-067", "PBI-068"], status: "ready" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -75,21 +75,25 @@ export const productBacklog: ProductBacklogItem[] = [
     id: "PBI-065",
     story: {
       role: "タスク管理ユーザー",
-      capability: "今日やるべきタスク（due:today以前、t:today以前）を専用ビューで一覧表示し、AIが今日取り組むべきタスクを提案",
-      benefit: "今日集中すべきタスクが明確になり、AIの提案で優先順位付けが効率化される"
+      capability: "今日やるべきタスク（due:today以前またはt:today以前）を専用フォーカスビューで一覧表示",
+      benefit: "今日集中すべきタスクが一目で明確になり、優先順位に基づいた効率的なタスク消化ができる"
     },
     acceptanceCriteria: [
+      // フィルタリングロジック (vitest)
       { criterion: "due:が今日以前のタスクがフォーカスビューに表示される", verification: "vitest" },
       { criterion: "t:が今日以前のタスクがフォーカスビューに表示される", verification: "vitest" },
+      { criterion: "due:もt:もないタスクはフォーカスビューに表示されない", verification: "vitest" },
       { criterion: "完了済みタスクはフォーカスビューに表示されない", verification: "vitest" },
-      { criterion: "優先度順にソートされている", verification: "vitest" },
-      { criterion: "コマンドパレットからフォーカスビューを開ける", verification: "manual" },
-      { criterion: "AIが今日取り組むべきタスクの優先順位を提案する", verification: "manual" },
-      { criterion: "AI提案の理由が表示される", verification: "manual" },
+      { criterion: "優先度順（A>B>...>Z>なし）、同優先度内は説明文順にソートされる", verification: "vitest" },
+      // UI/コマンド統合 (manual)
+      { criterion: "コマンドパレットから「フォーカスビューを開く」コマンドでモーダル表示", verification: "manual" },
+      { criterion: "フォーカスビューからタスク完了トグルが可能", verification: "manual" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
-    complexity: { functions: 5, estimatedTests: 18, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 6 },
+    status: "ready" as PBIStatus,
+    // 再利用可能: due.ts(getDueDateFromTodo,getDueDateStatus), threshold.ts(getThresholdDate,getThresholdDateStatus), sort.ts(sortTodos)
+    // 新規実装: focus-filter.ts(filterFocusTodos), FocusViewModal, commands.ts追加
+    complexity: { functions: 3, estimatedTests: 15, externalDependencies: 0, score: "LOW" as const, subtasks: 5 },
   },
   {
     id: "PBI-066",

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DEFAULT_SETTINGS, type TodotxtPluginSettings } from "./settings";
+import { DEFAULT_SETTINGS, type TodotxtPluginSettings, getDefaultFilterForFile } from "./settings";
 import type { FilterPreset } from "./lib/filter-preset";
 import type { FilterState } from "./lib/rendering";
 
@@ -109,6 +109,123 @@ describe("settings", () => {
 			expect(settings.savedFilters).toHaveLength(2);
 			expect(settings.savedFilters[0]?.name).toBe("High Priority");
 			expect(settings.savedFilters[1]?.name).toBe("Work Tasks");
+		});
+	});
+
+	describe("fileDefaultFilters setting", () => {
+		it("fileDefaultFiltersのデフォルトは空オブジェクト", () => {
+			expect(DEFAULT_SETTINGS).toHaveProperty("fileDefaultFilters");
+			expect(DEFAULT_SETTINGS.fileDefaultFilters).toEqual({});
+		});
+
+		it("should map file path to preset id", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				fileDefaultFilters: {
+					"vault/todo.txt": "preset-1",
+					"vault/work.txt": "preset-2",
+				},
+			};
+
+			expect(settings.fileDefaultFilters["vault/todo.txt"]).toBe("preset-1");
+			expect(settings.fileDefaultFilters["vault/work.txt"]).toBe("preset-2");
+		});
+	});
+
+	describe("getDefaultFilterForFile", () => {
+		const createTestSettings = (): TodotxtPluginSettings => {
+			const filterState1: FilterState = {
+				priority: "A",
+				search: "",
+				group: "none",
+				sort: "default",
+				status: "all",
+			};
+			const filterState2: FilterState = {
+				priority: "B",
+				search: "work",
+				group: "project",
+				sort: "completion",
+				status: "active",
+			};
+
+			return {
+				...DEFAULT_SETTINGS,
+				savedFilters: [
+					{
+						id: "preset-1",
+						name: "High Priority",
+						filterState: filterState1,
+						createdAt: 1000,
+						updatedAt: 1000,
+					},
+					{
+						id: "preset-2",
+						name: "Work Tasks",
+						filterState: filterState2,
+						createdAt: 2000,
+						updatedAt: 2000,
+					},
+				],
+				fileDefaultFilters: {
+					"vault/todo.txt": "preset-1",
+					"vault/work.txt": "preset-2",
+				},
+			};
+		};
+
+		it("should return the filter state for a file with default filter set", () => {
+			const settings = createTestSettings();
+
+			const result = getDefaultFilterForFile(settings, "vault/todo.txt");
+
+			expect(result).not.toBeUndefined();
+			expect(result?.priority).toBe("A");
+		});
+
+		it("should return different filter states for different files", () => {
+			const settings = createTestSettings();
+
+			const result1 = getDefaultFilterForFile(settings, "vault/todo.txt");
+			const result2 = getDefaultFilterForFile(settings, "vault/work.txt");
+
+			expect(result1?.priority).toBe("A");
+			expect(result2?.priority).toBe("B");
+			expect(result2?.search).toBe("work");
+		});
+
+		it("should return undefined when file has no default filter", () => {
+			const settings = createTestSettings();
+
+			const result = getDefaultFilterForFile(settings, "vault/other.txt");
+
+			expect(result).toBeUndefined();
+		});
+
+		it("should return undefined when preset id is invalid", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				savedFilters: [],
+				fileDefaultFilters: {
+					"vault/todo.txt": "nonexistent-preset",
+				},
+			};
+
+			const result = getDefaultFilterForFile(settings, "vault/todo.txt");
+
+			expect(result).toBeUndefined();
+		});
+
+		it("should return undefined when fileDefaultFilters is empty", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				savedFilters: [],
+				fileDefaultFilters: {},
+			};
+
+			const result = getDefaultFilterForFile(settings, "vault/todo.txt");
+
+			expect(result).toBeUndefined();
 		});
 	});
 });

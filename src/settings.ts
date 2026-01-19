@@ -3,6 +3,7 @@ import type TodotxtPlugin from "./main";
 import type { RetryConfig } from "./ai/retry";
 import { KEYBOARD_SHORTCUTS, formatShortcutKey } from "./lib/shortcuts";
 import type { FilterPreset } from "./lib/filter-preset";
+import type { FilterState } from "./lib/rendering";
 
 export type SortOrder = "completion" | "priority" | "date" | "alphabetical";
 export type Grouping = "none" | "project" | "context";
@@ -23,6 +24,8 @@ export interface TodotxtPluginSettings {
 	openRouter: OpenRouterSettings;
 	/** Saved filter presets */
 	savedFilters: FilterPreset[];
+	/** File path to preset id mapping for default filters */
+	fileDefaultFilters: Record<string, string>;
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
@@ -42,7 +45,32 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 		},
 	},
 	savedFilters: [],
+	fileDefaultFilters: {},
 };
+
+/**
+ * Get the default filter state for a specific file
+ *
+ * @param settings - Plugin settings containing savedFilters and fileDefaultFilters
+ * @param filePath - Path of the file to get default filter for
+ * @returns The default filter state if found, undefined otherwise
+ */
+export function getDefaultFilterForFile(
+	settings: TodotxtPluginSettings,
+	filePath: string,
+): FilterState | undefined {
+	const presetId = settings.fileDefaultFilters[filePath];
+	if (!presetId) {
+		return undefined;
+	}
+
+	const preset = settings.savedFilters.find(p => p.id === presetId);
+	if (!preset) {
+		return undefined;
+	}
+
+	return preset.filterState;
+}
 
 export class TodotxtSettingTab extends PluginSettingTab {
 	plugin: TodotxtPlugin;

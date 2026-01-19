@@ -111,7 +111,22 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "モバイルではロングプレスでメニューが表示される", verification: "手動テスト: モバイルでのロングプレス確認" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 10,
+      estimatedTests: 35,
+      externalDependencies: 0,
+      score: "MEDIUM" as const,
+      subtasks: 7,
+    },
+    refactorChecklist: [
+      "TaskContextMenu.tsをsrc/ui/に追加（既存Modal継承パターン準拠）",
+      "context-menu-handlers.tsをsrc/lib/に追加（既存handlers.tsパターン踏襲）",
+      "rendering.tsのrenderTaskItem拡張（右クリック/ロングプレスイベント追加）",
+      "view.tsにコンテキストメニューコールバック統合（既存onEdit/onDelete統合パターン踏襲）",
+      "todo.tsにduplicateTask関数追加（既存editTask関数パターン準拠）",
+      "styles.cssにコンテキストメニュースタイル追加（既存モーダルスタイル整合性確保）",
+    ],
   },
   {
     id: "PBI-062",

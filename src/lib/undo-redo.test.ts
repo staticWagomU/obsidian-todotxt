@@ -92,4 +92,42 @@ describe("UndoRedoHistory", () => {
 			expect(history.getHistoryLength()).toBe(1);
 		});
 	});
+
+	describe("maxSize制限 (AC5)", () => {
+		it("21件push時に最古が削除され20件維持される", () => {
+			const history = new UndoRedoHistory<string>(20);
+
+			// 21件pushする
+			for (let i = 0; i <= 20; i++) {
+				history.push(`state${i}`);
+			}
+
+			// 履歴は20件に制限される
+			expect(history.getHistoryLength()).toBe(20);
+
+			// 最古の"state0"は削除されている
+			// 20回undoして確認
+			let undoCount = 0;
+			let lastUndoResult: string | undefined;
+			while (history.canUndo()) {
+				lastUndoResult = history.undo();
+				undoCount++;
+			}
+
+			// 19回undoできる（20件中、最初の1件は初期状態）
+			expect(undoCount).toBe(19);
+			// 最後のundoでstate1に戻る（state0は削除されている）
+			expect(lastUndoResult).toBe("state1");
+		});
+
+		it("カスタムmaxSizeで制限される", () => {
+			const history = new UndoRedoHistory<string>(5);
+
+			for (let i = 0; i <= 10; i++) {
+				history.push(`state${i}`);
+			}
+
+			expect(history.getHistoryLength()).toBe(5);
+		});
+	});
 });

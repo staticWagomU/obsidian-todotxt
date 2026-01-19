@@ -657,3 +657,221 @@ describe("renderTaskItemWithContextMenu - ロングプレスでコンテキス�
 		});
 	});
 });
+
+/**
+ * Sprint 64 - Subtask 7 & 8: E2E統合テスト (AC1-5)
+ *
+ * パフォーマンス最適化モジュールと既存レンダリングの統合検証
+ *
+ * AC1: 仮想スクロールにより表示範囲のみDOMをレンダリングする
+ * AC2: 1000件のタスクでも初期表示が500ms以内に完了する
+ * AC3: スクロール時のFPSが50fps以上を維持する
+ * AC4: フィルタリング・ソート処理がUIをブロックしない
+ * AC5: メモリ使用量が100件と1000件で2倍以内の増加に抑える
+ */
+describe("Virtual Scroll E2E Integration (AC1-5)", () => {
+	let container: HTMLElement;
+
+	beforeEach(() => {
+		container = addCreateElHelper(document.createElement("div"));
+	});
+
+	describe("AC1: Virtual scroll module integration", () => {
+		it("should import and use VirtualScroller with rendering", async () => {
+			const { VirtualScroller, calculateVisibleRangeWithOverscan } = await import("./virtual-scroller");
+
+			// Simulate render context
+			const scroller = new VirtualScroller({
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 1000,
+				overscan: 3,
+			});
+
+			const range = scroller.getVisibleRange(0);
+
+			// Verify virtual scroll provides correct range for rendering
+			expect(range.startIndex).toBe(0);
+			expect(range.endIndex).toBeLessThan(20); // Only visible items
+
+			// Verify with overscan
+			const rangeWithOverscan = calculateVisibleRangeWithOverscan({
+				scrollTop: 0,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: 1000,
+				overscan: 3,
+			});
+
+			expect(rangeWithOverscan.renderCount).toBeLessThan(30);
+		});
+
+		it("should calculate correct DOM node count for virtual rendering", async () => {
+			const { calculateVisibleRangeWithOverscan } = await import("./virtual-scroller");
+
+			// 1000 tasks in list
+			const totalTasks = 1000;
+			const range = calculateVisibleRangeWithOverscan({
+				scrollTop: 500,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: totalTasks,
+				overscan: 3,
+			});
+
+			// Instead of 1000 DOM nodes, only render visible + overscan
+			expect(range.renderCount).toBeLessThan(30);
+
+			// Verify this is much less than total
+			expect(range.renderCount / totalTasks).toBeLessThan(0.05); // Less than 5%
+		});
+	});
+
+	describe("AC2: Initial render performance", () => {
+		it("should complete virtual scroll calculation for 1000 items within 500ms", async () => {
+			const { measureRenderTime } = await import("./performance-metrics");
+			const { VirtualScroller } = await import("./virtual-scroller");
+
+			const result = await measureRenderTime(() => {
+				const scroller = new VirtualScroller({
+					itemHeight: 40,
+					containerHeight: 600,
+					totalItems: 1000,
+					overscan: 3,
+				});
+
+				// Simulate initial render calculations
+				scroller.getVisibleRange(0);
+				scroller.getTotalHeight();
+				return scroller;
+			});
+
+			expect(result.duration).toBeLessThan(500);
+		});
+	});
+
+	describe("AC3: Scroll handler performance", () => {
+		it("should complete scroll handler within 20ms (50fps)", async () => {
+			const { measureScrollHandlerTime } = await import("./performance-metrics");
+			const { calculateVisibleRangeWithOverscan } = await import("./virtual-scroller");
+
+			const result = measureScrollHandlerTime(() => {
+				return calculateVisibleRangeWithOverscan({
+					scrollTop: 2000,
+					itemHeight: 40,
+					containerHeight: 600,
+					totalItems: 1000,
+					overscan: 3,
+				});
+			});
+
+			expect(result.withinBudget).toBe(true);
+			expect(result.duration).toBeLessThan(20);
+		});
+	});
+
+	describe("AC4: Non-blocking filter integration", () => {
+		it("should filter asynchronously without blocking", async () => {
+			const { filterTodosAsync } = await import("./filter");
+			const { parseTodoTxt } = await import("./parser");
+
+			// Generate 1000 tasks
+			const tasks = Array.from(
+				{ length: 1000 },
+				(_, i) => `(${String.fromCharCode(65 + (i % 3))}) Task ${i + 1} +project${i % 5} @context${i % 4}`
+			).join("\n");
+
+			const todos = parseTodoTxt(tasks);
+
+			const startTime = performance.now();
+			const promise = filterTodosAsync(todos, { priority: "A" });
+			const callTime = performance.now() - startTime;
+
+			// Promise should return immediately
+			expect(callTime).toBeLessThan(10);
+
+			// Wait for result
+			const filtered = await promise;
+			expect(filtered.length).toBeGreaterThan(300); // ~333 with priority A
+		});
+	});
+
+	describe("AC5: Memory efficiency verification", () => {
+		it("should render same number of DOM nodes for 100 and 1000 items", async () => {
+			const { calculateVisibleRangeWithOverscan } = await import("./virtual-scroller");
+
+			const params = {
+				itemHeight: 40,
+				containerHeight: 600,
+				overscan: 3,
+			};
+
+			const range100 = calculateVisibleRangeWithOverscan({
+				...params,
+				scrollTop: 0,
+				totalItems: 100,
+			});
+
+			const range1000 = calculateVisibleRangeWithOverscan({
+				...params,
+				scrollTop: 0,
+				totalItems: 1000,
+			});
+
+			// Same render count (memory efficiency)
+			expect(range100.renderCount).toBe(range1000.renderCount);
+		});
+	});
+
+	describe("Combined modules integration", () => {
+		it("should integrate all performance modules together", async () => {
+			const { VirtualScroller, calculateVisibleRangeWithOverscan } = await import("./virtual-scroller");
+			const { filterTodosAsync } = await import("./filter");
+			const { createPerformanceMonitor, measureRenderTime } = await import("./performance-metrics");
+			const { parseTodoTxt } = await import("./parser");
+
+			const monitor = createPerformanceMonitor();
+
+			// Generate 1000 tasks
+			const tasks = Array.from(
+				{ length: 1000 },
+				(_, i) => `(${String.fromCharCode(65 + (i % 3))}) Task ${i + 1}`
+			).join("\n");
+
+			// 1. Parse tasks
+			const parseResult = await measureRenderTime(() => parseTodoTxt(tasks));
+			monitor.recordMetric({ type: "render", duration: parseResult.duration, timestamp: Date.now(), label: "parse" });
+
+			// 2. Initialize virtual scroller
+			const scrollerResult = await measureRenderTime(() => {
+				return new VirtualScroller({
+					itemHeight: 40,
+					containerHeight: 600,
+					totalItems: parseResult.value.length,
+					overscan: 3,
+				});
+			});
+			monitor.recordMetric({ type: "render", duration: scrollerResult.duration, timestamp: Date.now(), label: "scroller" });
+
+			// 3. Filter asynchronously
+			const filterStart = performance.now();
+			const filteredTodos = await filterTodosAsync(parseResult.value, { priority: "A" });
+			const filterDuration = performance.now() - filterStart;
+			monitor.recordMetric({ type: "filter", duration: filterDuration, timestamp: Date.now(), label: "filter" });
+
+			// 4. Calculate visible range
+			const range = calculateVisibleRangeWithOverscan({
+				scrollTop: 0,
+				itemHeight: 40,
+				containerHeight: 600,
+				totalItems: filteredTodos.length,
+				overscan: 3,
+			});
+
+			// Verify all AC requirements
+			expect(monitor.meetsRenderTimeRequirement(500)).toBe(true); // AC2
+			expect(range.renderCount).toBeLessThan(30); // AC1, AC5
+			expect(filteredTodos.length).toBeGreaterThan(0); // AC4
+		});
+	});
+});

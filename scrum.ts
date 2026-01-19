@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 62, pbi: "PBI-060", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-060", goal: "Phase 18: UX強化・パフォーマンス最適化" },
+  sprint: { number: 63, pbi: "PBI-061", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-061, PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
 // Product Goal
@@ -64,6 +64,7 @@ export const productBacklog: ProductBacklogItem[] = [
   // PBI-064: インライン入力欄でタスク追加 - Sprint 58-59完了、931t(+2t)、see git history
   // PBI-058: インライン編集機能 - Sprint 60完了、974t(+43t)、see git history
   // PBI-059: Undo/Redo機能 - Sprint 61完了、1008t(+34t)、see git history
+  // PBI-060: フィルター保存機能 - Sprint 62完了、1076t(+68t)、史上最大テスト増加量、see git history
   {
     id: "PBI-060",
     story: {
@@ -79,7 +80,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "ファイルごとにデフォルトフィルターを設定できる", verification: "pnpm vitest run: ファイル別デフォルトフィルターテスト" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: {
       functions: 8,
       estimatedTests: 28,
@@ -94,7 +95,7 @@ export const productBacklog: ProductBacklogItem[] = [
       "rendering.ts内controlbar拡張（ドロップダウンUI）",
       "view.ts内デフォルトフィルター適用ロジック追加",
     ],
-  },
+  }, // PBI-060完了: Sprint 62、see git history
   {
     id: "PBI-061",
     story: {
@@ -158,83 +159,19 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 62: PBI-060 フィルター保存機能
+// Current Sprint - Sprint 63: 未着手
 export const currentSprint = {
-  sprint: 62,
-  pbi: "PBI-060",
-  goal: "フィルター状態を名前を付けて保存・呼び出しできるようにし、よく使うフィルター組み合わせへの素早いアクセスを実現する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    // Subtask 1: FilterPreset型と基本CRUD操作 (behavioral)
-    // AC3: 保存済みフィルターを編集・削除できる、AC4: 設定永続化の基盤
-    {
-      test: "FilterPreset型定義、createPreset/updatePreset/deletePreset関数のテスト",
-      implementation: "src/lib/filter.tsにFilterPreset型追加、filter-preset.tsにCRUD関数実装",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
-    },
-    // Subtask 2: settings永続化 (behavioral)
-    // AC4: フィルター設定はObsidianの設定に永続化される
-    {
-      test: "savedFilters設定の追加、loadSettings/saveSettings統合テスト",
-      implementation: "src/settings.tsにsavedFilters設定追加、永続化ロジック実装",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
-    },
-    // Subtask 3: ファイル別デフォルトフィルター (behavioral)
-    // AC5: ファイルごとにデフォルトフィルターを設定できる
-    {
-      test: "fileDefaultFilters設定とgetDefaultFilterForFile関数のテスト",
-      implementation: "src/settings.tsにfileDefaultFilters追加、src/lib/filter-preset.tsにgetDefaultFilterForFile実装",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
-    },
-    // Subtask 4: SaveFilterModal UI (behavioral)
-    // AC1: 現在のフィルター状態を名前を付けて保存できる
-    {
-      test: "SaveFilterModal表示・入力・保存のテスト",
-      implementation: "src/ui/SaveFilterModal.ts実装（Modal継承、名前入力・保存）",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
-    },
-    // Subtask 5: ManageFiltersModal UI (behavioral)
-    // AC3: 保存済みフィルターを編集・削除できる
-    {
-      test: "ManageFiltersModal一覧表示・編集・削除のテスト",
-      implementation: "src/ui/ManageFiltersModal.ts実装（プリセット一覧・編集・削除UI）",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
-    },
-    // Subtask 6: controlbar拡張 (structural)
-    // AC2: 保存済みフィルターをドロップダウンから選択して適用できる
-    {
-      test: "rendering.ts controlbarドロップダウン追加・フィルター適用のテスト",
-      implementation: "rendering.ts内にフィルタープリセットドロップダウンUI追加、選択時フィルター適用",
-      type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
-    },
-    // Subtask 7: E2E統合テスト (behavioral) - Sprint 58教訓
-    // AC1-5全体の統合確認、view.ts統合
-    {
-      test: "view.tsでのフィルター保存・呼び出し・デフォルト適用E2Eテスト",
-      implementation: "view.ts内デフォルトフィルター適用ロジック追加、全AC統合確認",
-      type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [] as Commit[],
-    },
-  ] as Subtask[],
+  sprint: 63,
+  pbi: "PBI-061",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
+  subtasks: [] as Subtask[],
 };
+// Sprint 62: PBI-060完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1076t(+68t), 史上最大テスト増加, see git history
 // Sprint 61: PBI-059完了 - 7 subtasks (6 behavioral + 1 structural), 6 commits, DoD全pass, AC全達成, 1008t(+34t), MILESTONE: 1000t達成, see git history
 // Sprint 60: PBI-058完了 - 7 subtasks (5 behavioral + 2 structural), 7 commits, DoD全pass, AC全達成, 974t(+43t), see git history
 // Sprint 59: PBI-064完了(IMP-058-1解決) - 1 subtask (1 behavioral), 1 commit, DoD全pass, AC全達成, 931t(維持), rate 72%→73%, see git history
-// Sprint 58: PBI-064 FAILED - 8 subtasks (6 behavioral + 2 structural), 13 commits, DoD全pass, AC未達成(view.ts統合欠落), 931t(+2), rate 68%→72%, healthy KPI初達成, see git history
-// Sprint 56-57: see git history
+// Sprint 58-56: see git history
 
 // Impediments
 export const impediments = {
@@ -273,21 +210,7 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-58: see git history
-  { sprint: 59,
-    workedWell: [
-      "迅速なImpediment解決: IMP-058-1を1 Sprint完全解決、AC全達成",
-      "DoD全pass継続: 4 Sprint連続、Tests 931t維持、healthy KPI継続",
-      "P0 Action完遂: Sprint 58からの継続Action 100%実施",
-    ],
-    toImprove: [
-      "Quick Fix Sprintオーバーヘッド: 本来1 Sprintで完了すべきPBIが2 Sprintに",
-      "E2E視点改善継続: Sprint 58教訓の次Sprint適用が課題",
-    ],
-    actions: [
-      "P1: AC検証チェックリスト策定、E2E Subtask明示化（継続）",
-      "P2: DoDへのAC検証追加検討（継続）",
-    ] },
+  // Sprint 42-59: see git history
   { sprint: 60,
     workedWell: [
       "Sprint 58教訓の適用成功: E2E統合テストをSubtask 7として明示化、AC全達成",
@@ -315,16 +238,30 @@ export const retrospectives: Retrospective[] = [
       "P1: AC検証チェックリスト策定（Sprint 59からの継続、2 Sprint実績により優先度維持）",
       "P2: DoDへのAC検証追加検討（継続）",
     ] },
+  { sprint: 62,
+    workedWell: [
+      "テスト大幅増加: +68t（1008t→1076t）、プロジェクト史上最大の増加量達成",
+      "E2E統合成功: Subtask 7でE2E統合テスト明示化、AC全達成（AC1-2手動、AC3-5vitest）",
+      "DoD全pass継続: 7 Sprint連続、安定稼働継続",
+      "複雑な機能実装成功: FilterPreset CRUD + settings永続化 + ファイル別デフォルトフィルター",
+    ],
+    toImprove: [
+      "さらなるプロセス改善余地の検討",
+    ],
+    actions: [
+      "P1: AC検証チェックリスト策定（Sprint 59からの継続、3 Sprint実績により優先度維持）",
+      "P2: DoDへのAC検証追加検討（継続）",
+    ] },
 ];
 
-// Action Management (Sprint 61完了: rate 77%、P1 Action部分実施)
+// Action Management (Sprint 62完了: rate 78%、P1 Action部分実施)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 98, executed: 75, rate: 77, remaining: 23 },
+  tracking: { total: 98, executed: 76, rate: 78, remaining: 22 },
+  // Sprint 62: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 77%→78%(+1%)、healthy KPI 5 Sprint連続
   // Sprint 61: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 76%→77%(+1%)、healthy KPI 4 Sprint連続
   // Sprint 60: P1 Action 1項目実施（E2E Subtask明示化実践）、rate 73%→76%(+3%)、healthy KPI 3 Sprint連続
   // Sprint 59: P0 Action 1項目完遂（IMP-058-1解決）、rate 72%→73%(+1%)、healthy KPI 2 Sprint連続
-  // Sprint 58: P0 Action 2項目 + P2棚卸し13項目廃棄、rate 68%→72%(+4%)、healthy KPI初達成
 };
 
 // Agents & Events

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 61, pbi: "PBI-059", status: "done" as SprintStatus,
-    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
+  sprint: { number: 62, pbi: "PBI-060", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-060", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -158,13 +158,77 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - None (Sprint 61完了)
+// Current Sprint - Sprint 62: PBI-060 フィルター保存機能
 export const currentSprint = {
-  sprint: 0,
-  pbi: "",
-  goal: "",
-  status: "not_started" as SprintStatus,
-  subtasks: [] as Subtask[],
+  sprint: 62,
+  pbi: "PBI-060",
+  goal: "フィルター状態を名前を付けて保存・呼び出しできるようにし、よく使うフィルター組み合わせへの素早いアクセスを実現する",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Subtask 1: FilterPreset型と基本CRUD操作 (behavioral)
+    // AC3: 保存済みフィルターを編集・削除できる、AC4: 設定永続化の基盤
+    {
+      test: "FilterPreset型定義、createPreset/updatePreset/deletePreset関数のテスト",
+      implementation: "src/lib/filter.tsにFilterPreset型追加、filter-preset.tsにCRUD関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    // Subtask 2: settings永続化 (behavioral)
+    // AC4: フィルター設定はObsidianの設定に永続化される
+    {
+      test: "savedFilters設定の追加、loadSettings/saveSettings統合テスト",
+      implementation: "src/settings.tsにsavedFilters設定追加、永続化ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    // Subtask 3: ファイル別デフォルトフィルター (behavioral)
+    // AC5: ファイルごとにデフォルトフィルターを設定できる
+    {
+      test: "fileDefaultFilters設定とgetDefaultFilterForFile関数のテスト",
+      implementation: "src/settings.tsにfileDefaultFilters追加、src/lib/filter-preset.tsにgetDefaultFilterForFile実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    // Subtask 4: SaveFilterModal UI (behavioral)
+    // AC1: 現在のフィルター状態を名前を付けて保存できる
+    {
+      test: "SaveFilterModal表示・入力・保存のテスト",
+      implementation: "src/ui/SaveFilterModal.ts実装（Modal継承、名前入力・保存）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    // Subtask 5: ManageFiltersModal UI (behavioral)
+    // AC3: 保存済みフィルターを編集・削除できる
+    {
+      test: "ManageFiltersModal一覧表示・編集・削除のテスト",
+      implementation: "src/ui/ManageFiltersModal.ts実装（プリセット一覧・編集・削除UI）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    // Subtask 6: controlbar拡張 (structural)
+    // AC2: 保存済みフィルターをドロップダウンから選択して適用できる
+    {
+      test: "rendering.ts controlbarドロップダウン追加・フィルター適用のテスト",
+      implementation: "rendering.ts内にフィルタープリセットドロップダウンUI追加、選択時フィルター適用",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+    // Subtask 7: E2E統合テスト (behavioral) - Sprint 58教訓
+    // AC1-5全体の統合確認、view.ts統合
+    {
+      test: "view.tsでのフィルター保存・呼び出し・デフォルト適用E2Eテスト",
+      implementation: "view.ts内デフォルトフィルター適用ロジック追加、全AC統合確認",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [] as Commit[],
+    },
+  ] as Subtask[],
 };
 // Sprint 61: PBI-059完了 - 7 subtasks (6 behavioral + 1 structural), 6 commits, DoD全pass, AC全達成, 1008t(+34t), MILESTONE: 1000t達成, see git history
 // Sprint 60: PBI-058完了 - 7 subtasks (5 behavioral + 2 structural), 7 commits, DoD全pass, AC全達成, 974t(+43t), see git history

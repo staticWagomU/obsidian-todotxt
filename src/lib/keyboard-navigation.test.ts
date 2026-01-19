@@ -193,4 +193,36 @@ describe("keyboard action handler", () => {
 			expect(result).toBeNull();
 		});
 	});
+
+	describe("Undo/Redo keyboard shortcuts (AC1, AC2)", () => {
+		it("should detect Ctrl+Z as undo", () => {
+			const result = handler.getActionForModifiedKey("z", { ctrlKey: true, metaKey: false, shiftKey: false });
+			expect(result).toBe("undo");
+		});
+
+		it("should detect Cmd+Z as undo on Mac", () => {
+			const result = handler.getActionForModifiedKey("z", { ctrlKey: false, metaKey: true, shiftKey: false });
+			expect(result).toBe("undo");
+		});
+
+		it("should detect Ctrl+Shift+Z as redo", () => {
+			const result = handler.getActionForModifiedKey("z", { ctrlKey: true, metaKey: false, shiftKey: true });
+			expect(result).toBe("redo");
+		});
+
+		it("should detect Cmd+Shift+Z as redo on Mac", () => {
+			const result = handler.getActionForModifiedKey("z", { ctrlKey: false, metaKey: true, shiftKey: true });
+			expect(result).toBe("redo");
+		});
+
+		it("should detect Ctrl+Y as redo (Windows)", () => {
+			const result = handler.getActionForModifiedKey("y", { ctrlKey: true, metaKey: false, shiftKey: false });
+			expect(result).toBe("redo");
+		});
+
+		it("should return null for Z without modifier", () => {
+			const result = handler.getActionForModifiedKey("z", { ctrlKey: false, metaKey: false, shiftKey: false });
+			expect(result).toBeNull();
+		});
+	});
 });

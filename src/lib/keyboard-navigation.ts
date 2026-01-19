@@ -99,7 +99,16 @@ export class KeyboardNavigator {
 /**
  * Action type for keyboard actions
  */
-export type KeyboardAction = "moveDown" | "moveUp" | "toggle" | "edit" | "delete";
+export type KeyboardAction = "moveDown" | "moveUp" | "toggle" | "edit" | "delete" | "undo" | "redo";
+
+/**
+ * Modifier keys state
+ */
+export interface ModifierKeys {
+	ctrlKey: boolean;
+	metaKey: boolean;
+	shiftKey: boolean;
+}
 
 /**
  * Callbacks for keyboard actions
@@ -165,5 +174,28 @@ export class KeyboardActionHandler {
 			default:
 				return null;
 		}
+	}
+
+	/**
+	 * Get action type for a key with modifier keys (Ctrl, Cmd, Shift)
+	 * Used for undo (Ctrl/Cmd+Z) and redo (Ctrl/Cmd+Shift+Z or Ctrl+Y)
+	 */
+	getActionForModifiedKey(key: string, modifiers: ModifierKeys): KeyboardAction | null {
+		const hasCtrlOrCmd = modifiers.ctrlKey || modifiers.metaKey;
+
+		// Undo: Ctrl+Z or Cmd+Z (without Shift)
+		if ((key === "z" || key === "Z") && hasCtrlOrCmd && !modifiers.shiftKey) {
+			return "undo";
+		}
+
+		// Redo: Ctrl+Shift+Z, Cmd+Shift+Z, or Ctrl+Y
+		if ((key === "z" || key === "Z") && hasCtrlOrCmd && modifiers.shiftKey) {
+			return "redo";
+		}
+		if ((key === "y" || key === "Y") && modifiers.ctrlKey) {
+			return "redo";
+		}
+
+		return null;
 	}
 }

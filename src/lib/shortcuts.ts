@@ -21,6 +21,9 @@ export const KEYBOARD_SHORTCUTS: ShortcutDefinition[] = [
 	// Global shortcuts (Ctrl/Cmd modifier)
 	{ key: "Ctrl+N / Cmd+N", description: "新規タスク作成ダイアログを開く", category: "global" },
 	{ key: "Ctrl+F / Cmd+F", description: "検索ボックスにフォーカス", category: "global" },
+	{ key: "Ctrl+Z / Cmd+Z", description: "元に戻す (Undo)", category: "global" },
+	{ key: "Ctrl+Shift+Z / Cmd+Shift+Z", description: "やり直し (Redo)", category: "global" },
+	{ key: "Ctrl+Y", description: "やり直し (Redo) - Windows", category: "global" },
 ];
 
 /**

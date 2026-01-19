@@ -109,4 +109,27 @@ export class InlineEditState {
 
 		return original;
 	}
+
+	/**
+	 * 編集内容を保存
+	 * @returns 保存した値、編集中でなければnull
+	 */
+	save(): string | null {
+		if (!this.editing) {
+			return null;
+		}
+
+		const index = this.editingIndex;
+		const current = this.currentValue;
+
+		// コールバック呼び出し
+		if (this.callbacks.onSave && index !== null && current !== null) {
+			this.callbacks.onSave(index, current);
+		}
+
+		// 状態をクリア
+		this.stop();
+
+		return current;
+	}
 }

@@ -140,4 +140,62 @@ describe("InlineEditState", () => {
 			expect(onCancel).toHaveBeenCalledWith(0, "Original task");
 		});
 	});
+
+	describe("save() - Enter/Cmd+Enterで保存 (AC4)", () => {
+		it("save()で編集モードが終了する", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Updated task");
+			state.save();
+			expect(state.isEditing()).toBe(false);
+		});
+
+		it("save()で現在の値を返す", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Updated task");
+			const saved = state.save();
+			expect(saved).toBe("Updated task");
+		});
+
+		it("save()で編集していない状態だとnullを返す", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			const saved = state.save();
+			expect(saved).toBeNull();
+		});
+
+		it("save()後に状態がクリアされる", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const state = new InlineEditState();
+			state.start(0, "Original task");
+			state.setCurrentValue("Updated task");
+			state.save();
+			expect(state.getEditingIndex()).toBeNull();
+			expect(state.getOriginalValue()).toBeNull();
+			expect(state.getCurrentValue()).toBeNull();
+		});
+
+		it("save()でonSaveコールバックが呼ばれる", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const onSave = vi.fn();
+			const state = new InlineEditState({ onSave });
+			state.start(2, "Original task");
+			state.setCurrentValue("Updated task");
+			state.save();
+			expect(onSave).toHaveBeenCalledWith(2, "Updated task");
+		});
+
+		it("save()で変更がない場合もonSaveコールバックが呼ばれる", async () => {
+			const { InlineEditState } = await import("./inline-edit");
+			const onSave = vi.fn();
+			const state = new InlineEditState({ onSave });
+			state.start(0, "Same task");
+			// 値を変更しない
+			state.save();
+			expect(onSave).toHaveBeenCalledWith(0, "Same task");
+		});
+	});
 });

@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 64, pbi: "PBI-063", status: "in_progress" as SprintStatus,
+  sprint: { number: 64, pbi: "PBI-063", status: "done" as SprintStatus,
     subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
@@ -97,7 +97,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "メモリ使用量が100件と1000件で2倍以内の増加に抑える", verification: "pnpm vitest run: DOMノード数比較テスト" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: { functions: 12, estimatedTests: 45, externalDependencies: 0, score: "HIGH", subtasks: 8 },
   },
 ];
@@ -118,7 +118,7 @@ export const currentSprint = {
   sprint: 64,
   pbi: "PBI-063",
   goal: "大量タスク（1000件以上）でもストレスなく操作できるパフォーマンス最適化を実装する",
-  status: "in_progress" as SprintStatus,
+  status: "done" as SprintStatus,
   // P0 Action適用: 各Subtask完了コミット + scrum.ts更新を1コミットにまとめる
   subtasks: [
     { test: "VirtualScroller基本クラステスト（visibleRange計算）", implementation: "VirtualScrollerクラス実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add VirtualScroller basic class tests" }, { phase: "green" as CommitPhase, message: "feat: implement VirtualScroller class with visibleRange calculation" }], ac: ["AC1"] },
@@ -173,6 +173,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 61, pbi: "PBI-059", story: "Undo/Redo機能", verification: "passed", notes: "1008t(+34t),7subtasks,6commits,DoD全pass,AC全達成(AC1-3,AC5vitest,AC4手動),MILESTONE:1000t達成" },
   { sprint: 62, pbi: "PBI-060", story: "フィルター保存機能", verification: "passed", notes: "1076t(+68t),7subtasks,7commits,DoD全pass,AC全達成(AC1-2手動,AC3-5vitest),史上最大テスト増加" },
   { sprint: 63, pbi: "PBI-061", story: "コンテキストメニュー機能", verification: "passed", notes: "1140t(+64t),7subtasks,7commits,DoD全pass,AC全達成(AC1手動,AC2-5vitest),Phase 18で2番目テスト増加" },
+  { sprint: 64, pbi: "PBI-063", story: "パフォーマンス最適化", verification: "passed", notes: "1220t(+80t),8subtasks,7commits,DoD全pass,AC全達成(AC3手動,AC1-2,4-5vitest),P0 Action実施,rate76%→77%" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
@@ -224,12 +225,32 @@ export const retrospectives: Retrospective[] = [
       "P1: 進捗可視化ツール検討（scrum.ts status更新自動化スクリプト、手動更新忘れ防止）",
       "P2: DoDへのAC検証追加検討（継続）",
     ] },
+  { sprint: 64,
+    workedWell: [
+      "DoD全pass継続: 9 Sprint連続達成（Sprint 56-64）、テスト品質維持",
+      "+80テスト大幅増加: 1140t→1220t、Phase 18で3番目の増加量（1位Sprint 62: +68t、2位Sprint 63: +64t）",
+      "AC全達成: AC1-5すべて達成、手動テスト（AC3 FPS計測）とvitest組み合わせ検証成功",
+      "E2E統合明示化継続: Subtask 7-8でE2E統合テスト実践（Sprint 60教訓適用、5 Sprint連続）",
+      "P0 Action実践成功: scrum.ts即時更新ルール（Subtask完了コミット + scrum.ts更新統合）を実施",
+      "TDD実践成功: 8 Subtask、7コミット、Red-Green-Refactorサイクル遵守",
+      "パフォーマンス最適化モジュール設計成功: VirtualScroller + PerformanceMetrics、再利用可能な設計",
+    ],
+    toImprove: [
+      "rendering.ts完全統合: Subtask 7-8でE2Eテスト追加したが、rendering.tsへの仮想スクロール完全統合は次Sprintに持ち越し",
+      "手動テスト自動化検討: AC3のFPS計測など、手動テストをvitest化する余地がある",
+    ],
+    actions: [
+      "P1: rendering.tsへの仮想スクロール完全統合（次Sprint検討、Subtask 7-8の継続作業）",
+      "P1: AC検証チェックリスト策定（Sprint 59からの継続、5 Sprint実績により優先度維持）",
+      "P2: DoDへのAC検証追加検討（継続）",
+    ] },
 ];
 
-// Action Management (Sprint 63完了: rate 76%、P1 Action部分実施、P0 Action 1項目追加)
+// Action Management (Sprint 64完了: rate 77%、P0 Action 1項目実施、P1/P2 Action計2項目追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 101, executed: 77, rate: 76, remaining: 24 },
+  tracking: { total: 101, executed: 78, rate: 77, remaining: 23 },
+  // Sprint 64: P0 Action 1項目実施（scrum.ts即時更新ルール実践）、P1/P2 Action計2項目追加、rate 76%→77%(+1%)、healthy KPI 7 Sprint連続
   // Sprint 63: P1 Action 1項目実施（E2E統合明示化継続）、P0/P1/P2 Action計3項目追加、rate 78%→76%(-2%)、healthy KPI 6 Sprint連続
   // Sprint 62: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 77%→78%(+1%)、healthy KPI 5 Sprint連続
   // Sprint 61: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 76%→77%(+1%)、healthy KPI 4 Sprint連続

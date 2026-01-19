@@ -1268,3 +1268,166 @@ describe("filterByAdvancedSearch", () => {
 		});
 	});
 });
+
+/**
+ * Sprint 64 - Subtask 4: filterTodosAsync非同期フィルタリングテスト (AC4)
+ *
+ * AC4: フィルタリング・ソート処理がUIをブロックしない
+ *
+ * 実装要件:
+ * 1. 非同期関数として即座にPromiseを返す
+ * 2. チャンク処理で大量データを分割処理
+ * 3. UIスレッドをブロックしない（各チャンク間でyield）
+ */
+describe("filterTodosAsync", () => {
+	// Dynamic import to handle non-existent function initially (TDD RED phase)
+	const getFilterTodosAsync = async () => {
+		const module = await import("./filter");
+		return (module as unknown as { filterTodosAsync: typeof import("./filter").filterTodosAsync }).filterTodosAsync;
+	};
+
+	/**
+	 * Helper function to create multiple todos for performance testing
+	 */
+	function createManyTodos(count: number): Todo[] {
+		const priorities = ["A", "B", "C", undefined];
+		const projects = ["+project1", "+project2", "+project3"];
+		const contexts = ["@home", "@work", "@office"];
+
+		return Array.from({ length: count }, (_, i) => ({
+			completed: i % 3 === 0,
+			priority: priorities[i % 4],
+			description: `Task ${i + 1} description`,
+			projects: [projects[i % 3] as string],
+			contexts: [contexts[i % 3] as string],
+			tags: i % 5 === 0 ? { due: "2026-01-15" } : {},
+			raw: `Task ${i + 1}`,
+		}));
+	}
+
+	describe("basic async filtering", () => {
+		it("should return a Promise that resolves to filtered results", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(10);
+
+			const result = filterTodosAsync(todos, { priority: "A" });
+
+			expect(result).toBeInstanceOf(Promise);
+			const filtered = await result;
+			expect(filtered.every(todo => todo.priority === "A")).toBe(true);
+		});
+
+		it("should filter by search keyword asynchronously", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(10);
+
+			const filtered = await filterTodosAsync(todos, { search: "Task 1" });
+
+			// Should match "Task 1", "Task 10"
+			expect(filtered.length).toBeGreaterThan(0);
+			expect(filtered.every(todo => todo.description.includes("Task 1"))).toBe(true);
+		});
+
+		it("should filter by advanced search query asynchronously", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(10);
+
+			const filtered = await filterTodosAsync(todos, { advancedSearch: "project:project1" });
+
+			expect(filtered.every(todo => todo.projects.includes("+project1"))).toBe(true);
+		});
+
+		it("should return all todos when no filter is specified", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(10);
+
+			const filtered = await filterTodosAsync(todos, {});
+
+			expect(filtered).toHaveLength(10);
+		});
+	});
+
+	describe("combined filters", () => {
+		it("should apply multiple filters (priority + search)", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(20);
+
+			const filtered = await filterTodosAsync(todos, {
+				priority: "A",
+				search: "Task",
+			});
+
+			expect(filtered.every(todo => todo.priority === "A")).toBe(true);
+			expect(filtered.every(todo => todo.description.includes("Task"))).toBe(true);
+		});
+
+		it("should apply hideCompleted filter", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(10);
+
+			const filtered = await filterTodosAsync(todos, { hideCompleted: true });
+
+			expect(filtered.every(todo => !todo.completed)).toBe(true);
+		});
+	});
+
+	describe("non-blocking behavior (AC4)", () => {
+		it("should return Promise immediately without blocking", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(1000);
+
+			const startTime = performance.now();
+			const promise = filterTodosAsync(todos, { priority: "A" });
+			const callTime = performance.now() - startTime;
+
+			// Function call should return immediately (< 10ms)
+			// The actual filtering happens asynchronously
+			expect(callTime).toBeLessThan(10);
+			expect(promise).toBeInstanceOf(Promise);
+
+			// Wait for result
+			await promise;
+		});
+
+		it("should process large datasets in chunks without blocking UI", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(1000);
+
+			// This test verifies the function completes successfully
+			// and returns correct results for large datasets
+			const filtered = await filterTodosAsync(todos, { priority: "A" });
+
+			// With 1000 items, ~250 should have priority A (every 4th item)
+			expect(filtered.length).toBeGreaterThan(200);
+			expect(filtered.length).toBeLessThan(300);
+			expect(filtered.every(todo => todo.priority === "A")).toBe(true);
+		});
+
+		it("should handle empty array efficiently", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+
+			const startTime = performance.now();
+			const filtered = await filterTodosAsync([], { priority: "A" });
+			const elapsed = performance.now() - startTime;
+
+			expect(filtered).toHaveLength(0);
+			expect(elapsed).toBeLessThan(50);
+		});
+	});
+
+	describe("chunk processing", () => {
+		it("should process items correctly regardless of chunk size", async () => {
+			const filterTodosAsync = await getFilterTodosAsync();
+			const todos = createManyTodos(150); // Test across chunk boundaries
+
+			const filtered = await filterTodosAsync(todos, { priority: "B" });
+
+			// Verify all results are correct
+			expect(filtered.every(todo => todo.priority === "B")).toBe(true);
+
+			// Compare with sync filter result
+			const syncFiltered = todos.filter(t => t.priority === "B");
+			expect(filtered.length).toBe(syncFiltered.length);
+		});
+	});
+});

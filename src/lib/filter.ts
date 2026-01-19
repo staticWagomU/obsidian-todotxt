@@ -349,3 +349,132 @@ export function filterByAdvancedSearch(todos: Todo[], query: string): Todo[] {
 		return andMatch && notMatch;
 	});
 }
+
+/**
+ * Async filter options for non-blocking filtering
+ * Sprint 64 - Subtask 4: AC4 対応
+ */
+export interface FilterOptions {
+	/** Filter by priority (A-Z) */
+	priority?: string;
+	/** Filter by search keyword */
+	search?: string;
+	/** Filter by advanced search query */
+	advancedSearch?: string;
+	/** Hide completed tasks */
+	hideCompleted?: boolean;
+}
+
+/**
+ * Chunk size for async processing
+ * Smaller chunks = more responsive UI but slower overall
+ * Larger chunks = faster overall but potentially blocking UI
+ */
+const CHUNK_SIZE = 100;
+
+/**
+ * Yield to the main thread using setTimeout
+ * This allows UI updates between chunks
+ */
+function yieldToMain(): Promise<void> {
+	return new Promise(resolve => setTimeout(resolve, 0));
+}
+
+/**
+ * Check if a single todo matches the filter criteria
+ */
+function matchesFilter(todo: Todo, options: FilterOptions): boolean {
+	// Check hideCompleted
+	if (options.hideCompleted && todo.completed) {
+		return false;
+	}
+
+	// Check priority
+	if (options.priority !== undefined) {
+		if (todo.priority !== options.priority) {
+			return false;
+		}
+	}
+
+	// Check search keyword
+	if (options.search !== undefined && options.search !== "") {
+		const lowerSearch = options.search.toLowerCase();
+		const matchesSearch =
+			todo.description.toLowerCase().includes(lowerSearch) ||
+			todo.projects.some(p => p.toLowerCase().includes(lowerSearch)) ||
+			todo.contexts.some(c => c.toLowerCase().includes(lowerSearch));
+		if (!matchesSearch) {
+			return false;
+		}
+	}
+
+	// Check advanced search
+	if (options.advancedSearch !== undefined && options.advancedSearch !== "") {
+		const { andTerms, notTerms } = parseAdvancedQuery(options.advancedSearch);
+		if (andTerms.length > 0 || notTerms.length > 0) {
+			const andMatch = andTerms.every(term => matchesOrGroup(todo, term));
+			const notMatch = notTerms.every(term => !matchesTerm(todo, term));
+			if (!andMatch || !notMatch) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Filter todos asynchronously in chunks to avoid blocking UI
+ *
+ * Sprint 64 - PBI-063: AC4 対応
+ * フィルタリング・ソート処理がUIをブロックしない
+ *
+ * This function:
+ * 1. Returns a Promise immediately (non-blocking)
+ * 2. Processes todos in chunks of CHUNK_SIZE
+ * 3. Yields to main thread between chunks using setTimeout
+ *
+ * @param todos - Array of todos to filter
+ * @param options - Filter options (priority, search, advancedSearch, hideCompleted)
+ * @returns Promise that resolves to filtered array
+ */
+export async function filterTodosAsync(todos: Todo[], options: FilterOptions): Promise<Todo[]> {
+	// Handle empty array immediately
+	if (todos.length === 0) {
+		return [];
+	}
+
+	// Handle no filter options - return copy immediately
+	const hasFilter =
+		options.priority !== undefined ||
+		(options.search !== undefined && options.search !== "") ||
+		(options.advancedSearch !== undefined && options.advancedSearch !== "") ||
+		options.hideCompleted === true;
+
+	if (!hasFilter) {
+		return [...todos];
+	}
+
+	const results: Todo[] = [];
+	const totalChunks = Math.ceil(todos.length / CHUNK_SIZE);
+
+	for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+		const start = chunkIndex * CHUNK_SIZE;
+		const end = Math.min(start + CHUNK_SIZE, todos.length);
+
+		// Process this chunk
+		for (let i = start; i < end; i++) {
+			const todo = todos[i];
+			if (todo && matchesFilter(todo, options)) {
+				results.push(todo);
+			}
+		}
+
+		// Yield to main thread after each chunk (except the last)
+		if (chunkIndex < totalChunks - 1) {
+			await yieldToMain();
+		}
+	}
+
+	return results;
+}

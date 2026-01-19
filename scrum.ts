@@ -67,7 +67,7 @@ export const productBacklog: ProductBacklogItem[] = [
   // PBI-060: フィルター保存機能 - Sprint 62完了、1076t(+68t)、史上最大テスト増加量、see git history
   // PBI-061: コンテキストメニュー機能 - Sprint 63完了、1140t(+64t)、Phase 18で2番目テスト増加、see git history
   // PBI-063: パフォーマンス最適化 - Sprint 64完了、1220t(+80t)、see git history
-  // PBI-062: キーボードショートカットカスタマイズ - Sprint 65 in_progress
+  // PBI-062: キーボードショートカットカスタマイズ - Sprint 65完了、1287t(+67t)、Phase 18完遂、see git history
 ];
 
 // Definition of Ready
@@ -81,23 +81,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 65: PBI-062 キーボードショートカットカスタマイズ
+// Current Sprint - None (Phase 18完遂、次Phase準備中)
 export const currentSprint = {
   sprint: 65,
   pbi: "PBI-062",
   goal: "パワーユーザーが自分好みのキーボードショートカットを設定画面でカスタマイズし、永続化できるようにする",
-  status: "in_progress" as SprintStatus,
-  // P0 Action適用（Sprint 63より）: 各Subtask完了コミット + scrum.ts更新を1コミットにまとめる
-  subtasks: [
-    { test: "ShortcutDefinition拡張テスト（id追加、customKey対応、DEFAULT_SHORTCUTS定数）", implementation: "ShortcutDefinition型拡張、id/customKey追加、DEFAULT_SHORTCUTS定数定義", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add ShortcutDefinition extension tests" }, { phase: "green" as CommitPhase, message: "feat: extend ShortcutDefinition with id and customKey" }], ac: ["AC3", "AC4"] },
-    { test: "キー競合検出ロジックテスト（同一キーの重複検出、警告メッセージ生成）", implementation: "detectKeyConflict関数実装、競合ショートカットID配列返却", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add detectKeyConflict tests" }, { phase: "green" as CommitPhase, message: "feat: implement detectKeyConflict function" }], ac: ["AC2"] },
-    { test: "ShortcutManager設定管理テスト（getCustomKey、setCustomKey、CRUD操作）", implementation: "ShortcutManagerクラス実装、カスタムキー取得・設定・削除", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add ShortcutManager tests" }, { phase: "green" as CommitPhase, message: "feat: implement ShortcutManager class" }], ac: ["AC1", "AC4"] },
-    { test: "設定永続化テスト（TodotxtPluginSettings統合、load/save）", implementation: "customShortcuts設定フィールド追加、永続化ロジック実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add settings persistence tests" }, { phase: "green" as CommitPhase, message: "feat: add customShortcuts to settings" }], ac: ["AC4"] },
-    { test: "デフォルト復元ロジックテスト（resetToDefault、全ショートカット初期化）", implementation: "resetToDefault関数実装、DEFAULT_SHORTCUTSへの復元", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add resetToDefault tests" }, { phase: "green" as CommitPhase, message: "feat: implement resetToDefault/resetSingleShortcut" }], ac: ["AC3"] },
-    { test: "KeyboardActionHandlerカスタムキー対応リファクタ（getActionForKey拡張）", implementation: "既存ハンドラのカスタムキーマッピング対応、ShortcutManager連携", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "refactor" as CommitPhase, message: "refactor: add custom key mapping support to KeyboardActionHandler" }], ac: ["AC1"] },
-    { test: "E2E統合テスト（AC1-4網羅: 設定変更→競合検出→デフォルト復元→永続化）", implementation: "全モジュール統合検証、カスタマイズワークフロー完全テスト", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add E2E integration tests for shortcut customization" }], ac: ["AC1", "AC2", "AC3", "AC4"] },
-  ] as (Subtask & { ac: string[] })[],
+  status: "done" as SprintStatus,
+  subtasks: [] as (Subtask & { ac: string[] })[],
 };
+// Sprint 65: PBI-062完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1287t(+67t), Phase 18完遂, see git history
 // Sprint 63: PBI-061完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1140t(+64t), Phase 18で2番目テスト増加, see git history
 // Sprint 62: PBI-060完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1076t(+68t), 史上最大テスト増加, see git history
 // Sprint 61: PBI-059完了 - 7 subtasks (6 behavioral + 1 structural), 6 commits, DoD全pass, AC全達成, 1008t(+34t), MILESTONE: 1000t達成, see git history
@@ -146,78 +138,32 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-60: see git history
-  { sprint: 61,
+  // Sprint 42-64: see git history
+  { sprint: 65,
     workedWell: [
-      "MILESTONE達成: 1000テスト突破（974t→1008t、+34t）、プロジェクト史上初",
-      "DoD全pass継続: 6 Sprint連続、AC全達成（AC1-3,AC5 vitest、AC4手動）",
-      "汎用的設計成功: UndoRedoHistory<T>クラス、TodosView以外でも再利用可能",
-      "E2E統合明示化継続: Subtask 7でE2E統合テスト、Sprint 60教訓適用",
+      "Phase 18完遂達成: Sprint 58-65の8 Sprints、7 PBIs、+356テスト（931t→1287t）で完遂",
+      "DoD全pass継続: 10 Sprint連続達成（Sprint 56-65）、テスト品質維持の長期継続",
+      "AC全達成: AC1-4すべて達成、AC1手動テスト、AC2-4 vitest検証の組み合わせ成功",
+      "+67テスト増加: 1220t→1287t、E2E統合テスト6 Sprint連続、TDD遵守",
+      "ShortcutManager設計成功: 再利用可能なクラス設計、競合検出・永続化・デフォルト復元の包括的実装",
     ],
     toImprove: [
-      "さらなるプロセス改善余地の検討",
+      "Phase 19 Planning準備: 次PhaseのGoal策定とPBI候補洗い出しが必要",
+      "長期未実施Action棚卸し: P1 Actions（AC検証チェックリスト、rendering.ts統合）が複数Sprint継続中",
     ],
     actions: [
-      "P1: AC検証チェックリスト策定（Sprint 59からの継続、2 Sprint実績により優先度維持）",
-      "P2: DoDへのAC検証追加検討（継続）",
-    ] },
-  { sprint: 62,
-    workedWell: [
-      "テスト大幅増加: +68t（1008t→1076t）、プロジェクト史上最大の増加量達成",
-      "E2E統合成功: Subtask 7でE2E統合テスト明示化、AC全達成（AC1-2手動、AC3-5vitest）",
-      "DoD全pass継続: 7 Sprint連続、安定稼働継続",
-      "複雑な機能実装成功: FilterPreset CRUD + settings永続化 + ファイル別デフォルトフィルター",
-    ],
-    toImprove: [
-      "さらなるプロセス改善余地の検討",
-    ],
-    actions: [
-      "P1: AC検証チェックリスト策定（Sprint 59からの継続、3 Sprint実績により優先度維持）",
-      "P2: DoDへのAC検証追加検討（継続）",
-    ] },
-  { sprint: 63,
-    workedWell: [
-      "DoD全pass 8 Sprint連続達成: テスト品質維持継続（1076t→1140t、+64t）",
-      "+64テスト増加: Phase 18で2番目の大規模増加（1位はSprint 62の+68t）",
-      "AC全達成: AC1-5すべて達成、AC5（モバイル対応ロングプレス）も実装完了",
-      "E2E統合明示化継続: Subtask 7でE2E統合テスト実践（Sprint 60教訓適用、4 Sprint連続）",
-      "TDD実践成功: 7 Subtask、7コミット、Red-Green-Refactorサイクル遵守",
-    ],
-    toImprove: [
-      "scrum.ts更新遅延: Subtask 5-7完了後もscrum.tsのstatus更新が遅れた",
-      "進捗状況把握の不十分さ: Sprint Review時にSubtask 5の実装状況把握が不十分だった",
-    ],
-    actions: [
-      "P0: Sprint実施中のscrum.ts即時更新ルール確立（Subtask完了コミット + scrum.ts更新を1コミットにまとめる）",
-      "P1: AC検証チェックリスト策定（Sprint 59からの継続、4 Sprint実績により優先度維持）",
-      "P1: 進捗可視化ツール検討（scrum.ts status更新自動化スクリプト、手動更新忘れ防止）",
-      "P2: DoDへのAC検証追加検討（継続）",
-    ] },
-  { sprint: 64,
-    workedWell: [
-      "DoD全pass継続: 9 Sprint連続達成（Sprint 56-64）、テスト品質維持",
-      "+80テスト大幅増加: 1140t→1220t、Phase 18で3番目の増加量（1位Sprint 62: +68t、2位Sprint 63: +64t）",
-      "AC全達成: AC1-5すべて達成、手動テスト（AC3 FPS計測）とvitest組み合わせ検証成功",
-      "E2E統合明示化継続: Subtask 7-8でE2E統合テスト実践（Sprint 60教訓適用、5 Sprint連続）",
-      "P0 Action実践成功: scrum.ts即時更新ルール（Subtask完了コミット + scrum.ts更新統合）を実施",
-      "TDD実践成功: 8 Subtask、7コミット、Red-Green-Refactorサイクル遵守",
-      "パフォーマンス最適化モジュール設計成功: VirtualScroller + PerformanceMetrics、再利用可能な設計",
-    ],
-    toImprove: [
-      "rendering.ts完全統合: Subtask 7-8でE2Eテスト追加したが、rendering.tsへの仮想スクロール完全統合は次Sprintに持ち越し",
-      "手動テスト自動化検討: AC3のFPS計測など、手動テストをvitest化する余地がある",
-    ],
-    actions: [
-      "P1: rendering.tsへの仮想スクロール完全統合（次Sprint検討、Subtask 7-8の継続作業）",
-      "P1: AC検証チェックリスト策定（Sprint 59からの継続、5 Sprint実績により優先度維持）",
+      "P1: Phase 19 Goal策定とPBI候補3-5個洗い出し（Product Goalとの整合性確認）",
+      "P1: AC検証チェックリスト策定（Sprint 59からの継続、6 Sprint実績、SMART基準適用で3-5項目作成）",
+      "P2: rendering.tsへの仮想スクロール完全統合検討（次Phase PBIとして検討）",
       "P2: DoDへのAC検証追加検討（継続）",
     ] },
 ];
 
-// Action Management (Sprint 64完了: rate 77%、P0 Action 1項目実施、P1/P2 Action計2項目追加)
+// Action Management (Sprint 65完了: rate 74%、P0 Action設定なし、P1/P2 Action計4項目追加)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 101, executed: 78, rate: 77, remaining: 23 },
+  tracking: { total: 105, executed: 78, rate: 74, remaining: 27 },
+  // Sprint 65: P0 Action設定なし（Phase 18完遂）、P1/P2 Action計4項目追加、rate 77%→74%(-3%)、healthy KPI 8 Sprint連続
   // Sprint 64: P0 Action 1項目実施（scrum.ts即時更新ルール実践）、P1/P2 Action計2項目追加、rate 76%→77%(+1%)、healthy KPI 7 Sprint連続
   // Sprint 63: P1 Action 1項目実施（E2E統合明示化継続）、P0/P1/P2 Action計3項目追加、rate 78%→76%(-2%)、healthy KPI 6 Sprint連続
   // Sprint 62: P1 Action 1項目実施（E2E統合明示化継続実践）、rate 77%→78%(+1%)、healthy KPI 5 Sprint連続

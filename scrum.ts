@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 63, pbi: "PBI-061", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 4, subtasksTotal: 7, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-061, PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -186,32 +186,32 @@ export const currentSprint = {
       test: "TaskContextMenu.test.ts: コンテキストメニュー表示テスト、メニュー項目存在確認、閉じる動作テスト",
       implementation: "TaskContextMenu.ts: Obsidian Menu APIを使用したコンテキストメニュー基盤クラス実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: add TaskContextMenu base class for context menu functionality" }],
     },
     // Subtask 2: 基本アクション（編集・削除・複製） - AC2対応
     {
       test: "context-menu-handlers.test.ts: 編集アクション呼び出しテスト、削除アクション呼び出しテスト、複製アクション呼び出しテスト",
       implementation: "context-menu-handlers.ts: handleEdit/handleDelete/handleDuplicate関数実装、todo.tsにduplicateTask関数追加",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: add context menu handlers for edit/delete/duplicate actions" }],
     },
     // Subtask 3: 優先度変更サブメニュー - AC3対応
     {
       test: "context-menu-handlers.test.ts: 優先度A-Z選択テスト、優先度なし選択テスト、サブメニュー構築テスト",
       implementation: "TaskContextMenu.ts: 優先度サブメニュー追加、context-menu-handlers.ts: handlePriorityChange関数実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: add handlePriorityChange for priority submenu (AC3)" }],
     },
     // Subtask 4: プロジェクト・コンテキスト変更 - AC4対応
     {
       test: "context-menu-handlers.test.ts: プロジェクト追加/削除テスト、コンテキスト追加/削除テスト",
       implementation: "TaskContextMenu.ts: プロジェクト/コンテキストサブメニュー追加、handleProjectChange/handleContextChange関数実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: add handleProjectChange/handleContextChange for tag submenus (AC4)" }],
     },
     // Subtask 5: モバイル対応（ロングプレス） - AC5対応
     {

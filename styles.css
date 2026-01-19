@@ -1014,9 +1014,9 @@ button:active {
 	margin-top: var(--spacing-md);
 }
 
-.modal-date-row .modal-date-field {
-	flex: 1;
-	min-width: 0;
+.modal-date-field {
+	flex: 0 0 auto;
+	width: auto;
 }
 
 .modal-date-row .modal-date-field label {
@@ -1027,7 +1027,7 @@ button:active {
 }
 
 .modal-date-row .modal-date-field input {
-	width: 100%;
+	width: auto;
 	box-sizing: border-box;
 }
 

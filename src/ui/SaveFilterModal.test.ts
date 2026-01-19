@@ -1,4 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any */
+import { describe, expect, it, vi } from "vitest";
 import { SaveFilterModal, type SaveFilterModalOptions } from "./SaveFilterModal";
 import type { FilterState } from "../lib/rendering";
 

@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 65, pbi: "PBI-062", status: "in_progress" as SprintStatus,
+  sprint: { number: 65, pbi: "PBI-062", status: "done" as SprintStatus,
     subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 18, status: "in_progress", sprints: "58-65", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
+  phase: { number: 18, status: "done", sprints: "58-65", pbis: "PBI-058, PBI-059, PBI-060, PBI-061, PBI-062, PBI-063, PBI-064", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
 // Product Goal
@@ -49,7 +49,7 @@ export const roadmap = {
   phase15: { number: 15, goal: "プロセス基盤再構築", sprints: "53", pbis: ["PBI-053"], status: "done" },
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
-  phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-64", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "in_progress" },
+  phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-65", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "done" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -141,6 +141,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 62, pbi: "PBI-060", story: "フィルター保存機能", verification: "passed", notes: "1076t(+68t),7subtasks,7commits,DoD全pass,AC全達成(AC1-2手動,AC3-5vitest),史上最大テスト増加" },
   { sprint: 63, pbi: "PBI-061", story: "コンテキストメニュー機能", verification: "passed", notes: "1140t(+64t),7subtasks,7commits,DoD全pass,AC全達成(AC1手動,AC2-5vitest),Phase 18で2番目テスト増加" },
   { sprint: 64, pbi: "PBI-063", story: "パフォーマンス最適化", verification: "passed", notes: "1220t(+80t),8subtasks,7commits,DoD全pass,AC全達成(AC3手動,AC1-2,4-5vitest),P0 Action実施,rate76%→77%" },
+  { sprint: 65, pbi: "PBI-062", story: "キーボードショートカットカスタマイズ", verification: "passed", notes: "1287t(+67t),7subtasks,7commits,DoD全pass,AC全達成(AC1手動,AC2-4vitest),Phase 18完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

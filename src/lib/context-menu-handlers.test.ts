@@ -3,7 +3,8 @@
  * TDD RED Phase: Subtask 2 - AC2対応
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+import type { Todo } from "./todo";
 
 // Mock Todo type
 interface MockTodo {
@@ -19,21 +20,6 @@ interface MockTodo {
 }
 
 describe("context-menu-handlers - 基本アクション", () => {
-	let mockTodo: MockTodo;
-
-	beforeEach(() => {
-		mockTodo = {
-			completed: false,
-			description: "Test task +project @context",
-			priority: "A",
-			projects: ["project"],
-			contexts: ["context"],
-			tags: {},
-			raw: "(A) 2026-01-19 Test task +project @context",
-			creationDate: "2026-01-19",
-		};
-	});
-
 	describe("handleEdit - 編集アクション (AC2)", () => {
 		it("handleEdit関数が存在する", async () => {
 			const { handleEdit } = await import("./context-menu-handlers");
@@ -332,7 +318,7 @@ describe("duplicateTask - タスク複製関数", () => {
 				creationDate: "2026-01-19",
 			};
 			
-			const duplicated = duplicateTask(original as any);
+			const duplicated = duplicateTask(original as unknown as Todo);
 			
 			expect(duplicated.description).toBe(original.description);
 			expect(duplicated.priority).toBe(original.priority);
@@ -359,7 +345,7 @@ describe("duplicateTask - タスク複製関数", () => {
 				completionDate: "2026-01-19",
 			};
 			
-			const duplicated = duplicateTask(completed as any);
+			const duplicated = duplicateTask(completed as unknown as Todo);
 			
 			expect(duplicated.completed).toBe(false);
 			expect(duplicated.completionDate).toBeUndefined();
@@ -383,7 +369,7 @@ describe("duplicateTask - タスク複製関数", () => {
 				creationDate: "2026-01-19",
 			};
 			
-			const duplicated = duplicateTask(original as any);
+			const duplicated = duplicateTask(original as unknown as Todo);
 			
 			expect(duplicated.creationDate).toBe("2026-01-20");
 			

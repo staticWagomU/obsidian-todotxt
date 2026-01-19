@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { Todo } from "../lib/todo";
 
 // Mock Obsidian Module
 vi.mock("obsidian", () => {
@@ -118,7 +119,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			expect(menu).toBeDefined();
 		});
 
@@ -133,7 +134,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			expect(typeof menu.showAtPosition).toBe("function");
 		});
 
@@ -148,7 +149,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			expect(typeof menu.showAtMouseEvent).toBe("function");
 		});
 	});
@@ -165,7 +166,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			const items = menu.getMenuItems();
 			expect(items.some(item => item.title === "編集")).toBe(true);
 		});
@@ -181,7 +182,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			const items = menu.getMenuItems();
 			expect(items.some(item => item.title === "削除")).toBe(true);
 		});
@@ -197,7 +198,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			const items = menu.getMenuItems();
 			expect(items.some(item => item.title === "複製")).toBe(true);
 		});
@@ -213,7 +214,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			const items = menu.getMenuItems();
 			expect(items.some(item => item.title === "優先度変更")).toBe(true);
 		});
@@ -229,7 +230,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			const items = menu.getMenuItems();
 			expect(items.some(item => item.title === "プロジェクト")).toBe(true);
 		});
@@ -245,7 +246,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			const items = menu.getMenuItems();
 			expect(items.some(item => item.title === "コンテキスト")).toBe(true);
 		});
@@ -263,7 +264,7 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 				onContextChange: vi.fn(),
 			};
 
-			const menu = new TaskContextMenu(mockTodo as any, 0, callbacks);
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
 			expect(typeof menu.close).toBe("function");
 		});
 	});

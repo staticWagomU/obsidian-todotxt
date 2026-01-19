@@ -96,7 +96,9 @@ export class TaskContextMenu {
 		this.menu.addItem((item) => {
 			item.setTitle("優先度変更")
 				.setIcon("arrow-up-narrow-wide");
-			const submenu = item.setSubmenu();
+			// Note: setSubmenu() is an undocumented Obsidian API method
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+			const submenu = (item as any).setSubmenu() as Menu;
 			this.buildPrioritySubmenu(submenu);
 		});
 		this.menuItems.push({ title: "優先度変更", icon: "arrow-up-narrow-wide", hasSubmenu: true });
@@ -107,7 +109,9 @@ export class TaskContextMenu {
 		this.menu.addItem((item) => {
 			item.setTitle("プロジェクト")
 				.setIcon("folder");
-			const submenu = item.setSubmenu();
+			// Note: setSubmenu() is an undocumented Obsidian API method
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+			const submenu = (item as any).setSubmenu() as Menu;
 			this.buildProjectSubmenu(submenu);
 		});
 		this.menuItems.push({ title: "プロジェクト", icon: "folder", hasSubmenu: true });
@@ -116,7 +120,9 @@ export class TaskContextMenu {
 		this.menu.addItem((item) => {
 			item.setTitle("コンテキスト")
 				.setIcon("at-sign");
-			const submenu = item.setSubmenu();
+			// Note: setSubmenu() is an undocumented Obsidian API method
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+			const submenu = (item as any).setSubmenu() as Menu;
 			this.buildContextSubmenu(submenu);
 		});
 		this.menuItems.push({ title: "コンテキスト", icon: "at-sign", hasSubmenu: true });

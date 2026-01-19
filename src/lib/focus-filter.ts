@@ -39,3 +39,36 @@ export function filterFocusTodos(todos: Todo[], today: Date): Todo[] {
 		return false;
 	});
 }
+
+/**
+ * フォーカスビュー用のタスクソート（AC5）
+ * 優先度順（A>B>...>Z>なし）、同優先度内は説明文順
+ * @param todos タスク配列
+ * @returns ソート済みタスク配列（元の配列は変更しない）
+ */
+export function sortFocusTodos(todos: Todo[]): Todo[] {
+	if (todos.length === 0) {
+		return [];
+	}
+
+	// 元の配列を変更しないようにコピーしてソート
+	return [...todos].sort((a, b) => {
+		// Priority comparison: A < B < C < ... < Z < undefined
+		if (a.priority && b.priority) {
+			// Both have priority: compare alphabetically
+			if (a.priority < b.priority) return -1;
+			if (a.priority > b.priority) return 1;
+			// Same priority: compare by description
+			return a.description.localeCompare(b.description);
+		} else if (a.priority && !b.priority) {
+			// a has priority, b doesn't: a comes first
+			return -1;
+		} else if (!a.priority && b.priority) {
+			// b has priority, a doesn't: b comes first
+			return 1;
+		} else {
+			// Neither has priority: compare by description
+			return a.description.localeCompare(b.description);
+		}
+	});
+}

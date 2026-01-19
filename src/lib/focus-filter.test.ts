@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterFocusTodos } from "./focus-filter";
+import { filterFocusTodos, sortFocusTodos } from "./focus-filter";
 import type { Todo } from "./todo";
 
 /**
@@ -168,6 +168,81 @@ describe("filterFocusTodos", () => {
 			const result = filterFocusTodos(todos, today);
 			expect(result).toHaveLength(1);
 			expect(result[0]?.description).toBe("Incomplete task");
+		});
+	});
+});
+
+describe("sortFocusTodos", () => {
+	describe("AC5: 優先度順（A>B>...>Z>なし）、同優先度内は説明文順にソートされる", () => {
+		it("優先度Aが優先度Bより先に表示される", () => {
+			const todos = [
+				createTodo({ description: "Task B", priority: "B", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Task A", priority: "A", tags: { due: "2026-01-20" } }),
+			];
+			const result = sortFocusTodos(todos);
+			expect(result.map(t => t.priority)).toEqual(["A", "B"]);
+		});
+
+		it("優先度なしは優先度ありの後に表示される", () => {
+			const todos = [
+				createTodo({ description: "No priority task", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Priority A task", priority: "A", tags: { due: "2026-01-20" } }),
+			];
+			const result = sortFocusTodos(todos);
+			expect(result[0]?.priority).toBe("A");
+			expect(result[1]?.priority).toBeUndefined();
+		});
+
+		it("同優先度内は説明文のアルファベット順にソートされる", () => {
+			const todos = [
+				createTodo({ description: "Charlie task", priority: "A", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Alice task", priority: "A", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Bob task", priority: "A", tags: { due: "2026-01-20" } }),
+			];
+			const result = sortFocusTodos(todos);
+			expect(result.map(t => t.description)).toEqual(["Alice task", "Bob task", "Charlie task"]);
+		});
+
+		it("優先度なしのタスクは説明文順にソートされる", () => {
+			const todos = [
+				createTodo({ description: "Zebra task", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Apple task", tags: { due: "2026-01-20" } }),
+			];
+			const result = sortFocusTodos(todos);
+			expect(result.map(t => t.description)).toEqual(["Apple task", "Zebra task"]);
+		});
+
+		it("複合ケース: 優先度A > 優先度B > 優先度Z > 優先度なし", () => {
+			const todos = [
+				createTodo({ description: "No priority 2", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Priority Z", priority: "Z", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Priority A", priority: "A", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "No priority 1", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Priority B", priority: "B", tags: { due: "2026-01-20" } }),
+			];
+			const result = sortFocusTodos(todos);
+			expect(result.map(t => t.description)).toEqual([
+				"Priority A",
+				"Priority B",
+				"Priority Z",
+				"No priority 1",
+				"No priority 2",
+			]);
+		});
+
+		it("空配列の場合、空配列を返す", () => {
+			const result = sortFocusTodos([]);
+			expect(result).toEqual([]);
+		});
+
+		it("元の配列を変更しない（イミュータブル）", () => {
+			const todos = [
+				createTodo({ description: "Task B", priority: "B", tags: { due: "2026-01-20" } }),
+				createTodo({ description: "Task A", priority: "A", tags: { due: "2026-01-20" } }),
+			];
+			const original = [...todos];
+			sortFocusTodos(todos);
+			expect(todos.map(t => t.description)).toEqual(original.map(t => t.description));
 		});
 	});
 });

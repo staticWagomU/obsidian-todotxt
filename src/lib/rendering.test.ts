@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // Helper to extend HTMLElement with createEl method (Obsidian-like API)
-function addCreateElHelper(element: HTMLElement): void {
-	(element as any).createEl = (tag: string, options?: { cls?: string; text?: string }) => {
+function addCreateElHelper(element: HTMLElement): HTMLElement {
+	(element as unknown as Record<string, unknown>).createEl = (tag: string, options?: { cls?: string; text?: string }) => {
 		const el = document.createElement(tag);
 		if (options?.cls) {
 			el.classList.add(options.cls);
@@ -11,20 +11,19 @@ function addCreateElHelper(element: HTMLElement): void {
 			el.textContent = options.text;
 		}
 		element.appendChild(el);
-		addCreateElHelper(el);
-		return el;
+		return addCreateElHelper(el);
 	};
-	(element as any).empty = () => {
+	(element as unknown as Record<string, unknown>).empty = () => {
 		element.innerHTML = "";
 	};
+	return element;
 }
 
 describe("renderInlineTaskInput", () => {
 	let container: HTMLElement;
 
 	beforeEach(() => {
-		container = document.createElement("div");
-		addCreateElHelper(container);
+		container = addCreateElHelper(document.createElement("div"));
 	});
 
 	describe("インライン入力欄UI表示", () => {
@@ -33,7 +32,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			// Should create input element
 			const inputContainer = container.querySelector(".inline-task-input-container");
@@ -47,7 +46,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			expect(inputElement?.placeholder).toBe("タスクを追加...");
@@ -57,7 +56,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			expect(inputElement?.getAttribute("aria-label")).toBe("インラインタスク入力");
@@ -69,7 +68,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "New task";
@@ -89,7 +88,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "New task";
@@ -136,7 +135,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "New task";
@@ -158,7 +157,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "";
@@ -177,7 +176,7 @@ describe("renderInlineTaskInput", () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
-			renderInlineTaskInput(container as any, onAddTask);
+			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "   ";

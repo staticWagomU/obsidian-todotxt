@@ -15,7 +15,12 @@ import { getThresholdDateStatus } from "./threshold";
  */
 export function filterFocusTodos(todos: Todo[], today: Date): Todo[] {
 	return todos.filter((todo) => {
-		// due:が今日以前かチェック
+		// 完了済みタスクは除外（AC4）
+		if (todo.completed) {
+			return false;
+		}
+
+		// due:が今日以前かチェック（AC1）
 		const dueDate = getDueDateFromTodo(todo);
 		if (dueDate) {
 			const status = getDueDateStatus(dueDate, today);
@@ -24,12 +29,13 @@ export function filterFocusTodos(todos: Todo[], today: Date): Todo[] {
 			}
 		}
 
-		// t:が今日以前かチェック（ready = 今日または過去）
+		// t:が今日以前かチェック（AC2: ready = 今日または過去）
 		const thresholdStatus = getThresholdDateStatus(todo, today);
 		if (thresholdStatus === "ready") {
 			return true;
 		}
 
+		// due:もt:もないタスクは除外（AC3）
 		return false;
 	});
 }

@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 59, pbi: "PBI-064", status: "not_started" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 1, impediments: 1 },
+  sprint: { number: 59, pbi: "PBI-064", status: "done" as SprintStatus,
+    subtasksCompleted: 1, subtasksTotal: 1, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-064", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -76,7 +76,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "空文字での追加は無視される", verification: "pnpm vitest run: バリデーションテスト" },
     ],
     dependencies: [],
-    status: "in_progress" as PBIStatus,
+    status: "done" as PBIStatus,
     complexity: {
       functions: 4,
       estimatedTests: 10,
@@ -211,19 +211,17 @@ export const currentSprint = {
   sprint: 59,
   pbi: "PBI-064",
   goal: "IMP-058-1解決: view.tsにonInlineAddコールバック統合し、インライン入力欄を実際に表示させる",
-  status: "not_started" as SprintStatus,
+  status: "done" as SprintStatus,
   subtasks: [
     {
       test: "view.tsでonInlineAddコールバックをrenderTaskListに渡し、インライン入力欄が実際に表示されることを検証",
       implementation: "view.ts renderTaskList呼び出し時に11番目のパラメータとしてonInlineAdd: (description) => getAddHandler()(description)を追加",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat: pass onInlineAdd callback to renderTaskList in view.ts - resolves IMP-058-1" }],
     },
   ] as Subtask[],
-  // Sprint 59 P0 Actions (from Sprint 58 Retrospective):
-  //   1. IMP-058-1解決 (Subtask 1)
-  //   2. actionManagement.tracking更新 (本Planning完了時)
+  // Sprint 59完了: P0 Action IMP-058-1解決、DoD全pass、AC全達成
 };
 // Sprint 58: PBI-064 FAILED - 8 subtasks (6 behavioral + 2 structural), 13 commits, DoD全pass, AC未達成(view.ts統合欠落), 931t(+2), rate 68%→72%, healthy KPI初達成, see git history
 // Sprint 57: PBI-057完了 - 7 subtasks (5 behavioral + 2 structural), 10 commits, DoD全pass, 929t(+50), Phase 17完遂, see git history
@@ -232,10 +230,9 @@ export const currentSprint = {
 
 // Impediments
 export const impediments = {
-  active: [
-    { id: "IMP-058-1", description: "AC未達成: view.tsでonInlineAddコールバックがrenderTaskListに渡されていない（インライン入力欄が実際には表示されない）", status: "blocking" },
-  ] as { id: string; description: string; status: string }[],
+  active: [] as { id: string; description: string; status: string }[],
   resolved: [
+    "IMP-058-1: AC未達成: view.tsでonInlineAddコールバックがrenderTaskListに渡されていない - Sprint 59でview.ts修正により解決",
     "IMP-048-1: DoD Tests失敗: src/view.test.ts AIボタンテキストコンテンツ期待値不一致（既存の失敗） - view.test.ts期待値修正で解決",
     "IMP-048-2: DoD Lint失敗: src/main.ts Promise処理エラー5件（既存のLintエラー） - main.ts Promise処理適正化とAITaskInputDialog型修正で解決",
   ] as string[]
@@ -261,6 +258,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 56, pbi: "PBI-056", story: "キーボードショートカット機能", verification: "passed", notes: "879t(+42t),8subtasks,6commits,DoD全pass,Phase 17開始" },
   { sprint: 57, pbi: "PBI-057", story: "高度検索機能", verification: "passed", notes: "929t(+50t),7subtasks,10commits,DoD全pass,AC全達成,Phase 17完遂" },
   { sprint: 58, pbi: "PBI-064", story: "インライン入力欄でタスク追加", verification: "failed", notes: "931t(+2t),8subtasks,13commits,DoD全pass,AC未達成(view.ts統合欠落),rate68%→72%" },
+  { sprint: 59, pbi: "PBI-064", story: "インライン入力欄でタスク追加(IMP-058-1解決)", verification: "passed", notes: "931t,1subtask,1commit,DoD全pass,AC全達成,IMP-058-1解決,rate72%→73%" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
@@ -283,11 +281,11 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 58完了: rate 72%、healthy KPI 70%初達成、Sprint 59計画中)
+// Action Management (Sprint 59完了: rate 73%、P0 Action IMP-058-1解決)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 98, executed: 71, rate: 72, remaining: 27 },
-  // Sprint 58完了: P0 100%実施、rate 68%→72%(+4%)、healthy KPI達成、残履歴はgit参照
+  tracking: { total: 98, executed: 72, rate: 73, remaining: 26 },
+  // Sprint 59: P0 Action 1項目実施（IMP-058-1解決）、rate 72%→73%(+1%)、healthy KPI継続
 };
 
 // Agents & Events

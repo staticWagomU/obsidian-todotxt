@@ -88,6 +88,7 @@ export class TodotxtView extends TextFileView {
 			() => this.openArchiveWithConfirmation(),
 			() => this.openAITaskDialog(),
 			(index) => this.openAIEditDialog(index),
+			(description) => { void this.getAddHandler()(description); },
 		);
 	}
 

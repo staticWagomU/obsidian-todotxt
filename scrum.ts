@@ -78,7 +78,14 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "履歴は最大20件まで保持される", verification: "pnpm vitest run: 履歴上限テスト" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 7,           // UndoRedoHistory class, createSnapshot, undo, redo, getUndoHandler, getRedoHandler, keyboard integration
+      estimatedTests: 25,     // History基本(5), 上限(3), 各操作Undo/Redo(8), ショートカット(4), 統合(5)
+      externalDependencies: 1, // Obsidian Notice API
+      score: "MEDIUM",        // functions 7 + estimatedTests 25 + externalDeps 1 = MEDIUM
+      subtasks: 6,            // Behavioral 5 (History class, handlers, shortcuts, notification, view integration) + Structural 1
+    },
   },
   {
     id: "PBI-060",

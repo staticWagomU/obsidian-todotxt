@@ -87,7 +87,7 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "複数行のテンプレートが一度に追加される", verification: "vitest" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
     complexity: { functions: 4, estimatedTests: 12, externalDependencies: 0, score: "LOW" as const, subtasks: 5 },
   },
   {

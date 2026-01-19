@@ -7,16 +7,28 @@ import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler } from "./lib/handlers";
 import { renderTaskList, type DefaultFilterSettings } from "./lib/rendering";
+import { InlineEditState } from "./lib/inline-edit";
 import type TodotxtPlugin from "./main";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
 
 export class TodotxtView extends TextFileView {
 	plugin: TodotxtPlugin;
+	private inlineEditState: InlineEditState;
 
 	constructor(leaf: WorkspaceLeaf, plugin: TodotxtPlugin) {
 		super(leaf);
 		this.plugin = plugin;
+		// Initialize inline edit state with callbacks
+		this.inlineEditState = new InlineEditState({
+			onSave: (index, newValue) => {
+				void this.handleInlineEditSave(index, newValue);
+			},
+			onCancel: () => {
+				// Just re-render to exit edit mode
+				this.renderTaskList();
+			},
+		});
 	}
 
 	getViewType(): string {
@@ -345,6 +357,76 @@ export class TodotxtView extends TextFileView {
 			const resetSelectionMode = this.getResetSelectionMode();
 			resetSelectionMode();
 		};
+	}
+
+	/**
+	 * Get inline edit state for testing
+	 * Public for testing compatibility
+	 */
+	getInlineEditState(): InlineEditState {
+		return this.inlineEditState;
+	}
+
+	/**
+	 * Start inline editing for a task
+	 * Called when user double-clicks or presses Enter on a task
+	 * Public for testing compatibility
+	 */
+	startInlineEdit(index: number): void {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		this.inlineEditState.start(index, todo.description);
+		// Re-render to show edit input
+		this.renderTaskList();
+	}
+
+	/**
+	 * Handle inline edit save
+	 * Updates the task description and re-renders
+	 */
+	private async handleInlineEditSave(index: number, newValue: string): Promise<void> {
+		const editHandler = getEditHandler(() => this.data, (data, clear) => this.setViewData(data, clear));
+		await editHandler(index, { description: newValue });
+		// State is already cleared by save() method in InlineEditState
+	}
+
+	/**
+	 * Handle inline edit cancel
+	 * Restores original value and exits edit mode
+	 * Public for testing compatibility
+	 */
+	cancelInlineEdit(): void {
+		this.inlineEditState.cancel();
+		// onCancel callback will trigger re-render
+	}
+
+	/**
+	 * Handle inline edit save from UI
+	 * Updates current value and saves
+	 * Public for testing compatibility
+	 */
+	saveInlineEdit(newValue: string): void {
+		this.inlineEditState.setCurrentValue(newValue);
+		this.inlineEditState.save();
+		// onSave callback will handle the actual save
+	}
+
+	/**
+	 * Check if currently in inline edit mode
+	 * Public for testing compatibility
+	 */
+	isInlineEditing(): boolean {
+		return this.inlineEditState.isEditing();
+	}
+
+	/**
+	 * Get the index of the task being edited
+	 * Public for testing compatibility
+	 */
+	getInlineEditingIndex(): number | null {
+		return this.inlineEditState.getEditingIndex();
 	}
 }
 

@@ -323,7 +323,7 @@ describe("renderTaskItem - ダブルクリック・Enterキーで編集モード
 
 	beforeEach(() => {
 		const div = addCreateElHelper(document.createElement("div"));
-		ul = div.createEl("ul") as HTMLUListElement;
+		ul = div.createEl("ul");
 	});
 
 	describe("ダブルクリックで編集モード開始 (AC1)", () => {

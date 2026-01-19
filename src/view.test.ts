@@ -3058,3 +3058,123 @@ describe("Selection Mode Reset - Subtask 6", () => {
 		expect(newBatchButton?.classList.contains("active")).toBe(false);
 	});
 });
+
+// E2E: Inline Edit Integration Tests (PBI-058)
+describe("Inline Edit Integration - PBI-058 AC1-5", () => {
+	let view: TodotxtView;
+	let mockLeaf: { view: null };
+
+	beforeEach(() => {
+		mockLeaf = {
+			view: null,
+		};
+		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
+	});
+
+	describe("AC1: ダブルクリックで編集モード移行", () => {
+		it("startInlineEditでタスクの編集モードを開始できる", () => {
+			const initialData = "Task to edit\nAnother task";
+			view.setViewData(initialData, false);
+
+			// Start inline edit
+			view.startInlineEdit(0);
+
+			// Verify edit mode is active
+			expect(view.isInlineEditing()).toBe(true);
+			expect(view.getInlineEditingIndex()).toBe(0);
+		});
+
+		it("存在しないインデックスでは編集モードが開始されない", () => {
+			const initialData = "Task 1";
+			view.setViewData(initialData, false);
+
+			// Try to start inline edit with invalid index
+			view.startInlineEdit(99);
+
+			// Verify edit mode is not active
+			expect(view.isInlineEditing()).toBe(false);
+			expect(view.getInlineEditingIndex()).toBeNull();
+		});
+	});
+
+	describe("AC3: Escキーで変更破棄", () => {
+		it("cancelInlineEditで編集をキャンセルして元の値を復元", () => {
+			const initialData = "Original task";
+			view.setViewData(initialData, false);
+
+			// Start inline edit
+			view.startInlineEdit(0);
+			expect(view.isInlineEditing()).toBe(true);
+
+			// Cancel edit
+			view.cancelInlineEdit();
+
+			// Verify edit mode is exited
+			expect(view.isInlineEditing()).toBe(false);
+			expect(view.getInlineEditingIndex()).toBeNull();
+
+			// Verify data is unchanged
+			expect(view.getViewData()).toBe(initialData);
+		});
+	});
+
+	describe("AC4: Enter/Cmd+Enterで保存", () => {
+		it("saveInlineEditで編集内容を保存", async () => {
+			const initialData = "2026-01-19 Original task t:2026-01-19";
+			view.setViewData(initialData, false);
+
+			// Start inline edit
+			view.startInlineEdit(0);
+			expect(view.isInlineEditing()).toBe(true);
+
+			// Save edit with new value
+			view.saveInlineEdit("Updated task description");
+
+			// Wait for async save handler
+			await new Promise(resolve => setTimeout(resolve, 10));
+
+			// Verify edit mode is exited
+			expect(view.isInlineEditing()).toBe(false);
+
+			// Verify data is updated
+			const updatedData = view.getViewData();
+			expect(updatedData).toContain("Updated task description");
+		});
+	});
+
+	describe("AC5: 外部クリックで自動保存", () => {
+		it("InlineEditStateのhandleBlurで自動保存が呼ばれる", async () => {
+			const initialData = "2026-01-19 Task to blur t:2026-01-19";
+			view.setViewData(initialData, false);
+
+			// Start inline edit
+			view.startInlineEdit(0);
+
+			// Get the state and simulate blur
+			const state = view.getInlineEditState();
+			state.setCurrentValue("Blur saved task");
+			state.handleBlur();
+
+			// Wait for async save handler
+			await new Promise(resolve => setTimeout(resolve, 10));
+
+			// Verify edit mode is exited
+			expect(view.isInlineEditing()).toBe(false);
+
+			// Verify data is updated
+			const updatedData = view.getViewData();
+			expect(updatedData).toContain("Blur saved task");
+		});
+	});
+
+	describe("InlineEditState integration", () => {
+		it("getInlineEditStateでInlineEditStateインスタンスを取得できる", () => {
+			const state = view.getInlineEditState();
+			expect(state).toBeDefined();
+			expect(typeof state.isEditing).toBe("function");
+			expect(typeof state.start).toBe("function");
+			expect(typeof state.cancel).toBe("function");
+			expect(typeof state.save).toBe("function");
+		});
+	});
+});

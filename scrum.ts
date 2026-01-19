@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 60, pbi: "PBI-058", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 6, subtasksTotal: 7, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-058", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -195,48 +195,48 @@ export const currentSprint = {
       test: "InlineEditStateクラス: 編集中状態の開始・終了、編集対象インデックス管理、元の値保持",
       implementation: "src/lib/inline-edit.ts: InlineEditState class with start/stop/getValue methods",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat(inline-edit): InlineEditState class with start/stop/value management" }],
     },
     // Subtask 2: Escキーでキャンセル処理 (behavioral) - AC3
     {
       test: "InlineEditState.cancel(): 編集中にEscキーで変更を破棄、元の値を復元",
       implementation: "src/lib/inline-edit.ts: cancel() method restores original value",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat(inline-edit): cancel() method for Esc key handling (AC3)" }],
     },
     // Subtask 3: Enter/Cmd+Enterで保存処理 (behavioral) - AC4
     {
       test: "InlineEditState.save(): Enter/Cmd+Enterで編集内容を保存、コールバック呼び出し",
       implementation: "src/lib/inline-edit.ts: save() method commits changes via callback",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat(inline-edit): save() method for Enter/Cmd+Enter handling (AC4)" }],
     },
     // Subtask 4: blur時の自動保存 (behavioral) - AC5
     {
       test: "InlineEditState.handleBlur(): 外部クリック時に自動保存、編集モード終了",
       implementation: "src/lib/inline-edit.ts: handleBlur() auto-saves on focus loss",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat(inline-edit): handleBlur() for auto-save on focus loss (AC5)" }],
     },
     // Subtask 5: インライン編集UIレンダリング (structural)
     {
       test: "renderInlineEditInput(): 編集モード時にinput要素をレンダリング、通常モードとの切り替え",
       implementation: "src/lib/rendering.ts: renderInlineEditInput function for edit mode UI",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat(rendering): renderInlineEditInput for edit mode UI" }],
     },
     // Subtask 6: ダブルクリック・Enterキーでの編集モード開始 (structural) - AC1, AC2
     {
       test: "renderTaskItem: ダブルクリックイベントとキーボードEnterで編集モードに移行",
       implementation: "src/lib/rendering.ts: add dblclick handler and keyboard Enter trigger",
       type: "structural" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [{ phase: "green" as CommitPhase, message: "feat(rendering): renderTaskItemWithInlineEdit for dblclick/Enter triggers (AC1, AC2)" }],
     },
     // Subtask 7: E2E統合テスト・view.ts統合 (behavioral) - Sprint 58教訓
     {

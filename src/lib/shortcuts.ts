@@ -214,4 +214,20 @@ export class ShortcutManager {
 	saveToSettings(): Record<string, string> {
 		return { ...this.customKeys };
 	}
+
+	/**
+	 * Reset all shortcuts to their default keys
+	 * Clears all custom key bindings
+	 */
+	resetToDefault(): void {
+		this.customKeys = {};
+	}
+
+	/**
+	 * Reset a single shortcut to its default key
+	 * @param id - Shortcut ID to reset
+	 */
+	resetSingleShortcut(id: string): void {
+		delete this.customKeys[id];
+	}
 }

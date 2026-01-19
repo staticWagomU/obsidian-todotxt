@@ -390,4 +390,79 @@ describe("ShortcutManager", () => {
 			expect(manager.getCustomKeys()).toEqual({});
 		});
 	});
+
+	describe("resetToDefault", () => {
+		it("should clear all custom keys", () => {
+			const manager = new ShortcutManager({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+				"action-delete": "Backspace",
+			});
+
+			manager.resetToDefault();
+
+			expect(manager.getCustomKeys()).toEqual({});
+		});
+
+		it("should restore all shortcuts to default keys", () => {
+			const manager = new ShortcutManager({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+			});
+
+			manager.resetToDefault();
+
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+			expect(manager.getEffectiveKey("action-toggle")).toBe("Enter");
+		});
+
+		it("should work when no custom keys were set", () => {
+			const manager = new ShortcutManager();
+
+			// Should not throw
+			expect(() => manager.resetToDefault()).not.toThrow();
+			expect(manager.getCustomKeys()).toEqual({});
+		});
+
+		it("should allow setting custom keys again after reset", () => {
+			const manager = new ShortcutManager({ "action-edit": "F2" });
+
+			manager.resetToDefault();
+			const result = manager.setCustomKey("action-edit", "F3");
+
+			expect(result.success).toBe(true);
+			expect(manager.getCustomKey("action-edit")).toBe("F3");
+		});
+	});
+
+	describe("resetSingleShortcut", () => {
+		it("should reset only the specified shortcut to default", () => {
+			const manager = new ShortcutManager({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+			});
+
+			manager.resetSingleShortcut("action-edit");
+
+			expect(manager.getCustomKey("action-edit")).toBeUndefined();
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+			// Other custom keys should remain
+			expect(manager.getCustomKey("action-toggle")).toBe("Space");
+		});
+
+		it("should do nothing for shortcut without custom key", () => {
+			const manager = new ShortcutManager({ "action-toggle": "Space" });
+
+			// Should not throw
+			expect(() => manager.resetSingleShortcut("action-edit")).not.toThrow();
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+		});
+
+		it("should do nothing for unknown shortcut id", () => {
+			const manager = new ShortcutManager();
+
+			// Should not throw
+			expect(() => manager.resetSingleShortcut("unknown-id")).not.toThrow();
+		});
+	});
 });

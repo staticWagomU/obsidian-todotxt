@@ -90,3 +90,112 @@ export function detectKeyConflict(
 
 	return conflicts;
 }
+
+/**
+ * Result of setting a custom key
+ */
+export interface SetKeyResult {
+	/** Whether the operation was successful */
+	success: boolean;
+	/** Array of conflicting shortcut IDs if conflict detected */
+	conflicts: string[];
+}
+
+/**
+ * ShortcutManager manages custom key bindings for shortcuts
+ * Provides CRUD operations and conflict detection
+ */
+export class ShortcutManager {
+	private shortcuts: ShortcutDefinition[];
+	private customKeys: Record<string, string>;
+
+	/**
+	 * Create a new ShortcutManager
+	 * @param initialCustomKeys - Optional initial custom key bindings from settings
+	 */
+	constructor(initialCustomKeys: Record<string, string> = {}) {
+		this.shortcuts = DEFAULT_SHORTCUTS;
+		this.customKeys = { ...initialCustomKeys };
+	}
+
+	/**
+	 * Get all shortcut definitions
+	 */
+	getAllShortcuts(): ShortcutDefinition[] {
+		return this.shortcuts;
+	}
+
+	/**
+	 * Get custom key for a specific shortcut
+	 * @param id - Shortcut ID
+	 * @returns Custom key or undefined if not set
+	 */
+	getCustomKey(id: string): string | undefined {
+		return this.customKeys[id];
+	}
+
+	/**
+	 * Get effective key for a shortcut (custom key if set, otherwise default)
+	 * @param id - Shortcut ID
+	 * @returns Effective key or undefined if shortcut not found
+	 */
+	getEffectiveKey(id: string): string | undefined {
+		const shortcut = this.shortcuts.find((s) => s.id === id);
+		if (!shortcut) {
+			return undefined;
+		}
+		return this.customKeys[id] ?? shortcut.key;
+	}
+
+	/**
+	 * Set a custom key for a shortcut
+	 * @param id - Shortcut ID
+	 * @param newKey - New key binding
+	 * @returns Result with success status and any conflicts
+	 */
+	setCustomKey(id: string, newKey: string): SetKeyResult {
+		const shortcut = this.shortcuts.find((s) => s.id === id);
+		if (!shortcut) {
+			return { success: false, conflicts: [] };
+		}
+
+		const conflicts = detectKeyConflict(
+			this.shortcuts,
+			this.customKeys,
+			newKey,
+			id
+		);
+
+		if (conflicts.length > 0) {
+			return { success: false, conflicts };
+		}
+
+		this.customKeys[id] = newKey;
+		return { success: true, conflicts: [] };
+	}
+
+	/**
+	 * Remove custom key for a shortcut, reverting to default
+	 * @param id - Shortcut ID
+	 */
+	removeCustomKey(id: string): void {
+		delete this.customKeys[id];
+	}
+
+	/**
+	 * Get all custom keys
+	 * @returns Copy of custom keys record
+	 */
+	getCustomKeys(): Record<string, string> {
+		return { ...this.customKeys };
+	}
+
+	/**
+	 * Get shortcut definition by ID
+	 * @param id - Shortcut ID
+	 * @returns Shortcut definition or undefined if not found
+	 */
+	getShortcutById(id: string): ShortcutDefinition | undefined {
+		return this.shortcuts.find((s) => s.id === id);
+	}
+}

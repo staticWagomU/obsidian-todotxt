@@ -4,6 +4,7 @@ import {
 	DEFAULT_SHORTCUTS,
 	formatShortcutKey,
 	detectKeyConflict,
+	ShortcutManager,
 } from "./shortcuts";
 
 describe("ShortcutDefinition extended type", () => {
@@ -206,6 +207,144 @@ describe("detectKeyConflict", () => {
 			const conflicts = detectKeyConflict(shortcuts, customKeys, "E", "action-toggle");
 			expect(conflicts).toEqual(["action-edit"]);
 			// The caller can use these IDs to generate warning messages
+		});
+	});
+});
+
+describe("ShortcutManager", () => {
+	describe("initialization", () => {
+		it("should initialize with default shortcuts", () => {
+			const manager = new ShortcutManager();
+			expect(manager.getAllShortcuts()).toEqual(DEFAULT_SHORTCUTS);
+		});
+
+		it("should initialize with custom shortcuts from settings", () => {
+			const customKeys = { "action-edit": "F2" };
+			const manager = new ShortcutManager(customKeys);
+			expect(manager.getCustomKey("action-edit")).toBe("F2");
+		});
+	});
+
+	describe("getCustomKey", () => {
+		it("should return custom key when set", () => {
+			const customKeys = { "action-edit": "F2" };
+			const manager = new ShortcutManager(customKeys);
+			expect(manager.getCustomKey("action-edit")).toBe("F2");
+		});
+
+		it("should return undefined when no custom key is set", () => {
+			const manager = new ShortcutManager();
+			expect(manager.getCustomKey("action-edit")).toBeUndefined();
+		});
+	});
+
+	describe("getEffectiveKey", () => {
+		it("should return custom key when set", () => {
+			const customKeys = { "action-edit": "F2" };
+			const manager = new ShortcutManager(customKeys);
+			expect(manager.getEffectiveKey("action-edit")).toBe("F2");
+		});
+
+		it("should return default key when no custom key is set", () => {
+			const manager = new ShortcutManager();
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+		});
+
+		it("should return undefined for unknown shortcut id", () => {
+			const manager = new ShortcutManager();
+			expect(manager.getEffectiveKey("unknown-id")).toBeUndefined();
+		});
+	});
+
+	describe("setCustomKey", () => {
+		it("should set custom key for a shortcut", () => {
+			const manager = new ShortcutManager();
+			const result = manager.setCustomKey("action-edit", "F2");
+
+			expect(result.success).toBe(true);
+			expect(manager.getCustomKey("action-edit")).toBe("F2");
+		});
+
+		it("should detect conflict when setting duplicate key", () => {
+			const manager = new ShortcutManager();
+			// action-toggle uses "Enter" by default
+			const result = manager.setCustomKey("action-edit", "Enter");
+
+			expect(result.success).toBe(false);
+			expect(result.conflicts).toContain("action-toggle");
+		});
+
+		it("should return success when no conflict", () => {
+			const manager = new ShortcutManager();
+			const result = manager.setCustomKey("action-edit", "F2");
+
+			expect(result.success).toBe(true);
+			expect(result.conflicts).toEqual([]);
+		});
+
+		it("should return failure for unknown shortcut id", () => {
+			const manager = new ShortcutManager();
+			const result = manager.setCustomKey("unknown-id", "F2");
+
+			expect(result.success).toBe(false);
+		});
+	});
+
+	describe("removeCustomKey", () => {
+		it("should remove custom key and revert to default", () => {
+			const customKeys = { "action-edit": "F2" };
+			const manager = new ShortcutManager(customKeys);
+
+			manager.removeCustomKey("action-edit");
+
+			expect(manager.getCustomKey("action-edit")).toBeUndefined();
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+		});
+
+		it("should do nothing for non-existent custom key", () => {
+			const manager = new ShortcutManager();
+			// Should not throw
+			expect(() => manager.removeCustomKey("action-edit")).not.toThrow();
+		});
+	});
+
+	describe("getCustomKeys", () => {
+		it("should return all custom keys", () => {
+			const customKeys = { "action-edit": "F2", "action-toggle": "Space" };
+			const manager = new ShortcutManager(customKeys);
+
+			expect(manager.getCustomKeys()).toEqual(customKeys);
+		});
+
+		it("should return empty object when no custom keys", () => {
+			const manager = new ShortcutManager();
+			expect(manager.getCustomKeys()).toEqual({});
+		});
+
+		it("should return a copy, not reference", () => {
+			const customKeys = { "action-edit": "F2" };
+			const manager = new ShortcutManager(customKeys);
+
+			const retrieved = manager.getCustomKeys();
+			retrieved["action-toggle"] = "Space";
+
+			expect(manager.getCustomKeys()).toEqual({ "action-edit": "F2" });
+		});
+	});
+
+	describe("getShortcutById", () => {
+		it("should return shortcut definition by id", () => {
+			const manager = new ShortcutManager();
+			const shortcut = manager.getShortcutById("action-edit");
+
+			expect(shortcut).toBeDefined();
+			expect(shortcut?.id).toBe("action-edit");
+			expect(shortcut?.key).toBe("E");
+		});
+
+		it("should return undefined for unknown id", () => {
+			const manager = new ShortcutManager();
+			expect(manager.getShortcutById("unknown-id")).toBeUndefined();
 		});
 	});
 });

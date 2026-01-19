@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 64, pbi: "PBI-063", status: "done" as SprintStatus,
-    subtasksCompleted: 8, subtasksTotal: 8, impediments: 0 },
-  phase: { number: 18, status: "in_progress", sprints: "58-64", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
+  sprint: { number: 65, pbi: "PBI-062", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+  phase: { number: 18, status: "in_progress", sprints: "58-65", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
 // Product Goal
@@ -66,46 +66,8 @@ export const productBacklog: ProductBacklogItem[] = [
   // PBI-059: Undo/Redo機能 - Sprint 61完了、1008t(+34t)、see git history
   // PBI-060: フィルター保存機能 - Sprint 62完了、1076t(+68t)、史上最大テスト増加量、see git history
   // PBI-061: コンテキストメニュー機能 - Sprint 63完了、1140t(+64t)、Phase 18で2番目テスト増加、see git history
-  {
-    id: "PBI-062",
-    story: {
-      role: "パワーユーザー",
-      capability: "キーボードショートカットを自分好みにカスタマイズ",
-      benefit: "慣れ親しんだキー操作で効率的にタスク管理できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "設定画面でショートカットキーを変更できる", verification: "手動テスト: 設定画面でのキー変更操作確認" },
-      { criterion: "キーの競合を検出して警告を表示する", verification: "pnpm vitest run: キー競合検出テスト" },
-      { criterion: "デフォルトに戻すボタンで初期設定に復元できる", verification: "pnpm vitest run: デフォルト復元テスト" },
-      { criterion: "カスタマイズした設定がObsidian設定に永続化される", verification: "pnpm vitest run: 設定永続化テスト" },
-    ],
-    dependencies: ["PBI-056"],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 8, estimatedTests: 35, externalDependencies: 0, score: "MEDIUM", subtasks: 7 },
-    refactorChecklist: [
-      "ShortcutDefinitionの拡張: id追加、customKey対応",
-      "KeyboardActionHandlerのカスタムキー対応",
-      "設定画面UIのショートカットカスタマイズコンポーネント分離",
-    ],
-  },
-  {
-    id: "PBI-063",
-    story: {
-      role: "大量タスクを持つユーザー",
-      capability: "1000件以上のタスクでも滑らかにスクロール・操作",
-      benefit: "大規模なtodo.txtファイルでもストレスなく使用できる",
-    },
-    acceptanceCriteria: [
-      { criterion: "仮想スクロールにより表示範囲のみDOMをレンダリングする", verification: "pnpm vitest run: VirtualScrollerテスト（DOMノード数検証）" },
-      { criterion: "1000件のタスクでも初期表示が500ms以内に完了する", verification: "pnpm vitest run: 1000件初期表示パフォーマンステスト" },
-      { criterion: "スクロール時のFPSが50fps以上を維持する", verification: "手動テスト + pnpm vitest run: スクロールハンドラ実行時間テスト" },
-      { criterion: "フィルタリング・ソート処理がUIをブロックしない", verification: "pnpm vitest run: 非同期フィルタリングテスト" },
-      { criterion: "メモリ使用量が100件と1000件で2倍以内の増加に抑える", verification: "pnpm vitest run: DOMノード数比較テスト" },
-    ],
-    dependencies: [],
-    status: "done" as PBIStatus,
-    complexity: { functions: 12, estimatedTests: 45, externalDependencies: 0, score: "HIGH", subtasks: 8 },
-  },
+  // PBI-063: パフォーマンス最適化 - Sprint 64完了、1220t(+80t)、see git history
+  // PBI-062: キーボードショートカットカスタマイズ - Sprint 65 in_progress
 ];
 
 // Definition of Ready
@@ -119,22 +81,21 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 64: PBI-063 パフォーマンス最適化（仮想スクロール）
+// Current Sprint - Sprint 65: PBI-062 キーボードショートカットカスタマイズ
 export const currentSprint = {
-  sprint: 64,
-  pbi: "PBI-063",
-  goal: "大量タスク（1000件以上）でもストレスなく操作できるパフォーマンス最適化を実装する",
-  status: "done" as SprintStatus,
-  // P0 Action適用: 各Subtask完了コミット + scrum.ts更新を1コミットにまとめる
+  sprint: 65,
+  pbi: "PBI-062",
+  goal: "パワーユーザーが自分好みのキーボードショートカットを設定画面でカスタマイズし、永続化できるようにする",
+  status: "in_progress" as SprintStatus,
+  // P0 Action適用（Sprint 63より）: 各Subtask完了コミット + scrum.ts更新を1コミットにまとめる
   subtasks: [
-    { test: "VirtualScroller基本クラステスト（visibleRange計算）", implementation: "VirtualScrollerクラス実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add VirtualScroller basic class tests" }, { phase: "green" as CommitPhase, message: "feat: implement VirtualScroller class with visibleRange calculation" }], ac: ["AC1"] },
-    { test: "表示範囲計算テスト（スクロール位置→表示インデックス）", implementation: "calculateVisibleRange関数実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add calculateVisibleRange edge case tests" }, { phase: "green" as CommitPhase, message: "feat: implement calculateVisibleRange function with edge case handling" }], ac: ["AC1"] },
-    { test: "オーバースキャン（バッファ）ロジックテスト", implementation: "overscan設定とバッファDOM管理", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add overscan buffer logic tests" }, { phase: "green" as CommitPhase, message: "feat: implement calculateVisibleRangeWithOverscan function" }], ac: ["AC1", "AC5"] },
-    { test: "非同期フィルタリングテスト", implementation: "filterTodosAsync関数実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: implement filterTodosAsync for non-blocking filtering (AC4)" }], ac: ["AC4"] },
-    { test: "パフォーマンス計測ユーティリティテスト", implementation: "PerformanceMetrics計測関数群", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: implement PerformanceMetrics utilities (AC2, AC3)" }], ac: ["AC2", "AC3"] },
-    { test: "1000件初期表示パフォーマンステスト（AC2検証）", implementation: "統合パフォーマンステスト", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add performance tests for 1000 items (AC2, AC5)" }], ac: ["AC2", "AC5"] },
-    { test: "rendering.ts仮想スクロール統合リファクタリング", implementation: "E2E統合テストでモジュール統合を検証", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add E2E integration tests for virtual scroll modules" }], ac: ["AC1", "AC2", "AC3", "AC4", "AC5"] },
-    { test: "E2E統合テスト（AC1-5網羅）", implementation: "全モジュール統合テスト、AC1-5検証", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add E2E integration tests for all AC requirements" }], ac: ["AC1", "AC2", "AC3", "AC4", "AC5"] },
+    { test: "ShortcutDefinition拡張テスト（id追加、customKey対応、DEFAULT_SHORTCUTS定数）", implementation: "ShortcutDefinition型拡張、id/customKey追加、DEFAULT_SHORTCUTS定数定義", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC3", "AC4"] },
+    { test: "キー競合検出ロジックテスト（同一キーの重複検出、警告メッセージ生成）", implementation: "detectKeyConflict関数実装、競合ショートカットID配列返却", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC2"] },
+    { test: "ShortcutManager設定管理テスト（getCustomKey、setCustomKey、CRUD操作）", implementation: "ShortcutManagerクラス実装、カスタムキー取得・設定・削除", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC4"] },
+    { test: "設定永続化テスト（TodotxtPluginSettings統合、load/save）", implementation: "customShortcuts設定フィールド追加、永続化ロジック実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC4"] },
+    { test: "デフォルト復元ロジックテスト（resetToDefault、全ショートカット初期化）", implementation: "resetToDefault関数実装、DEFAULT_SHORTCUTSへの復元", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC3"] },
+    { test: "KeyboardActionHandlerカスタムキー対応リファクタ（getActionForKey拡張）", implementation: "既存ハンドラのカスタムキーマッピング対応、ShortcutManager連携", type: "structural" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1"] },
+    { test: "E2E統合テスト（AC1-4網羅: 設定変更→競合検出→デフォルト復元→永続化）", implementation: "全モジュール統合検証、カスタマイズワークフロー完全テスト", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC2", "AC3", "AC4"] },
   ] as (Subtask & { ac: string[] })[],
 };
 // Sprint 63: PBI-061完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1140t(+64t), Phase 18で2番目テスト増加, see git history

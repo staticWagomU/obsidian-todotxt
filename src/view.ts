@@ -3,6 +3,7 @@ import { parseTodoTxt, appendTaskToFile, updateTaskAtLine } from "./lib/parser";
 import { type Todo, duplicateTask, editTask } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
+import { FocusViewModal } from "./ui/FocusViewModal";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./lib/handlers";
@@ -255,6 +256,24 @@ export class TodotxtView extends TextFileView {
 			todo.tags.t,
 			todos,
 		);
+		modal.open();
+	}
+
+	/**
+	 * Open focus view modal (PBI-065 AC6, AC7)
+	 * Shows today's tasks filtered by due:/t: today or earlier
+	 * Public for testing compatibility
+	 */
+	openFocusViewModal(): void {
+		const todos = parseTodoTxt(this.data);
+		const toggleHandler = getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
+
+		const modal = new FocusViewModal(this.app, {
+			todos,
+			onToggleComplete: (_todo, originalIndex) => {
+				void toggleHandler(originalIndex);
+			},
+		});
 		modal.open();
 	}
 

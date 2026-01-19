@@ -51,6 +51,15 @@ export default class TodotxtPlugin extends Plugin {
 			},
 		});
 
+		// Add command for focus view (PBI-065 AC6)
+		this.addCommand({
+			id: COMMANDS.openFocusView.id,
+			name: COMMANDS.openFocusView.name,
+			callback: () => {
+				this.openFocusView();
+			},
+		});
+
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new TodotxtSettingTab(this.app, this));
 	}
@@ -144,6 +153,27 @@ export default class TodotxtPlugin extends Plugin {
 			if (searchBox) {
 				searchBox.focus();
 			}
+		}
+	}
+
+	/**
+	 * Open focus view modal (PBI-065 AC6)
+	 * Shows today's tasks filtered by due:/t: today or earlier
+	 */
+	openFocusView(): void {
+		const { workspace } = this.app;
+
+		// Try to find active TodotxtView
+		const activeView = workspace.getActiveViewOfType(TodotxtView);
+		if (activeView) {
+			activeView.openFocusViewModal();
+			return;
+		}
+
+		// If no active TodotxtView, try to find any TodotxtView
+		const leaves = workspace.getLeavesOfType(VIEW_TYPE_TODOTXT);
+		if (leaves.length > 0 && leaves[0]?.view instanceof TodotxtView) {
+			leaves[0].view.openFocusViewModal();
 		}
 	}
 

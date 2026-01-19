@@ -23,4 +23,9 @@ export const COMMANDS = {
 		id: "todotxt-focus-search",
 		name: "検索にフォーカス",
 	},
+	// Focus view command (PBI-065)
+	openFocusView: {
+		id: "todotxt-open-focus-view",
+		name: "フォーカスビューを開く",
+	},
 } as const satisfies Record<string, CommandDefinition>;

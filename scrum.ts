@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 65, pbi: "PBI-062", status: "done" as SprintStatus,
-    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
-  phase: { number: 18, status: "done", sprints: "58-65", pbis: "PBI-058, PBI-059, PBI-060, PBI-061, PBI-062, PBI-063, PBI-064", goal: "Phase 18: UX強化・パフォーマンス最適化" },
+  sprint: { number: 66, pbi: "PBI-065", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 7, impediments: 0 },
+  phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
 // Product Goal
@@ -50,7 +50,7 @@ export const roadmap = {
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
   phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-65", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "done" },
-  phase19: { number: 19, goal: "生産性向上・Obsidian統合", sprints: "66-69", pbis: ["PBI-065", "PBI-066", "PBI-067", "PBI-068"], status: "ready" },
+  phase19: { number: 19, goal: "生産性向上・Obsidian統合", sprints: "66-69", pbis: ["PBI-065", "PBI-066", "PBI-067", "PBI-068"], status: "in_progress" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -162,13 +162,72 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - None (Phase 18完遂、次Phase準備中)
+// Current Sprint - Sprint 66: PBI-065 フォーカスビュー機能
 export const currentSprint = {
-  sprint: 65,
-  pbi: "PBI-062",
-  goal: "パワーユーザーが自分好みのキーボードショートカットを設定画面でカスタマイズし、永続化できるようにする",
-  status: "done" as SprintStatus,
-  subtasks: [] as (Subtask & { ac: string[] })[],
+  sprint: 66,
+  pbi: "PBI-065",
+  goal: "タスク管理ユーザーが今日やるべきタスクを専用フォーカスビューで一覧表示し、優先度に基づいた効率的なタスク消化を可能にする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    // Feature開発 (60%配分): 5 Subtasks
+    {
+      test: "due:が今日以前のタスク抽出テスト",
+      implementation: "filterFocusTodos() - due:フィルタ実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC1: due:が今日以前のタスクがフォーカスビューに表示される"],
+    },
+    {
+      test: "t:が今日以前のタスク抽出テスト",
+      implementation: "filterFocusTodos() - t:フィルタ追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC2: t:が今日以前のタスクがフォーカスビューに表示される"],
+    },
+    {
+      test: "due:/t:なし・完了タスク除外テスト",
+      implementation: "filterFocusTodos() - 除外ロジック実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC3: due:もt:もないタスクはフォーカスビューに表示されない", "AC4: 完了済みタスクはフォーカスビューに表示されない"],
+    },
+    {
+      test: "優先度順・説明文順ソートテスト",
+      implementation: "sortFocusTodos() - ソート実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC5: 優先度順（A>B>...>Z>なし）、同優先度内は説明文順にソートされる"],
+    },
+    {
+      test: "FocusViewModal UI統合テスト",
+      implementation: "モーダル実装・コマンド登録",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC6: コマンドパレットから「フォーカスビューを開く」コマンドでモーダル表示", "AC7: フォーカスビューからタスク完了トグルが可能"],
+    },
+    // プロセス改善 (40%配分): 2 Subtasks (P1 Actions組み込み)
+    {
+      test: "AC検証チェックリスト策定（P1 Action: Sprint 59からの継続）",
+      implementation: "CLAUDE.mdにAC検証手順3-5項目追記",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["P1 Action: AC検証チェックリスト策定（6 Sprint実績、SMART基準適用）"],
+    },
+    {
+      test: "Phase 19 Goal確認（P1 Action: 整合性確認）",
+      implementation: "scrum.ts roadmap.phase19更新確認",
+      type: "structural" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["P1 Action: Phase 19 Goal策定とPBI候補3-5個洗い出し"],
+    },
+  ] as (Subtask & { ac: string[] })[],
 };
 // Sprint 65: PBI-062完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1287t(+67t), Phase 18完遂, see git history
 // Sprint 63: PBI-061完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1140t(+64t), Phase 18で2番目テスト増加, see git history

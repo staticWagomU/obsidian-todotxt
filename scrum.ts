@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 65, pbi: "PBI-062", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 7, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-65", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -90,7 +90,7 @@ export const currentSprint = {
   // P0 Action適用（Sprint 63より）: 各Subtask完了コミット + scrum.ts更新を1コミットにまとめる
   subtasks: [
     { test: "ShortcutDefinition拡張テスト（id追加、customKey対応、DEFAULT_SHORTCUTS定数）", implementation: "ShortcutDefinition型拡張、id/customKey追加、DEFAULT_SHORTCUTS定数定義", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add ShortcutDefinition extension tests" }, { phase: "green" as CommitPhase, message: "feat: extend ShortcutDefinition with id and customKey" }], ac: ["AC3", "AC4"] },
-    { test: "キー競合検出ロジックテスト（同一キーの重複検出、警告メッセージ生成）", implementation: "detectKeyConflict関数実装、競合ショートカットID配列返却", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC2"] },
+    { test: "キー競合検出ロジックテスト（同一キーの重複検出、警告メッセージ生成）", implementation: "detectKeyConflict関数実装、競合ショートカットID配列返却", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add detectKeyConflict tests" }, { phase: "green" as CommitPhase, message: "feat: implement detectKeyConflict function" }], ac: ["AC2"] },
     { test: "ShortcutManager設定管理テスト（getCustomKey、setCustomKey、CRUD操作）", implementation: "ShortcutManagerクラス実装、カスタムキー取得・設定・削除", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC4"] },
     { test: "設定永続化テスト（TodotxtPluginSettings統合、load/save）", implementation: "customShortcuts設定フィールド追加、永続化ロジック実装", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC4"] },
     { test: "デフォルト復元ロジックテスト（resetToDefault、全ショートカット初期化）", implementation: "resetToDefault関数実装、DEFAULT_SHORTCUTSへの復元", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC3"] },

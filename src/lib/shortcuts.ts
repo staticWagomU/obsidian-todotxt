@@ -53,3 +53,40 @@ export function formatShortcutKey(key: string): string {
 		.replace("ArrowDown", "\u2193")  // Down arrow
 		.replace("Delete", "Del");
 }
+
+/**
+ * Detect key conflicts when setting a custom key
+ *
+ * @param shortcuts - Array of shortcut definitions
+ * @param customKeys - Record of shortcut ID to custom key
+ * @param newKey - The new key to check for conflicts
+ * @param targetId - The ID of the shortcut being modified
+ * @returns Array of conflicting shortcut IDs (empty if no conflicts)
+ */
+export function detectKeyConflict(
+	shortcuts: ShortcutDefinition[],
+	customKeys: Record<string, string>,
+	newKey: string,
+	targetId: string
+): string[] {
+	const normalizedNewKey = newKey.toLowerCase();
+	const conflicts: string[] = [];
+
+	for (const shortcut of shortcuts) {
+		// Skip the shortcut being modified
+		if (shortcut.id === targetId) {
+			continue;
+		}
+
+		// Get the effective key for this shortcut (custom key takes precedence)
+		const effectiveKey = customKeys[shortcut.id] ?? shortcut.key;
+		const normalizedEffectiveKey = effectiveKey.toLowerCase();
+
+		// Check for conflict
+		if (normalizedEffectiveKey === normalizedNewKey) {
+			conflicts.push(shortcut.id);
+		}
+	}
+
+	return conflicts;
+}

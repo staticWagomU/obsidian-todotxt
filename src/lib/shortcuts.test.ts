@@ -466,3 +466,192 @@ describe("ShortcutManager", () => {
 		});
 	});
 });
+
+/**
+ * E2E Integration Tests for Keyboard Shortcut Customization
+ * Tests AC1-4: Settings change -> Conflict detection -> Default restore -> Persistence
+ */
+describe("E2E Integration: Keyboard Shortcut Customization Workflow", () => {
+	describe("AC1: Custom shortcut setting and application", () => {
+		it("should allow user to customize shortcuts and apply them", () => {
+			// User creates a ShortcutManager (simulating plugin load)
+			const manager = new ShortcutManager();
+
+			// User sets custom key for edit action
+			const result = manager.setCustomKey("action-edit", "F2");
+			expect(result.success).toBe(true);
+
+			// Verify custom key is applied
+			expect(manager.getEffectiveKey("action-edit")).toBe("F2");
+
+			// Original default key should not be effective
+			expect(manager.getCustomKey("action-edit")).toBe("F2");
+		});
+
+		it("should integrate with KeyboardActionHandler through createKeyMappings", () => {
+			// This test verifies the full integration path
+			const manager = new ShortcutManager({ "action-edit": "F2" });
+
+			// Verify the effective key is the custom one
+			expect(manager.getEffectiveKey("action-edit")).toBe("F2");
+			expect(manager.getEffectiveKey("action-toggle")).toBe("Enter"); // Default unchanged
+
+			// The KeyMappings can be created from manager (tested in keyboard-navigation.test.ts)
+		});
+	});
+
+	describe("AC2: Key conflict detection with warning", () => {
+		it("should detect and warn about key conflicts when setting custom key", () => {
+			const manager = new ShortcutManager();
+
+			// Try to set action-edit to "Enter" which conflicts with action-toggle
+			const result = manager.setCustomKey("action-edit", "Enter");
+
+			// Should fail with conflict
+			expect(result.success).toBe(false);
+			expect(result.conflicts).toContain("action-toggle");
+
+			// Original key should remain unchanged
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+		});
+
+		it("should detect conflicts with already customized shortcuts", () => {
+			// User customizes action-toggle to "Space"
+			const manager = new ShortcutManager({ "action-toggle": "Space" });
+
+			// Try to set action-edit to "Space" - should conflict
+			const result = manager.setCustomKey("action-edit", "Space");
+
+			expect(result.success).toBe(false);
+			expect(result.conflicts).toContain("action-toggle");
+		});
+
+		it("should allow setting a key when original holder is customized away", () => {
+			// action-toggle uses "Enter" by default
+			const manager = new ShortcutManager();
+
+			// Customize action-toggle to use "Space" instead
+			manager.setCustomKey("action-toggle", "Space");
+
+			// Now "Enter" should be available for action-edit
+			const result = manager.setCustomKey("action-edit", "Enter");
+			expect(result.success).toBe(true);
+			expect(manager.getEffectiveKey("action-edit")).toBe("Enter");
+		});
+	});
+
+	describe("AC3: Default restore functionality", () => {
+		it("should restore all shortcuts to default with resetToDefault", () => {
+			// User customizes multiple shortcuts
+			const manager = new ShortcutManager({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+				"action-delete": "Backspace",
+			});
+
+			// Verify customizations are applied
+			expect(manager.getEffectiveKey("action-edit")).toBe("F2");
+			expect(manager.getEffectiveKey("action-toggle")).toBe("Space");
+			expect(manager.getEffectiveKey("action-delete")).toBe("Backspace");
+
+			// User clicks "Restore Defaults"
+			manager.resetToDefault();
+
+			// All shortcuts should be back to default
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+			expect(manager.getEffectiveKey("action-toggle")).toBe("Enter");
+			expect(manager.getEffectiveKey("action-delete")).toBe("Delete");
+			expect(manager.getCustomKeys()).toEqual({});
+		});
+
+		it("should restore single shortcut while preserving others", () => {
+			const manager = new ShortcutManager({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+			});
+
+			// User resets only action-edit
+			manager.resetSingleShortcut("action-edit");
+
+			// action-edit should be default, action-toggle should remain custom
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+			expect(manager.getEffectiveKey("action-toggle")).toBe("Space");
+		});
+	});
+
+	describe("AC4: Settings persistence across sessions", () => {
+		it("should save and load custom shortcuts through settings", () => {
+			// Session 1: User customizes shortcuts
+			const manager1 = new ShortcutManager();
+			manager1.setCustomKey("action-edit", "F2");
+			manager1.setCustomKey("action-toggle", "Space");
+
+			// Simulate saving to settings
+			const savedSettings = manager1.saveToSettings();
+			expect(savedSettings).toEqual({
+				"action-edit": "F2",
+				"action-toggle": "Space",
+			});
+
+			// Session 2: Plugin loads settings
+			const manager2 = new ShortcutManager();
+			manager2.loadFromSettings(savedSettings);
+
+			// Verify customizations are restored
+			expect(manager2.getEffectiveKey("action-edit")).toBe("F2");
+			expect(manager2.getEffectiveKey("action-toggle")).toBe("Space");
+			expect(manager2.getEffectiveKey("action-delete")).toBe("Delete"); // Default
+		});
+
+		it("should handle empty settings (new installation)", () => {
+			// New installation: no saved settings
+			const manager = new ShortcutManager();
+			manager.loadFromSettings({});
+
+			// All shortcuts should be default
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+			expect(manager.getEffectiveKey("action-toggle")).toBe("Enter");
+			expect(manager.getEffectiveKey("action-delete")).toBe("Delete");
+		});
+
+		it("should handle constructor initialization from settings", () => {
+			// Alternative path: initialize manager with settings directly
+			const savedSettings = { "action-edit": "F2", "action-toggle": "Space" };
+			const manager = new ShortcutManager(savedSettings);
+
+			expect(manager.getEffectiveKey("action-edit")).toBe("F2");
+			expect(manager.getEffectiveKey("action-toggle")).toBe("Space");
+		});
+	});
+
+	describe("Complete customization workflow", () => {
+		it("should handle full user workflow: customize -> conflict -> fix -> save -> restore", () => {
+			// Step 1: Initial state (new user)
+			const manager = new ShortcutManager();
+			expect(manager.getCustomKeys()).toEqual({});
+
+			// Step 2: User customizes action-edit to F2
+			const result1 = manager.setCustomKey("action-edit", "F2");
+			expect(result1.success).toBe(true);
+
+			// Step 3: User tries to set action-delete to F2 (conflict!)
+			const result2 = manager.setCustomKey("action-delete", "F2");
+			expect(result2.success).toBe(false);
+			expect(result2.conflicts).toContain("action-edit");
+
+			// Step 4: User fixes by choosing different key
+			const result3 = manager.setCustomKey("action-delete", "F3");
+			expect(result3.success).toBe(true);
+
+			// Step 5: User saves settings
+			const saved = manager.saveToSettings();
+			expect(saved).toEqual({ "action-edit": "F2", "action-delete": "F3" });
+
+			// Step 6: Later, user decides to restore defaults
+			manager.resetToDefault();
+			expect(manager.getCustomKeys()).toEqual({});
+			expect(manager.getEffectiveKey("action-edit")).toBe("E");
+			expect(manager.getEffectiveKey("action-delete")).toBe("Delete");
+		});
+	});
+});

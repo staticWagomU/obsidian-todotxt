@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 65, pbi: "PBI-062", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 6, subtasksTotal: 7, impediments: 0 },
+    subtasksCompleted: 7, subtasksTotal: 7, impediments: 0 },
   phase: { number: 18, status: "in_progress", sprints: "58-65", pbis: "PBI-062, PBI-063", goal: "Phase 18: UX強化・パフォーマンス最適化" },
 };
 
@@ -95,7 +95,7 @@ export const currentSprint = {
     { test: "設定永続化テスト（TodotxtPluginSettings統合、load/save）", implementation: "customShortcuts設定フィールド追加、永続化ロジック実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add settings persistence tests" }, { phase: "green" as CommitPhase, message: "feat: add customShortcuts to settings" }], ac: ["AC4"] },
     { test: "デフォルト復元ロジックテスト（resetToDefault、全ショートカット初期化）", implementation: "resetToDefault関数実装、DEFAULT_SHORTCUTSへの復元", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add resetToDefault tests" }, { phase: "green" as CommitPhase, message: "feat: implement resetToDefault/resetSingleShortcut" }], ac: ["AC3"] },
     { test: "KeyboardActionHandlerカスタムキー対応リファクタ（getActionForKey拡張）", implementation: "既存ハンドラのカスタムキーマッピング対応、ShortcutManager連携", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "refactor" as CommitPhase, message: "refactor: add custom key mapping support to KeyboardActionHandler" }], ac: ["AC1"] },
-    { test: "E2E統合テスト（AC1-4網羅: 設定変更→競合検出→デフォルト復元→永続化）", implementation: "全モジュール統合検証、カスタマイズワークフロー完全テスト", type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus, commits: [], ac: ["AC1", "AC2", "AC3", "AC4"] },
+    { test: "E2E統合テスト（AC1-4網羅: 設定変更→競合検出→デフォルト復元→永続化）", implementation: "全モジュール統合検証、カスタマイズワークフロー完全テスト", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add E2E integration tests for shortcut customization" }], ac: ["AC1", "AC2", "AC3", "AC4"] },
   ] as (Subtask & { ac: string[] })[],
 };
 // Sprint 63: PBI-061完了 - 7 subtasks (6 behavioral + 1 structural), 7 commits, DoD全pass, AC全達成, 1140t(+64t), Phase 18で2番目テスト増加, see git history

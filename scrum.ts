@@ -77,7 +77,14 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "編集中に外部クリックで自動保存される", verification: "pnpm vitest run: blur時の自動保存テスト" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
+    status: "ready" as PBIStatus,
+    complexity: {
+      functions: 8,
+      estimatedTests: 18,
+      externalDependencies: 0,
+      score: "MEDIUM" as const,
+      subtasks: 6,
+    },
   },
   {
     id: "PBI-059",

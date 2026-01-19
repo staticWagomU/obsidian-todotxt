@@ -1,6 +1,7 @@
 import { parseTodoTxt, updateTodoInList } from "./parser";
 import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type TaskUpdates } from "./todo";
 import { archiveCompletedTasks, appendToArchiveFile } from "./archive";
+import { UndoRedoHistory } from "./undo-redo";
 
 /**
  * Get toggle handler for task completion status
@@ -129,5 +130,51 @@ export function getArchiveHandler(
 
 		// Update original file to remove completed tasks
 		setViewData(remainingContent, false);
+	};
+}
+
+/**
+ * Get undo handler for reverting to previous state (AC1)
+ * @returns Handler function that returns true if undo was successful
+ */
+export function getUndoHandler(
+	history: UndoRedoHistory<string>,
+	setViewData: (data: string, clear: boolean) => void,
+): () => Promise<boolean> {
+	return async () => {
+		if (!history.canUndo()) {
+			return false;
+		}
+
+		const previousState = history.undo();
+		if (previousState === undefined) {
+			return false;
+		}
+
+		setViewData(previousState, false);
+		return true;
+	};
+}
+
+/**
+ * Get redo handler for restoring next state (AC2)
+ * @returns Handler function that returns true if redo was successful
+ */
+export function getRedoHandler(
+	history: UndoRedoHistory<string>,
+	setViewData: (data: string, clear: boolean) => void,
+): () => Promise<boolean> {
+	return async () => {
+		if (!history.canRedo()) {
+			return false;
+		}
+
+		const nextState = history.redo();
+		if (nextState === undefined) {
+			return false;
+		}
+
+		setViewData(nextState, false);
+		return true;
 	};
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { getAddHandler, getEditHandler, getArchiveHandler } from "./handlers";
+import { getAddHandler, getEditHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./handlers";
+import { UndoRedoHistory } from "./undo-redo";
 
 describe("handlers", () => {
 	describe("getAddHandler with date tags", () => {
@@ -127,6 +128,71 @@ describe("handlers", () => {
 
 			expect(savedArchiveData).toContain("x 2025-01-10 Old completed");
 			expect(savedArchiveData).toContain("x 2025-01-14 New completed");
+		});
+	});
+
+	describe("getUndoHandler (AC1)", () => {
+		it("should restore previous state when undo is possible", async () => {
+			const history = new UndoRedoHistory<string>();
+			let currentData = "initial state";
+			const setViewData = (data: string) => { currentData = data; };
+
+			// 履歴に状態を追加
+			history.push("initial state");
+			history.push("after edit");
+
+			const undoHandler = getUndoHandler(history, setViewData);
+			const result = await undoHandler();
+
+			expect(result).toBe(true);
+			expect(currentData).toBe("initial state");
+		});
+
+		it("should return false when undo is not possible", async () => {
+			const history = new UndoRedoHistory<string>();
+			let currentData = "initial state";
+			const setViewData = (data: string) => { currentData = data; };
+
+			const undoHandler = getUndoHandler(history, setViewData);
+			const result = await undoHandler();
+
+			expect(result).toBe(false);
+			expect(currentData).toBe("initial state"); // unchanged
+		});
+	});
+
+	describe("getRedoHandler (AC2)", () => {
+		it("should restore next state when redo is possible", async () => {
+			const history = new UndoRedoHistory<string>();
+			let currentData = "initial state";
+			const setViewData = (data: string) => { currentData = data; };
+
+			// 履歴に状態を追加してundo
+			history.push("initial state");
+			history.push("after edit");
+			history.undo();
+
+			const redoHandler = getRedoHandler(history, setViewData);
+			const result = await redoHandler();
+
+			expect(result).toBe(true);
+			expect(currentData).toBe("after edit");
+		});
+
+		it("should return false when redo is not possible", async () => {
+			const history = new UndoRedoHistory<string>();
+			let currentData = "after edit";
+			const setViewData = (data: string) => { currentData = data; };
+
+			// 履歴に状態を追加（undoしていない）
+			history.push("initial state");
+			history.push("after edit");
+
+			const redoHandler = getRedoHandler(history, setViewData);
+			const result = await redoHandler();
+
+			expect(result).toBe(false);
+			expect(currentData).toBe("after edit"); // unchanged
 		});
 	});
 });

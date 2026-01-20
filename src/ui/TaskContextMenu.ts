@@ -17,6 +17,7 @@ export interface ContextMenuCallbacks {
 	onPriorityChange: (index: number, priority: string | undefined) => void;
 	onProjectChange: (index: number, project: string, action: "add" | "remove") => void;
 	onContextChange: (index: number, context: string, action: "add" | "remove") => void;
+	onDecompose?: (index: number) => void;
 }
 
 /**
@@ -126,6 +127,19 @@ export class TaskContextMenu {
 			this.buildContextSubmenu(submenu);
 		});
 		this.menuItems.push({ title: "コンテキスト", icon: "at-sign", hasSubmenu: true });
+
+		// AIで分解（onDecomposeコールバックが提供されている場合のみ）
+		if (this.callbacks.onDecompose) {
+			this.menu.addSeparator();
+			this.menu.addItem((item) => {
+				item.setTitle("AIで分解")
+					.setIcon("split-square")
+					.onClick(() => {
+						this.callbacks.onDecompose?.(this.index);
+					});
+			});
+			this.menuItems.push({ title: "AIで分解", icon: "split-square" });
+		}
 	}
 
 	/**

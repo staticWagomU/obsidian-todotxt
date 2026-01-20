@@ -28,4 +28,9 @@ export const COMMANDS = {
 		id: "todotxt-open-focus-view",
 		name: "フォーカスビューを開く",
 	},
+	// Template task command (PBI-066)
+	addTemplateTask: {
+		id: "todotxt-add-template-task",
+		name: "テンプレートからタスク追加",
+	},
 } as const satisfies Record<string, CommandDefinition>;

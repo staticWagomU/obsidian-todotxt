@@ -60,6 +60,15 @@ export default class TodotxtPlugin extends Plugin {
 			},
 		});
 
+		// Add command for template task (PBI-066 AC2)
+		this.addCommand({
+			id: COMMANDS.addTemplateTask.id,
+			name: COMMANDS.addTemplateTask.name,
+			callback: () => {
+				this.openTemplateSelectModal();
+			},
+		});
+
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new TodotxtSettingTab(this.app, this));
 	}
@@ -174,6 +183,27 @@ export default class TodotxtPlugin extends Plugin {
 		const leaves = workspace.getLeavesOfType(VIEW_TYPE_TODOTXT);
 		if (leaves.length > 0 && leaves[0]?.view instanceof TodotxtView) {
 			leaves[0].view.openFocusViewModal();
+		}
+	}
+
+	/**
+	 * Open template select modal (PBI-066 AC2)
+	 * Shows list of templates to select from
+	 */
+	openTemplateSelectModal(): void {
+		const { workspace } = this.app;
+
+		// Try to find active TodotxtView
+		const activeView = workspace.getActiveViewOfType(TodotxtView);
+		if (activeView) {
+			activeView.openTemplateSelectModal();
+			return;
+		}
+
+		// If no active TodotxtView, try to find any TodotxtView
+		const leaves = workspace.getLeavesOfType(VIEW_TYPE_TODOTXT);
+		if (leaves.length > 0 && leaves[0]?.view instanceof TodotxtView) {
+			leaves[0].view.openTemplateSelectModal();
 		}
 	}
 

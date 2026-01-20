@@ -1,9 +1,10 @@
-import { TextFileView, TFile, type WorkspaceLeaf, Modal, type App } from "obsidian";
+import { TextFileView, TFile, type WorkspaceLeaf, Modal, type App, Notice } from "obsidian";
 import { parseTodoTxt, appendTaskToFile, updateTaskAtLine } from "./lib/parser";
 import { type Todo, duplicateTask, editTask } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
 import { FocusViewModal } from "./ui/FocusViewModal";
+import { TemplateSelectModal } from "./ui/TemplateSelectModal";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
 import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./lib/handlers";
@@ -274,6 +275,34 @@ export class TodotxtView extends TextFileView {
 				void toggleHandler(originalIndex);
 			},
 		});
+		modal.open();
+	}
+
+	/**
+	 * Open template select modal (PBI-066 AC2)
+	 * Shows list of templates to select from
+	 * Public for testing compatibility
+	 */
+	openTemplateSelectModal(): void {
+		const templates = this.plugin.settings.taskTemplates;
+
+		if (templates.length === 0) {
+			new Notice("テンプレートが登録されていません。設定画面でテンプレートを登録してください。");
+			return;
+		}
+
+		const modal = new TemplateSelectModal(
+			this.app,
+			templates,
+			(taskLines) => {
+				if (taskLines.length > 0) {
+					// Add each task line to the file
+					const newData = this.data.trimEnd() + "\n" + taskLines.join("\n");
+					this.setViewDataWithSnapshot(newData, false);
+					new Notice(`${taskLines.length}個のタスクを追加しました`);
+				}
+			}
+		);
 		modal.open();
 	}
 

@@ -6,6 +6,24 @@
 import { dateToString } from "./date-utils";
 
 /**
+ * Task template interface
+ * Represents a reusable task template with placeholder support
+ */
+export interface TaskTemplate {
+	/** Unique identifier for the template */
+	id: string;
+	/** Display name for the template */
+	name: string;
+	/** Template content (supports {{today}}, {{tomorrow}} placeholders, multi-line) */
+	content: string;
+}
+
+/**
+ * Default templates (empty array, user creates their own)
+ */
+export const DEFAULT_TEMPLATES: TaskTemplate[] = [];
+
+/**
  * Expand placeholders in a template string
  * Supports {{today}} and {{tomorrow}} placeholders (case-insensitive)
  * 

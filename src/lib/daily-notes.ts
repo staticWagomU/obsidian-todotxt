@@ -114,3 +114,78 @@ export function insertContentAtPosition(
 			return existingContent;
 	}
 }
+
+/**
+ * Parse Markdown checkboxes from content and convert to Todo objects
+ * Supports formats: - [ ], * [ ], 1. [ ]
+ * @param content - Markdown content to parse
+ * @returns Array of Todo objects
+ */
+export function parseMarkdownCheckboxes(content: string): Todo[] {
+	if (!content) {
+		return [];
+	}
+
+	const todos: Todo[] = [];
+
+	// Regex to match markdown checkboxes
+	// Supports: - [ ] task, * [ ] task, 1. [ ] task (with optional leading whitespace)
+	const checkboxRegex = /^\s*(?:[-*]|\d+\.)\s*\[([ xX])\]\s*(.*)$/;
+
+	// Split by both \n and \r\n
+	const lines = content.split(/\r?\n/);
+
+	for (const line of lines) {
+		const match = checkboxRegex.exec(line);
+		if (!match) {
+			continue;
+		}
+
+		const checkMark = match[1];
+		const taskText = match[2]?.trim() ?? "";
+
+		// Determine completion status
+		const completed = checkMark === "x" || checkMark === "X";
+
+		// Extract projects (+word)
+		const projects: string[] = [];
+		const projectMatches = taskText.matchAll(/\+(\S+)/g);
+		for (const projectMatch of projectMatches) {
+			if (projectMatch[1]) {
+				projects.push(projectMatch[1]);
+			}
+		}
+
+		// Extract contexts (@word)
+		const contexts: string[] = [];
+		const contextMatches = taskText.matchAll(/@(\S+)/g);
+		for (const contextMatch of contextMatches) {
+			if (contextMatch[1]) {
+				contexts.push(contextMatch[1]);
+			}
+		}
+
+		// Extract tags (key:value)
+		const tags: Record<string, string> = {};
+		const tagMatches = taskText.matchAll(/(\w+):(\S+)/g);
+		for (const tagMatch of tagMatches) {
+			if (tagMatch[1] && tagMatch[2]) {
+				tags[tagMatch[1]] = tagMatch[2];
+			}
+		}
+
+		todos.push({
+			completed,
+			priority: undefined,
+			creationDate: undefined,
+			completionDate: undefined,
+			description: taskText,
+			projects,
+			contexts,
+			tags,
+			raw: line,
+		});
+	}
+
+	return todos;
+}

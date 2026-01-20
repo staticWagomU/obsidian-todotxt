@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 67, pbi: "PBI-066", status: "done" as SprintStatus,
-    subtasksCompleted: 6, subtasksTotal: 6, impediments: 0 },
+  sprint: { number: 68, pbi: "PBI-067", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
@@ -88,13 +88,14 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "カスタム指示を入力してAIの分解方針を調整できる", verification: "manual" },
     ],
     dependencies: [],
-    status: "ready" as PBIStatus,
+    status: "in_progress" as PBIStatus,
     complexity: { functions: 4, estimatedTests: 15, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 5 },
     // Sprint 67 Retrospective P0 Action実施: complexity再評価
     // - 既存AI連携コンポーネント再利用でfunctions 5→4に調整
     // - estimatedTests 18→15に調整（プロンプト/API統合で重複削減）
     // - subtasks 6→5に調整（分解プロンプト構築とAPI統合を1 subtaskに統合）
     // 再利用コンポーネント: OpenRouterService, withRetry, AITaskPreviewDialog, TaskContextMenu
+    // Sprint 68: Planning完了、5 subtasks定義
   },
   {
     id: "PBI-068",
@@ -127,13 +128,54 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 67完了
+// Current Sprint - Sprint 68 Planning完了
 export const currentSprint = {
-  sprint: 67,
-  pbi: "PBI-066",
-  goal: "テンプレート機能によりタスク追加の効率化を実現する",
-  status: "done" as SprintStatus,
-  subtasks: [] as (Subtask & { ac: string[] })[],
+  sprint: 68,
+  pbi: "PBI-067",
+  goal: "AIによるタスク分解機能を実装し、大きなタスクを実行可能なサブタスクに分解できるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    {
+      test: "TaskContextMenuに「AIで分解」メニュー項目が追加されることをテスト",
+      implementation: "TaskContextMenu.tsにonDecomposeコールバックとメニュー項目追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC1: コンテキストメニューから「AIで分解」を選択できる"],
+    },
+    {
+      test: "buildDecomposePrompt()が適切なプロンプトを生成し、decomposeTask()がAPI呼び出し結果を返すことをテスト",
+      implementation: "decompose-prompt.ts新規作成、OpenRouterServiceにdecomposeTask()追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC2: AIが3-7個のサブタスクを生成する", "AC5: カスタム指示で分解方針調整"],
+    },
+    {
+      test: "生成サブタスクが3-7個の範囲かつ親タスクのprojects/contextsが継承されることをテスト",
+      implementation: "createSubtasksFromDecomposition()関数実装",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC2: AIが3-7個のサブタスクを生成する", "AC3: プロジェクト/コンテキスト継承"],
+    },
+    {
+      test: "AIDecomposePreviewDialogが編集可能なプレビューを表示し追加ボタンで挿入されることをテスト",
+      implementation: "AIDecomposePreviewDialog.ts（AITaskPreviewDialogを参考に拡張）",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC4: プレビュー画面で編集してから追加できる"],
+    },
+    {
+      test: "カスタム指示入力欄が表示されプロンプトに反映されることをテスト",
+      implementation: "AIDecomposeDialog.tsに入力フィールド追加",
+      type: "behavioral" as SubtaskType,
+      status: "pending" as SubtaskStatus,
+      commits: [],
+      ac: ["AC5: カスタム指示を入力してAIの分解方針を調整できる"],
+    },
+  ] as (Subtask & { ac: string[] })[],
 };
 // Sprint 67: PBI-066完了 - 6 subtasks, 5 commits, DoD全pass, AC全達成, 1356t(+31t), see git history
 // Sprint 66: PBI-065完了 - 7 subtasks, 5 commits, DoD全pass, AC全達成, 1325t(+38t), Phase 19開始, see git history

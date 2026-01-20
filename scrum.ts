@@ -33,7 +33,7 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 67, pbi: "PBI-066", status: "in_progress" as SprintStatus,
+  sprint: { number: 67, pbi: "PBI-066", status: "done" as SprintStatus,
     subtasksCompleted: 6, subtasksTotal: 6, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
@@ -72,24 +72,7 @@ export const productBacklog: ProductBacklogItem[] = [
 
   // Phase 19: 生産性向上・Obsidian統合
   // PBI-065: フォーカスビュー機能 - Sprint 66完了、1325t(+38t)、see git history
-  {
-    id: "PBI-066",
-    story: {
-      role: "定型作業が多いユーザー",
-      capability: "事前登録したタスクテンプレートをワンクリックでtodo.txtに追加",
-      benefit: "繰り返し入力の手間が省け、入力ミスも防げる"
-    },
-    acceptanceCriteria: [
-      { criterion: "設定画面でテンプレートを登録できる", verification: "manual" },
-      { criterion: "コマンドパレットからテンプレートを選択して追加できる", verification: "manual" },
-      { criterion: "{{today}}プレースホルダーが今日の日付に展開される", verification: "vitest" },
-      { criterion: "{{tomorrow}}プレースホルダーが明日の日付に展開される", verification: "vitest" },
-      { criterion: "複数行のテンプレートが一度に追加される", verification: "vitest" },
-    ],
-    dependencies: [],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 4, estimatedTests: 12, externalDependencies: 0, score: "LOW" as const, subtasks: 5 },
-  },
+  // PBI-066: テンプレート機能 - Sprint 67完了、1356t(+31t)、see git history
   {
     id: "PBI-067",
     story: {
@@ -139,21 +122,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 67: テンプレート機能
+// Current Sprint - Sprint 67完了
 export const currentSprint = {
   sprint: 67,
   pbi: "PBI-066",
   goal: "テンプレート機能によりタスク追加の効率化を実現する",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    { test: "{{today}}が今日の日付に展開される", implementation: "expandPlaceholders関数", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add expandPlaceholders tests" }, { phase: "green" as CommitPhase, message: "feat: implement expandPlaceholders" }], ac: ["AC3", "AC4"] },
-    { test: "複数行テンプレートが複数タスクに分割される", implementation: "parseTemplate関数", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add parseTemplate tests" }, { phase: "green" as CommitPhase, message: "feat: implement parseTemplate" }], ac: ["AC5"] },
-    { test: "テンプレート設定インターフェース", implementation: "TaskTemplate型とデフォルト値", type: "structural" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "red" as CommitPhase, message: "test: add TaskTemplate type tests" }, { phase: "green" as CommitPhase, message: "feat: add TaskTemplate interface" }], ac: ["AC1"] },
-    { test: "設定画面でテンプレート登録", implementation: "TodotxtSettingTabにテンプレート設定UI追加", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add template settings UI" }], ac: ["AC1"] },
-    { test: "コマンドパレットからテンプレート選択", implementation: "addTemplateTaskコマンド実装", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "feat: add addTemplateTask command" }], ac: ["AC2"] },
-    { test: "AC検証チェックリスト実践検証", implementation: "AC3,4,5のvitest検証でチェックリスト試行", type: "behavioral" as SubtaskType, status: "completed" as SubtaskStatus, commits: [{ phase: "green" as CommitPhase, message: "chore: AC verification checklist practice" }], ac: ["P1-Action"] },
-  ] as (Subtask & { ac: string[] })[],
+  status: "done" as SprintStatus,
+  subtasks: [] as (Subtask & { ac: string[] })[],
 };
+// Sprint 67: PBI-066完了 - 6 subtasks, 5 commits, DoD全pass, AC全達成, 1356t(+31t), see git history
 // Sprint 66: PBI-065完了 - 7 subtasks, 5 commits, DoD全pass, AC全達成, 1325t(+38t), Phase 19開始, see git history
 // Sprint 58-65: see git history
 
@@ -184,38 +161,38 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 64, pbi: "PBI-063", story: "パフォーマンス最適化", verification: "passed", notes: "1220t(+80t),DoD全pass,AC全達成" },
   { sprint: 65, pbi: "PBI-062", story: "キーボードショートカットカスタマイズ", verification: "passed", notes: "1287t(+67t),DoD全pass,Phase 18完遂" },
   { sprint: 66, pbi: "PBI-065", story: "フォーカスビュー機能", verification: "passed", notes: "1325t(+38t),DoD全pass,AC全達成,Phase 19開始" },
+  { sprint: 67, pbi: "PBI-066", story: "テンプレート機能", verification: "passed", notes: "1356t(+31t),DoD全pass,AC全達成(5/5)" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-65: see git history
-  { sprint: 66,
+  // Sprint 42-66: see git history
+  { sprint: 67,
     workedWell: [
-      "11 Sprint連続DoD全pass達成: Sprint 56-66の長期継続、テスト品質維持の安定性",
-      "AC全達成（7/7項目）: AC1-5 vitest検証、AC6-7手動検証の組み合わせ成功",
-      "+38テスト増加: 1287t→1325t、フォーカスビュー機能実装でTDD遵守",
-      "Phase 19開始成功: PBI-065完了で新Phase開始、生産性向上・Obsidian統合テーマへの移行",
-      "P1 Actions 2項目完遂: AC検証チェックリスト策定（CLAUDE.md追記）、Phase 19 Goal確認完了",
+      "12 Sprint連続DoD全pass達成: Sprint 56-67の長期継続、テスト品質維持の安定性が際立つ成果",
+      "AC全達成（5/5項目）: AC1-2 manual、AC3-5 vitest検証の組み合わせで完全達成",
+      "AC検証チェックリスト実践成功: Sprint 66で策定したチェックリストをPBI-066で実践、5項目すべて検証済み",
+      "+31テスト増加: 1325t→1356t、テンプレート機能実装でTDD遵守継続",
+      "Phase 19進捗50%達成: PBI-065、PBI-066完了で2/4 PBIs完了、順調な進行",
     ],
     toImprove: [
-      "P2 Actions長期継続: rendering.ts統合、DoDへのAC検証追加が複数Sprint継続中（優先度見直し必要）",
-      "テスト増加量減少傾向: +38t（過去4 Sprintsと比較して減少: S62 +68t, S63 +64t, S64 +80t, S65 +67t）",
-      "AC検証チェックリスト実践検証未実施: Sprint 66で策定したチェックリストの実践検証がまだ不足",
+      "テスト増加量さらに減少: +31t（S62 +68t、S63 +64t、S64 +80t、S65 +67t、S66 +38t→S67 +31t）2 Sprint連続減少傾向",
+      "P2 Actions長期継続: rendering.ts統合、DoDへのAC検証追加が複数Sprint継続中（優先度見直しまたは廃棄検討必要）",
+      "Phase 19残り2 PBIs: PBI-067、PBI-068が残り2 Sprintsで完了必要、complexity MEDIUM×2でスケジュール圧",
     ],
     actions: [
-      "P1: AC検証チェックリスト実践検証（Sprint 67で2-3 AC項目で試行）",
-      "P2: rendering.ts仮想スクロール統合検討（Phase 20 PBI候補として評価）",
-      "P2: DoDへのAC検証追加検討（Sprint 67-68で評価、DoD項目追加可否判断）",
-      "P2: テスト増加量維持戦略策定（Phase 19目標: 平均+50t/Sprint、Sprint 67-69で3回測定）",
+      "P0: PBI-067 complexity再評価、subtasks 6→5調整検討（Sprint 68 Planning前）",
+      "P1: P2 Actions 2項目廃棄判断（rendering.ts統合、DoDへのAC検証追加、Sprint 68-69で評価）",
+      "P2: Phase 20 Goal策定（Sprint 69完了後、Phase 19振り返りベース）",
     ] },
 ];
 
-// Action Management (Sprint 66完了: rate 76%、healthy KPI 9 Sprint連続)
+// Action Management (Sprint 67完了: rate 77%、healthy KPI 10 Sprint連続)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 105, executed: 80, rate: 76, remaining: 25 },
-  // Sprint 66: P1 Action 2項目実施、rate 74%→76%(+2%)
-  // Sprint 59-65: see git history
+  tracking: { total: 105, executed: 81, rate: 77, remaining: 24 },
+  // Sprint 67: P1 Action 1項目実施（AC検証チェックリスト実践検証）、rate 76%→77%(+1%)
+  // Sprint 59-66: see git history
 };
 
 // Agents & Events

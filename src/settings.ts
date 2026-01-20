@@ -4,6 +4,7 @@ import type { RetryConfig } from "./ai/retry";
 import { DEFAULT_SHORTCUTS, formatShortcutKey } from "./lib/shortcuts";
 import type { FilterPreset } from "./lib/filter-preset";
 import type { FilterState } from "./lib/rendering";
+import { type TaskTemplate, DEFAULT_TEMPLATES } from "./lib/template";
 
 export type SortOrder = "completion" | "priority" | "date" | "alphabetical";
 export type Grouping = "none" | "project" | "context";
@@ -28,6 +29,8 @@ export interface TodotxtPluginSettings {
 	fileDefaultFilters: Record<string, string>;
 	/** Custom keyboard shortcuts (shortcut id -> custom key) */
 	customShortcuts: Record<string, string>;
+	/** Task templates for quick task addition */
+	taskTemplates: TaskTemplate[];
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
@@ -49,6 +52,7 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	savedFilters: [],
 	fileDefaultFilters: {},
 	customShortcuts: {},
+	taskTemplates: DEFAULT_TEMPLATES,
 };
 
 /**
@@ -240,6 +244,24 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					})
 			);
 
+		// Task templates section
+		new Setting(containerEl).setName("Task templates").setHeading();
+
+		new Setting(containerEl)
+			.setName("Templates")
+			.setDesc("テンプレートを登録します。1テンプレート1行、形式: name|content (複数タスクは\\nで区切り)。{{today}}は今日、{{tomorrow}}は明日の日付に展開されます")
+			.addTextArea((text) => {
+				text.inputEl.rows = 8;
+				text.inputEl.cols = 50;
+				text
+					.setPlaceholder("朝ルーティン|タスク1 +routine\\nタスク2 +routine\n今日期限|タスク due:{{today}}")
+					.setValue(this.serializeTemplates(this.plugin.settings.taskTemplates))
+					.onChange(async (value) => {
+						this.plugin.settings.taskTemplates = this.parseTemplates(value);
+						await this.plugin.saveSettings();
+					});
+			});
+
 		// Keyboard shortcuts section
 		new Setting(containerEl).setName("Keyboard shortcuts").setHeading();
 
@@ -271,5 +293,41 @@ export class TodotxtSettingTab extends PluginSettingTab {
 				.setName(formatShortcutKey(shortcut.key))
 				.setDesc(shortcut.description);
 		}
+	}
+
+	/**
+	 * Serialize templates to text format for display
+	 * Format: name|content (one per line)
+	 */
+	private serializeTemplates(templates: TaskTemplate[]): string {
+		return templates
+			.map(t => `${t.name}|${t.content.replace(/\n/g, "\\n")}`)
+			.join("\n");
+	}
+
+	/**
+	 * Parse templates from text format
+	 * Format: name|content (one per line)
+	 */
+	private parseTemplates(text: string): TaskTemplate[] {
+		const lines = text.split("\n").filter(line => line.trim().length > 0);
+		const templates: TaskTemplate[] = [];
+
+		for (const line of lines) {
+			const pipeIndex = line.indexOf("|");
+			if (pipeIndex > 0) {
+				const name = line.slice(0, pipeIndex).trim();
+				const content = line.slice(pipeIndex + 1).replace(/\\n/g, "\n");
+				if (name && content) {
+					templates.push({
+						id: `template-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+						name,
+						content,
+					});
+				}
+			}
+		}
+
+		return templates;
 	}
 }

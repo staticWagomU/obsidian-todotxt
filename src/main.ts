@@ -1,8 +1,17 @@
-import { Plugin } from "obsidian";
+import { Plugin, Notice } from "obsidian";
 import { DEFAULT_SETTINGS, TodotxtPluginSettings, TodotxtSettingTab } from "./settings";
 import { TodotxtView, VIEW_TYPE_TODOTXT } from "./view";
 import { TodoSidePanelView, VIEW_TYPE_TODO_SIDEPANEL } from "./side-panel-view";
 import { COMMANDS } from "./lib/commands";
+import {
+	isDailyNotesPluginEnabled,
+	formatTasksForDailyNote,
+	insertContentAtPosition,
+	parseMarkdownCheckboxes,
+} from "./lib/daily-notes";
+import { filterFocusTodos } from "./lib/focus-filter";
+import { parseTodoTxt, appendTaskToFile } from "@wagomu/todotxt-parser";
+import { createDailyNote, getDailyNote, getAllDailyNotes } from "obsidian-daily-notes-interface";
 
 export default class TodotxtPlugin extends Plugin {
 	settings: TodotxtPluginSettings;
@@ -66,6 +75,24 @@ export default class TodotxtPlugin extends Plugin {
 			name: COMMANDS.addTemplateTask.name,
 			callback: () => {
 				this.openTemplateSelectModal();
+			},
+		});
+
+		// Add command for exporting tasks to daily note (PBI-068)
+		this.addCommand({
+			id: COMMANDS.exportToDailyNote.id,
+			name: COMMANDS.exportToDailyNote.name,
+			callback: () => {
+				void this.exportToDailyNote();
+			},
+		});
+
+		// Add command for importing tasks from daily note (PBI-068)
+		this.addCommand({
+			id: COMMANDS.importFromDailyNote.id,
+			name: COMMANDS.importFromDailyNote.name,
+			callback: () => {
+				void this.importFromDailyNote();
 			},
 		});
 
@@ -204,6 +231,142 @@ export default class TodotxtPlugin extends Plugin {
 		const leaves = workspace.getLeavesOfType(VIEW_TYPE_TODOTXT);
 		if (leaves.length > 0 && leaves[0]?.view instanceof TodotxtView) {
 			leaves[0].view.openTemplateSelectModal();
+		}
+	}
+
+	/**
+	 * Export today's tasks to daily note (PBI-068 AC1)
+	 * Uses filterFocusTodos to get today's tasks and inserts them into the daily note
+	 */
+	async exportToDailyNote(): Promise<void> {
+		// Check if Daily Notes plugin is enabled
+		if (!isDailyNotesPluginEnabled()) {
+			// eslint-disable-next-line obsidianmd/ui/sentence-case
+			new Notice("Daily Notesプラグインが有効になっていません");
+			return;
+		}
+
+		// Get active TodotxtView to access tasks
+		const { workspace } = this.app;
+		const activeView = workspace.getActiveViewOfType(TodotxtView);
+
+		let todoContent: string;
+		if (activeView) {
+			todoContent = activeView.data;
+		} else {
+			// Try to find any TodotxtView
+			const leaves = workspace.getLeavesOfType(VIEW_TYPE_TODOTXT);
+			if (leaves.length === 0 || !(leaves[0]?.view instanceof TodotxtView)) {
+				new Notice("Todo.txtファイルを開いてください");
+				return;
+			}
+			todoContent = (leaves[0].view).data;
+		}
+
+		// Parse todos and filter for today
+		const todos = parseTodoTxt(todoContent);
+		const today = new Date();
+		const todayTasks = filterFocusTodos(todos, today);
+
+		if (todayTasks.length === 0) {
+			new Notice("今日のタスクがありません");
+			return;
+		}
+
+		// Format tasks for daily note
+		const { taskPrefix, insertPosition } = this.settings.dailyNotes;
+		const formattedTasks = formatTasksForDailyNote(todayTasks, taskPrefix);
+
+		// Get or create today's daily note
+		try {
+			// Get or create today's daily note
+			const allDailyNotes = getAllDailyNotes();
+			let dailyNote = getDailyNote(window.moment(), allDailyNotes);
+			if (!dailyNote) {
+				dailyNote = await createDailyNote(window.moment());
+			}
+
+			// Read current content
+			const existingContent = await this.app.vault.read(dailyNote);
+
+			// Insert at configured position
+			const newContent = insertContentAtPosition(existingContent, formattedTasks, insertPosition);
+
+			// Write back
+			await this.app.vault.modify(dailyNote, newContent);
+
+			new Notice(`${todayTasks.length}件のタスクをデイリーノートにエクスポートしました`);
+		} catch (error) {
+			console.error("Failed to export to daily note:", error);
+			new Notice("デイリーノートへのエクスポートに失敗しました");
+		}
+	}
+
+	/**
+	 * Import tasks from daily note (PBI-068 AC2)
+	 * Parses markdown checkboxes from the daily note and adds them to todo.txt
+	 */
+	async importFromDailyNote(): Promise<void> {
+		// Check if Daily Notes plugin is enabled
+		if (!isDailyNotesPluginEnabled()) {
+			// eslint-disable-next-line obsidianmd/ui/sentence-case
+			new Notice("Daily Notesプラグインが有効になっていません");
+			return;
+		}
+
+		// Get active TodotxtView to add tasks
+		const { workspace } = this.app;
+		const activeView = workspace.getActiveViewOfType(TodotxtView);
+
+		if (!activeView) {
+			// Try to find any TodotxtView
+			const leaves = workspace.getLeavesOfType(VIEW_TYPE_TODOTXT);
+			if (leaves.length === 0 || !(leaves[0]?.view instanceof TodotxtView)) {
+				new Notice("Todo.txtファイルを開いてください");
+				return;
+			}
+		}
+
+		const targetView = activeView ?? (workspace.getLeavesOfType(VIEW_TYPE_TODOTXT)[0]?.view as TodotxtView);
+
+		// Get today's daily note
+		try {
+			const allDailyNotes = getAllDailyNotes();
+			const dailyNote = getDailyNote(window.moment(), allDailyNotes);
+
+			if (!dailyNote) {
+				new Notice("今日のデイリーノートが見つかりません");
+				return;
+			}
+
+			// Read daily note content
+			const dailyNoteContent = await this.app.vault.read(dailyNote);
+
+			// Parse checkboxes
+			const importedTasks = parseMarkdownCheckboxes(dailyNoteContent);
+
+			// Filter only uncompleted tasks
+			const uncompletedTasks = importedTasks.filter((t) => !t.completed);
+
+			if (uncompletedTasks.length === 0) {
+				new Notice("インポートするタスクがありません");
+				return;
+			}
+
+			// Add tasks to todo.txt
+			let newContent = targetView.data;
+			for (const task of uncompletedTasks) {
+				newContent = appendTaskToFile(newContent, task);
+			}
+
+			// Update view
+			targetView.data = newContent;
+			targetView.requestSave();
+
+			new Notice(`${uncompletedTasks.length}件のタスクをインポートしました`);
+		} catch (error) {
+			console.error("Failed to import from daily note:", error);
+			new Notice("デイリーノートからのインポートに失敗しました");
 		}
 	}
 

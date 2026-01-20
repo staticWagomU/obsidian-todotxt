@@ -3,7 +3,6 @@
  * Functions for integrating with Obsidian's Daily Notes plugin
  */
 
-import type { App } from "obsidian";
 import { appHasDailyNotesPluginLoaded } from "obsidian-daily-notes-interface";
 import type { Todo } from "./todo";
 import type { DailyNoteInsertPosition } from "../settings";
@@ -11,11 +10,16 @@ import type { DailyNoteInsertPosition } from "../settings";
 /**
  * Check if Daily Notes plugin is enabled
  * Wraps appHasDailyNotesPluginLoaded from obsidian-daily-notes-interface
- * @param app - Obsidian App instance
- * @returns true if Daily Notes plugin is loaded
+ * @returns true if Daily Notes plugin is loaded (returns settings object if loaded)
  */
-export function isDailyNotesPluginEnabled(app: App): boolean {
-	return appHasDailyNotesPluginLoaded(app);
+export function isDailyNotesPluginEnabled(): boolean {
+	try {
+		const settings = appHasDailyNotesPluginLoaded();
+		// If settings object exists, plugin is loaded
+		return !!settings;
+	} catch {
+		return false;
+	}
 }
 
 /**

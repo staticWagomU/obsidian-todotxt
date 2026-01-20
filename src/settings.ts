@@ -279,6 +279,38 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					});
 			});
 
+		// Daily Notes integration section (PBI-068)
+		// eslint-disable-next-line obsidianmd/ui/sentence-case
+		new Setting(containerEl).setName("Daily Notes integration").setHeading();
+
+		new Setting(containerEl)
+			.setName("Insert position")
+			.setDesc("Where to insert tasks in the daily note")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOption("top", "先頭")
+					.addOption("bottom", "末尾")
+					.addOption("cursor", "カーソル位置")
+					.setValue(this.plugin.settings.dailyNotes.insertPosition)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyNotes.insertPosition = value as DailyNoteInsertPosition;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Task prefix")
+			.setDesc("Prefix for each task line when exporting (e.g., '- [ ] ')")
+			.addText((text) =>
+				text
+					.setPlaceholder("- [ ] ")
+					.setValue(this.plugin.settings.dailyNotes.taskPrefix)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyNotes.taskPrefix = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
 		// Keyboard shortcuts section
 		new Setting(containerEl).setName("Keyboard shortcuts").setHeading();
 

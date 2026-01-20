@@ -26,35 +26,33 @@ describe("Daily Notes Plugin Detection", () => {
 	describe("isDailyNotesPluginEnabled", () => {
 		it("should return true when Daily Notes plugin is enabled", async () => {
 			const { appHasDailyNotesPluginLoaded } = await import("obsidian-daily-notes-interface");
-			vi.mocked(appHasDailyNotesPluginLoaded).mockReturnValue(true);
+			vi.mocked(appHasDailyNotesPluginLoaded).mockReturnValue({ folder: "", format: "", template: "" } as never);
 
-			const mockApp = {} as never;
-			const result = isDailyNotesPluginEnabled(mockApp);
+			const result = isDailyNotesPluginEnabled();
 
 			expect(result).toBe(true);
-			expect(appHasDailyNotesPluginLoaded).toHaveBeenCalledWith(mockApp);
+			expect(appHasDailyNotesPluginLoaded).toHaveBeenCalled();
 		});
 
 		it("should return false when Daily Notes plugin is not enabled", async () => {
 			const { appHasDailyNotesPluginLoaded } = await import("obsidian-daily-notes-interface");
-			vi.mocked(appHasDailyNotesPluginLoaded).mockReturnValue(false);
+			vi.mocked(appHasDailyNotesPluginLoaded).mockReturnValue(undefined as never);
 
-			const mockApp = {} as never;
-			const result = isDailyNotesPluginEnabled(mockApp);
+			const result = isDailyNotesPluginEnabled();
 
 			expect(result).toBe(false);
-			expect(appHasDailyNotesPluginLoaded).toHaveBeenCalledWith(mockApp);
+			expect(appHasDailyNotesPluginLoaded).toHaveBeenCalled();
 		});
 
-		it("should wrap the external library function", async () => {
+		it("should return false when library throws error", async () => {
 			const { appHasDailyNotesPluginLoaded } = await import("obsidian-daily-notes-interface");
-			vi.mocked(appHasDailyNotesPluginLoaded).mockReturnValue(true);
+			vi.mocked(appHasDailyNotesPluginLoaded).mockImplementation(() => {
+				throw new Error("Plugin not loaded");
+			});
 
-			const mockApp = { vault: {} } as never;
-			isDailyNotesPluginEnabled(mockApp);
+			const result = isDailyNotesPluginEnabled();
 
-			// Verify the wrapper function passes the app correctly
-			expect(appHasDailyNotesPluginLoaded).toHaveBeenCalledTimes(1);
+			expect(result).toBe(false);
 		});
 	});
 });

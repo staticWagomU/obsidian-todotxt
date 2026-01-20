@@ -1,7 +1,9 @@
 /**
  * decompose-prompt.ts - タスク分解プロンプト構築
- * PBI-067 AC2, AC5対応
+ * PBI-067 AC2, AC3, AC5対応
  */
+
+import type { Todo } from "../lib/todo";
 
 /**
  * タスク分解用のプロンプトを構築する
@@ -59,6 +61,80 @@ ${customInstruction}`);
 todo.txt形式のサブタスクのみを出力（説明不要、1タスク1行）`);
 
 	return sections.join("\n\n");
+}
+
+/**
+ * 親タスクの情報（簡易版）
+ */
+interface ParentTaskInfo {
+	completed: boolean;
+	description: string;
+	projects: string[];
+	contexts: string[];
+	tags: Record<string, string>;
+	raw: string;
+}
+
+/**
+ * サブタスク文字列配列からTodo配列を生成する
+ * 親タスクのプロジェクト/コンテキストを継承 (AC3対応)
+ * @param subtaskLines サブタスク文字列の配列
+ * @param parentTodo 親タスク情報
+ * @param currentDate 現在日付 (YYYY-MM-DD)
+ * @returns 生成されたTodo配列
+ */
+export function createSubtasksFromDecomposition(
+	subtaskLines: string[],
+	parentTodo: ParentTaskInfo,
+	currentDate: string,
+): Todo[] {
+	return subtaskLines.map((line) => {
+		// サブタスク文字列からプロジェクト/コンテキストを抽出
+		const existingProjects: string[] = [];
+		const projectMatches = line.matchAll(/\+(\S+)/g);
+		for (const match of projectMatches) {
+			if (match[1]) {
+				existingProjects.push(match[1]);
+			}
+		}
+
+		const existingContexts: string[] = [];
+		const contextMatches = line.matchAll(/@(\S+)/g);
+		for (const match of contextMatches) {
+			if (match[1]) {
+				existingContexts.push(match[1]);
+			}
+		}
+
+		// 親のプロジェクト/コンテキストをマージ（重複除去）
+		const allProjects = [...new Set([...existingProjects, ...parentTodo.projects])];
+		const allContexts = [...new Set([...existingContexts, ...parentTodo.contexts])];
+
+		// プロジェクト/コンテキストタグを説明に追加（重複除去済み）
+		let description = line;
+		for (const project of parentTodo.projects) {
+			if (!description.includes(`+${project}`)) {
+				description += ` +${project}`;
+			}
+		}
+		for (const context of parentTodo.contexts) {
+			if (!description.includes(`@${context}`)) {
+				description += ` @${context}`;
+			}
+		}
+
+		return {
+			completed: false,
+			priority: undefined,
+			creationDate: currentDate,
+			completionDate: undefined,
+			description: description.trim(),
+			projects: allProjects,
+			contexts: allContexts,
+			tags: {},
+			raw: "",
+		};
+	});
 }
 
 /**

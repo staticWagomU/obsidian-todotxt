@@ -28,3 +28,23 @@ export function expandPlaceholders(template: string): string {
 
 	return result;
 }
+
+/**
+ * Parse a template string into multiple task lines
+ * Splits by newlines, expands placeholders, and filters empty lines
+ *
+ * @param template - Multi-line template string
+ * @returns Array of task lines with placeholders expanded
+ */
+export function parseTemplate(template: string): string[] {
+	if (!template.trim()) {
+		return [];
+	}
+
+	// Split by newlines (handle both LF and CRLF)
+	return template
+		.split(/\r?\n/)
+		.map(line => line.trim())
+		.filter(line => line.length > 0)
+		.map(line => expandPlaceholders(line));
+}

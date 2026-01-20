@@ -3,7 +3,7 @@
  * PBI-066: Task Template Feature
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { expandPlaceholders, parseTemplate } from "./template";
+import { expandPlaceholders, parseTemplate, type TaskTemplate, DEFAULT_TEMPLATES } from "./template";
 
 describe("expandPlaceholders", () => {
 	beforeEach(() => {
@@ -165,5 +165,44 @@ describe("parseTemplate", () => {
 			const result = parseTemplate("\n\n\n");
 			expect(result).toEqual([]);
 		});
+	});
+});
+
+describe("TaskTemplate type and defaults", () => {
+	it("should have required properties in TaskTemplate interface", () => {
+		const template: TaskTemplate = {
+			id: "test-id",
+			name: "Test Template",
+			content: "Task +project @context",
+		};
+
+		expect(template.id).toBe("test-id");
+		expect(template.name).toBe("Test Template");
+		expect(template.content).toBe("Task +project @context");
+	});
+
+	it("should provide default templates array", () => {
+		expect(Array.isArray(DEFAULT_TEMPLATES)).toBe(true);
+		expect(DEFAULT_TEMPLATES.length).toBe(0);
+	});
+
+	it("should allow templates with multi-line content", () => {
+		const template: TaskTemplate = {
+			id: "multi",
+			name: "Multi-line Template",
+			content: "Task 1\nTask 2\nTask 3",
+		};
+
+		expect(template.content).toContain("\n");
+	});
+
+	it("should allow templates with placeholders", () => {
+		const template: TaskTemplate = {
+			id: "with-placeholder",
+			name: "Template with Placeholder",
+			content: "Task due:{{today}} +project",
+		};
+
+		expect(template.content).toContain("{{today}}");
 	});
 });

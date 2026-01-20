@@ -33,8 +33,8 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 68, pbi: "PBI-067", status: "done" as SprintStatus,
-    subtasksCompleted: 5, subtasksTotal: 5, impediments: 0 },
+  sprint: { number: 69, pbi: "PBI-068", status: "in_progress" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
@@ -106,16 +106,40 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 68完了、Sprint 69待機
+// Current Sprint - Sprint 69 Planning完了
 export const currentSprint = {
-  sprint: 68,
-  pbi: "PBI-067",
-  goal: "AIによるタスク分解機能を実装し、大きなタスクを実行可能なサブタスクに分解できるようにする",
-  status: "done" as SprintStatus,
-  subtasks: [] as (Subtask & { ac: string[] })[],
-  // Sprint 68: 5 subtasks完了、10 commits (5 RED + 5 GREEN)、DoD全pass、AC全達成(5/5)、1399t(+43t)
+  sprint: 69,
+  pbi: "PBI-068",
+  goal: "デイリーノート統合機能を実装し、今日のタスクをデイリーノートに挿入/インポートできるようにする",
+  status: "in_progress" as SprintStatus,
+  subtasks: [
+    { test: "isDailyNotesPluginEnabled()がプラグイン有効/無効を検出するテスト",
+      implementation: "obsidian-daily-notes-interfaceのappHasDailyNotesPluginLoaded()ラップ関数",
+      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
+      commits: [], ac: ["AC4"] },
+    { test: "設定インターフェースに挿入位置オプションが存在するテスト",
+      implementation: "DailyNoteInsertPosition型と設定UIの追加",
+      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
+      commits: [], ac: ["AC3"] },
+    { test: "formatTasksForDailyNote()がMarkdown形式に変換するテスト",
+      implementation: "タスクをMarkdown - [ ]形式に変換する関数",
+      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
+      commits: [], ac: ["AC1"] },
+    { test: "insertTasksToDailyNote()が指定位置に挿入するテスト",
+      implementation: "デイリーノートファイルの指定位置にタスク挿入",
+      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
+      commits: [], ac: ["AC1"] },
+    { test: "parseMarkdownCheckboxes()がtodo.txt形式に変換するテスト",
+      implementation: "- [ ]形式をパースしてtodo.txt形式に変換",
+      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
+      commits: [], ac: ["AC2"] },
+    { test: "コマンド定義が正しく存在するテスト",
+      implementation: "main.tsへの2コマンド登録、ダイアログUI",
+      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
+      commits: [], ac: ["AC5"] },
+  ] as (Subtask & { ac: string[] })[],
 };
-// Sprint 66-67: see git history
+// Sprint 66-68: see git history
 
 // Impediments
 export const impediments = {

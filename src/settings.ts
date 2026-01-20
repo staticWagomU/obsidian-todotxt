@@ -9,6 +9,17 @@ import { type TaskTemplate, DEFAULT_TEMPLATES } from "./lib/template";
 export type SortOrder = "completion" | "priority" | "date" | "alphabetical";
 export type Grouping = "none" | "project" | "context";
 
+/** Daily note task insert position */
+export type DailyNoteInsertPosition = "top" | "bottom" | "cursor";
+
+/** Daily Notes integration settings */
+export interface DailyNotesSettings {
+	/** Where to insert tasks in the daily note */
+	insertPosition: DailyNoteInsertPosition;
+	/** Prefix for each task line (e.g., "- [ ] ") */
+	taskPrefix: string;
+}
+
 export interface OpenRouterSettings {
 	apiKey: string;
 	model: string;
@@ -31,6 +42,8 @@ export interface TodotxtPluginSettings {
 	customShortcuts: Record<string, string>;
 	/** Task templates for quick task addition */
 	taskTemplates: TaskTemplate[];
+	/** Daily Notes integration settings */
+	dailyNotes: DailyNotesSettings;
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
@@ -53,6 +66,10 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	fileDefaultFilters: {},
 	customShortcuts: {},
 	taskTemplates: DEFAULT_TEMPLATES,
+	dailyNotes: {
+		insertPosition: "bottom",
+		taskPrefix: "- [ ] ",
+	},
 };
 
 /**

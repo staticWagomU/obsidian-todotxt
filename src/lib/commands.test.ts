@@ -64,4 +64,18 @@ describe("keyboard shortcut commands", () => {
 			expect(cmd.name).toContain("検索");
 		});
 	});
+
+	describe("Daily Notes commands (PBI-068)", () => {
+		it("should have command for exporting tasks to daily note", () => {
+			expect(COMMANDS.exportToDailyNote).toBeDefined();
+			expect(COMMANDS.exportToDailyNote.id).toBe("todotxt-export-to-daily-note");
+			expect(COMMANDS.exportToDailyNote.name).toBe("今日のタスクをデイリーノートにエクスポート");
+		});
+
+		it("should have command for importing tasks from daily note", () => {
+			expect(COMMANDS.importFromDailyNote).toBeDefined();
+			expect(COMMANDS.importFromDailyNote.id).toBe("todotxt-import-from-daily-note");
+			expect(COMMANDS.importFromDailyNote.name).toBe("デイリーノートからタスクをインポート");
+		});
+	});
 });

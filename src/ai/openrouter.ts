@@ -1,5 +1,6 @@
 import { buildSystemPrompt } from "./prompt";
 import { buildEditPrompt } from "./edit-prompt";
+import { buildDecomposePrompt, parseDecomposeResponse } from "./decompose-prompt";
 import { withRetry, type RetryConfig } from "./retry";
 import { requestUrl } from "obsidian";
 import type { Todo } from "../lib/todo";
@@ -25,6 +26,12 @@ export interface EditResult {
 export interface BulkEditResult {
 	success: boolean;
 	updatedTodoLines?: string[];
+	error?: string;
+}
+
+export interface DecomposeResult {
+	success: boolean;
+	subtaskLines?: string[];
 	error?: string;
 }
 
@@ -283,6 +290,77 @@ ${instruction}
 - Apply the instruction to ALL tasks
 - Preserve existing tags/contexts unless explicitly modified
 - Output ONLY the edited tasks, no explanations or numbering`;
+	}
+
+	/**
+	 * Decompose a task into subtasks using AI
+	 * PBI-067 AC2, AC5対応
+	 */
+	async decomposeTask(
+		todo: Todo,
+		currentDate: string,
+		customInstruction?: string,
+	): Promise<DecomposeResult> {
+		try {
+			const prompt = buildDecomposePrompt(
+				todo.description || todo.raw,
+				currentDate,
+				customInstruction,
+				todo.projects,
+				todo.contexts,
+			);
+
+			const apiCall = async () => {
+				const response = await requestUrl({
+					url: "https://openrouter.ai/api/v1/chat/completions",
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${this.config.apiKey}`,
+						"HTTP-Referer": "obsidian://todotxt",
+						"X-Title": "Obsidian Todo.txt Plugin",
+					},
+					body: JSON.stringify({
+						model: this.config.model,
+						messages: [
+							{ role: "user", content: prompt },
+						],
+					}),
+				});
+
+				if (response.status >= 400) {
+					throw new ApiError(
+						response.status,
+						this.getHttpErrorMessage(response.status),
+					);
+				}
+
+				return response;
+			};
+
+			const response = await withRetry(apiCall, this.config.retryConfig);
+			const data = response.json as OpenRouterResponse;
+
+			if (!data.choices?.[0]?.message?.content) {
+				return {
+					success: false,
+					error: "Invalid response format from API",
+				};
+			}
+
+			const content = data.choices[0].message.content;
+			const subtaskLines = parseDecomposeResponse(content);
+
+			return {
+				success: true,
+				subtaskLines,
+			};
+		} catch (error) {
+			return {
+				success: false,
+				error: this.formatErrorMessage(error),
+			};
+		}
 	}
 
 	/**

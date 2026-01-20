@@ -300,4 +300,162 @@ describe("OpenRouterService", () => {
 			expect(result.error).toContain("Server error");
 		});
 	});
+
+	describe("decomposeTask", () => {
+		it("タスクを3-7個のサブタスクに分解する", async () => {
+			const parentTodo = {
+				raw: "大きなプロジェクトを完了する +project @work",
+				description: "大きなプロジェクトを完了する +project @work",
+				completed: false,
+				priority: undefined,
+				projects: ["project"],
+				contexts: ["work"],
+				tags: {},
+				creationDate: undefined,
+				completionDate: undefined,
+			};
+
+			const mockResponse = {
+				choices: [
+					{
+						message: {
+							content: `2026-01-20 要件定義を作成する +project @work
+2026-01-20 設計書を作成する +project @work
+2026-01-20 実装を行う +project @work
+2026-01-20 テストを実行する +project @work
+2026-01-20 デプロイする +project @work`,
+						},
+					},
+				],
+			};
+
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: mockResponse,
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
+			});
+
+			const service = new OpenRouterService(mockConfig);
+			const result = await service.decomposeTask(
+				parentTodo,
+				"2026-01-20",
+			);
+
+			expect(result.success).toBe(true);
+			expect(result.subtaskLines).toHaveLength(5);
+			expect(result.subtaskLines?.[0]).toContain("要件定義を作成する");
+		});
+
+		it("カスタム指示を渡せる", async () => {
+			const parentTodo = {
+				raw: "ウェブサイトを作成する",
+				description: "ウェブサイトを作成する",
+				completed: false,
+				priority: undefined,
+				projects: [],
+				contexts: [],
+				tags: {},
+				creationDate: undefined,
+				completionDate: undefined,
+			};
+
+			const mockResponse = {
+				choices: [
+					{
+						message: {
+							content: `2026-01-20 フロントエンド設計
+2026-01-20 バックエンド設計
+2026-01-20 データベース設計`,
+						},
+					},
+				],
+			};
+
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: mockResponse,
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
+			});
+
+			const service = new OpenRouterService(mockConfig);
+			await service.decomposeTask(
+				parentTodo,
+				"2026-01-20",
+				"技術的な観点で分解してください",
+			);
+
+			const callArgs = vi.mocked(requestUrl).mock.calls[0]?.[0];
+			if (typeof callArgs === "string" || !callArgs?.body) return;
+			const body = JSON.parse(callArgs.body as string) as {
+				messages: Array<{ role: string; content: string }>;
+			};
+			expect(body.messages[0]?.content).toContain("技術的な観点で分解してください");
+		});
+
+		it("APIエラー時にエラーメッセージを返す", async () => {
+			const parentTodo = {
+				raw: "タスク",
+				description: "タスク",
+				completed: false,
+				priority: undefined,
+				projects: [],
+				contexts: [],
+				tags: {},
+				creationDate: undefined,
+				completionDate: undefined,
+			};
+
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 500,
+				json: {},
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
+			});
+
+			const service = new OpenRouterService(mockConfig);
+			const result = await service.decomposeTask(
+				parentTodo,
+				"2026-01-20",
+			);
+
+			expect(result.success).toBe(false);
+			expect(result.error).toContain("Server error");
+		});
+
+		it("無効なレスポンス形式の場合エラーを返す", async () => {
+			const parentTodo = {
+				raw: "タスク",
+				description: "タスク",
+				completed: false,
+				priority: undefined,
+				projects: [],
+				contexts: [],
+				tags: {},
+				creationDate: undefined,
+				completionDate: undefined,
+			};
+
+			vi.mocked(requestUrl).mockResolvedValue({
+				status: 200,
+				json: {},
+				headers: {},
+				arrayBuffer: new ArrayBuffer(0),
+				text: "",
+			});
+
+			const service = new OpenRouterService(mockConfig);
+			const result = await service.decomposeTask(
+				parentTodo,
+				"2026-01-20",
+			);
+
+			expect(result.success).toBe(false);
+			expect(result.error).toContain("Invalid response");
+		});
+	});
 });

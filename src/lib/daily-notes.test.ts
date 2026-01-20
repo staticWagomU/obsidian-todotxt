@@ -4,8 +4,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { isDailyNotesPluginEnabled, formatTasksForDailyNote } from "./daily-notes";
+import { isDailyNotesPluginEnabled, formatTasksForDailyNote, insertContentAtPosition } from "./daily-notes";
 import type { Todo } from "./todo";
+import type { DailyNoteInsertPosition } from "../settings";
 
 // Mock obsidian-daily-notes-interface
 vi.mock("obsidian-daily-notes-interface", () => ({
@@ -156,6 +157,119 @@ describe("formatTasksForDailyNote", () => {
 			const result = formatTasksForDailyNote(todos, "- [ ] ");
 
 			expect(result).toBe("- [ ] Active task");
+		});
+	});
+});
+
+describe("insertContentAtPosition", () => {
+	describe("position: top", () => {
+		it("should insert content at the beginning of empty file", () => {
+			const existingContent = "";
+			const newContent = "- [ ] New task";
+			const position: DailyNoteInsertPosition = "top";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			expect(result).toBe("- [ ] New task");
+		});
+
+		it("should insert content at the beginning with newline separator", () => {
+			const existingContent = "# Daily Note\n\nSome existing content";
+			const newContent = "- [ ] Task 1\n- [ ] Task 2";
+			const position: DailyNoteInsertPosition = "top";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			expect(result).toBe("- [ ] Task 1\n- [ ] Task 2\n\n# Daily Note\n\nSome existing content");
+		});
+	});
+
+	describe("position: bottom", () => {
+		it("should append content at the end of empty file", () => {
+			const existingContent = "";
+			const newContent = "- [ ] New task";
+			const position: DailyNoteInsertPosition = "bottom";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			expect(result).toBe("- [ ] New task");
+		});
+
+		it("should append content at the end with newline separator", () => {
+			const existingContent = "# Daily Note\n\nSome existing content";
+			const newContent = "- [ ] Task 1\n- [ ] Task 2";
+			const position: DailyNoteInsertPosition = "bottom";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			expect(result).toBe("# Daily Note\n\nSome existing content\n\n- [ ] Task 1\n- [ ] Task 2");
+		});
+
+		it("should handle trailing newlines in existing content", () => {
+			const existingContent = "# Daily Note\n\n";
+			const newContent = "- [ ] New task";
+			const position: DailyNoteInsertPosition = "bottom";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			expect(result).toBe("# Daily Note\n\n- [ ] New task");
+		});
+	});
+
+	describe("position: cursor", () => {
+		it("should behave like bottom when no cursor position provided", () => {
+			const existingContent = "# Daily Note";
+			const newContent = "- [ ] New task";
+			const position: DailyNoteInsertPosition = "cursor";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			// Cursor position defaults to end (same as bottom)
+			expect(result).toBe("# Daily Note\n\n- [ ] New task");
+		});
+
+		it("should insert at specified cursor position", () => {
+			const existingContent = "Line 1\nLine 2\nLine 3";
+			const newContent = "- [ ] Inserted task";
+			const position: DailyNoteInsertPosition = "cursor";
+			const cursorOffset = 7; // After "Line 1\n"
+
+			const result = insertContentAtPosition(existingContent, newContent, position, cursorOffset);
+
+			expect(result).toBe("Line 1\n- [ ] Inserted task\nLine 2\nLine 3");
+		});
+
+		it("should insert at beginning when cursor is at position 0", () => {
+			const existingContent = "Existing content";
+			const newContent = "- [ ] New task";
+			const position: DailyNoteInsertPosition = "cursor";
+			const cursorOffset = 0;
+
+			const result = insertContentAtPosition(existingContent, newContent, position, cursorOffset);
+
+			expect(result).toBe("- [ ] New task\nExisting content");
+		});
+	});
+
+	describe("edge cases", () => {
+		it("should handle empty new content", () => {
+			const existingContent = "# Daily Note";
+			const newContent = "";
+			const position: DailyNoteInsertPosition = "bottom";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			expect(result).toBe("# Daily Note");
+		});
+
+		it("should handle content with only whitespace", () => {
+			const existingContent = "   \n\n   ";
+			const newContent = "- [ ] Task";
+			const position: DailyNoteInsertPosition = "bottom";
+
+			const result = insertContentAtPosition(existingContent, newContent, position);
+
+			expect(result).toBe("   \n\n   \n\n- [ ] Task");
 		});
 	});
 });

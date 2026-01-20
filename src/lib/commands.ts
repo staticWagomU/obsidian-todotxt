@@ -33,4 +33,13 @@ export const COMMANDS = {
 		id: "todotxt-add-template-task",
 		name: "テンプレートからタスク追加",
 	},
+	// Daily Notes integration commands (PBI-068)
+	exportToDailyNote: {
+		id: "todotxt-export-to-daily-note",
+		name: "今日のタスクをデイリーノートにエクスポート",
+	},
+	importFromDailyNote: {
+		id: "todotxt-import-from-daily-note",
+		name: "デイリーノートからタスクをインポート",
+	},
 } as const satisfies Record<string, CommandDefinition>;

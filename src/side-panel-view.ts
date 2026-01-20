@@ -77,10 +77,35 @@ export class TodoSidePanelView extends ItemView {
 	async onOpen(): Promise<void> {
 		await this.loadTasks();
 		this.renderView();
+
+		// Register layout-change event to refresh UI when sidebar becomes visible
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				// Check if this view is visible (leaf is not collapsed)
+				const leaf = this.leaf;
+				if (leaf && this.isViewVisible()) {
+					void this.refreshTaskList();
+				}
+			})
+		);
 	}
 
 	async onClose(): Promise<void> {
-		// Cleanup
+		// Event listeners registered via registerEvent are automatically cleaned up
+	}
+
+	/**
+	 * Check if this view is currently visible
+	 * A view is visible if its container has a visible width
+	 */
+	private isViewVisible(): boolean {
+		// Check if this view's container element is visible
+		const containerEl = this.containerEl;
+		if (!containerEl) return true; // Assume visible if we can't determine
+
+		// Check if the container has any visible width
+		const rect = containerEl.getBoundingClientRect();
+		return rect.width > 0;
 	}
 
 	/**

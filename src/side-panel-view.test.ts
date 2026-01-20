@@ -56,12 +56,15 @@ vi.mock("obsidian", () => {
 			app = {};
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			contentEl: any;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			containerEl: any;
 
 			constructor(leaf: unknown) {
 				this.leaf = leaf;
 				const container = document.createElement("div");
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				this.contentEl = addCreateElMethod(container);
+				this.containerEl = container;
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				this.contentEl.empty = () => { container.innerHTML = ""; };
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -89,6 +92,9 @@ vi.mock("obsidian", () => {
 			getIcon(): string { return ""; }
 			async onOpen(): Promise<void> {}
 			async onClose(): Promise<void> {}
+			// Mock registerEvent for layout-change event registration
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			registerEvent(_eventRef: any): void {}
 		},
 	};
 });
@@ -122,6 +128,9 @@ describe("TodoSidePanelView", () => {
 				vault: {
 					getAbstractFileByPath: () => null,
 					read: () => Promise.resolve(""),
+				},
+				workspace: {
+					on: () => ({ unload: () => {} }),
 				},
 			},
 		} as unknown as TodotxtPlugin;

@@ -31,6 +31,8 @@ vi.mock("obsidian", () => {
 			app: unknown;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			contentEl: any;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			scope: any;
 
 			constructor(app: unknown) {
 				this.app = app;
@@ -39,6 +41,14 @@ vi.mock("obsidian", () => {
 				this.contentEl = addCreateElMethod(container);
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				this.contentEl.empty = () => { container.innerHTML = ""; };
+				// Mock scope with register method
+				const registeredHandlers: { modifiers: string[]; key: string; handler: (event: KeyboardEvent) => boolean | void }[] = [];
+				this.scope = {
+					registeredHandlers,
+					register(modifiers: string[], key: string, handler: (event: KeyboardEvent) => boolean | void): void {
+						registeredHandlers.push({ modifiers, key, handler });
+					},
+				};
 			}
 
 			open(): void {}
@@ -88,6 +98,13 @@ class TestTaskModal extends BaseTaskModal {
 		this.onToggleMode(container);
 	}
 
+	public testSetupSaveShortcut(handler: () => void): void {
+		this.setupSaveShortcut(handler);
+	}
+
+	public getScope(): { registeredHandlers: { modifiers: string[]; key: string; handler: (event: KeyboardEvent) => boolean | void }[] } {
+		return (this as unknown as { scope: { registeredHandlers: { modifiers: string[]; key: string; handler: (event: KeyboardEvent) => boolean | void }[] } }).scope;
+	}
 }
 
 describe("BaseTaskModal - Preview", () => {
@@ -364,6 +381,54 @@ describe("BaseTaskModal - Preview", () => {
 			expect(prioritySelect.value).toBe("B");
 			expect(dueDateInput.value).toBe("2026-02-01");
 			expect(thresholdDateInput.value).toBe("2026-01-20");
+		});
+	});
+
+	describe("setupSaveShortcut", () => {
+		it("Ctrl+Enterのショートカットが登録される", () => {
+			const saveHandler = vi.fn();
+			modal.testSetupSaveShortcut(saveHandler);
+
+			const handlers = modal.getScope().registeredHandlers;
+			expect(handlers.length).toBe(2);
+
+			// Ctrl+Enter
+			expect(handlers[0]?.modifiers).toContain("Ctrl");
+			expect(handlers[0]?.key).toBe("Enter");
+
+			// Meta+Enter (Cmd on Mac)
+			expect(handlers[1]?.modifiers).toContain("Meta");
+			expect(handlers[1]?.key).toBe("Enter");
+		});
+
+		it("ショートカット実行時にハンドラーが呼ばれる", () => {
+			const saveHandler = vi.fn();
+			modal.testSetupSaveShortcut(saveHandler);
+
+			const handlers = modal.getScope().registeredHandlers;
+
+			// Ctrl+Enterハンドラーを実行
+			const preventDefaultMock = vi.fn();
+			const mockEvent = { preventDefault: preventDefaultMock } as unknown as KeyboardEvent;
+			handlers[0]?.handler(mockEvent);
+
+			expect(saveHandler).toHaveBeenCalledTimes(1);
+			expect(preventDefaultMock).toHaveBeenCalled();
+		});
+
+		it("Meta+Enterでもハンドラーが呼ばれる（macOS対応）", () => {
+			const saveHandler = vi.fn();
+			modal.testSetupSaveShortcut(saveHandler);
+
+			const handlers = modal.getScope().registeredHandlers;
+
+			// Meta+Enterハンドラーを実行
+			const preventDefaultMock = vi.fn();
+			const mockEvent = { preventDefault: preventDefaultMock } as unknown as KeyboardEvent;
+			handlers[1]?.handler(mockEvent);
+
+			expect(saveHandler).toHaveBeenCalledTimes(1);
+			expect(preventDefaultMock).toHaveBeenCalled();
 		});
 	});
 });

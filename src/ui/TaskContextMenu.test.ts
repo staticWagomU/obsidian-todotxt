@@ -268,4 +268,57 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 			expect(typeof menu.close).toBe("function");
 		});
 	});
+
+	describe("AIで分解メニュー項目 (PBI-067 AC1)", () => {
+		it("「AIで分解」メニュー項目が存在する", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+				onDecompose: vi.fn(),
+			};
+
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			expect(items.some(item => item.title === "AIで分解")).toBe(true);
+		});
+
+		it("「AIで分解」メニュー項目にsplit-squareアイコンが設定されている", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+				onDecompose: vi.fn(),
+			};
+
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			const decomposeItem = items.find(item => item.title === "AIで分解");
+			expect(decomposeItem?.icon).toBe("split-square");
+		});
+
+		it("onDecomposeコールバックが未指定の場合は「AIで分解」項目が表示されない", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+			};
+
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			expect(items.some(item => item.title === "AIで分解")).toBe(false);
+		});
+	});
 });

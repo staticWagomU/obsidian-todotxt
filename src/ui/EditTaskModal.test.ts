@@ -25,6 +25,8 @@ vi.mock("obsidian", () => {
 			app: unknown;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			contentEl: any;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			scope: any;
 
 			constructor(app: unknown) {
 				this.app = app;
@@ -33,6 +35,10 @@ vi.mock("obsidian", () => {
 				this.contentEl = addCreateElMethod(container);
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				this.contentEl.empty = () => { container.innerHTML = ""; };
+				// Mock scope with register method for keyboard shortcuts
+				this.scope = {
+					register(): void {},
+				};
 			}
 
 			open(): void {}
@@ -77,7 +83,8 @@ describe("EditTaskModal", () => {
 
 		const saveButton = modal.contentEl.querySelector("button.save-task-button");
 		expect(saveButton).not.toBeNull();
-		expect(saveButton?.textContent).toBe("保存");
+		expect(saveButton?.textContent).toContain("保存");
+		expect(saveButton?.textContent).toContain("Ctrl+Enter");
 	});
 
 	it("保存ボタンをクリックするとonSaveコールバックが呼ばれる", () => {

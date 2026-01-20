@@ -134,11 +134,8 @@ export class EditTaskModal extends BaseTaskModal {
 		// Initial preview update
 		updatePreviewContent();
 
-		// Save button
-		const saveButton = contentEl.createEl("button");
-		saveButton.classList.add("save-task-button");
-		saveButton.textContent = "保存";
-		saveButton.addEventListener("click", () => {
+		// Save handler function
+		const handleSave = () => {
 			const baseDescription = input.value.trim();
 			if (baseDescription) {
 				const projects = projectChipInput.getValues();
@@ -154,7 +151,16 @@ export class EditTaskModal extends BaseTaskModal {
 				this.onSave(fullDescription, priority, dueDate, thresholdDate);
 				this.close();
 			}
-		});
+		};
+
+		// Setup Ctrl+Enter shortcut for IME support
+		this.setupSaveShortcut(handleSave);
+
+		// Save button
+		const saveButton = contentEl.createEl("button");
+		saveButton.classList.add("save-task-button");
+		saveButton.textContent = "保存 (Ctrl+Enter)";
+		saveButton.addEventListener("click", handleSave);
 	}
 
 	onClose(): void {

@@ -18,6 +18,26 @@ import { TagChipInput } from "./TagChipInput";
 
 export abstract class BaseTaskModal extends Modal {
 	protected isTextMode = false;
+	protected saveHandler?: () => void;
+
+	/**
+	 * Ctrl+Enter (Cmd+Enter on Mac) でフォームを保存するキーボードショートカットを設定
+	 * 日本語入力（IME）での変換確定と区別するため、Enterのみでは保存しない
+	 * @param handler 保存処理を実行する関数
+	 */
+	protected setupSaveShortcut(handler: () => void): void {
+		this.saveHandler = handler;
+		this.scope.register(["Ctrl"], "Enter", (event: KeyboardEvent) => {
+			event.preventDefault();
+			this.saveHandler?.();
+			return false;
+		});
+		this.scope.register(["Meta"], "Enter", (event: KeyboardEvent) => {
+			event.preventDefault();
+			this.saveHandler?.();
+			return false;
+		});
+	}
 
 	// ========================================
 	// 基本UI要素の作成

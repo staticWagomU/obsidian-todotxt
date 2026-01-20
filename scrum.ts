@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 68, pbi: "PBI-067", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 2, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 3, subtasksTotal: 5, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
@@ -161,8 +161,11 @@ export const currentSprint = {
       test: "生成サブタスクが3-7個の範囲かつ親タスクのprojects/contextsが継承されることをテスト",
       implementation: "createSubtasksFromDecomposition()関数実装",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add failing tests for createSubtasksFromDecomposition (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: implement createSubtasksFromDecomposition function (GREEN)" },
+      ],
       ac: ["AC2: AIが3-7個のサブタスクを生成する", "AC3: プロジェクト/コンテキスト継承"],
     },
     {

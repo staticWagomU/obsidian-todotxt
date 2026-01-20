@@ -88,8 +88,13 @@ export const productBacklog: ProductBacklogItem[] = [
       { criterion: "カスタム指示を入力してAIの分解方針を調整できる", verification: "manual" },
     ],
     dependencies: [],
-    status: "draft" as PBIStatus,
-    complexity: { functions: 5, estimatedTests: 18, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 6 },
+    status: "ready" as PBIStatus,
+    complexity: { functions: 4, estimatedTests: 15, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 5 },
+    // Sprint 67 Retrospective P0 Action実施: complexity再評価
+    // - 既存AI連携コンポーネント再利用でfunctions 5→4に調整
+    // - estimatedTests 18→15に調整（プロンプト/API統合で重複削減）
+    // - subtasks 6→5に調整（分解プロンプト構築とAPI統合を1 subtaskに統合）
+    // 再利用コンポーネント: OpenRouterService, withRetry, AITaskPreviewDialog, TaskContextMenu
   },
   {
     id: "PBI-068",
@@ -187,10 +192,11 @@ export const retrospectives: Retrospective[] = [
     ] },
 ];
 
-// Action Management (Sprint 67完了: rate 77%、healthy KPI 10 Sprint連続)
+// Action Management (Sprint 67 Refinement完了: rate 78%、healthy KPI継続)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 105, executed: 81, rate: 77, remaining: 24 },
+  tracking: { total: 105, executed: 82, rate: 78, remaining: 23 },
+  // Sprint 67 Refinement: P0 Action 1項目実施（PBI-067 complexity再評価、subtasks 6→5調整）
   // Sprint 67: P1 Action 1項目実施（AC検証チェックリスト実践検証）、rate 76%→77%(+1%)
   // Sprint 59-66: see git history
 };

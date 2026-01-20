@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 68, pbi: "PBI-067", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 1, subtasksTotal: 5, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
@@ -139,8 +139,11 @@ export const currentSprint = {
       test: "TaskContextMenuに「AIで分解」メニュー項目が追加されることをテスト",
       implementation: "TaskContextMenu.tsにonDecomposeコールバックとメニュー項目追加",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add failing tests for AI decompose menu item (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: add AI decompose menu item to TaskContextMenu (GREEN)" },
+      ],
       ac: ["AC1: コンテキストメニューから「AIで分解」を選択できる"],
     },
     {

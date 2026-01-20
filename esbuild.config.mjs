@@ -1,6 +1,27 @@
 import esbuild from "esbuild";
 import process from "process";
 import { builtinModules } from 'node:module';
+import { readFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+// Load .env file if exists
+function loadEnv() {
+	const envPath = resolve(process.cwd(), '.env');
+	if (!existsSync(envPath)) return {};
+
+	const env = {};
+	const content = readFileSync(envPath, 'utf-8');
+	for (const line of content.split('\n')) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith('#')) continue;
+		const [key, ...valueParts] = trimmed.split('=');
+		if (key) env[key.trim()] = valueParts.join('=').trim();
+	}
+	return env;
+}
+
+const env = loadEnv();
+const pluginDir = env.OBSIDIAN_PLUGIN_DIR;
 
 const banner =
 `/*
@@ -37,7 +58,7 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outfile: "main.js",
+	outfile: (!prod && pluginDir) ? `${pluginDir}/main.js` : "main.js",
 	minify: prod,
 });
 
@@ -45,5 +66,11 @@ if (prod) {
 	await context.rebuild();
 	process.exit(0);
 } else {
+	if (pluginDir) {
+		console.log(`[dev] Output to: ${pluginDir}/main.js`);
+	} else {
+		console.log("[dev] OBSIDIAN_PLUGIN_DIR not set. Output to: ./main.js");
+		console.log("[dev] Create .env file with OBSIDIAN_PLUGIN_DIR to enable direct vault output.");
+	}
 	await context.watch();
 }

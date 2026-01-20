@@ -33,9 +33,9 @@ interface Retrospective {
 
 // Quick Status
 export const quickStatus = {
-  sprint: { number: 69, pbi: "PBI-068", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 0, subtasksTotal: 6, impediments: 0 },
-  phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
+  sprint: { number: 70, pbi: "TBD", status: "not_started" as SprintStatus,
+    subtasksCompleted: 0, subtasksTotal: 0, impediments: 0 },
+  phase: { number: 19, status: "done", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
 // Product Goal
@@ -50,7 +50,7 @@ export const roadmap = {
   phase16: { number: 16, goal: "AI自然言語タスク編集・一括処理", sprints: "54-55", pbis: ["PBI-054", "PBI-055"], status: "done" },
   phase17: { number: 17, goal: "キーボードショートカット・高度検索", sprints: "56-57", pbis: ["PBI-056", "PBI-057"], status: "done" },
   phase18: { number: 18, goal: "UX強化・パフォーマンス最適化", sprints: "58-65", pbis: ["PBI-064", "PBI-058", "PBI-059", "PBI-060", "PBI-061", "PBI-062", "PBI-063"], status: "done" },
-  phase19: { number: 19, goal: "生産性向上・Obsidian統合", sprints: "66-69", pbis: ["PBI-065", "PBI-066", "PBI-067", "PBI-068"], status: "in_progress" },
+  phase19: { number: 19, goal: "生産性向上・Obsidian統合", sprints: "66-69", pbis: ["PBI-065", "PBI-066", "PBI-067", "PBI-068"], status: "done" },
 };
 
 // Product Backlog (Order = Priority) - done PBIs compacted, see git history
@@ -70,29 +70,11 @@ export const productBacklog: ProductBacklogItem[] = [
   // PBI-063: パフォーマンス最適化 - Sprint 64完了、1220t(+80t)、see git history
   // PBI-062: キーボードショートカットカスタマイズ - Sprint 65完了、1287t(+67t)、Phase 18完遂、see git history
 
-  // Phase 19: 生産性向上・Obsidian統合
+  // Phase 19完了 (Sprint 66-69): 生産性向上・Obsidian統合、1449t達成(+124t)
   // PBI-065: フォーカスビュー機能 - Sprint 66完了、1325t(+38t)、see git history
   // PBI-066: テンプレート機能 - Sprint 67完了、1356t(+31t)、see git history
   // PBI-067: AIタスク分解機能 - Sprint 68完了、1399t(+43t)、see git history
-  {
-    id: "PBI-068",
-    story: {
-      role: "Obsidianデイリーノートユーザー",
-      capability: "今日のタスクをデイリーノートに挿入、デイリーノートからタスクをインポート",
-      benefit: "日次レビューとタスク管理が統合され、ワークフローが効率化される"
-    },
-    acceptanceCriteria: [
-      { criterion: "due:today以前またはt:today以前の未完了タスクをデイリーノートに挿入できる", verification: "manual" },
-      { criterion: "デイリーノートの `- [ ] テキスト` 形式チェックボックスをtodo.txt形式としてインポートできる", verification: "manual" },
-      { criterion: "設定画面で挿入位置（指定見出し後/ファイル先頭/ファイル末尾）を選択できる", verification: "vitest" },
-      { criterion: "Daily Notesプラグインが無効時は「Daily Notesプラグインを有効にしてください」メッセージを表示", verification: "vitest" },
-      { criterion: "コマンドパレットから「デイリーノートにタスクを挿入」「デイリーノートからインポート」を実行できる", verification: "manual" },
-    ],
-    dependencies: ["obsidian-daily-notes-interface"],
-    status: "ready" as PBIStatus,
-    complexity: { functions: 5, estimatedTests: 18, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 6 },
-    // Sprint 69 Refinement: AC明確化、complexity再評価（focus-filter.ts再利用）、双方向同期は別PBI分離
-  },
+  // PBI-068: デイリーノート統合 - Sprint 69完了、1449t(+50t)、see git history
 ];
 
 // Definition of Ready
@@ -106,40 +88,15 @@ export const definitionOfReady = {
   ],
 };
 
-// Current Sprint - Sprint 69 Planning完了
+// Current Sprint - Sprint 70 未開始
 export const currentSprint = {
-  sprint: 69,
-  pbi: "PBI-068",
-  goal: "デイリーノート統合機能を実装し、今日のタスクをデイリーノートに挿入/インポートできるようにする",
-  status: "in_progress" as SprintStatus,
-  subtasks: [
-    { test: "isDailyNotesPluginEnabled()がプラグイン有効/無効を検出するテスト",
-      implementation: "obsidian-daily-notes-interfaceのappHasDailyNotesPluginLoaded()ラップ関数",
-      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
-      commits: [], ac: ["AC4"] },
-    { test: "設定インターフェースに挿入位置オプションが存在するテスト",
-      implementation: "DailyNoteInsertPosition型と設定UIの追加",
-      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
-      commits: [], ac: ["AC3"] },
-    { test: "formatTasksForDailyNote()がMarkdown形式に変換するテスト",
-      implementation: "タスクをMarkdown - [ ]形式に変換する関数",
-      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
-      commits: [], ac: ["AC1"] },
-    { test: "insertTasksToDailyNote()が指定位置に挿入するテスト",
-      implementation: "デイリーノートファイルの指定位置にタスク挿入",
-      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
-      commits: [], ac: ["AC1"] },
-    { test: "parseMarkdownCheckboxes()がtodo.txt形式に変換するテスト",
-      implementation: "- [ ]形式をパースしてtodo.txt形式に変換",
-      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
-      commits: [], ac: ["AC2"] },
-    { test: "コマンド定義が正しく存在するテスト",
-      implementation: "main.tsへの2コマンド登録、ダイアログUI",
-      type: "behavioral" as SubtaskType, status: "pending" as SubtaskStatus,
-      commits: [], ac: ["AC5"] },
-  ] as (Subtask & { ac: string[] })[],
+  sprint: 70,
+  pbi: "TBD",
+  goal: "TBD",
+  status: "not_started" as SprintStatus,
+  subtasks: [],
 };
-// Sprint 66-68: see git history
+// Sprint 66-69: see git history
 
 // Impediments
 export const impediments = {
@@ -169,6 +126,7 @@ export const completedSprints: CompletedSprint[] = [
   { sprint: 66, pbi: "PBI-065", story: "フォーカスビュー機能", verification: "passed", notes: "1325t(+38t),DoD全pass,AC全達成,Phase 19開始" },
   { sprint: 67, pbi: "PBI-066", story: "テンプレート機能", verification: "passed", notes: "1356t(+31t),DoD全pass,AC全達成(5/5)" },
   { sprint: 68, pbi: "PBI-067", story: "AIタスク分解機能", verification: "passed", notes: "1399t(+43t),DoD全pass,AC全達成(5/5),13Sprint連続pass" },
+  { sprint: 69, pbi: "PBI-068", story: "デイリーノート統合", verification: "passed", notes: "1449t(+50t),DoD全pass,AC全達成(5/5),14Sprint連続pass,Phase 19完遂" },
 ];
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)

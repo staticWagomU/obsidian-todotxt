@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect, vi } from "vitest";
+import type { App } from "obsidian";
 
 // Mock Obsidian Modal
 vi.mock("obsidian", () => ({
@@ -30,6 +31,8 @@ vi.mock("obsidian", () => ({
 }));
 
 describe("AIDecomposeDialog", () => {
+	const mockApp = { vault: {} } as unknown as App;
+
 	it("AIDecomposeDialogクラスが存在する", async () => {
 		const { AIDecomposeDialog } = await import("./AIDecomposeDialog");
 		expect(AIDecomposeDialog).toBeDefined();
@@ -37,12 +40,11 @@ describe("AIDecomposeDialog", () => {
 
 	it("コンストラクタでタスク説明とコールバックを受け取る", async () => {
 		const { AIDecomposeDialog } = await import("./AIDecomposeDialog");
-		const mockApp = { vault: {} };
 		const taskDescription = "大きなプロジェクトを完了する";
 		const onSubmit = vi.fn();
 
 		const dialog = new AIDecomposeDialog(
-			mockApp as any,
+			mockApp,
 			taskDescription,
 			onSubmit,
 		);
@@ -51,11 +53,10 @@ describe("AIDecomposeDialog", () => {
 
 	it("getCustomInstruction()でカスタム指示を取得できる", async () => {
 		const { AIDecomposeDialog } = await import("./AIDecomposeDialog");
-		const mockApp = { vault: {} };
 		const onSubmit = vi.fn();
 
 		const dialog = new AIDecomposeDialog(
-			mockApp as any,
+			mockApp,
 			"タスク",
 			onSubmit,
 		);
@@ -65,63 +66,59 @@ describe("AIDecomposeDialog", () => {
 
 	it("setCustomInstruction()でカスタム指示を設定できる", async () => {
 		const { AIDecomposeDialog } = await import("./AIDecomposeDialog");
-		const mockApp = { vault: {} };
 		const onSubmit = vi.fn();
 
 		const dialog = new AIDecomposeDialog(
-			mockApp as any,
+			mockApp,
 			"タスク",
 			onSubmit,
 		);
-		
+
 		dialog.setCustomInstruction("技術的な観点で分解してください");
 		expect(dialog.getCustomInstruction()).toBe("技術的な観点で分解してください");
 	});
 
 	it("onSubmitコールバックがカスタム指示を渡す", async () => {
 		const { AIDecomposeDialog } = await import("./AIDecomposeDialog");
-		const mockApp = { vault: {} };
 		const onSubmit = vi.fn();
 
 		const dialog = new AIDecomposeDialog(
-			mockApp as any,
+			mockApp,
 			"タスク",
 			onSubmit,
 		);
-		
+
 		dialog.setCustomInstruction("詳細なステップに分解");
 		dialog.triggerSubmit();
-		
+
 		expect(onSubmit).toHaveBeenCalledWith("詳細なステップに分解");
 	});
 
 	it("カスタム指示が空でもonSubmitが呼ばれる", async () => {
 		const { AIDecomposeDialog } = await import("./AIDecomposeDialog");
-		const mockApp = { vault: {} };
 		const onSubmit = vi.fn();
 
 		const dialog = new AIDecomposeDialog(
-			mockApp as any,
+			mockApp,
 			"タスク",
 			onSubmit,
 		);
-		
+
 		dialog.triggerSubmit();
-		
+
 		expect(onSubmit).toHaveBeenCalledWith("");
 	});
 
 	it("getTaskDescription()でタスク説明を取得できる", async () => {
 		const { AIDecomposeDialog } = await import("./AIDecomposeDialog");
-		const mockApp = { vault: {} };
 		const onSubmit = vi.fn();
 
 		const dialog = new AIDecomposeDialog(
-			mockApp as any,
+			mockApp,
 			"大きなプロジェクトを完了する +work @office",
 			onSubmit,
 		);
-		
+
 		expect(dialog.getTaskDescription()).toBe("大きなプロジェクトを完了する +work @office");
 	});
 });

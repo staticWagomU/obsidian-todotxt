@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect, vi } from "vitest";
+import type { App } from "obsidian";
 
 // Mock Obsidian Modal
 vi.mock("obsidian", () => ({
@@ -31,6 +32,8 @@ vi.mock("obsidian", () => ({
 }));
 
 describe("AIDecomposePreviewDialog", () => {
+	const mockApp = { vault: {} } as unknown as App;
+
 	it("AIDecomposePreviewDialogクラスが存在する", async () => {
 		const { AIDecomposePreviewDialog } = await import("./AIDecomposePreviewDialog");
 		expect(AIDecomposePreviewDialog).toBeDefined();
@@ -38,12 +41,11 @@ describe("AIDecomposePreviewDialog", () => {
 
 	it("コンストラクタでサブタスク配列とコールバックを受け取る", async () => {
 		const { AIDecomposePreviewDialog } = await import("./AIDecomposePreviewDialog");
-		const mockApp = { vault: {} };
 		const subtaskLines = ["サブタスク1", "サブタスク2"];
 		const onConfirm = vi.fn();
 
 		const dialog = new AIDecomposePreviewDialog(
-			mockApp as any,
+			mockApp,
 			subtaskLines,
 			onConfirm,
 		);
@@ -52,12 +54,11 @@ describe("AIDecomposePreviewDialog", () => {
 
 	it("getSubtaskLines()でサブタスク配列を取得できる", async () => {
 		const { AIDecomposePreviewDialog } = await import("./AIDecomposePreviewDialog");
-		const mockApp = { vault: {} };
 		const subtaskLines = ["サブタスク1", "サブタスク2", "サブタスク3"];
 		const onConfirm = vi.fn();
 
 		const dialog = new AIDecomposePreviewDialog(
-			mockApp as any,
+			mockApp,
 			subtaskLines,
 			onConfirm,
 		);
@@ -66,16 +67,15 @@ describe("AIDecomposePreviewDialog", () => {
 
 	it("setSubtaskLines()でサブタスク配列を更新できる", async () => {
 		const { AIDecomposePreviewDialog } = await import("./AIDecomposePreviewDialog");
-		const mockApp = { vault: {} };
 		const subtaskLines = ["サブタスク1"];
 		const onConfirm = vi.fn();
 
 		const dialog = new AIDecomposePreviewDialog(
-			mockApp as any,
+			mockApp,
 			subtaskLines,
 			onConfirm,
 		);
-		
+
 		const newSubtasks = ["新しいサブタスク1", "新しいサブタスク2"];
 		dialog.setSubtaskLines(newSubtasks);
 		expect(dialog.getSubtaskLines()).toEqual(newSubtasks);
@@ -83,16 +83,15 @@ describe("AIDecomposePreviewDialog", () => {
 
 	it("onConfirmコールバックが呼び出される", async () => {
 		const { AIDecomposePreviewDialog } = await import("./AIDecomposePreviewDialog");
-		const mockApp = { vault: {} };
 		const subtaskLines = ["サブタスク1"];
 		const onConfirm = vi.fn();
 
 		const dialog = new AIDecomposePreviewDialog(
-			mockApp as any,
+			mockApp,
 			subtaskLines,
 			onConfirm,
 		);
-		
+
 		// handleConfirmをシミュレート
 		dialog.triggerConfirm();
 		expect(onConfirm).toHaveBeenCalledWith(subtaskLines);
@@ -100,21 +99,20 @@ describe("AIDecomposePreviewDialog", () => {
 
 	it("編集後のサブタスクでonConfirmが呼ばれる", async () => {
 		const { AIDecomposePreviewDialog } = await import("./AIDecomposePreviewDialog");
-		const mockApp = { vault: {} };
 		const subtaskLines = ["サブタスク1"];
 		const onConfirm = vi.fn();
 
 		const dialog = new AIDecomposePreviewDialog(
-			mockApp as any,
+			mockApp,
 			subtaskLines,
 			onConfirm,
 		);
-		
+
 		// 編集後
 		const editedSubtasks = ["編集後のサブタスク1", "追加されたサブタスク2"];
 		dialog.setSubtaskLines(editedSubtasks);
 		dialog.triggerConfirm();
-		
+
 		expect(onConfirm).toHaveBeenCalledWith(editedSubtasks);
 	});
 });

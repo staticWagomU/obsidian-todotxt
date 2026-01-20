@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 68, pbi: "PBI-067", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 3, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 4, subtasksTotal: 5, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
@@ -172,8 +172,11 @@ export const currentSprint = {
       test: "AIDecomposePreviewDialogが編集可能なプレビューを表示し追加ボタンで挿入されることをテスト",
       implementation: "AIDecomposePreviewDialog.ts（AITaskPreviewDialogを参考に拡張）",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add failing tests for AIDecomposePreviewDialog (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: implement AIDecomposePreviewDialog (GREEN)" },
+      ],
       ac: ["AC4: プレビュー画面で編集してから追加できる"],
     },
     {

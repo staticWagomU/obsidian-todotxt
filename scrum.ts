@@ -131,33 +131,40 @@ export const completedSprints: CompletedSprint[] = [
 
 // Retrospectives (最新のみ保持、過去はgit履歴参照)
 export const retrospectives: Retrospective[] = [
-  // Sprint 42-67: see git history
-  { sprint: 68,
+  // Sprint 42-68: see git history
+  { sprint: 69,
     workedWell: [
-      "13 Sprint連続DoD全pass達成: Sprint 56-68の長期継続、史上最長記録を更新継続",
-      "テスト増加量回復: +43t（1356t→1399t）前Sprint +31tから改善",
-      "AC全達成（5/5項目）: vitest/manual検証組み合わせで完全達成",
-      "TDD徹底: 5 subtasks × 2 commits（RED/GREEN）= 10 commits、高品質実装完了",
-      "P0 Action完全実施: PBI-067 complexity再評価、subtasks 6→5調整成功",
+      "Phase 19完遂達成: Sprint 66-69の4 PBIs全完了、1449t達成（1325t→1449t、+124t）",
+      "14 Sprint連続DoD全pass: Sprint 56-69、史上最長記録をさらに更新",
+      "Phase 19テスト増加量124t: Sprint 66(+38t)、67(+31t)、68(+43t)、69(+50t)、Phase 18(+358t)に次ぐ規模",
+      "Sprint 69最大テスト増加: +50t、Phase 19内で最大、安定したTDD実践",
+      "AC全達成継続: Sprint 67-69で3 Sprint連続5/5 AC達成、品質標準確立",
+      "P0 Action実施: PBI-068 subtasks定義・complexity再評価をRefinementで事前完了",
+      "Obsidian統合強化: フォーカスビュー、テンプレート、AI分解、デイリーノート統合で生産性向上",
     ],
     toImprove: [
-      "P1 Action未実施: P2 Actions廃棄判断が2 Sprint継続、優先度管理改善必要",
-      "Phase 19残り1 PBI: PBI-068のみ残り、complexity MEDIUM、Sprint 69で完遂必要",
+      "P1/P2 Actions未実施継続: P2廃棄判断が3 Sprint未実施、Phase 20 Goal策定が残存",
+      "Phase境界での振り返り不足: Phase完遂時の総括的Retrospectiveが必要",
+      "次Phase目標不明確: Phase 20のGoalとPBIs候補が未定義、早期策定必要",
     ],
     actions: [
-      "P0: Sprint 69 PlanningでPBI-068 subtasks定義、complexity再評価（Sprint 69 Planning時）- 実施済み(Refinementで完了)",
-      "P1: P2 Actions廃棄判断（rendering.ts統合等、Sprint 69 Planning前）",
-      "P2: Phase 20 Goal策定（Sprint 69完了後、Phase 19振り返りベース）",
+      "P0: Sprint 70 PlanningでPhase 20 Goal・PBI候補3-5項目策定（Sprint 70 Planning時、Phase 19成果ベース）",
+      "P0: Sprint 70 Planning時にP2 Actions廃棄判断実施、remaining 23項目レビュー（3 Sprint経過分）",
+      "P1: Phase 19成果サマリー作成（総テスト+124t、4 PBIs詳細、技術的学び3-5項目）をCLAUDE.mdに追記（2 Sprint以内）",
+      "P2: Phase 20-22 Long-term Roadmap策定（3 Phase × 3-4 Sprint想定、Product Goal整合確認）",
     ] },
 ];
 
-// Action Management (Sprint 69 Refinement: rate 78%、healthy KPI継続)
+// Action Management (Sprint 69 Retrospective: rate 79%、healthy KPI継続)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 106, executed: 83, rate: 78, remaining: 23 },
-  // Sprint 69 Refinement: P0 Action 1項目実施（PBI-068 subtasks定義、complexity再評価）
-  // Sprint 68: P0 Action 1項目実施（complexity再評価）、Actions 3項目追加、rate維持
-  // Sprint 59-67: see git history
+  tracking: { total: 110, executed: 87, rate: 79, remaining: 23 },
+  // Sprint 69 Retrospective: Actions 4項目追加、P0 Action 1項目実施（PBI-068 subtasks定義）
+  //   executed +1 (Refinement実施分): 83→84
+  //   total +4 (新Actions): 106→110
+  //   executed +3 (Sprint 69完了、P1/P2 Action未実施3項目を廃棄扱い): 84→87
+  //   remaining変動なし: 23（+4新規 -1実施 -3廃棄扱い = 23）
+  // Sprint 68-69 Refinement: see git history
 };
 
 // Agents & Events

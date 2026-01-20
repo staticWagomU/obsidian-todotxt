@@ -68,6 +68,23 @@ vi.mock("obsidian", () => {
 			open(): void {}
 			close(): void {}
 		},
+		FuzzySuggestModal: class {
+			app: unknown;
+
+			constructor(app: unknown) {
+				this.app = app;
+			}
+
+			setPlaceholder(_text: string): void {}
+			getItems(): unknown[] { return []; }
+			getItemText(_item: unknown): string { return ""; }
+			onChooseItem(_item: unknown, _evt: unknown): void {}
+			open(): void {}
+			close(): void {}
+		},
+		Notice: class {
+			constructor(_message: string) {}
+		},
 		PluginSettingTab: class {
 			app: unknown;
 			plugin: unknown;

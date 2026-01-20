@@ -49,7 +49,7 @@ describe("renderInlineTaskInput", () => {
 			renderInlineTaskInput(container, onAddTask);
 
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
-			expect(inputElement?.placeholder).toBe("タスクを追加...");
+			expect(inputElement?.placeholder).toBe("タスクを追加... (Ctrl+Enter)");
 		});
 
 		it("入力欄にaria-labelが設定される", async () => {
@@ -63,8 +63,8 @@ describe("renderInlineTaskInput", () => {
 		});
 	});
 
-	describe("Enterキーでのタスク追加", () => {
-		it("入力欄でEnterキーを押すとonAddTaskコールバックが呼ばれる", async () => {
+	describe("Ctrl+Enterキーでのタスク追加", () => {
+		it("入力欄でCtrl+Enterキーを押すとonAddTaskコールバックが呼ばれる", async () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
@@ -73,15 +73,56 @@ describe("renderInlineTaskInput", () => {
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "New task";
 
-			// Dispatch Enter keydown event
+			// Dispatch Ctrl+Enter keydown event
 			const enterEvent = new KeyboardEvent("keydown", {
 				key: "Enter",
+				ctrlKey: true,
 				bubbles: true,
 			});
 			inputElement.dispatchEvent(enterEvent);
 
 			expect(onAddTask).toHaveBeenCalledTimes(1);
 			expect(onAddTask).toHaveBeenCalledWith("New task");
+		});
+
+		it("Cmd+Enterキーでもタスクが追加される（macOS対応）", async () => {
+			const { renderInlineTaskInput } = await import("./rendering");
+
+			const onAddTask = vi.fn();
+			renderInlineTaskInput(container, onAddTask);
+
+			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
+			inputElement.value = "New task on Mac";
+
+			// Dispatch Cmd+Enter keydown event (metaKey for Mac)
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				metaKey: true,
+				bubbles: true,
+			});
+			inputElement.dispatchEvent(enterEvent);
+
+			expect(onAddTask).toHaveBeenCalledTimes(1);
+			expect(onAddTask).toHaveBeenCalledWith("New task on Mac");
+		});
+
+		it("Enterのみ（Ctrl/Cmd無し）ではonAddTaskが呼ばれない（IME入力対応）", async () => {
+			const { renderInlineTaskInput } = await import("./rendering");
+
+			const onAddTask = vi.fn();
+			renderInlineTaskInput(container, onAddTask);
+
+			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
+			inputElement.value = "New task";
+
+			// Dispatch Enter keydown event without Ctrl/Cmd
+			const enterEvent = new KeyboardEvent("keydown", {
+				key: "Enter",
+				bubbles: true,
+			});
+			inputElement.dispatchEvent(enterEvent);
+
+			expect(onAddTask).not.toHaveBeenCalled();
 		});
 
 		it("Enter以外のキーではonAddTaskコールバックが呼ばれない", async () => {
@@ -101,6 +142,35 @@ describe("renderInlineTaskInput", () => {
 			inputElement.dispatchEvent(tabEvent);
 
 			expect(onAddTask).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("追加ボタンでのタスク追加", () => {
+		it("追加ボタンをクリックするとonAddTaskコールバックが呼ばれる", async () => {
+			const { renderInlineTaskInput } = await import("./rendering");
+
+			const onAddTask = vi.fn();
+			renderInlineTaskInput(container, onAddTask);
+
+			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
+			inputElement.value = "New task via button";
+
+			const addButton = container.querySelector("button.inline-task-add-button") as HTMLButtonElement;
+			expect(addButton).not.toBeNull();
+			addButton.click();
+
+			expect(onAddTask).toHaveBeenCalledTimes(1);
+			expect(onAddTask).toHaveBeenCalledWith("New task via button");
+		});
+
+		it("追加ボタンにaria-labelが設定される", async () => {
+			const { renderInlineTaskInput } = await import("./rendering");
+
+			const onAddTask = vi.fn();
+			renderInlineTaskInput(container, onAddTask);
+
+			const addButton = container.querySelector("button.inline-task-add-button") as HTMLButtonElement;
+			expect(addButton?.getAttribute("aria-label")).toBe("タスクを追加");
 		});
 	});
 
@@ -140,9 +210,10 @@ describe("renderInlineTaskInput", () => {
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "New task";
 
-			// Dispatch Enter keydown event
+			// Dispatch Ctrl+Enter keydown event
 			const enterEvent = new KeyboardEvent("keydown", {
 				key: "Enter",
+				ctrlKey: true,
 				bubbles: true,
 			});
 			inputElement.dispatchEvent(enterEvent);
@@ -153,7 +224,7 @@ describe("renderInlineTaskInput", () => {
 	});
 
 	describe("空文字バリデーション", () => {
-		it("空文字入力でEnterを押した場合、onAddTaskが呼ばれない", async () => {
+		it("空文字入力でCtrl+Enterを押した場合、onAddTaskが呼ばれない", async () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
@@ -162,9 +233,10 @@ describe("renderInlineTaskInput", () => {
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "";
 
-			// Dispatch Enter keydown event
+			// Dispatch Ctrl+Enter keydown event
 			const enterEvent = new KeyboardEvent("keydown", {
 				key: "Enter",
+				ctrlKey: true,
 				bubbles: true,
 			});
 			inputElement.dispatchEvent(enterEvent);
@@ -172,7 +244,7 @@ describe("renderInlineTaskInput", () => {
 			expect(onAddTask).not.toHaveBeenCalled();
 		});
 
-		it("空白のみの入力でEnterを押した場合、onAddTaskが呼ばれない", async () => {
+		it("空白のみの入力でCtrl+Enterを押した場合、onAddTaskが呼ばれない", async () => {
 			const { renderInlineTaskInput } = await import("./rendering");
 
 			const onAddTask = vi.fn();
@@ -181,9 +253,10 @@ describe("renderInlineTaskInput", () => {
 			const inputElement = container.querySelector("input.inline-task-input") as HTMLInputElement;
 			inputElement.value = "   ";
 
-			// Dispatch Enter keydown event
+			// Dispatch Ctrl+Enter keydown event
 			const enterEvent = new KeyboardEvent("keydown", {
 				key: "Enter",
+				ctrlKey: true,
 				bubbles: true,
 			});
 			inputElement.dispatchEvent(enterEvent);

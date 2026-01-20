@@ -926,6 +926,7 @@ function renderTaskItem(
 /**
  * Render inline task input field
  * Allows quick task addition without opening a modal
+ * Uses Ctrl+Enter (Cmd+Enter on Mac) to submit - Enter alone is reserved for IME input
  */
 export function renderInlineTaskInput(
 	container: HTMLElement,
@@ -937,22 +938,36 @@ export function renderInlineTaskInput(
 	const inputElement = inputContainer.createEl("input");
 	inputElement.type = "text";
 	inputElement.classList.add("inline-task-input");
-	inputElement.placeholder = "タスクを追加...";
+	inputElement.placeholder = "タスクを追加... (Ctrl+Enter)";
 	inputElement.setAttribute("aria-label", "インラインタスク入力");
 
-	// Handle Enter key to add task
+	// Helper function to add task
+	const addTask = () => {
+		const description = inputElement.value.trim();
+		// Skip empty input
+		if (description === "") {
+			return;
+		}
+		onAddTask(description);
+		// Clear input after adding task
+		inputElement.value = "";
+	};
+
+	// Handle Ctrl+Enter (or Cmd+Enter on Mac) to add task
+	// Enter alone is reserved for Japanese IME composition
 	inputElement.addEventListener("keydown", (event: KeyboardEvent) => {
-		if (event.key === "Enter") {
-			const description = inputElement.value.trim();
-			// Skip empty input
-			if (description === "") {
-				return;
-			}
-			onAddTask(description);
-			// Clear input after adding task
-			inputElement.value = "";
+		if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+			event.preventDefault();
+			addTask();
 		}
 	});
+
+	// Add button next to input for mouse/touch users
+	const addButton = inputContainer.createEl("button");
+	addButton.classList.add("inline-task-add-button");
+	addButton.textContent = "追加";
+	addButton.setAttribute("aria-label", "タスクを追加");
+	addButton.addEventListener("click", addTask);
 }
 
 /**

@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { DEFAULT_SETTINGS, type TodotxtPluginSettings, getDefaultFilterForFile } from "./settings";
+import {
+	DEFAULT_SETTINGS,
+	type TodotxtPluginSettings,
+	getDefaultFilterForFile,
+	type DailyNoteInsertPosition,
+} from "./settings";
 import type { FilterPreset } from "./lib/filter-preset";
 import type { FilterState } from "./lib/rendering";
 
@@ -226,6 +231,65 @@ describe("settings", () => {
 			const result = getDefaultFilterForFile(settings, "vault/todo.txt");
 
 			expect(result).toBeUndefined();
+		});
+	});
+
+	describe("Daily Notes Integration Settings", () => {
+		describe("DailyNoteInsertPosition type", () => {
+			it("should accept 'top' as valid insert position", () => {
+				const position: DailyNoteInsertPosition = "top";
+				expect(position).toBe("top");
+			});
+
+			it("should accept 'bottom' as valid insert position", () => {
+				const position: DailyNoteInsertPosition = "bottom";
+				expect(position).toBe("bottom");
+			});
+
+			it("should accept 'cursor' as valid insert position", () => {
+				const position: DailyNoteInsertPosition = "cursor";
+				expect(position).toBe("cursor");
+			});
+		});
+
+		describe("dailyNotes settings", () => {
+			it("should have default dailyNotes settings", () => {
+				expect(DEFAULT_SETTINGS).toHaveProperty("dailyNotes");
+				expect(DEFAULT_SETTINGS.dailyNotes).toHaveProperty("insertPosition");
+				expect(DEFAULT_SETTINGS.dailyNotes).toHaveProperty("taskPrefix");
+			});
+
+			it("should have 'bottom' as default insert position", () => {
+				expect(DEFAULT_SETTINGS.dailyNotes.insertPosition).toBe("bottom");
+			});
+
+			it("should have '- [ ] ' as default task prefix", () => {
+				expect(DEFAULT_SETTINGS.dailyNotes.taskPrefix).toBe("- [ ] ");
+			});
+
+			it("should allow configuring insert position in settings", () => {
+				const settings: TodotxtPluginSettings = {
+					...DEFAULT_SETTINGS,
+					dailyNotes: {
+						...DEFAULT_SETTINGS.dailyNotes,
+						insertPosition: "top",
+					},
+				};
+
+				expect(settings.dailyNotes.insertPosition).toBe("top");
+			});
+
+			it("should allow configuring task prefix in settings", () => {
+				const settings: TodotxtPluginSettings = {
+					...DEFAULT_SETTINGS,
+					dailyNotes: {
+						...DEFAULT_SETTINGS.dailyNotes,
+						taskPrefix: "- ",
+					},
+				};
+
+				expect(settings.dailyNotes.taskPrefix).toBe("- ");
+			});
 		});
 	});
 });

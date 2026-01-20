@@ -34,7 +34,7 @@ interface Retrospective {
 // Quick Status
 export const quickStatus = {
   sprint: { number: 68, pbi: "PBI-067", status: "in_progress" as SprintStatus,
-    subtasksCompleted: 1, subtasksTotal: 5, impediments: 0 },
+    subtasksCompleted: 2, subtasksTotal: 5, impediments: 0 },
   phase: { number: 19, status: "in_progress", sprints: "66-69", pbis: "PBI-065, PBI-066, PBI-067, PBI-068", goal: "Phase 19: 生産性向上・Obsidian統合" },
 };
 
@@ -150,8 +150,11 @@ export const currentSprint = {
       test: "buildDecomposePrompt()が適切なプロンプトを生成し、decomposeTask()がAPI呼び出し結果を返すことをテスト",
       implementation: "decompose-prompt.ts新規作成、OpenRouterServiceにdecomposeTask()追加",
       type: "behavioral" as SubtaskType,
-      status: "pending" as SubtaskStatus,
-      commits: [],
+      status: "completed" as SubtaskStatus,
+      commits: [
+        { phase: "red" as CommitPhase, message: "test: add failing tests for decompose prompt functions (RED)" },
+        { phase: "green" as CommitPhase, message: "feat: implement decompose prompt and decomposeTask API (GREEN)" },
+      ],
       ac: ["AC2: AIが3-7個のサブタスクを生成する", "AC5: カスタム指示で分解方針調整"],
     },
     {

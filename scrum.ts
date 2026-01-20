@@ -82,15 +82,16 @@ export const productBacklog: ProductBacklogItem[] = [
       benefit: "日次レビューとタスク管理が統合され、ワークフローが効率化される"
     },
     acceptanceCriteria: [
-      { criterion: "今日のタスクをデイリーノートに挿入できる", verification: "manual" },
-      { criterion: "デイリーノートのチェックボックスからタスクをインポートできる", verification: "manual" },
-      { criterion: "挿入位置（見出し後/先頭/末尾）を設定で選択できる", verification: "vitest" },
-      { criterion: "Daily Notesプラグインが無効時は適切なエラーメッセージを表示", verification: "vitest" },
-      { criterion: "タスクの完了状態が双方向同期される（オプション）", verification: "manual" },
+      { criterion: "due:today以前またはt:today以前の未完了タスクをデイリーノートに挿入できる", verification: "manual" },
+      { criterion: "デイリーノートの `- [ ] テキスト` 形式チェックボックスをtodo.txt形式としてインポートできる", verification: "manual" },
+      { criterion: "設定画面で挿入位置（指定見出し後/ファイル先頭/ファイル末尾）を選択できる", verification: "vitest" },
+      { criterion: "Daily Notesプラグインが無効時は「Daily Notesプラグインを有効にしてください」メッセージを表示", verification: "vitest" },
+      { criterion: "コマンドパレットから「デイリーノートにタスクを挿入」「デイリーノートからインポート」を実行できる", verification: "manual" },
     ],
     dependencies: ["obsidian-daily-notes-interface"],
-    status: "draft" as PBIStatus,
-    complexity: { functions: 6, estimatedTests: 20, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 7 },
+    status: "ready" as PBIStatus,
+    complexity: { functions: 5, estimatedTests: 18, externalDependencies: 1, score: "MEDIUM" as const, subtasks: 6 },
+    // Sprint 69 Refinement: AC明確化、complexity再評価（focus-filter.ts再利用）、双方向同期は別PBI分離
   },
 ];
 
@@ -162,16 +163,17 @@ export const retrospectives: Retrospective[] = [
       "Phase 19残り1 PBI: PBI-068のみ残り、complexity MEDIUM、Sprint 69で完遂必要",
     ],
     actions: [
-      "P0: Sprint 69 PlanningでPBI-068 subtasks定義、complexity再評価（Sprint 69 Planning時）",
+      "P0: Sprint 69 PlanningでPBI-068 subtasks定義、complexity再評価（Sprint 69 Planning時）- 実施済み(Refinementで完了)",
       "P1: P2 Actions廃棄判断（rendering.ts統合等、Sprint 69 Planning前）",
       "P2: Phase 20 Goal策定（Sprint 69完了後、Phase 19振り返りベース）",
     ] },
 ];
 
-// Action Management (Sprint 68完了: rate 77%、healthy KPI継続)
+// Action Management (Sprint 69 Refinement: rate 78%、healthy KPI継続)
 export const actionManagement = {
   kpi: { min: 50, healthy: 70, excellent: 90 },
-  tracking: { total: 106, executed: 82, rate: 77, remaining: 24 },
+  tracking: { total: 106, executed: 83, rate: 78, remaining: 23 },
+  // Sprint 69 Refinement: P0 Action 1項目実施（PBI-068 subtasks定義、complexity再評価）
   // Sprint 68: P0 Action 1項目実施（complexity再評価）、Actions 3項目追加、rate維持
   // Sprint 59-67: see git history
 };

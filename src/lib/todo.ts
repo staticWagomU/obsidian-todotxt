@@ -107,10 +107,11 @@ export function createTask(
 		tags.due = dueDate;
 		enhancedDescription += ` due:${dueDate}`;
 	}
-	// t: タグ（開始日/しきい値日）: 指定がなければ本日の日付を自動設定
-	const effectiveThresholdDate = thresholdDate ?? today;
-	tags.t = effectiveThresholdDate;
-	enhancedDescription += ` t:${effectiveThresholdDate}`;
+	// t: タグ（開始日/しきい値日）: 明示的に指定された場合のみ設定
+	if (thresholdDate) {
+		tags.t = thresholdDate;
+		enhancedDescription += ` t:${thresholdDate}`;
+	}
 
 	return {
 		completed: false,

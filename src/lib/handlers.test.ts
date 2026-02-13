@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { getAddHandler, getEditHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./handlers";
+import { describe, it, expect, vi } from "vitest";
+import { getAddHandler, getEditHandler, getArchiveHandler, getUndoHandler, getRedoHandler, getToggleHandler, type AutoArchiveDeps } from "./handlers";
 import { UndoRedoHistory } from "./undo-redo";
 
 describe("handlers", () => {
@@ -128,6 +128,140 @@ describe("handlers", () => {
 
 			expect(savedArchiveData).toContain("x 2025-01-10 Old completed");
 			expect(savedArchiveData).toContain("x 2025-01-14 New completed");
+		});
+	});
+
+	describe("getToggleHandler with autoArchiveDeps", () => {
+		it("should archive completed task when toggling incomplete → complete", async () => {
+			let savedData = "";
+			let archiveData = "";
+			const getData = () => "Buy milk\nClean house";
+			const setViewData = (data: string) => { savedData = data; };
+			const autoArchiveDeps: AutoArchiveDeps = {
+				readArchive: async () => "",
+				writeArchive: async (data: string) => { archiveData = data; },
+			};
+
+			const handler = getToggleHandler(getData, setViewData, autoArchiveDeps);
+			await handler(0); // Toggle "Buy milk" to complete
+
+			// Task should be removed from original file
+			expect(savedData).not.toContain("Buy milk");
+			expect(savedData).toContain("Clean house");
+			// Task should appear in archive with completion mark
+			expect(archiveData).toContain("x ");
+			expect(archiveData).toContain("Buy milk");
+		});
+
+		it("should NOT archive when toggling complete → incomplete", async () => {
+			let savedData = "";
+			const writeArchive = vi.fn();
+			const getData = () => "x 2025-01-15 Buy milk\nClean house";
+			const setViewData = (data: string) => { savedData = data; };
+			const autoArchiveDeps: AutoArchiveDeps = {
+				readArchive: async () => "",
+				writeArchive,
+			};
+
+			const handler = getToggleHandler(getData, setViewData, autoArchiveDeps);
+			await handler(0); // Toggle "x Buy milk" back to incomplete
+
+			// writeArchive should not be called
+			expect(writeArchive).not.toHaveBeenCalled();
+			// Task should remain in original file (now incomplete)
+			expect(savedData).toContain("Buy milk");
+			expect(savedData).not.toMatch(/^x /m);
+		});
+
+		it("should work as before when autoArchiveDeps is not provided", async () => {
+			let savedData = "";
+			const getData = () => "Buy milk\nClean house";
+			const setViewData = (data: string) => { savedData = data; };
+
+			const handler = getToggleHandler(getData, setViewData);
+			await handler(0); // Toggle "Buy milk" to complete
+
+			// Task should remain in original file (just toggled)
+			expect(savedData).toContain("Buy milk");
+			expect(savedData).toContain("Clean house");
+		});
+
+		it("should only affect the toggled task, leaving others untouched", async () => {
+			let savedData = "";
+			let archiveData = "";
+			const getData = () => "(A) Important task\nBuy milk\n(B) Another task";
+			const setViewData = (data: string) => { savedData = data; };
+			const autoArchiveDeps: AutoArchiveDeps = {
+				readArchive: async () => "",
+				writeArchive: async (data: string) => { archiveData = data; },
+			};
+
+			const handler = getToggleHandler(getData, setViewData, autoArchiveDeps);
+			await handler(1); // Toggle "Buy milk" (middle task)
+
+			// Other tasks should remain
+			expect(savedData).toContain("(A) Important task");
+			expect(savedData).toContain("(B) Another task");
+			// Toggled task should be in archive
+			expect(archiveData).toContain("Buy milk");
+		});
+
+		it("should archive completed task and keep new recurring task in original file", async () => {
+			let savedData = "";
+			let archiveData = "";
+			const getData = () => "Buy milk rec:1w\nClean house";
+			const setViewData = (data: string) => { savedData = data; };
+			const autoArchiveDeps: AutoArchiveDeps = {
+				readArchive: async () => "",
+				writeArchive: async (data: string) => { archiveData = data; },
+			};
+
+			const handler = getToggleHandler(getData, setViewData, autoArchiveDeps);
+			await handler(0); // Toggle recurring task "Buy milk rec:1w"
+
+			// Completed task should be in archive
+			expect(archiveData).toContain("x ");
+			expect(archiveData).toContain("Buy milk");
+			// New recurring task should remain in original file
+			expect(savedData).toContain("Buy milk");
+			expect(savedData).toContain("rec:1w");
+			expect(savedData).toContain("Clean house");
+		});
+
+		it("should append to existing archive content", async () => {
+			let archiveData = "";
+			const getData = () => "Buy milk";
+			const setViewData = () => {};
+			const autoArchiveDeps: AutoArchiveDeps = {
+				readArchive: async () => "x 2025-01-10 Old task\n",
+				writeArchive: async (data: string) => { archiveData = data; },
+			};
+
+			const handler = getToggleHandler(getData, setViewData, autoArchiveDeps);
+			await handler(0);
+
+			// Both old and new should be in archive
+			expect(archiveData).toContain("x 2025-01-10 Old task");
+			expect(archiveData).toContain("Buy milk");
+		});
+
+		it("should result in empty file when single task is archived", async () => {
+			let savedData = "NOT_SET";
+			let archiveData = "";
+			const getData = () => "Buy milk";
+			const setViewData = (data: string) => { savedData = data; };
+			const autoArchiveDeps: AutoArchiveDeps = {
+				readArchive: async () => "",
+				writeArchive: async (data: string) => { archiveData = data; },
+			};
+
+			const handler = getToggleHandler(getData, setViewData, autoArchiveDeps);
+			await handler(0);
+
+			// Original file should be empty
+			expect(savedData.trim()).toBe("");
+			// Archive should have the task
+			expect(archiveData).toContain("Buy milk");
 		});
 	});
 

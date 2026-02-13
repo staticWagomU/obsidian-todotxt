@@ -42,6 +42,8 @@ export interface TodotxtPluginSettings {
 	customShortcuts: Record<string, string>;
 	/** Task templates for quick task addition */
 	taskTemplates: TaskTemplate[];
+	/** Automatically archive completed tasks to done file */
+	autoArchive: boolean;
 	/** Daily Notes integration settings */
 	dailyNotes: DailyNotesSettings;
 }
@@ -66,6 +68,7 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	fileDefaultFilters: {},
 	customShortcuts: {},
 	taskTemplates: DEFAULT_TEMPLATES,
+	autoArchive: false,
 	dailyNotes: {
 		insertPosition: "bottom",
 		taskPrefix: "- [ ] ",
@@ -147,6 +150,18 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.showCompletedTasks)
 					.onChange(async (value) => {
 						this.plugin.settings.showCompletedTasks = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("完了時に自動アーカイブ")
+			.setDesc("タスク完了時に自動でdone.txtファイルへ移動します")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.autoArchive)
+					.onChange(async (value) => {
+						this.plugin.settings.autoArchive = value;
 						await this.plugin.saveSettings();
 					})
 			);

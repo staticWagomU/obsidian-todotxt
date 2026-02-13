@@ -7,7 +7,7 @@ import { FocusViewModal } from "./ui/FocusViewModal";
 import { TemplateSelectModal } from "./ui/TemplateSelectModal";
 import { AITaskInputDialog } from "./ui/dialogs/AITaskInputDialog";
 import { AIEditDialog } from "./ui/dialogs/AIEditDialog";
-import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler, getUndoHandler, getRedoHandler } from "./lib/handlers";
+import { getToggleHandler, getAddHandler, getEditHandler, getDeleteHandler, getArchiveHandler, getUndoHandler, getRedoHandler, type AutoArchiveDeps } from "./lib/handlers";
 import { renderTaskList, type DefaultFilterSettings, type FilterState } from "./lib/rendering";
 import { getDefaultFilterForFile } from "./settings";
 import { InlineEditState } from "./lib/inline-edit";
@@ -152,7 +152,7 @@ export class TodotxtView extends TextFileView {
 			this.contentEl,
 			this.data,
 			() => this.openAddTaskModal(),
-			getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear)),
+			getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps()),
 			(index) => this.openEditTaskModal(index),
 			getDeleteHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear)),
 			this.getDefaultFilterSettings(),
@@ -189,7 +189,7 @@ export class TodotxtView extends TextFileView {
 	 * Public for testing compatibility
 	 */
 	getToggleHandler(): (index: number) => Promise<void> {
-		return getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
+		return getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps());
 	}
 
 	/**
@@ -267,7 +267,7 @@ export class TodotxtView extends TextFileView {
 	 */
 	openFocusViewModal(): void {
 		const todos = parseTodoTxt(this.data);
-		const toggleHandler = getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear));
+		const toggleHandler = getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps());
 
 		const modal = new FocusViewModal(this.app, {
 			todos,
@@ -329,13 +329,11 @@ export class TodotxtView extends TextFileView {
 	}
 
 	/**
-	 * Get archive handler for archiving completed tasks
-	 * Public for testing compatibility
+	 * Get read/write closures for the archive (done) file
 	 */
-	getArchiveHandler(): () => Promise<void> {
+	private getArchiveFileOps(): { readArchive: () => Promise<string>; writeArchive: (data: string) => Promise<void> } | undefined {
 		if (!this.file) {
-			// Return no-op handler if file is not set
-			return async () => {};
+			return undefined;
 		}
 
 		const todoPath = this.file.path;
@@ -354,17 +352,40 @@ export class TodotxtView extends TextFileView {
 			if (archiveFile instanceof TFile) {
 				await this.app.vault.modify(archiveFile, data);
 			} else {
-				// Create new file
 				await this.app.vault.create(archivePath, data);
 			}
 		};
 
+		return { readArchive, writeArchive };
+	}
+
+	/**
+	 * Get auto-archive dependencies if enabled
+	 * Returns undefined if autoArchive is disabled or file is not set
+	 */
+	private getAutoArchiveDeps(): AutoArchiveDeps | undefined {
+		if (!this.plugin.settings.autoArchive) {
+			return undefined;
+		}
+		return this.getArchiveFileOps();
+	}
+
+	/**
+	 * Get archive handler for archiving completed tasks
+	 * Public for testing compatibility
+	 */
+	getArchiveHandler(): () => Promise<void> {
+		const ops = this.getArchiveFileOps();
+		if (!ops) {
+			return async () => {};
+		}
+
 		return getArchiveHandler(
 			() => this.data,
 			(data, clear) => this.setViewDataWithSnapshot(data, clear),
-			todoPath,
-			readArchive,
-			writeArchive,
+			this.file!.path,
+			ops.readArchive,
+			ops.writeArchive,
 		);
 	}
 

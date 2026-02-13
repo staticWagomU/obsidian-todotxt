@@ -1,7 +1,15 @@
-import { parseTodoTxt, updateTodoInList } from "./parser";
+import { parseTodoTxt, updateTodoInList, serializeTodo } from "./parser";
 import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type TaskUpdates } from "./todo";
 import { archiveCompletedTasks, appendToArchiveFile } from "./archive";
 import { UndoRedoHistory } from "./undo-redo";
+
+/**
+ * Dependencies for auto-archiving completed tasks
+ */
+export interface AutoArchiveDeps {
+	readArchive: () => Promise<string>;
+	writeArchive: (data: string) => Promise<void>;
+}
 
 /**
  * Get toggle handler for task completion status
@@ -9,6 +17,7 @@ import { UndoRedoHistory } from "./undo-redo";
 export function getToggleHandler(
 	getData: () => string,
 	setViewData: (data: string, clear: boolean) => void,
+	autoArchiveDeps?: AutoArchiveDeps,
 ): (index: number) => Promise<void> {
 	return async (index: number) => {
 		const data = getData();
@@ -31,6 +40,18 @@ export function getToggleHandler(
 			const updatedTodos = parseTodoTxt(updatedData);
 			updatedTodos.push(result.recurringTask);
 			updatedData = updatedTodos.map(t => t.raw).join('\n');
+		}
+
+		// Auto-archive: move completed task to done file
+		if (autoArchiveDeps && result.originalTask.completed) {
+			const serializedRaw = serializeTodo(result.originalTask);
+			const todoForArchive = { ...result.originalTask, raw: serializedRaw };
+
+			const existingArchive = await autoArchiveDeps.readArchive();
+			const updatedArchive = appendToArchiveFile(existingArchive, [todoForArchive]);
+			await autoArchiveDeps.writeArchive(updatedArchive);
+
+			updatedData = deleteAndRemoveTask(updatedData, index);
 		}
 
 		setViewData(updatedData, false);

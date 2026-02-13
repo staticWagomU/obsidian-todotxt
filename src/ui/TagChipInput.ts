@@ -36,6 +36,8 @@ export class TagChipInput {
 	private options: TagChipInputOptions;
 	private highlightedIndex = -1;
 	private filteredSuggestions: string[] = [];
+	/** IME変換中フラグ（SKK等のIME対応） */
+	private isComposing = false;
 
 	constructor(parentEl: HTMLElement, options: TagChipInputOptions) {
 		this.options = options;
@@ -276,8 +278,22 @@ export class TagChipInput {
 			this.showSuggestions();
 		});
 
-		// 入力時にフィルタリング
+		// 入力時にフィルタリング（IME変換中は候補更新を抑制）
 		this.input.addEventListener("input", () => {
+			if (!this.isComposing) {
+				this.showSuggestions();
+			}
+		});
+
+		// IME変換開始（SKK等のIME対応）
+		this.input.addEventListener("compositionstart", () => {
+			this.isComposing = true;
+		});
+
+		// IME変換終了（SKK等のIME対応）
+		this.input.addEventListener("compositionend", () => {
+			this.isComposing = false;
+			// 変換確定後に候補を更新
 			this.showSuggestions();
 		});
 
@@ -308,6 +324,11 @@ export class TagChipInput {
 	}
 
 	private handleKeyDown(e: KeyboardEvent): void {
+		// IME変換中はキー操作を無視（SKK等のIME対応）
+		if (this.isComposing) {
+			return;
+		}
+
 		switch (e.key) {
 			case "Enter":
 				e.preventDefault();

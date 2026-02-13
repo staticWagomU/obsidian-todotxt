@@ -184,7 +184,21 @@ export class ManageFiltersModal extends Modal {
 		};
 
 		saveButton.addEventListener("click", handleSave);
+
+		// IME変換中フラグ（SKK等のIME対応）
+		let isComposing = false;
+		editInput.addEventListener("compositionstart", () => {
+			isComposing = true;
+		});
+		editInput.addEventListener("compositionend", () => {
+			isComposing = false;
+		});
+
 		editInput.addEventListener("keydown", (event: KeyboardEvent) => {
+			// IME変換中はキー操作を無視（SKK等のIME対応）
+			if (isComposing) {
+				return;
+			}
 			if (event.key === "Enter") {
 				handleSave();
 			} else if (event.key === "Escape") {

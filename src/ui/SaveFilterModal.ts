@@ -79,8 +79,21 @@ export class SaveFilterModal extends Modal {
 			this.close();
 		});
 
+		// IME変換中フラグ（SKK等のIME対応）
+		let isComposing = false;
+		this.nameInput.addEventListener("compositionstart", () => {
+			isComposing = true;
+		});
+		this.nameInput.addEventListener("compositionend", () => {
+			isComposing = false;
+		});
+
 		// Enter key to save
 		this.nameInput.addEventListener("keydown", (event: KeyboardEvent) => {
+			// IME変換中はキー操作を無視（SKK等のIME対応）
+			if (isComposing) {
+				return;
+			}
 			if (event.key === "Enter") {
 				this.handleSave();
 			}

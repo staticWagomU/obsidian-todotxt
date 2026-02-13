@@ -1175,9 +1175,25 @@ export function renderInlineEditInput(
 
 	// Flag to prevent double-save on blur after Enter/Esc
 	let isCompleted = false;
+	// IME変換中フラグ（SKK等のIME対応）
+	let isComposing = false;
+
+	// IME変換開始（SKK等のIME対応）
+	inputElement.addEventListener("compositionstart", () => {
+		isComposing = true;
+	});
+
+	// IME変換終了（SKK等のIME対応）
+	inputElement.addEventListener("compositionend", () => {
+		isComposing = false;
+	});
 
 	// Handle keyboard events
 	inputElement.addEventListener("keydown", (event: KeyboardEvent) => {
+		// IME変換中はキー操作を無視（SKK等のIME対応）
+		if (isComposing) {
+			return;
+		}
 		if (event.key === "Enter") {
 			isCompleted = true;
 			onSave(inputElement.value);

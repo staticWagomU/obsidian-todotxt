@@ -52,6 +52,27 @@ describe('parseRecurrenceTag', () => {
     const result = parseRecurrenceTag('rec:');
     expect(result).toBeNull();
   });
+
+  // value-only format (as returned by parseTodoTxt)
+  it('1d形式(prefix なし)をパース: parseTodoTxt実出力と互換', () => {
+    const result = parseRecurrenceTag('1d');
+    expect(result).toEqual({ value: 1, unit: 'd', strict: false });
+  });
+
+  it('+1w形式(prefix なし)をパース: strictモード', () => {
+    const result = parseRecurrenceTag('+1w');
+    expect(result).toEqual({ value: 1, unit: 'w', strict: true });
+  });
+
+  it('3m形式(prefix なし)をパース: 3ヶ月', () => {
+    const result = parseRecurrenceTag('3m');
+    expect(result).toEqual({ value: 3, unit: 'm', strict: false });
+  });
+
+  it('不正な形式(prefix なし): 単位なし → null', () => {
+    const result = parseRecurrenceTag('5');
+    expect(result).toBeNull();
+  });
 });
 
 describe('calculateNextDueDate (non-strict)', () => {
@@ -190,6 +211,8 @@ describe('preserveThresholdInterval', () => {
 });
 
 describe('createRecurringTask', () => {
+  // Note: Tag values match parseTodoTxt output (value-only, no key prefix)
+  // e.g., tags.rec = "1d" (not "rec:1d"), tags.due = "2026-01-05" (not "due:2026-01-05")
   it('rec:1d, due:なし → 完了日+1日のdue:設定、completed=false、creationDate=今日', () => {
     const completedTodo: Todo = {
       completed: true,
@@ -198,7 +221,7 @@ describe('createRecurringTask', () => {
       description: 'Daily task',
       projects: [],
       contexts: [],
-      tags: { rec: 'rec:1d' },
+      tags: { rec: '1d' },
       raw: 'x 2026-01-09 2026-01-01 Daily task rec:1d'
     };
 
@@ -210,7 +233,7 @@ describe('createRecurringTask', () => {
     expect(result!.creationDate).toBe('2026-01-09');
     expect(result!.tags.due).toBe('due:2026-01-10'); // 完了日 + 1日
     expect(result!.description).toBe('Daily task');
-    expect(result!.tags.rec).toBe('rec:1d'); // rec:は保持
+    expect(result!.tags.rec).toBe('1d'); // rec:は保持(value-only)
   });
 
   it('rec:+1w, due:1/5 → strictモードでdue:1/12、completed=false', () => {
@@ -221,7 +244,7 @@ describe('createRecurringTask', () => {
       description: 'Weekly task',
       projects: [],
       contexts: [],
-      tags: { rec: 'rec:+1w', due: 'due:2026-01-05' },
+      tags: { rec: '+1w', due: '2026-01-05' },
       raw: 'x 2026-01-10 2026-01-01 Weekly task due:2026-01-05 rec:+1w'
     };
 
@@ -230,7 +253,7 @@ describe('createRecurringTask', () => {
     expect(result).not.toBeNull();
     expect(result!.completed).toBe(false);
     expect(result!.tags.due).toBe('due:2026-01-12'); // due: + 1週間
-    expect(result!.tags.rec).toBe('rec:+1w');
+    expect(result!.tags.rec).toBe('+1w');
   });
 
   it('rec:1m, due:1/31, t:1/24 → due:3/5, t:2/26(7日間隔保持) - non-strictは完了日基準', () => {
@@ -241,7 +264,7 @@ describe('createRecurringTask', () => {
       description: 'Monthly task',
       projects: [],
       contexts: [],
-      tags: { rec: 'rec:1m', due: 'due:2026-01-31', t: 't:2026-01-24' },
+      tags: { rec: '1m', due: '2026-01-31', t: '2026-01-24' },
       raw: 'x 2026-02-05 2026-01-01 Monthly task due:2026-01-31 t:2026-01-24 rec:1m'
     };
 
@@ -262,7 +285,7 @@ describe('createRecurringTask', () => {
       description: 'Task with priority',
       projects: [],
       contexts: [],
-      tags: { rec: 'rec:1d', due: 'due:2026-01-09', pri: 'pri:A' },
+      tags: { rec: '1d', due: '2026-01-09', pri: 'A' },
       raw: '(A) x 2026-01-09 2026-01-01 Task with priority due:2026-01-09 rec:1d pri:A'
     };
 

@@ -32,15 +32,17 @@ export interface RecurrencePattern {
 
 /**
  * Parse rec: tag format
- * Supports: rec:1d, rec:+1w, rec:3m, rec:1y
+ * Supports both full format (rec:1d, rec:+1w) and value-only format (1d, +1w)
+ * Value-only format is what parseTodoTxt returns in tags.rec
  * Returns null for invalid formats
  */
 export function parseRecurrenceTag(recTag: string): RecurrencePattern | null {
-  if (!recTag || !recTag.startsWith('rec:')) {
+  if (!recTag) {
     return null;
   }
 
-  const value = recTag.substring(4); // Remove 'rec:' prefix
+  // Accept both "rec:1d" (full format) and "1d" (value-only from parser)
+  const value = recTag.startsWith('rec:') ? recTag.substring(4) : recTag;
   const match = value.match(RECURRENCE_PATTERN);
 
   if (!match) {

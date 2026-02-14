@@ -1,6 +1,7 @@
-import { Plugin, Notice } from "obsidian";
+import { Plugin, Notice, MarkdownView } from "obsidian";
 import { DEFAULT_SETTINGS, TodotxtPluginSettings, TodotxtSettingTab } from "./settings";
 import { TodotxtView, VIEW_TYPE_TODOTXT } from "./view";
+import { shouldSwitchToTodotxtView } from "./lib/file-matcher";
 import { TodoSidePanelView, VIEW_TYPE_TODO_SIDEPANEL } from "./side-panel-view";
 import { COMMANDS } from "./lib/commands";
 import {
@@ -95,6 +96,21 @@ export default class TodotxtPlugin extends Plugin {
 				void this.importFromDailyNote();
 			},
 		});
+
+		// Watch file-open events to switch .md files to todotxt view when configured
+		this.registerEvent(
+			this.app.workspace.on('file-open', (file) => {
+				if (file && shouldSwitchToTodotxtView(file.path, file.extension, this.settings.todotxtFilePaths)) {
+					const leaf = this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
+					if (leaf) {
+						void leaf.setViewState({
+							type: VIEW_TYPE_TODOTXT,
+							state: { file: file.path },
+						});
+					}
+				}
+			})
+		);
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new TodotxtSettingTab(this.app, this));

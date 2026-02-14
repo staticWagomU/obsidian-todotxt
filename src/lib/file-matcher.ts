@@ -16,3 +16,22 @@ export function shouldOpenAsTodotxt(
 	// If no paths specified, use default extension check
 	return filePath.endsWith(".txt") || filePath.endsWith(".todotxt");
 }
+
+/**
+ * Determines whether a file-open event should trigger a view switch to todotxt view.
+ * Only .md files need this dynamic switching; .txt/.todotxt are handled by registerExtensions.
+ * @param filePath - The path of the opened file
+ * @param extension - The file extension (without dot)
+ * @param specifiedPaths - Array of paths specified in settings (todotxtFilePaths)
+ * @returns true if the view should be switched to todotxt view
+ */
+export function shouldSwitchToTodotxtView(
+	filePath: string,
+	extension: string,
+	specifiedPaths: string[],
+): boolean {
+	if (extension !== "md") {
+		return false;
+	}
+	return specifiedPaths.includes(filePath);
+}

@@ -18,6 +18,10 @@ import { getThresholdDateStyle } from "./lib/threshold";
 import { filterByPriority, filterBySearch } from "./lib/filter";
 import { groupByProject, groupByContext } from "./lib/group";
 import { sortTodos } from "./lib/sort";
+import { hasPageLink, generatePageName, generatePageContent } from "./lib/note-page";
+import { extractInternalLinks } from "./lib/internallink";
+import { updateTaskAtLine } from "./lib/parser";
+import { editTask } from "./lib/todo";
 
 export const VIEW_TYPE_TODO_SIDEPANEL = "todotxt-sidepanel";
 
@@ -517,6 +521,23 @@ export class TodoSidePanelView extends ItemView {
 			this.openDeleteConfirmDialog(task);
 		});
 
+		// Page create/open button
+		if (hasPageLink(todo)) {
+			const openPageButton = actionsRow.createEl("button");
+			openPageButton.classList.add("open-page-button");
+			openPageButton.textContent = "ページを開く";
+			openPageButton.addEventListener("click", () => {
+				void this.handleOpenPageForSidePanel(task);
+			});
+		} else {
+			const createPageButton = actionsRow.createEl("button");
+			createPageButton.classList.add("create-page-button");
+			createPageButton.textContent = "ページを作成";
+			createPageButton.addEventListener("click", () => {
+				void this.handleCreatePageForSidePanel(task);
+			});
+		}
+
 		if (todo.completed) {
 			li.classList.add("completed");
 		}
@@ -551,6 +572,58 @@ export class TodoSidePanelView extends ItemView {
 		// Reload and re-render
 		await this.loadTasks();
 		this.renderView();
+	}
+
+	/**
+	 * Get loaded tasks data (for testing)
+	 */
+	getTasksData(): TaskWithFile[] {
+		return this.tasksData;
+	}
+
+	/**
+	 * Handle page creation from a side panel task
+	 * Issue #12: AC2, AC3, AC4対応
+	 */
+	async handleCreatePageForSidePanel(task: TaskWithFile): Promise<void> {
+		const { todo } = task;
+		const cleanDescription = removeProjectsAndContextsFromDescription(todo.description);
+		const pageName = generatePageName(cleanDescription);
+		const pageContent = generatePageContent(todo);
+
+		const noteDir = this.plugin.settings.noteCreationDir;
+		const filePath = noteDir ? `${noteDir}/${pageName}` : pageName;
+
+		const newFile = await this.app.vault.create(filePath, pageContent);
+
+		const linkText = this.app.fileManager.generateMarkdownLink(newFile, task.filePath);
+
+		// Update the task description with the link
+		const file = this.app.vault.getAbstractFileByPath(task.filePath);
+		if (file instanceof TFile) {
+			const content = await this.app.vault.read(file);
+			const newDescription = `${todo.description} ${linkText}`;
+			const updated = editTask(todo, { description: newDescription });
+			const newData = updateTaskAtLine(content, task.lineIndex, updated);
+			await this.app.vault.modify(file, newData);
+		}
+
+		await this.app.workspace.openLinkText(linkText, task.filePath);
+
+		// Reload and re-render
+		await this.loadTasks();
+		this.renderView();
+	}
+
+	/**
+	 * Handle opening a linked page from a side panel task
+	 * Issue #12: AC5対応
+	 */
+	async handleOpenPageForSidePanel(task: TaskWithFile): Promise<void> {
+		const internalLinks = extractInternalLinks(task.todo.description);
+		if (internalLinks.length > 0) {
+			await this.app.workspace.openLinkText(internalLinks[0]!.link, task.filePath);
+		}
 	}
 
 	/**

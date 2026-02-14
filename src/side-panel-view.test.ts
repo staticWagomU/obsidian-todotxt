@@ -917,4 +917,166 @@ describe("TodoSidePanelView", () => {
 			expect(searchBox.selectionStart).toBe(cursorPosition);
 		});
 	});
+
+	describe("ページを作成/開くボタン (Issue #12)", () => {
+		it("リンクなしタスクに「ページを作成」ボタンが表示される", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk +shopping"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			const createPageButtons = view.contentEl.querySelectorAll(".create-page-button");
+			expect(createPageButtons.length).toBe(1);
+			expect(createPageButtons[0]?.textContent).toBe("ページを作成");
+		});
+
+		it("リンクありタスクに「ページを開く」ボタンが表示される", async () => {
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk [[Buy milk 2026-02-14 153045]]"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = mockPlugin.app;
+			await view.onOpen();
+
+			const openPageButtons = view.contentEl.querySelectorAll(".open-page-button");
+			expect(openPageButtons.length).toBe(1);
+			expect(openPageButtons[0]?.textContent).toBe("ページを開く");
+		});
+
+		it("handleCreatePageForSidePanelがファイルを作成してリンクを追加する", async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-02-14T15:30:45"));
+
+			const mockCreate = vi.fn().mockResolvedValue({ path: "Buy milk 2026-02-14 153045.md" });
+			const mockGenerateMarkdownLink = vi.fn().mockReturnValue("[[Buy milk 2026-02-14 153045]]");
+			const mockOpenLinkText = vi.fn().mockResolvedValue(undefined);
+			const mockModify = vi.fn().mockResolvedValue(undefined);
+
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk +shopping"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(mockPlugin.settings as any).noteCreationDir = "";
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = {
+				...mockPlugin.app,
+				vault: {
+					...mockPlugin.app.vault,
+					create: mockCreate,
+					modify: mockModify,
+				},
+				fileManager: { generateMarkdownLink: mockGenerateMarkdownLink },
+				workspace: {
+					...mockPlugin.app.workspace,
+					openLinkText: mockOpenLinkText,
+				},
+			};
+			await view.onOpen();
+
+			const task = view.getTasksData()[0]!;
+			await view.handleCreatePageForSidePanel(task);
+
+			expect(mockCreate).toHaveBeenCalledWith(
+				"Buy milk 2026-02-14 153045.md",
+				expect.stringContaining("Buy milk"),
+			);
+
+			vi.useRealTimers();
+		});
+
+		it("handleOpenPageForSidePanelがリンク先のファイルを開く", async () => {
+			const mockOpenLinkText = vi.fn().mockResolvedValue(undefined);
+
+			const mockFiles = new Map([
+				["vault/todo.txt", "Buy milk [[Buy milk 2026-02-14 153045]] +shopping"],
+			]);
+
+			mockPlugin.settings.todotxtFilePaths = ["vault/todo.txt"];
+			mockPlugin.app.vault.getAbstractFileByPath = (path: string) => {
+				if (mockFiles.has(path)) {
+					const file = new TFile();
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+					(file as any).path = path;
+					return file;
+				}
+				return null;
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			mockPlugin.app.vault.read = async (file: any): Promise<string> => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+				return mockFiles.get(file.path) || "";
+			};
+
+			view = new TodoSidePanelView(mockLeaf, mockPlugin);
+			view.app = {
+				...mockPlugin.app,
+				workspace: {
+					...mockPlugin.app.workspace,
+					openLinkText: mockOpenLinkText,
+				},
+			};
+			await view.onOpen();
+
+			const task = view.getTasksData()[0]!;
+			await view.handleOpenPageForSidePanel(task);
+
+			expect(mockOpenLinkText).toHaveBeenCalledWith(
+				"Buy milk 2026-02-14 153045",
+				expect.any(String),
+			);
+		});
+	});
 });

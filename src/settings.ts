@@ -186,6 +186,19 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					})
 			);
 
+		new Setting(containerEl)
+			.setName("ノート作成先ディレクトリ")
+			.setDesc("タスクから作成するノートの保存先ディレクトリ（未指定の場合はVaultルート）")
+			.addText((text) =>
+				text
+					.setPlaceholder("Notes/todo-notes")
+					.setValue(this.plugin.settings.noteCreationDir)
+					.onChange(async (value) => {
+						this.plugin.settings.noteCreationDir = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
 		new Setting(containerEl).setName("AI task addition").setHeading();
 
 		new Setting(containerEl)

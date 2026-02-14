@@ -85,6 +85,42 @@ describe("TodotxtSettingTab", () => {
 		});
 	});
 
+	describe("noteCreationDir setting field", () => {
+		it("should include noteCreationDir in settings interface", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				noteCreationDir: "Notes/todo-notes",
+			};
+
+			expect(settings.noteCreationDir).toBe("Notes/todo-notes");
+		});
+
+		it("should have empty string as default noteCreationDir", () => {
+			expect(DEFAULT_SETTINGS.noteCreationDir).toBe("");
+		});
+
+		it("should persist noteCreationDir through settings", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				noteCreationDir: "Notes/todo-notes",
+			};
+
+			const serialized = JSON.stringify(settings);
+			const loaded = JSON.parse(serialized) as TodotxtPluginSettings;
+
+			expect(loaded.noteCreationDir).toBe("Notes/todo-notes");
+		});
+
+		it("should handle trailing slash in noteCreationDir", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				noteCreationDir: "Notes/todo-notes/",
+			};
+
+			expect(settings.noteCreationDir).toBe("Notes/todo-notes/");
+		});
+	});
+
 	describe("customShortcuts settings field", () => {
 		it("should include customShortcuts in settings interface", () => {
 			const settings: TodotxtPluginSettings = {

@@ -46,6 +46,8 @@ export interface TodotxtPluginSettings {
 	autoArchive: boolean;
 	/** Daily Notes integration settings */
 	dailyNotes: DailyNotesSettings;
+	/** Directory path for note creation from tasks */
+	noteCreationDir: string;
 }
 
 export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
@@ -73,6 +75,7 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 		insertPosition: "bottom",
 		taskPrefix: "- [ ] ",
 	},
+	noteCreationDir: "",
 };
 
 /**

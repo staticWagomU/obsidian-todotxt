@@ -234,6 +234,22 @@ describe("settings", () => {
 		});
 	});
 
+	describe("noteCreationDir setting", () => {
+		it("noteCreationDirのデフォルトは空文字列", () => {
+			expect(DEFAULT_SETTINGS).toHaveProperty("noteCreationDir");
+			expect(DEFAULT_SETTINGS.noteCreationDir).toBe("");
+		});
+
+		it("noteCreationDirにディレクトリパスを設定できる", () => {
+			const settings: TodotxtPluginSettings = {
+				...DEFAULT_SETTINGS,
+				noteCreationDir: "Notes/todo-notes",
+			};
+
+			expect(settings.noteCreationDir).toBe("Notes/todo-notes");
+		});
+	});
+
 	describe("Daily Notes Integration Settings", () => {
 		describe("DailyNoteInsertPosition type", () => {
 			it("should accept 'top' as valid insert position", () => {

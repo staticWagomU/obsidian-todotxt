@@ -269,6 +269,123 @@ describe("TaskContextMenu - コンテキストメニュー基盤", () => {
 		});
 	});
 
+	describe("ページを作成/開くメニュー項目 (Issue #12)", () => {
+		it("リンクなしタスクで「ページを作成」メニュー項目が表示される", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+				onCreatePage: vi.fn(),
+				onOpenPage: vi.fn(),
+			};
+
+			// リンクなしタスク
+			const noLinkTodo = {
+				...mockTodo,
+				description: "Test task without link",
+			};
+
+			const menu = new TaskContextMenu(noLinkTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			expect(items.some(item => item.title === "ページを作成")).toBe(true);
+			expect(items.some(item => item.title === "ページを開く")).toBe(false);
+		});
+
+		it("「ページを作成」メニュー項目にfile-plusアイコンが設定されている", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+				onCreatePage: vi.fn(),
+				onOpenPage: vi.fn(),
+			};
+
+			const noLinkTodo = {
+				...mockTodo,
+				description: "Test task without link",
+			};
+
+			const menu = new TaskContextMenu(noLinkTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			const createItem = items.find(item => item.title === "ページを作成");
+			expect(createItem?.icon).toBe("file-plus");
+		});
+
+		it("リンクありタスクで「ページを開く」メニュー項目が表示される", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+				onCreatePage: vi.fn(),
+				onOpenPage: vi.fn(),
+			};
+
+			// 内部リンクありタスク
+			const linkTodo = {
+				...mockTodo,
+				description: "Test task [[some page]]",
+			};
+
+			const menu = new TaskContextMenu(linkTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			expect(items.some(item => item.title === "ページを開く")).toBe(true);
+			expect(items.some(item => item.title === "ページを作成")).toBe(false);
+		});
+
+		it("「ページを開く」メニュー項目にfile-textアイコンが設定されている", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+				onCreatePage: vi.fn(),
+				onOpenPage: vi.fn(),
+			};
+
+			const linkTodo = {
+				...mockTodo,
+				description: "Test task [[some page]]",
+			};
+
+			const menu = new TaskContextMenu(linkTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			const openItem = items.find(item => item.title === "ページを開く");
+			expect(openItem?.icon).toBe("file-text");
+		});
+
+		it("onCreatePage/onOpenPageコールバックが未指定の場合はメニュー項目が表示されない", async () => {
+			const { TaskContextMenu } = await import("./TaskContextMenu");
+			const callbacks = {
+				onEdit: vi.fn(),
+				onDelete: vi.fn(),
+				onDuplicate: vi.fn(),
+				onPriorityChange: vi.fn(),
+				onProjectChange: vi.fn(),
+				onContextChange: vi.fn(),
+			};
+
+			const menu = new TaskContextMenu(mockTodo as unknown as Todo, 0, callbacks);
+			const items = menu.getMenuItems();
+			expect(items.some(item => item.title === "ページを作成")).toBe(false);
+			expect(items.some(item => item.title === "ページを開く")).toBe(false);
+		});
+	});
+
 	describe("AIで分解メニュー項目 (PBI-067 AC1)", () => {
 		it("「AIで分解」メニュー項目が存在する", async () => {
 			const { TaskContextMenu } = await import("./TaskContextMenu");

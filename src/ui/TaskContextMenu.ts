@@ -6,6 +6,7 @@
 
 import { Menu } from "obsidian";
 import type { Todo } from "../lib/todo";
+import { hasPageLink } from "../lib/note-page";
 
 /**
  * コンテキストメニューのコールバック型定義
@@ -18,6 +19,8 @@ export interface ContextMenuCallbacks {
 	onProjectChange: (index: number, project: string, action: "add" | "remove") => void;
 	onContextChange: (index: number, context: string, action: "add" | "remove") => void;
 	onDecompose?: (index: number) => void;
+	onCreatePage?: (index: number) => void;
+	onOpenPage?: (index: number) => void;
 }
 
 /**
@@ -127,6 +130,30 @@ export class TaskContextMenu {
 			this.buildContextSubmenu(submenu);
 		});
 		this.menuItems.push({ title: "コンテキスト", icon: "at-sign", hasSubmenu: true });
+
+		// ページを作成/開く（コールバックが提供されている場合のみ）
+		if (this.callbacks.onCreatePage && this.callbacks.onOpenPage) {
+			this.menu.addSeparator();
+			if (hasPageLink(this.todo)) {
+				this.menu.addItem((item) => {
+					item.setTitle("ページを開く")
+						.setIcon("file-text")
+						.onClick(() => {
+							this.callbacks.onOpenPage?.(this.index);
+						});
+				});
+				this.menuItems.push({ title: "ページを開く", icon: "file-text" });
+			} else {
+				this.menu.addItem((item) => {
+					item.setTitle("ページを作成")
+						.setIcon("file-plus")
+						.onClick(() => {
+							this.callbacks.onCreatePage?.(this.index);
+						});
+				});
+				this.menuItems.push({ title: "ページを作成", icon: "file-plus" });
+			}
+		}
 
 		// AIで分解（onDecomposeコールバックが提供されている場合のみ）
 		if (this.callbacks.onDecompose) {

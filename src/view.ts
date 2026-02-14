@@ -13,6 +13,9 @@ import { getDefaultFilterForFile } from "./settings";
 import { InlineEditState } from "./lib/inline-edit";
 import { UndoRedoHistory, createSnapshot } from "./lib/undo-redo";
 import { TaskContextMenu, type ContextMenuCallbacks } from "./ui/TaskContextMenu";
+import { removeProjectsAndContextsFromDescription } from "./lib/rendering";
+import { generatePageName, generatePageContent } from "./lib/note-page";
+import { extractInternalLinks } from "./lib/internallink";
 import type TodotxtPlugin from "./main";
 
 export const VIEW_TYPE_TODOTXT = "todotxt-view";
@@ -646,6 +649,8 @@ export class TodotxtView extends TextFileView {
 			onPriorityChange: (index, priority) => this.handlePriorityChange(index, priority),
 			onProjectChange: (index, project, action) => this.handleProjectChange(index, project, action),
 			onContextChange: (index, context, action) => this.handleContextChange(index, context, action),
+			onCreatePage: (index) => { void this.handleCreatePage(index); },
+			onOpenPage: (index) => { void this.handleOpenPage(index); },
 		};
 	}
 
@@ -729,6 +734,53 @@ export class TodotxtView extends TextFileView {
 		const updated = editTask(todo, { description: newDescription });
 		const newData = updateTaskAtLine(this.data, index, updated);
 		this.setViewDataWithSnapshot(newData, false);
+	}
+
+	/**
+	 * Handle page creation from a task
+	 * Issue #12: AC2, AC3, AC4対応
+	 * Public for testing compatibility
+	 */
+	async handleCreatePage(index: number): Promise<void> {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		const cleanDescription = removeProjectsAndContextsFromDescription(todo.description);
+		const pageName = generatePageName(cleanDescription);
+		const pageContent = generatePageContent(todo);
+
+		const noteDir = this.plugin.settings.noteCreationDir;
+		const filePath = noteDir ? `${noteDir}/${pageName}` : pageName;
+
+		const newFile = await this.app.vault.create(filePath, pageContent);
+
+		const sourcePath = this.file?.path ?? "";
+		const linkText = this.app.fileManager.generateMarkdownLink(newFile, sourcePath);
+
+		const newDescription = `${todo.description} ${linkText}`;
+		const updated = editTask(todo, { description: newDescription });
+		const newData = updateTaskAtLine(this.data, index, updated);
+		this.setViewDataWithSnapshot(newData, false);
+
+		await this.app.workspace.openLinkText(linkText, sourcePath);
+	}
+
+	/**
+	 * Handle opening a linked page from a task
+	 * Issue #12: AC5対応
+	 * Public for testing compatibility
+	 */
+	async handleOpenPage(index: number): Promise<void> {
+		const todos = parseTodoTxt(this.data);
+		const todo = todos[index];
+		if (!todo) return;
+
+		const internalLinks = extractInternalLinks(todo.description);
+		if (internalLinks.length > 0) {
+			const sourcePath = this.file?.path ?? "";
+			await this.app.workspace.openLinkText(internalLinks[0]!.link, sourcePath);
+		}
 	}
 
 	/**

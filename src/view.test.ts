@@ -3841,5 +3841,86 @@ describe("Context Menu Integration (Sprint 63 - PBI-061)", () => {
 			expect(callbacks).toHaveProperty("onProjectChange");
 			expect(callbacks).toHaveProperty("onContextChange");
 		});
+
+		it("onCreatePageとonOpenPageコールバックが含まれる", () => {
+			const callbacks = view.getContextMenuCallbacks();
+
+			expect(callbacks).toHaveProperty("onCreatePage");
+			expect(callbacks).toHaveProperty("onOpenPage");
+		});
+	});
+
+	describe("ページ作成/開くハンドラ (Issue #12)", () => {
+		it("handleCreatePageが正しいパスにファイルを作成する", async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-02-14T15:30:45"));
+
+			const mockCreate = vi.fn().mockResolvedValue({ path: "notes/Buy milk 2026-02-14 153045.md" });
+			const mockGenerateMarkdownLink = vi.fn().mockReturnValue("[[Buy milk 2026-02-14 153045]]");
+			const mockOpenLinkText = vi.fn().mockResolvedValue(undefined);
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(view as any).app = {
+				vault: { create: mockCreate },
+				fileManager: { generateMarkdownLink: mockGenerateMarkdownLink },
+				workspace: { openLinkText: mockOpenLinkText },
+			};
+
+			view.setViewData("Buy milk +shopping @errands", false);
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(view as any).plugin = {
+				settings: { ...DEFAULT_SETTINGS, noteCreationDir: "notes" },
+			};
+
+			await view.handleCreatePage(0);
+
+			expect(mockCreate).toHaveBeenCalledWith(
+				"notes/Buy milk 2026-02-14 153045.md",
+				expect.stringContaining("Buy milk"),
+			);
+
+			vi.useRealTimers();
+		});
+
+		it("handleCreatePageがdescriptionにリンクを追加する", async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2026-02-14T15:30:45"));
+
+			const mockCreate = vi.fn().mockResolvedValue({ path: "Buy milk 2026-02-14 153045.md" });
+			const mockGenerateMarkdownLink = vi.fn().mockReturnValue("[[Buy milk 2026-02-14 153045]]");
+			const mockOpenLinkText = vi.fn().mockResolvedValue(undefined);
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(view as any).app = {
+				vault: { create: mockCreate },
+				fileManager: { generateMarkdownLink: mockGenerateMarkdownLink },
+				workspace: { openLinkText: mockOpenLinkText },
+			};
+
+			view.setViewData("Buy milk +shopping", false);
+
+			await view.handleCreatePage(0);
+
+			const updatedData = view.getViewData();
+			expect(updatedData).toContain("[[Buy milk 2026-02-14 153045]]");
+
+			vi.useRealTimers();
+		});
+
+		it("handleOpenPageがリンク先のファイルを開く", async () => {
+			const mockOpenLinkText = vi.fn().mockResolvedValue(undefined);
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+			(view as any).app = {
+				workspace: { openLinkText: mockOpenLinkText },
+			};
+
+			view.setViewData("Buy milk [[Buy milk 2026-02-14 153045]] +shopping", false);
+
+			await view.handleOpenPage(0);
+
+			expect(mockOpenLinkText).toHaveBeenCalledWith("Buy milk 2026-02-14 153045", expect.any(String));
+		});
 	});
 });

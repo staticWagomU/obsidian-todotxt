@@ -338,7 +338,7 @@ export class TodotxtView extends TextFileView {
 
 		const todoPath = this.file.path;
 		const readArchive = async (): Promise<string> => {
-			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
+			const archivePath = todoPath.replace(/\.(txt|todotxt|md)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
 			if (archiveFile instanceof TFile) {
 				return await this.app.vault.read(archiveFile);
@@ -347,7 +347,7 @@ export class TodotxtView extends TextFileView {
 		};
 
 		const writeArchive = async (data: string): Promise<void> => {
-			const archivePath = todoPath.replace(/\.(txt|todotxt)$/, '') + '.done.txt';
+			const archivePath = todoPath.replace(/\.(txt|todotxt|md)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
 			if (archiveFile instanceof TFile) {
 				await this.app.vault.modify(archiveFile, data);

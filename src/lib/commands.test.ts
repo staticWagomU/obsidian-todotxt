@@ -65,6 +65,14 @@ describe("keyboard shortcut commands", () => {
 		});
 	});
 
+	describe("Note page command (Issue #12)", () => {
+		it("should have command for creating a note page from task", () => {
+			expect(COMMANDS.createNotePage).toBeDefined();
+			expect(COMMANDS.createNotePage.id).toBe("todotxt-create-note-page");
+			expect(COMMANDS.createNotePage.name).toBe("タスクからノートページを作成");
+		});
+	});
+
 	describe("Daily Notes commands (PBI-068)", () => {
 		it("should have command for exporting tasks to daily note", () => {
 			expect(COMMANDS.exportToDailyNote).toBeDefined();

@@ -33,6 +33,11 @@ export const COMMANDS = {
 		id: "todotxt-add-template-task",
 		name: "テンプレートからタスク追加",
 	},
+	// Note page creation command (Issue #12)
+	createNotePage: {
+		id: "todotxt-create-note-page",
+		name: "タスクからノートページを作成",
+	},
 	// Daily Notes integration commands (PBI-068)
 	exportToDailyNote: {
 		id: "todotxt-export-to-daily-note",

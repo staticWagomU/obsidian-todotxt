@@ -188,6 +188,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("ノート作成先ディレクトリ")
+			// eslint-disable-next-line obsidianmd/ui/sentence-case
 			.setDesc("タスクから作成するノートの保存先ディレクトリ（未指定の場合はVaultルート）")
 			.addText((text) =>
 				text

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { WorkspaceLeaf } from "obsidian";
+import type { App, WorkspaceLeaf } from "obsidian";
 import { TFile } from "obsidian";
 import { TodoSidePanelView, VIEW_TYPE_TODO_SIDEPANEL } from "./side-panel-view";
 import type TodotxtPlugin from "./main";
@@ -1023,7 +1023,7 @@ describe("TodoSidePanelView", () => {
 					...mockPlugin.app.workspace,
 					openLinkText: mockOpenLinkText,
 				},
-			};
+			} as unknown as App;
 			await view.onOpen();
 
 			const task = view.getTasksData()[0]!;
@@ -1067,7 +1067,7 @@ describe("TodoSidePanelView", () => {
 					...mockPlugin.app.workspace,
 					openLinkText: mockOpenLinkText,
 				},
-			};
+			} as unknown as App;
 			await view.onOpen();
 
 			const task = view.getTasksData()[0]!;

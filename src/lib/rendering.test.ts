@@ -946,3 +946,39 @@ describe("Virtual Scroll E2E Integration (AC1-5)", () => {
 		});
 	});
 });
+
+describe("removeProjectsAndContextsFromDescription", () => {
+	describe("リンク構文の除去", () => {
+		it("[[wikilink]] が除去される", async () => {
+			const { removeProjectsAndContextsFromDescription } = await import("./rendering");
+			const result = removeProjectsAndContextsFromDescription(
+				"タスク説明 [[ページ名]]"
+			);
+			expect(result).toBe("タスク説明");
+		});
+
+		it("[[link|alias]] が除去される", async () => {
+			const { removeProjectsAndContextsFromDescription } = await import("./rendering");
+			const result = removeProjectsAndContextsFromDescription(
+				"タスク説明 [[ページ名|エイリアス]]"
+			);
+			expect(result).toBe("タスク説明");
+		});
+
+		it("[text](url) が除去される", async () => {
+			const { removeProjectsAndContextsFromDescription } = await import("./rendering");
+			const result = removeProjectsAndContextsFromDescription(
+				"タスク説明 [リンクテキスト](path/to/file.md)"
+			);
+			expect(result).toBe("タスク説明");
+		});
+
+		it("混在（テキスト + リンク + プロジェクト）が正しく処理される", async () => {
+			const { removeProjectsAndContextsFromDescription } = await import("./rendering");
+			const result = removeProjectsAndContextsFromDescription(
+				"エンジニアのデータベースを作成する [エンジニアのデータベースを作成する 2026-02-14 232940](エンジニアのデータベースを作成する%202026-02-14%20232940.md) +Work"
+			);
+			expect(result).toBe("エンジニアのデータベースを作成する");
+		});
+	});
+});

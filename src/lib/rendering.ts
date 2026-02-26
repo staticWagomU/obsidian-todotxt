@@ -15,6 +15,8 @@ import type { FilterPreset } from "./filter-preset";
  */
 export function removeProjectsAndContextsFromDescription(description: string): string {
 	return description
+		.replace(/\[\[[^\]]+\]\]/g, "")      // [[wikilink]] or [[link|alias]]
+		.replace(/\[[^\]]+\]\([^)]+\)/g, "") // [text](url)
 		.replace(/(?:^|\s)\+\S+/g, "")      // +project
 		.replace(/(?:^|\s)@\S+/g, "")       // @context
 		.replace(/(?:^|\s)due:\S+/g, "")    // due:YYYY-MM-DD

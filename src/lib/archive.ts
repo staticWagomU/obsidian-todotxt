@@ -6,14 +6,18 @@ import type { Todo } from "./todo";
 import { parseTodoTxt } from "./parser";
 
 /**
- * Get archive file path (done.txt) in same directory as todo.txt
- * @param todoPath Path to todo.txt file
- * @returns Path to done.txt file
+ * Get archive file path preserving the source file's extension.
+ * e.g. todo.txt → todo.done.txt, todo.md → todo.done.md
+ * @param todoPath Path to source todo file
+ * @returns Path to archive file
  */
 export function getArchiveFilePath(todoPath: string): string {
-	const lastSlashIndex = todoPath.lastIndexOf("/");
-	const directory = lastSlashIndex >= 0 ? todoPath.substring(0, lastSlashIndex) : "";
-	return directory ? `${directory}/done.txt` : "done.txt";
+	const extMatch = todoPath.match(/\.(txt|todotxt|md)$/);
+	if (!extMatch) {
+		return `${todoPath}.done.txt`;
+	}
+	const basePath = todoPath.slice(0, -extMatch[0].length);
+	return `${basePath}.done.${extMatch[1]}`;
 }
 
 /**

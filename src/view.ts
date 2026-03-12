@@ -1,5 +1,6 @@
 import { TextFileView, TFile, type WorkspaceLeaf, Modal, type App, Notice } from "obsidian";
 import { parseTodoTxt, appendTaskToFile, updateTaskAtLine } from "./lib/parser";
+import { getArchiveFilePath } from "./lib/archive";
 import { type Todo, duplicateTask, editTask } from "./lib/todo";
 import { AddTaskModal } from "./ui/AddTaskModal";
 import { EditTaskModal } from "./ui/EditTaskModal";
@@ -339,9 +340,8 @@ export class TodotxtView extends TextFileView {
 			return undefined;
 		}
 
-		const todoPath = this.file.path;
+		const archivePath = getArchiveFilePath(this.file.path);
 		const readArchive = async (): Promise<string> => {
-			const archivePath = todoPath.replace(/\.(txt|todotxt|md)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
 			if (archiveFile instanceof TFile) {
 				return await this.app.vault.read(archiveFile);
@@ -350,7 +350,6 @@ export class TodotxtView extends TextFileView {
 		};
 
 		const writeArchive = async (data: string): Promise<void> => {
-			const archivePath = todoPath.replace(/\.(txt|todotxt|md)$/, '') + '.done.txt';
 			const archiveFile = this.app.vault.getAbstractFileByPath(archivePath);
 			if (archiveFile instanceof TFile) {
 				await this.app.vault.modify(archiveFile, data);

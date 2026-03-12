@@ -2383,7 +2383,7 @@ describe("archive path for .md files", () => {
 		view = new TodotxtView(mockLeaf as unknown as WorkspaceLeaf, createMockPlugin());
 	});
 
-	it("should generate archive path as file.done.txt for .md files (not file.md.done.txt)", async () => {
+	it("should generate archive path preserving .md extension", async () => {
 		view.setViewData("Task 1\nx 2025-01-14 Completed task\n", false);
 
 		// Mock file with .md extension
@@ -2404,27 +2404,31 @@ describe("archive path for .md files", () => {
 		const archiveHandler = view.getArchiveHandler();
 		await archiveHandler();
 
-		// Archive path should be vault/todo.done.txt, NOT vault/todo.md.done.txt
-		expect(createdPath).toBe("vault/todo.done.txt");
+		// Archive path should preserve .md extension
+		expect(createdPath).toBe("vault/todo.done.md");
 	});
 
-	it("should read archive from correct path for .md files", () => {
-		// Mock file with .md extension
+	it("should generate archive path preserving .txt extension", async () => {
+		view.setViewData("Task 1\nx 2025-01-14 Completed task\n", false);
+
 		Object.defineProperty(view, 'file', {
-			value: { path: 'vault/todo.md' },
+			value: { path: 'vault/todo.txt' },
 			writable: true,
 			configurable: true,
 		});
 
-		const getAbstractSpy = vi.fn().mockReturnValue(null);
+		let createdPath = "";
 		view.app.vault = {
-			getAbstractFileByPath: getAbstractSpy,
+			getAbstractFileByPath: () => null,
+			create: async (path: string, _content: string) => {
+				createdPath = path;
+			},
 		} as unknown as typeof view.app.vault;
 
-		// Trigger readArchive indirectly through getArchiveHandler
-		// The readArchive path should use vault/todo.done.txt
 		const archiveHandler = view.getArchiveHandler();
-		expect(archiveHandler).toBeDefined();
+		await archiveHandler();
+
+		expect(createdPath).toBe("vault/todo.done.txt");
 	});
 });
 

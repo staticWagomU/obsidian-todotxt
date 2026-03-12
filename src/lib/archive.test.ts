@@ -2,22 +2,24 @@ import { describe, it, expect } from "vitest";
 import { archiveCompletedTasks, getArchiveFilePath, appendToArchiveFile } from "./archive";
 
 describe("getArchiveFilePath", () => {
-	it("should return done.txt path in same directory as todo.txt", () => {
-		const todoPath = "vault/todo.txt";
-		const archivePath = getArchiveFilePath(todoPath);
-		expect(archivePath).toBe("vault/done.txt");
+	it("should preserve .txt extension", () => {
+		expect(getArchiveFilePath("vault/todo.txt")).toBe("vault/todo.done.txt");
+	});
+
+	it("should preserve .todotxt extension", () => {
+		expect(getArchiveFilePath("vault/tasks.todotxt")).toBe("vault/tasks.done.todotxt");
+	});
+
+	it("should preserve .md extension", () => {
+		expect(getArchiveFilePath("vault/todo.md")).toBe("vault/todo.done.md");
 	});
 
 	it("should handle nested directory paths", () => {
-		const todoPath = "vault/work/tasks/todo.txt";
-		const archivePath = getArchiveFilePath(todoPath);
-		expect(archivePath).toBe("vault/work/tasks/done.txt");
+		expect(getArchiveFilePath("vault/work/tasks/todo.txt")).toBe("vault/work/tasks/todo.done.txt");
 	});
 
-	it("should handle .todotxt extension", () => {
-		const todoPath = "vault/tasks.todotxt";
-		const archivePath = getArchiveFilePath(todoPath);
-		expect(archivePath).toBe("vault/done.txt");
+	it("should handle file without known extension", () => {
+		expect(getArchiveFilePath("vault/todo")).toBe("vault/todo.done.txt");
 	});
 });
 

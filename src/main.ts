@@ -1,4 +1,5 @@
-import { Plugin, Notice, MarkdownView } from "obsidian";
+import { around } from "monkey-around";
+import { Plugin, Notice, WorkspaceLeaf, type ViewState } from "obsidian";
 import { DEFAULT_SETTINGS, TodotxtPluginSettings, TodotxtSettingTab } from "./settings";
 import { TodotxtView, VIEW_TYPE_TODOTXT } from "./view";
 import { shouldSwitchToTodotxtView } from "./lib/file-matcher";
@@ -16,6 +17,8 @@ import { createDailyNote, getDailyNote, getAllDailyNotes } from "obsidian-daily-
 
 export default class TodotxtPlugin extends Plugin {
 	settings: TodotxtPluginSettings;
+	// Track view mode per leaf: leafId => "markdown" | VIEW_TYPE_TODOTXT
+	todotxtFileModes: Record<string, string> = {};
 
 	async onload() {
 		await this.loadSettings();
@@ -97,20 +100,8 @@ export default class TodotxtPlugin extends Plugin {
 			},
 		});
 
-		// Watch file-open events to switch .md files to todotxt view when configured
-		this.registerEvent(
-			this.app.workspace.on('file-open', (file) => {
-				if (file && shouldSwitchToTodotxtView(file.path, file.extension, this.settings.todotxtFilePaths)) {
-					const leaf = this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
-					if (leaf) {
-						void leaf.setViewState({
-							type: VIEW_TYPE_TODOTXT,
-							state: { file: file.path },
-						});
-					}
-				}
-			})
-		);
+		// Monkey-patch WorkspaceLeaf to intercept markdown opens for configured .md files
+		this.registerMonkeyPatches();
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new TodotxtSettingTab(this.app, this));
@@ -138,7 +129,9 @@ export default class TodotxtPlugin extends Plugin {
 		}
 	}
 
-	onunload() {}
+	onunload() {
+		this.todotxtFileModes = {};
+	}
 
 	/**
 	 * Open new task dialog in active view
@@ -384,6 +377,51 @@ export default class TodotxtPlugin extends Plugin {
 			console.error("Failed to import from daily note:", error);
 			new Notice("デイリーノートからのインポートに失敗しました");
 		}
+	}
+
+	registerMonkeyPatches() {
+		const self = this;
+
+		// Patch WorkspaceLeaf.prototype.setViewState to intercept markdown opens
+		this.register(
+			around(WorkspaceLeaf.prototype, {
+				setViewState(next) {
+					return function (this: WorkspaceLeaf, state: ViewState, ...rest: unknown[]) {
+						const filePath = state.state?.file as string | undefined;
+						if (
+							// Only intercept markdown view opens
+							state.type === "markdown" &&
+							filePath &&
+							// Don't intercept if user explicitly chose markdown mode
+							self.todotxtFileModes[(this as any).id || filePath] !== "markdown"
+						) {
+							// Check if the file path is a configured .md todotxt file
+							if (shouldSwitchToTodotxtView(filePath, "md", self.settings.todotxtFilePaths)) {
+								const newState = {
+									...state,
+									type: VIEW_TYPE_TODOTXT,
+								};
+								self.todotxtFileModes[(this as any).id || filePath] = VIEW_TYPE_TODOTXT;
+								return next.apply(this, [newState, ...rest]);
+							}
+						}
+
+						return next.apply(this, [state, ...rest]);
+					};
+				},
+
+				// Clean up mode tracking when a leaf is detached (tab closed)
+				detach(next) {
+					return function (this: WorkspaceLeaf) {
+						const state = this.view?.getState();
+						if (state?.file && self.todotxtFileModes[(this as any).id || state.file]) {
+							delete self.todotxtFileModes[(this as any).id || state.file];
+						}
+						return next.apply(this);
+					};
+				},
+			}),
+		);
 	}
 
 	async loadSettings() {

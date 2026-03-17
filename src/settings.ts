@@ -44,6 +44,8 @@ export interface TodotxtPluginSettings {
 	taskTemplates: TaskTemplate[];
 	/** Automatically archive completed tasks to done file */
 	autoArchive: boolean;
+	/** Record completion time (ct:HH:MM) when completing tasks */
+	recordCompletionTime: boolean;
 	/** Daily Notes integration settings */
 	dailyNotes: DailyNotesSettings;
 	/** Directory path for note creation from tasks */
@@ -71,6 +73,7 @@ export const DEFAULT_SETTINGS: TodotxtPluginSettings = {
 	customShortcuts: {},
 	taskTemplates: DEFAULT_TEMPLATES,
 	autoArchive: false,
+	recordCompletionTime: true,
 	dailyNotes: {
 		insertPosition: "bottom",
 		taskPrefix: "- [ ] ",
@@ -153,6 +156,18 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.showCompletedTasks)
 					.onChange(async (value) => {
 						this.plugin.settings.showCompletedTasks = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("完了時刻を記録")
+			.setDesc("タスク完了時に完了時刻（ct:HH:MM）をタグとして記録します")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.recordCompletionTime)
+					.onChange(async (value) => {
+						this.plugin.settings.recordCompletionTime = value;
 						await this.plugin.saveSettings();
 					})
 			);

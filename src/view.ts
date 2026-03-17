@@ -156,7 +156,7 @@ export class TodotxtView extends TextFileView {
 			this.contentEl,
 			this.data,
 			() => this.openAddTaskModal(),
-			getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps()),
+			getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps(), { recordCompletionTime: this.plugin.settings.recordCompletionTime }),
 			(index) => this.openEditTaskModal(index),
 			getDeleteHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear)),
 			this.getDefaultFilterSettings(),
@@ -193,7 +193,7 @@ export class TodotxtView extends TextFileView {
 	 * Public for testing compatibility
 	 */
 	getToggleHandler(): (index: number) => Promise<void> {
-		return getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps());
+		return getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps(), { recordCompletionTime: this.plugin.settings.recordCompletionTime });
 	}
 
 	/**
@@ -271,7 +271,7 @@ export class TodotxtView extends TextFileView {
 	 */
 	openFocusViewModal(): void {
 		const todos = parseTodoTxt(this.data);
-		const toggleHandler = getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps());
+		const toggleHandler = getToggleHandler(() => this.data, (data, clear) => this.setViewDataWithSnapshot(data, clear), this.getAutoArchiveDeps(), { recordCompletionTime: this.plugin.settings.recordCompletionTime });
 
 		const modal = new FocusViewModal(this.app, {
 			todos,

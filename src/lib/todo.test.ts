@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { toggleCompletion, createTask, createAndAppendTask, editTask, editAndUpdateTask, removeTaskFromList, deleteAndRemoveTask } from "./todo";
+import { toggleCompletion, createTask, createAndAppendTask, editTask, editAndUpdateTask, removeTaskFromList, deleteAndRemoveTask, duplicateTask } from "./todo";
 import type { Todo } from "./todo";
 
 describe("toggle task completion status", () => {
@@ -764,6 +764,187 @@ describe("toggle task completion with priority preservation (pri: tag)", () => {
 		expect(result.originalTask.completed).toBe(true);
 		// 説明文は変更されない
 		expect(result.originalTask.description).toBe("Check pri:vacy settings");
+	});
+});
+
+describe("toggle task completion with completion time (ct: tag)", () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-08T14:30:00"));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it("完了時にrecordCompletionTime有効でct:タグが追加される", () => {
+		const todo: Todo = {
+			completed: false,
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Buy milk",
+		};
+
+		const result = toggleCompletion(todo, { recordCompletionTime: true });
+
+		expect(result.originalTask.tags.ct).toBe("14:30");
+		expect(result.originalTask.completed).toBe(true);
+	});
+
+	it("完了時にrecordCompletionTime無効でct:タグが追加されない", () => {
+		const todo: Todo = {
+			completed: false,
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Buy milk",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.tags.ct).toBeUndefined();
+		expect(result.originalTask.completed).toBe(true);
+	});
+
+	it("未完了に戻すとct:タグが削除される", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			description: "Buy milk",
+			projects: [],
+			contexts: [],
+			tags: { ct: "14:30" },
+			raw: "x 2026-01-08 Buy milk ct:14:30",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.tags.ct).toBeUndefined();
+		expect(result.originalTask.completed).toBe(false);
+	});
+
+	it("ct:タグが正しいHH:MM形式でゼロ埋めされる", () => {
+		vi.setSystemTime(new Date("2026-01-08T09:05:00"));
+
+		const todo: Todo = {
+			completed: false,
+			description: "Morning task",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Morning task",
+		};
+
+		const result = toggleCompletion(todo, { recordCompletionTime: true });
+
+		expect(result.originalTask.tags.ct).toBe("09:05");
+	});
+
+	it("深夜0時のct:タグが正しくフォーマットされる", () => {
+		vi.setSystemTime(new Date("2026-01-08T00:00:00"));
+
+		const todo: Todo = {
+			completed: false,
+			description: "Midnight task",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Midnight task",
+		};
+
+		const result = toggleCompletion(todo, { recordCompletionTime: true });
+
+		expect(result.originalTask.tags.ct).toBe("00:00");
+	});
+
+	it("23:59のct:タグが正しくフォーマットされる", () => {
+		vi.setSystemTime(new Date("2026-01-08T23:59:00"));
+
+		const todo: Todo = {
+			completed: false,
+			description: "Late night task",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "Late night task",
+		};
+
+		const result = toggleCompletion(todo, { recordCompletionTime: true });
+
+		expect(result.originalTask.tags.ct).toBe("23:59");
+	});
+
+	it("完了時にct:とpri:の両方が正しく設定される", () => {
+		const todo: Todo = {
+			completed: false,
+			priority: "A",
+			creationDate: "2026-01-01",
+			description: "Important task",
+			projects: [],
+			contexts: [],
+			tags: {},
+			raw: "(A) 2026-01-01 Important task",
+		};
+
+		const result = toggleCompletion(todo, { recordCompletionTime: true });
+
+		expect(result.originalTask.tags.ct).toBe("14:30");
+		expect(result.originalTask.tags.pri).toBe("A");
+		expect(result.originalTask.priority).toBeUndefined();
+		expect(result.originalTask.completed).toBe(true);
+	});
+
+	it("未完了に戻す時にct:とpri:の両方が正しく削除・復元される", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			creationDate: "2026-01-01",
+			description: "Important task",
+			projects: [],
+			contexts: [],
+			tags: { ct: "14:30", pri: "A" },
+			raw: "x 2026-01-08 2026-01-01 Important task ct:14:30 pri:A",
+		};
+
+		const result = toggleCompletion(todo);
+
+		expect(result.originalTask.tags.ct).toBeUndefined();
+		expect(result.originalTask.tags.pri).toBeUndefined();
+		expect(result.originalTask.priority).toBe("A");
+		expect(result.originalTask.completed).toBe(false);
+	});
+});
+
+describe("duplicate task removes ct: tag", () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2026-01-09"));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it("ct:タグ付き完了タスクを複製するとct:が除去される", () => {
+		const todo: Todo = {
+			completed: true,
+			completionDate: "2026-01-08",
+			creationDate: "2026-01-01",
+			description: "Completed task",
+			projects: [],
+			contexts: [],
+			tags: { ct: "14:30", pri: "A" },
+			raw: "x 2026-01-08 2026-01-01 Completed task ct:14:30 pri:A",
+		};
+
+		const result = duplicateTask(todo);
+
+		expect(result.tags.ct).toBeUndefined();
+		expect(result.tags.pri).toBeUndefined();
+		expect(result.completed).toBe(false);
 	});
 });
 

@@ -23,8 +23,13 @@ export type { Todo } from "@wagomu/todotxt-parser";
  * When marking as incomplete, removes completionDate
  * If rec: tag exists on completion, creates a recurring task
  */
-export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTask?: Todo } {
-	const today = new Date().toISOString().split("T")[0]!;
+export interface ToggleCompletionOptions {
+	recordCompletionTime?: boolean;
+}
+
+export function toggleCompletion(todo: Todo, options?: ToggleCompletionOptions): { originalTask: Todo; recurringTask?: Todo } {
+	const now = new Date();
+	const today = now.toISOString().split("T")[0]!;
 
 	if (todo.completed) {
 		// 完了→未完了
@@ -34,9 +39,14 @@ export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTas
 			completionDate: undefined,
 		};
 
+		// ct:タグを削除
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { ct: _ct, ...tagsWithoutCt } = incompletedTask.tags;
+		incompletedTask.tags = tagsWithoutCt;
+
 		// pri:タグ → priority復元
-		if (todo.tags.pri) {
-			incompletedTask.priority = todo.tags.pri;
+		if (incompletedTask.tags.pri) {
+			incompletedTask.priority = incompletedTask.tags.pri;
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { pri: _pri, ...restTags } = incompletedTask.tags;
 			incompletedTask.tags = restTags;
@@ -57,6 +67,13 @@ export function toggleCompletion(todo: Todo): { originalTask: Todo; recurringTas
 		if (todo.priority) {
 			completedTask.tags = { ...completedTask.tags, pri: todo.priority };
 			completedTask.priority = undefined;
+		}
+
+		// ct:タグ（完了時刻）を追加
+		if (options?.recordCompletionTime) {
+			const hours = String(now.getHours()).padStart(2, "0");
+			const minutes = String(now.getMinutes()).padStart(2, "0");
+			completedTask.tags = { ...completedTask.tags, ct: `${hours}:${minutes}` };
 		}
 
 		// Check for rec: tag and create recurring task
@@ -322,12 +339,10 @@ export function duplicateTask(todo: Todo): Todo {
 		raw: "", // Will be regenerated when saved
 	};
 
-	// Remove pri: tag if present (used for storing priority on completion)
-	if (duplicated.tags.pri) {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { pri: _pri, ...restTags } = duplicated.tags;
-		duplicated.tags = restTags;
-	}
+	// Remove pri: and ct: tags (used for storing priority/time on completion)
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { pri: _pri, ct: _ct, ...restTags } = duplicated.tags;
+	duplicated.tags = restTags;
 
 	return duplicated;
 }

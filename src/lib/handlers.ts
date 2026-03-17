@@ -1,5 +1,5 @@
 import { parseTodoTxt, updateTodoInList, serializeTodo } from "./parser";
-import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type TaskUpdates } from "./todo";
+import { toggleCompletion, createAndAppendTask, editAndUpdateTask, deleteAndRemoveTask, type TaskUpdates, type ToggleCompletionOptions } from "./todo";
 import { archiveCompletedTasks, appendToArchiveFile } from "./archive";
 import { UndoRedoHistory } from "./undo-redo";
 
@@ -18,6 +18,7 @@ export function getToggleHandler(
 	getData: () => string,
 	setViewData: (data: string, clear: boolean) => void,
 	autoArchiveDeps?: AutoArchiveDeps,
+	completionOptions?: ToggleCompletionOptions,
 ): (index: number) => Promise<void> {
 	return async (index: number) => {
 		const data = getData();
@@ -32,7 +33,7 @@ export function getToggleHandler(
 			return;
 		}
 
-		const result = toggleCompletion(todo);
+		const result = toggleCompletion(todo, completionOptions);
 		let updatedData = updateTodoInList(todos, index, result.originalTask);
 
 		// If recurring task was created, append it

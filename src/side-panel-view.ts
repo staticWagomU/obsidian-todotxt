@@ -560,10 +560,19 @@ export class TodoSidePanelView extends ItemView {
 		if (task.todo.completed) {
 			// Remove 'x ' and completion date
 			newLine = line.replace(/^x\s+(\d{4}-\d{2}-\d{2}\s+)?/, "");
+			// Remove ct: tag
+			newLine = newLine.replace(/\s*ct:\d{2}:\d{2}/, "");
 		} else {
 			// Add 'x ' and completion date
-			const today = new Date().toISOString().split("T")[0];
+			const now = new Date();
+			const today = now.toISOString().split("T")[0];
 			newLine = `x ${today} ${line}`;
+			// Add ct: tag if enabled
+			if (this.plugin.settings.recordCompletionTime) {
+				const hours = String(now.getHours()).padStart(2, "0");
+				const minutes = String(now.getMinutes()).padStart(2, "0");
+				newLine += ` ct:${hours}:${minutes}`;
+			}
 		}
 
 		lines[task.lineIndex] = newLine;

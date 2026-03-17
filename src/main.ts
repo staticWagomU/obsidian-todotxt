@@ -3,6 +3,7 @@ import { Plugin, Notice, WorkspaceLeaf, type ViewState } from "obsidian";
 import { DEFAULT_SETTINGS, TodotxtPluginSettings, TodotxtSettingTab } from "./settings";
 import { TodotxtView, VIEW_TYPE_TODOTXT } from "./view";
 import { shouldSwitchToTodotxtView } from "./lib/file-matcher";
+import { getArchiveFilePath } from "./lib/archive";
 import { TodoSidePanelView, VIEW_TYPE_TODO_SIDEPANEL } from "./side-panel-view";
 import { COMMANDS } from "./lib/commands";
 import {
@@ -395,8 +396,12 @@ export default class TodotxtPlugin extends Plugin {
 							// Don't intercept if user explicitly chose markdown mode
 							self.todotxtFileModes[(this as any).id || filePath] !== "markdown"
 						) {
-							// Check if the file path is a configured .md todotxt file
-							if (shouldSwitchToTodotxtView(filePath, "md", self.settings.todotxtFilePaths)) {
+							// Check if the file path is a configured .md todotxt file or its done file
+							const todotxtAndDonePaths = [
+								...self.settings.todotxtFilePaths,
+								...self.settings.todotxtFilePaths.map(p => getArchiveFilePath(p)),
+							];
+							if (shouldSwitchToTodotxtView(filePath, "md", todotxtAndDonePaths)) {
 								const newState = {
 									...state,
 									type: VIEW_TYPE_TODOTXT,

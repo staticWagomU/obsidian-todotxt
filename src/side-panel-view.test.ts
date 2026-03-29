@@ -128,6 +128,7 @@ describe("TodoSidePanelView", () => {
 				vault: {
 					getAbstractFileByPath: () => null,
 					read: () => Promise.resolve(""),
+					on: () => ({ unload: () => {} }),
 				},
 				workspace: {
 					on: () => ({ unload: () => {} }),

@@ -92,6 +92,15 @@ export class TodoSidePanelView extends ItemView {
 				}
 			})
 		);
+
+		// Register vault modify event to refresh when todo.txt files change externally
+		this.registerEvent(
+			this.app.vault.on("modify", (file) => {
+				if (file instanceof TFile && this.plugin.settings.todotxtFilePaths.includes(file.path)) {
+					void this.refreshTaskList();
+				}
+			})
+		);
 	}
 
 	async onClose(): Promise<void> {

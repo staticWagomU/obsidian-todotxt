@@ -19,7 +19,7 @@ interface ProductBacklogItem {
   complexity?: Complexity; refactorChecklist?: string[];
 }
 interface Commit { phase: CommitPhase; message: string; }
-interface Subtask {
+export interface Subtask {
   test: string; implementation: string; type: SubtaskType;
   status: SubtaskStatus; commits: Commit[];
 }

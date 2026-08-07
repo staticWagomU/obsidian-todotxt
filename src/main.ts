@@ -16,6 +16,12 @@ import { filterFocusTodos } from "./lib/focus-filter";
 import { parseTodoTxt, appendTaskToFile } from "@wagomu/todotxt-parser";
 import { createDailyNote, getDailyNote, getAllDailyNotes } from "obsidian-daily-notes-interface";
 
+type WorkspaceLeafWithId = WorkspaceLeaf & { id?: string };
+
+function getLeafModeKey(leaf: WorkspaceLeaf, fallbackPath: string): string {
+	return (leaf as WorkspaceLeafWithId).id ?? fallbackPath;
+}
+
 export default class TodotxtPlugin extends Plugin {
 	settings: TodotxtPluginSettings;
 	// Track view mode per leaf: leafId => "markdown" | VIEW_TYPE_TODOTXT
@@ -174,7 +180,8 @@ export default class TodotxtPlugin extends Plugin {
 		// Try to find active TodotxtView
 		const activeView = workspace.getActiveViewOfType(TodotxtView);
 		if (activeView) {
-			const searchBox = activeView.contentEl.querySelector<HTMLInputElement>("input.search-box");
+			const searchBox =
+				activeView.contentEl.querySelector<HTMLInputElement>("input.search-box");
 			if (searchBox) {
 				searchBox.focus();
 				return;
@@ -184,7 +191,8 @@ export default class TodotxtPlugin extends Plugin {
 		// If no active TodotxtView, try side panel
 		const sidePanelLeaf = workspace.getLeavesOfType(VIEW_TYPE_TODO_SIDEPANEL)[0];
 		if (sidePanelLeaf?.view instanceof TodoSidePanelView) {
-			const searchBox = sidePanelLeaf.view.contentEl.querySelector<HTMLInputElement>("input.search-box");
+			const searchBox =
+				sidePanelLeaf.view.contentEl.querySelector<HTMLInputElement>("input.search-box");
 			if (searchBox) {
 				searchBox.focus();
 				return;
@@ -195,7 +203,8 @@ export default class TodotxtPlugin extends Plugin {
 		await this.openSidePanel();
 		const newSidePanelLeaf = workspace.getLeavesOfType(VIEW_TYPE_TODO_SIDEPANEL)[0];
 		if (newSidePanelLeaf?.view instanceof TodoSidePanelView) {
-			const searchBox = newSidePanelLeaf.view.contentEl.querySelector<HTMLInputElement>("input.search-box");
+			const searchBox =
+				newSidePanelLeaf.view.contentEl.querySelector<HTMLInputElement>("input.search-box");
 			if (searchBox) {
 				searchBox.focus();
 			}
@@ -270,7 +279,7 @@ export default class TodotxtPlugin extends Plugin {
 				new Notice("Todo.txtファイルを開いてください");
 				return;
 			}
-			todoContent = (leaves[0].view).data;
+			todoContent = leaves[0].view.data;
 		}
 
 		// Parse todos and filter for today
@@ -300,7 +309,11 @@ export default class TodotxtPlugin extends Plugin {
 			const existingContent = await this.app.vault.read(dailyNote);
 
 			// Insert at configured position
-			const newContent = insertContentAtPosition(existingContent, formattedTasks, insertPosition);
+			const newContent = insertContentAtPosition(
+				existingContent,
+				formattedTasks,
+				insertPosition,
+			);
 
 			// Write back
 			await this.app.vault.modify(dailyNote, newContent);
@@ -337,7 +350,8 @@ export default class TodotxtPlugin extends Plugin {
 			}
 		}
 
-		const targetView = activeView ?? (workspace.getLeavesOfType(VIEW_TYPE_TODOTXT)[0]?.view as TodotxtView);
+		const targetView =
+			activeView ?? (workspace.getLeavesOfType(VIEW_TYPE_TODOTXT)[0]?.view as TodotxtView);
 
 		// Get today's daily note
 		try {
@@ -381,7 +395,8 @@ export default class TodotxtPlugin extends Plugin {
 	}
 
 	registerMonkeyPatches() {
-		const self = this;
+		const todotxtFileModes = this.todotxtFileModes;
+		const settings = this.settings;
 
 		// Patch WorkspaceLeaf.prototype.setViewState to intercept markdown opens
 		this.register(
@@ -389,24 +404,26 @@ export default class TodotxtPlugin extends Plugin {
 				setViewState(next) {
 					return function (this: WorkspaceLeaf, state: ViewState, ...rest: unknown[]) {
 						const filePath = state.state?.file as string | undefined;
+						const leafModeKey = filePath ? getLeafModeKey(this, filePath) : undefined;
 						if (
 							// Only intercept markdown view opens
 							state.type === "markdown" &&
 							filePath &&
 							// Don't intercept if user explicitly chose markdown mode
-							self.todotxtFileModes[(this as any).id || filePath] !== "markdown"
+							leafModeKey &&
+							todotxtFileModes[leafModeKey] !== "markdown"
 						) {
 							// Check if the file path is a configured .md todotxt file or its done file
 							const todotxtAndDonePaths = [
-								...self.settings.todotxtFilePaths,
-								...self.settings.todotxtFilePaths.map(p => getArchiveFilePath(p)),
+								...settings.todotxtFilePaths,
+								...settings.todotxtFilePaths.map((p) => getArchiveFilePath(p)),
 							];
 							if (shouldSwitchToTodotxtView(filePath, "md", todotxtAndDonePaths)) {
 								const newState = {
 									...state,
 									type: VIEW_TYPE_TODOTXT,
 								};
-								self.todotxtFileModes[(this as any).id || filePath] = VIEW_TYPE_TODOTXT;
+								todotxtFileModes[leafModeKey] = VIEW_TYPE_TODOTXT;
 								return next.apply(this, [newState, ...rest]);
 							}
 						}
@@ -419,8 +436,11 @@ export default class TodotxtPlugin extends Plugin {
 				detach(next) {
 					return function (this: WorkspaceLeaf) {
 						const state = this.view?.getState();
-						if (state?.file && self.todotxtFileModes[(this as any).id || state.file]) {
-							delete self.todotxtFileModes[(this as any).id || state.file];
+						if (typeof state?.file === "string") {
+							const leafModeKey = getLeafModeKey(this, state.file);
+							if (todotxtFileModes[leafModeKey]) {
+								delete todotxtFileModes[leafModeKey];
+							}
 						}
 						return next.apply(this);
 					};

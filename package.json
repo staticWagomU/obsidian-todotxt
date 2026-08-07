@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-todotxt",
-	"version": "1.6.0",
+	"version": "1.6.1",
 	"description": "Obsidian Todo.txt - Plain text, software-agnostic, human-readable task manager",
 	"author": "staticWagomU",
 	"authorUrl": "https://github.com/staticWagomU",
@@ -40,5 +40,10 @@
 		"monkey-around": "^3.0.0",
 		"obsidian": "latest",
 		"obsidian-daily-notes-interface": "^0.9.4"
+	},
+	"pnpm": {
+		"overrides": {
+			"obsidian-daily-notes-interface>obsidian": "1.11.4"
+		}
 	}
 }

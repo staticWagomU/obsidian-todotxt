@@ -97,7 +97,7 @@ export function getDefaultFilterForFile(
 		return undefined;
 	}
 
-	const preset = settings.savedFilters.find(p => p.id === presetId);
+	const preset = settings.savedFilters.find((p) => p.id === presetId);
 	if (!preset) {
 		return undefined;
 	}
@@ -130,7 +130,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.defaultSortOrder = value as SortOrder;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -145,23 +145,22 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.defaultGrouping = value as Grouping;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
 			.setName("完了タスクを表示")
 			.setDesc("完了したタスクを表示するかどうかを設定します")
 			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.showCompletedTasks)
-					.onChange(async (value) => {
-						this.plugin.settings.showCompletedTasks = value;
-						await this.plugin.saveSettings();
-					})
+				toggle.setValue(this.plugin.settings.showCompletedTasks).onChange(async (value) => {
+					this.plugin.settings.showCompletedTasks = value;
+					await this.plugin.saveSettings();
+				}),
 			);
 
 		new Setting(containerEl)
 			.setName("完了時刻を記録")
+			// eslint-disable-next-line obsidianmd/ui/sentence-case -- ct:HH:MM is a todo.txt tag format.
 			.setDesc("タスク完了時に完了時刻（ct:HH:MM）をタグとして記録します")
 			.addToggle((toggle) =>
 				toggle
@@ -169,24 +168,24 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.recordCompletionTime = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
 			.setName("完了時に自動アーカイブ")
 			.setDesc("タスク完了時に自動でdone.txtファイルへ移動します")
 			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.autoArchive)
-					.onChange(async (value) => {
-						this.plugin.settings.autoArchive = value;
-						await this.plugin.saveSettings();
-					})
+				toggle.setValue(this.plugin.settings.autoArchive).onChange(async (value) => {
+					this.plugin.settings.autoArchive = value;
+					await this.plugin.saveSettings();
+				}),
 			);
 
 		new Setting(containerEl)
 			.setName("Todo.txtファイルパス")
-			.setDesc("Todo.txtとして扱うファイルのパスを指定します（複数行で指定可能）。未指定の場合は.txt/.todotxt拡張子のファイルをすべて対象とします")
+			.setDesc(
+				"Todo.txtとして扱うファイルのパスを指定します（複数行で指定可能）。未指定の場合は.txt/.todotxt拡張子のファイルをすべて対象とします",
+			)
 			.addTextArea((text) =>
 				text
 					.setPlaceholder("vault/todo.txt\nvault/tasks.txt")
@@ -198,7 +197,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 							.map((line) => line.trim())
 							.filter((line) => line.length > 0);
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -212,7 +211,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.noteCreationDir = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl).setName("AI task addition").setHeading();
@@ -229,7 +228,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.openRouter.apiKey = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -249,7 +248,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.openRouter.model = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -261,7 +260,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.openRouter.includeCreationDate = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -273,7 +272,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.openRouter.retryConfig.enabled = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -289,7 +288,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 							this.plugin.settings.openRouter.retryConfig.maxRetries = parsed;
 							await this.plugin.saveSettings();
 						}
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -305,7 +304,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 							this.plugin.settings.openRouter.retryConfig.initialDelayMs = parsed;
 							await this.plugin.saveSettings();
 						}
-					})
+					}),
 			);
 
 		// Task templates section
@@ -313,12 +312,15 @@ export class TodotxtSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Templates")
-			.setDesc("テンプレートを登録します。1テンプレート1行、形式: name|content (複数タスクは\\nで区切り)。{{today}}は今日、{{tomorrow}}は明日の日付に展開されます")
+			.setDesc(
+				"テンプレートを登録します。1テンプレート1行、形式: name|content (複数タスクは\\nで区切り)。{{today}}は今日、{{tomorrow}}は明日の日付に展開されます",
+			)
 			.addTextArea((text) => {
 				text.inputEl.rows = 8;
 				text.inputEl.cols = 50;
-				text
-					.setPlaceholder("朝ルーティン|タスク1 +routine\\nタスク2 +routine\n今日期限|タスク due:{{today}}")
+				text.setPlaceholder(
+					"朝ルーティン|タスク1 +routine\\nタスク2 +routine\n今日期限|タスク due:{{today}}",
+				)
 					.setValue(this.serializeTemplates(this.plugin.settings.taskTemplates))
 					.onChange(async (value) => {
 						this.plugin.settings.taskTemplates = this.parseTemplates(value);
@@ -340,9 +342,10 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.addOption("cursor", "カーソル位置")
 					.setValue(this.plugin.settings.dailyNotes.insertPosition)
 					.onChange(async (value) => {
-						this.plugin.settings.dailyNotes.insertPosition = value as DailyNoteInsertPosition;
+						this.plugin.settings.dailyNotes.insertPosition =
+							value as DailyNoteInsertPosition;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		new Setting(containerEl)
@@ -355,16 +358,16 @@ export class TodotxtSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.dailyNotes.taskPrefix = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		// Keyboard shortcuts section
 		new Setting(containerEl).setName("Keyboard shortcuts").setHeading();
 
 		// Group shortcuts by category
-		const navigationShortcuts = DEFAULT_SHORTCUTS.filter(s => s.category === "navigation");
-		const actionShortcuts = DEFAULT_SHORTCUTS.filter(s => s.category === "action");
-		const globalShortcuts = DEFAULT_SHORTCUTS.filter(s => s.category === "global");
+		const navigationShortcuts = DEFAULT_SHORTCUTS.filter((s) => s.category === "navigation");
+		const actionShortcuts = DEFAULT_SHORTCUTS.filter((s) => s.category === "action");
+		const globalShortcuts = DEFAULT_SHORTCUTS.filter((s) => s.category === "global");
 
 		// Navigation shortcuts
 		new Setting(containerEl).setName("ナビゲーション").setHeading();
@@ -396,9 +399,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 	 * Format: name|content (one per line)
 	 */
 	private serializeTemplates(templates: TaskTemplate[]): string {
-		return templates
-			.map(t => `${t.name}|${t.content.replace(/\n/g, "\\n")}`)
-			.join("\n");
+		return templates.map((t) => `${t.name}|${t.content.replace(/\n/g, "\\n")}`).join("\n");
 	}
 
 	/**
@@ -406,7 +407,7 @@ export class TodotxtSettingTab extends PluginSettingTab {
 	 * Format: name|content (one per line)
 	 */
 	private parseTemplates(text: string): TaskTemplate[] {
-		const lines = text.split("\n").filter(line => line.trim().length > 0);
+		const lines = text.split("\n").filter((line) => line.trim().length > 0);
 		const templates: TaskTemplate[] = [];
 
 		for (const line of lines) {
